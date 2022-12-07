@@ -3,9 +3,9 @@ Telegram Files Downloader
 
 - [CHANGELOG](CHANGELOG.md)
 - [LICENSE](LICENSE.md)
-- [Report a bug](issues)
-- [Discussions](discussions)
-- [Ideas](discussions/categories/ideas)
+- [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
+- [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
+- [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 
 ## Overview
 Download all the files from the channel you are a member of from Telegram.
