@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="Locales\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WTelegramClient" Version="3.1.5" />
