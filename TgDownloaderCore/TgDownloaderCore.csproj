@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <Version>0.1.40.0</Version>
+    <Version>0.1.100.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Enums\" />

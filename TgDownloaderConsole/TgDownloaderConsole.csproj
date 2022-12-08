@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.1.40.0</Version>
+		<Version>0.1.100.0</Version>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="Locale\**" />
