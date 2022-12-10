@@ -19,4 +19,11 @@ public class LocaleHelper
     public LocaleWarningHelper Warning => LocaleWarningHelper.Instance;
 
     #endregion
+
+    #region Public and private methods
+
+    public string InfoMessage(string message) => $"[green]i {message}[/]";
+    public string WarningMessage(string message) => $"[red]i {message}[/]";
+
+    #endregion
 }

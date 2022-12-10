@@ -16,6 +16,7 @@ public class TgSettingsModel
     public string DestDirectory { get; private set; }
     public int MessageStartId { get; private set; }
     public int MessageCount { get; private set; }
+    public int MessageMaxCount { get; private set; }
 
     public TgSettingsModel()
     {
@@ -23,6 +24,7 @@ public class TgSettingsModel
         DestDirectory = string.Empty;
         MessageStartId = -1;
         MessageCount = -1;
+        MessageMaxCount = -1;
     }
 
     #endregion
@@ -85,6 +87,11 @@ public class TgSettingsModel
     {
         MessageCount = Log.AskInt(Locale.Question.TypeTgMessageCount);
         MessageCount = MessageCount < 0 ? 0 : MessageCount;
+    }
+
+    public void SetMessageMaxCount(int count)
+    {
+        MessageMaxCount = count;
     }
 
     #endregion

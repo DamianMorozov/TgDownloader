@@ -19,12 +19,23 @@ public class TgClientHelper
 
     private LocaleHelper Locale => LocaleHelper.Instance;
     private LogHelper Log => LogHelper.Instance;
-    public TgSettingsModel TgSettings => new();
+    public TgSettingsModel TgSettings { get; } = new();
     private Client _client;
     private Client WClient { get => _client; set { _client = value; IsExists = value is not null; } }
     public bool IsExists { get; private set; }
     public bool IsConnected => IsExists && !WClient.Disconnected;
-    public User MySelfUser => IsConnected ? WClient.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
+    private User _mySelfUser;
+    public User MySelfUser
+    {
+        get
+        {
+            if (_mySelfUser is not null)
+                return _mySelfUser;
+            _mySelfUser = IsConnected? WClient.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
+            return _mySelfUser;
+        }
+    }
+
     private Dictionary<long, ChatBase> _dicChatsAll;
     public Dictionary<long, ChatBase> DicChatsAll
     {
@@ -36,7 +47,6 @@ public class TgClientHelper
         }
     }
     public DateTime DtDicChatsAll { get; private set; }
-    public TimeSpan TimeSpanDicChatsAll => DateTime.Now - DtDicChatsAll;
     public Dictionary<long, ChatBase> DicChatsUpdated { get; }
     public Dictionary<long, ChatBase> DicDialogsAll { get; }
     public Dictionary<long, User> DicUsersUpdated { get; }
@@ -60,10 +70,8 @@ public class TgClientHelper
 
         // Log to VS Output debugging pane in addition.
         WTelegram.Helpers.Log += (_, str) => Debug.WriteLine(str);
-#if NOTDEBUG
         // Disable logging.
-        WTelegram.Helpers.Log = (lvl, str) => { };
-#endif
+        WTelegram.Helpers.Log = (_, _) => { };
     }
 
     #endregion
@@ -172,7 +180,7 @@ public class TgClientHelper
                     ListSmallGroups.Add(item.Value);
                     break;
                 case Channel { IsGroup: true } group:
-                    //case Channel group: // no broadcast flag => it's a big group, also called supergroup or megagroup
+                    //case Channel group: // no broadcast flag => it's a big group, also called superGroup or megaGroup
                     ListGroups.Add(group);
                     break;
                 case Channel channel:
@@ -193,7 +201,7 @@ public class TgClientHelper
                     ListSmallGroups.Add(item.Value);
                     break;
                 case Channel { IsGroup: true } group:
-                    //case Channel group: // no broadcast flag => it's a big group, also called supergroup or megagroup
+                    //case Channel group: // no broadcast flag => it's a big group, also called superGroup or megaGroup
                     ListGroups.Add(group);
                     break;
                 case Channel channel:
@@ -352,8 +360,6 @@ public class TgClientHelper
         if (isSort)
             channels = SortListChannels(channels);
         Log.MarkupLineStamp($"Found {name}: {channels.Count}");
-        //foreach (Channel channel in channels)
-        //    PrintChannelInfo(WClient, channel.ID);
     }
 
     public void PrintChatFullBaseInfo(ChatFullBase chatFull)
@@ -414,25 +420,31 @@ public class TgClientHelper
     public int GetChannelMessagesCount(ChatFullBase chatFullBase) => 
         chatFullBase is not ChannelFull channelFull ? 0 : channelFull.read_inbox_max_id;
 
-    public async Task CollectMessages()
+    public Channel PrepareCollectMessages()
     {
         Channel channel = GetChannel(TgSettings.SourceUserName);
-        if (channel.id is 0) return;
+        if (channel.id is 0) return channel;
 
-        Messages_ChatFull fullChannel = await WClient.Channels_GetFullChannel(channel).ConfigureAwait(true);
+        Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
         if (fullChannel.full_chat is ChannelFull channelFull)
             PrintChannelFullInfo(channelFull);
         else
             PrintChatFullBaseInfo(fullChannel.full_chat);
-        int messagesCount = GetChannelMessagesCount(fullChannel.full_chat);
+        TgSettings.SetMessageMaxCount(GetChannelMessagesCount(fullChannel.full_chat));
+        
+        return channel;
+    }
 
+    public async Task CollectMessages(Channel channel)
+    {
+        if (channel.id is 0) return;
         try
         {
             int lastId = TgSettings.MessageCount < 1 ? TgSettings.MessageStartId + 1 : TgSettings.MessageStartId + TgSettings.MessageCount;
 
-            while (TgSettings.MessageStartId < lastId && TgSettings.MessageStartId <= messagesCount)
+            while (TgSettings.MessageStartId < lastId && TgSettings.MessageStartId <= TgSettings.MessageMaxCount)
             {
-                Connect();
+                _ = MySelfUser;
                 Messages_MessagesBase messages =
                     await WClient.Channels_GetMessages(channel, TgSettings.MessageStartId).ConfigureAwait(true);
 
