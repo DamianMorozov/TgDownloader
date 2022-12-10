@@ -3,20 +3,20 @@
 
 namespace TgDownloaderCore.Locales;
 
-internal class LocaleHelper
+public class LocaleHelper
 {
     #region Design pattern "Lazy Singleton"
 
     private static LocaleHelper _instance;
-    internal static LocaleHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
+    public static LocaleHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
     #endregion
 
     #region Public and private fields and properties
 
-    public LocaleInfoHelper Info { get; } = LocaleInfoHelper.Instance;
-    public LocaleQuestionHelper Question { get; } = LocaleQuestionHelper.Instance;
-    public LocaleWarningHelper Warning { get; } = LocaleWarningHelper.Instance;
+    public LocaleInfoHelper Info => LocaleInfoHelper.Instance;
+    public LocaleQuestionHelper Question => LocaleQuestionHelper.Instance;
+    public LocaleWarningHelper Warning => LocaleWarningHelper.Instance;
 
     #endregion
 }

@@ -6,12 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.130] - 2022-12-10
+### Added
+- LogHelper into TgDownloaderCore
+- TgClientHelper into TgDownloaderCore
+- TgSettingsHelper into TgDownloaderCore
+- FileUtils into TgDownloaderCore
+
 ## [0.1.100] - 2022-12-08
 ### Added
 - TgDownloaderConsoleTest project
 - TgDownloaderCore project
 - TgDownloaderCoreTest project
 - TgDownloaderCore.Locales classes
+- Locales into TgDownloaderCore
 
 ## [0.1.020] - 2022-12-07
 ### Added
