@@ -8,8 +8,6 @@ public enum TgMenu
     Exit,
     Return,
     DownloadFiles,
-    SetTgClient,
-    SetTgSettings,
     SetTgSourceUsername,
     SetTgDestDirectory,
     SetTgMessageStartId,

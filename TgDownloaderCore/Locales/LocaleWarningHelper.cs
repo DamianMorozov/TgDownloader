@@ -19,9 +19,11 @@ public class LocaleWarningHelper
     public string DirNotFound(string dir) => $"[red]Directory '{dir}' is not found![/]";
     public string FileNotFound(string file) => $"[red]File '{file}' is not found![/]";
     public string HaveException => "[red]Exception![/]";
+    public string Message(string message) => $"[red]x {message}[/]";
     public string NotValidMenuItem => "[red]That's not a valid menu item![/]";
     public string ValueLess(string value) => $"[red]Value must be more than {value}[/]";
     public string ValueMore(string value) => $"[red]Value must be less than {value}[/]";
+    public string TgSettingsNotSet => "[red]<not set>[/]";
 
     #endregion
 }

@@ -14,9 +14,9 @@ public class LocaleQuestionHelper
 
     #region Public and private fields and properties
 
-    public string TypeTgChannelUserName => "Type the channel user name: ";
-    public string TypeTgMessageCount => "Type the messages count (0 - unlimited): ";
-    public string TypeTgMessageStartId => "Type the message start ID: ";
+    public string TypeTgSourceUserName => "Type the source user name: ";
+    public string TypeTgMessageCount => "Type the messages count (default value: 0): ";
+    public string TypeTgMessageStartId => "Type the message start ID (default value: 1): ";
 
     #endregion
 }

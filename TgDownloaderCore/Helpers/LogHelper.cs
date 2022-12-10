@@ -27,10 +27,10 @@ public class LogHelper
 
     public LogHelper()
     {
-        _markupLineStamp = new(_ => { });
-        _askString = new(_ => string.Empty);
-        _askInt = new(_ => 0);
-        _askBool = new(_ => false);
+        _markupLineStamp = _ => { };
+        _askString = _ => string.Empty;
+        _askInt = _ => 0;
+        _askBool = _ => false;
     }
 
     #endregion
