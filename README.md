@@ -19,6 +19,9 @@ Download all the files from the channel you are a member of from Telegram.
 - Fill out the form to register a new Telegram app
 - Copy the values of the "App api_id" and "App api_hash" fields
 
+## Screenshots
+![](Assets/Main_menu.png?raw=true)
+
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 
