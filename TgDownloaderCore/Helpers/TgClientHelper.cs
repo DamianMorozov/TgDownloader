@@ -1,12 +1,14 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloaderCore.Locales;
 using TgDownloaderCore.Models;
+using TgDownloaderCore.Utils;
+using Channel = TL.Channel;
+using Document = TL.Document;
 
 namespace TgDownloaderCore.Helpers;
 
-public class TgClientHelper
+public partial class TgClientHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -31,39 +33,29 @@ public class TgClientHelper
         {
             if (_mySelfUser is not null)
                 return _mySelfUser;
-            _mySelfUser = IsConnected? WClient.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
+            _mySelfUser = IsConnected ? WClient.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
             return _mySelfUser;
         }
     }
 
-    private Dictionary<long, ChatBase> _dicChatsAll;
-    public Dictionary<long, ChatBase> DicChatsAll
-    {
-        get => _dicChatsAll;
-        private set
-        {
-            _dicChatsAll = value;
-            DtDicChatsAll = DateTime.Now;
-        }
-    }
-    public DateTime DtDicChatsAll { get; private set; }
+    public Dictionary<long, ChatBase> DicChatsAll { get; private set; }
     public Dictionary<long, ChatBase> DicChatsUpdated { get; }
-    public Dictionary<long, ChatBase> DicDialogsAll { get; }
     public Dictionary<long, User> DicUsersUpdated { get; }
     public List<Channel> ListChannels { get; }
     public List<Channel> ListGroups { get; }
+    public List<ChatBase> ListChats { get; }
     public List<ChatBase> ListSmallGroups { get; }
     public List<KeyValuePair<long, long>> HashesChannels { get; private set; }
     public List<KeyValuePair<long, long>> HashesUsers { get; private set; }
-    
+
     public TgClientHelper()
     {
         DicChatsAll = new();
         DicChatsUpdated = new();
-        DicDialogsAll = new();
         DicUsersUpdated = new();
         HashesChannels = new();
         HashesUsers = new();
+        ListChats = new();
         ListChannels = new();
         ListGroups = new();
         ListSmallGroups = new();
@@ -82,15 +74,15 @@ public class TgClientHelper
     {
         return what switch
         {
-            "api_id" => Log.AskString(Locale.Info.TgSetupAppId),
-            "api_hash" => Log.AskString(Locale.Info.TgSetupApiHash),
-            "phone_number" => Log.AskString(Locale.Info.TgSetupPhone),
-            "verification_code" => Log.AskString(Locale.Info.TgSetupCode),
-            "notifications" => Log.AskBool(Locale.Info.TgSetupNotifications).ToString(),
-            "first_name" => Log.AskString(Locale.Info.TgSetupFirstName),
-            "last_name" => Log.AskString(Locale.Info.TgSetupLastName),
+            "api_id" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupAppId)),
+            "api_hash" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupApiHash)),
+            "phone_number" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupPhone)),
+            "verification_code" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupCode)),
+            "notifications" => Log.AskBool(Log.GetLineStampInfo(Locale.TgSetupNotifications)).ToString(),
+            "first_name" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupFirstName)),
+            "last_name" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupLastName)),
             "session_pathname" => "TgDownloader.session",
-            "password" => Log.AskString(Locale.Info.TgSetupPassword),
+            "password" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupPassword)),
             _ => null
         };
         // if enabled 2FA
@@ -112,27 +104,26 @@ public class TgClientHelper
 
         WClient = new(GetConfig);
         WClient.OnUpdate += Client_OnUpdate;
-        Log.MarkupLineStamp("Setup the TG Client was complete");
 
         _ = MySelfUser;
     }
 
-    public long ReduceChatId(long chatId) => 
+    public long ReduceChatId(long chatId) =>
         !$"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"{chatId}"[4..]);
 
-    public long FixChatId(long chatId) => 
+    public long FixChatId(long chatId) =>
         $"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"-100{chatId}");
 
     public User GetUserUpdated(long id) => DicUsersUpdated.TryGetValue(ReduceChatId(id), out User user) ? user : new();
-    
+
     public string GetUserUpdatedName(long id) => DicUsersUpdated.TryGetValue(ReduceChatId(id), out User user) ? user.username : string.Empty;
-    
+
     public ChatBase GetChat(long id) => DicChatsAll.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat : new Chat();
-    
+
     public ChatBase GetChatUpdated(long id) => DicChatsUpdated.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat : new Chat();
-    
+
     public Channel GetChannel(long id) => DicChatsAll.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat as Channel ?? new() : new();
-    
+
     public Channel GetChannel(string userName)
     {
         foreach (KeyValuePair<long, ChatBase> chatBase in DicChatsAll)
@@ -145,9 +136,9 @@ public class TgClientHelper
         }
         return new();
     }
-    
+
     public Channel GetChannelUpdated(long id) => DicChatsUpdated.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat as Channel ?? new() : new();
-    
+
     public string GetChatName(long id) => DicChatsAll.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat.ToString() : string.Empty;
 
     public string GetChatUpdatedName(long id) => DicChatsUpdated.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat.ToString() : string.Empty;
@@ -166,35 +157,27 @@ public class TgClientHelper
         FillListChats(DicChatsAll);
     }
 
-    private void FillListChats(Dictionary<long, ChatBase> dic)
+    public Dictionary<long, ChatBase> CollectAllDialogs()
     {
-        ListSmallGroups.Clear();
-        ListGroups.Clear();
-        ListChannels.Clear();
-
-        foreach (KeyValuePair<long, ChatBase> item in dic)
+        if (IsConnected)
         {
-            switch (item.Value)
-            {
-                case Chat smallGroup when (smallGroup.flags & Chat.Flags.deactivated) is 0:
-                    ListSmallGroups.Add(item.Value);
-                    break;
-                case Channel { IsGroup: true } group:
-                    //case Channel group: // no broadcast flag => it's a big group, also called superGroup or megaGroup
-                    ListGroups.Add(group);
-                    break;
-                case Channel channel:
-                    //case Channel channel when (channel.flags & Channel.Flags.broadcast) is not 0:
-                    ListChannels.Add(channel);
-                    break;
-            }
+            Messages_Dialogs messages = WClient.Messages_GetAllDialogs()
+                .ConfigureAwait(true).GetAwaiter().GetResult();
+            return messages.chats;
         }
+        return new();
     }
 
-    private void FillListDialogs(Dictionary<long, ChatBase> dic)
+    private void FillListChats(Dictionary<long, ChatBase> dic)
     {
+        ListChannels.Clear();
+        ListChats.Clear();
+        ListGroups.Clear();
+        ListSmallGroups.Clear();
+
         foreach (KeyValuePair<long, ChatBase> item in dic)
         {
+            ListChats.Add(item.Value);
             switch (item.Value)
             {
                 case Chat smallGroup when (smallGroup.flags & Chat.Flags.deactivated) is 0:
@@ -217,10 +200,9 @@ public class TgClientHelper
         if (arg is not UpdatesBase updates) return;
         await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 
-        try
+        TryCatchAction(() =>
         {
             updates.CollectUsersChats(DicUsersUpdated, DicChatsUpdated);
-
             foreach (Update update in updates.UpdateList)
             {
                 switch (update)
@@ -275,22 +257,16 @@ public class TgClientHelper
                     //        break;
                     default:
                         //ConsoleUtils.MarkupLine(update.GetType().Name);
-                        await Client_DisplayMessage(null);
+                        Client_DisplayMessage(null);
                         break; // there are much more update types than the above example cases
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            Log.MarkupLineStamp(ex.Message);
-            if (ex.InnerException is not null)
-                Log.MarkupLineStamp(ex.InnerException.Message);
-        }
+        });
     }
 
-    private Task Client_DisplayMessage(MessageBase messageBase, bool edit = false)
+    private void Client_DisplayMessage(MessageBase messageBase, bool edit = false)
     {
-        if (messageBase is null) return Task.CompletedTask;
+        if (messageBase is null) return;
         if (edit) Console.Write("(Edit): ");
         switch (messageBase)
         {
@@ -301,7 +277,6 @@ public class TgClientHelper
                 Log.MarkupLineStamp($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
                 break;
         }
-        return Task.CompletedTask;
     }
 
     public async Task PrintSendAsync(Messages_Chats messagesChats)
@@ -348,188 +323,159 @@ public class TgClientHelper
         return result;
     }
 
-    public void PrintChatsInfo(List<ChatBase> chats, string name, bool isSort)
+    public void PrintChatsInfo(Dictionary<long, ChatBase> dicChats, string name, Action<string> refreshStatus)
     {
-        if (isSort)
-            chats = SortListChats(chats);
-        Log.MarkupLineStamp($"Found {name}: {chats.Count}");
+        Log.MarkupLineStampInfo($"Found {name}: {dicChats.Count}");
+        Log.MarkupLineStampInfo(Locale.TgGetDialogsInfo);
+        foreach (KeyValuePair<long, ChatBase> dicChat in dicChats)
+        {
+            TryCatchAction(() =>
+            {
+                switch (dicChat.Value)
+                {
+                    case Channel channel:
+                        PrintChatsInfoChannel(channel, false);
+                        break;
+                    default:
+                        Log.MarkupLineStamp(GetChatInfo(dicChat.Value));
+                        break;
+                }
+            }, refreshStatus);
+        }
     }
 
-    public void PrintChannelsInfo(List<Channel> channels, string name, bool isSort)
+    private void PrintChatsInfoChannel(Channel channel, bool isFull)
     {
-        if (isSort)
-            channels = SortListChannels(channels);
-        Log.MarkupLineStamp($"Found {name}: {channels.Count}");
+        Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+        if (fullChannel.full_chat is ChannelFull channelFull)
+            Log.MarkupLineStamp(GetChannelFullInfo(channelFull, channel, isFull));
+        else
+            Log.MarkupLineStamp(GetChatFullBaseInfo(fullChannel.full_chat, channel, isFull));
     }
 
-    public void PrintChatFullBaseInfo(ChatFullBase chatFull)
+    public string GetChatInfo(ChatBase chat)
     {
-        if (chatFull is null) return;
-
-        if (chatFull.BotInfo is not null)
-            foreach (BotInfo botInfo in chatFull.BotInfo)
-            {
-                //ConsoleUtils.MarkupLine(botInfo.commands);
-                //ConsoleUtils.MarkupLine(botInfo.description);
-                //ConsoleUtils.MarkupLine(botInfo.menu_button);
-            }
-
-        if (chatFull.RecentRequesters is not null)
-            foreach (long requester in chatFull.RecentRequesters)
-            {
-                Log.MarkupLineStamp($"{nameof(requester)}: {requester}");
-            }
-
-        Log.MarkupLineStamp($"{nameof(chatFull.RequestsPending)}: {chatFull.RequestsPending}");
-
-        Log.MarkupLineStamp(
-            $"{nameof(chatFull.About)}: {chatFull.About} | " +
-            $"{nameof(chatFull.ID)}: {chatFull.ID} | " +
-            $"{nameof(chatFull.GetType)}: {chatFull.GetType()} | " +
-            $"{nameof(chatFull.TtlPeriod)}: {chatFull.TtlPeriod} | ");
+        if (chat is null) return string.Empty;
+        return
+            $"{nameof(chat.ID)}: {chat.ID} | " +
+            $"{nameof(chat.IsActive)}: {chat.IsActive} | " +
+            $"{nameof(chat.IsBanned)}: {chat.IsBanned()} | " +
+            $"{nameof(chat.Title)}: {chat.Title} | " +
+            $"{nameof(chat.GetType)}: {chat.GetType()}";
     }
 
-    public void PrintChannelFullInfo(ChannelFull channelFull)
+    public string GetChannelFullInfo(ChannelFull channelFull, ChatBase chat, bool isFull)
     {
-        if (channelFull is null) return;
-
-        if (channelFull.BotInfo is not null)
-            foreach (BotInfo botInfo in channelFull.BotInfo)
-            {
-                //ConsoleUtils.MarkupLine(botInfo.commands);
-                //ConsoleUtils.MarkupLine(botInfo.description);
-                //ConsoleUtils.MarkupLine(botInfo.menu_button);
-            }
-
-        if (channelFull.RecentRequesters is not null)
-            foreach (long requester in channelFull.RecentRequesters)
-            {
-                Log.MarkupLineStamp($"{nameof(requester)}: {requester}");
-            }
-
-        Log.MarkupLineStamp($"{nameof(channelFull.RequestsPending)}: {channelFull.RequestsPending}");
-        Log.MarkupLineStamp($"{nameof(channelFull.read_inbox_max_id)}: {channelFull.read_inbox_max_id}");
-
-        Log.MarkupLineStamp(
+        if (channelFull is null) return string.Empty;
+        string result = GetChatInfo(chat);
+        if (isFull)
+            result += " | " +
             $"{nameof(channelFull.About)}: {channelFull.About} | " +
-            $"{nameof(channelFull.ID)}: {channelFull.ID} | " +
-            $"{nameof(channelFull.GetType)}: {channelFull.GetType()} | " +
-            $"{nameof(channelFull.TtlPeriod)}: {channelFull.TtlPeriod} | ");
+            $"{nameof(channelFull.TtlPeriod)}: {channelFull.TtlPeriod} | " +
+            $"{nameof(channelFull.read_inbox_max_id)}: {channelFull.read_inbox_max_id}";
+        return result;
     }
 
-    public int GetChannelMessagesCount(ChatFullBase chatFullBase) => 
-        chatFullBase is not ChannelFull channelFull ? 0 : channelFull.read_inbox_max_id;
+    public string GetChatFullBaseInfo(ChatFullBase chatFull, ChatBase chat, bool isFull)
+    {
+        if (chatFull is null) return string.Empty;
+        string result = GetChatInfo(chat);
+        if (isFull)
+            result += " | " +
+            $"{nameof(chatFull.About)}: {chatFull.About} | " +
+            $"{nameof(chatFull.TtlPeriod)}: {chatFull.TtlPeriod}";
+        return result;
+    }
+
+    public int GetChannelMessagesCount(Channel channel)
+    {
+        Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+        return fullChannel.full_chat is ChannelFull channelFull ? channelFull.read_inbox_max_id : 0;
+    }
 
     public Channel PrepareCollectMessages()
     {
         Channel channel = GetChannel(TgSettings.SourceUserName);
         if (channel.id is 0) return channel;
 
-        Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
-        if (fullChannel.full_chat is ChannelFull channelFull)
-            PrintChannelFullInfo(channelFull);
-        else
-            PrintChatFullBaseInfo(fullChannel.full_chat);
-        TgSettings.SetMessageMaxCount(GetChannelMessagesCount(fullChannel.full_chat));
-        
+        PrintChatsInfoChannel(channel, true);
+        TgSettings.SetMessageCount(GetChannelMessagesCount(channel));
+
         return channel;
     }
 
-    public async Task CollectMessages(Channel channel)
+    public void CollectMessages(Channel channel, Stopwatch sw, Action<string> refreshStatus)
     {
         if (channel.id is 0) return;
-        try
+        TryCatchAction(() =>
         {
-            int lastId = TgSettings.MessageCount < 1 ? TgSettings.MessageStartId + 1 : TgSettings.MessageStartId + TgSettings.MessageCount;
-
-            while (TgSettings.MessageStartId < lastId && TgSettings.MessageStartId <= TgSettings.MessageMaxCount)
+            _ = MySelfUser;
+            while (TgSettings.MessageCurrentId <= TgSettings.MessageCount)
             {
-                _ = MySelfUser;
                 Messages_MessagesBase messages =
-                    await WClient.Channels_GetMessages(channel, TgSettings.MessageStartId).ConfigureAwait(true);
+                    WClient.Channels_GetMessages(channel, TgSettings.MessageCurrentId).ConfigureAwait(true).GetAwaiter().GetResult();
 
                 foreach (MessageBase message in messages.Messages)
                 {
-                    // It could be: "(no message)".
-                    Log.MarkupLineStamp($"Read the message {message.ID} | {message}");
-                    //string fromId = message.From is not null ? message.From.ID.ToString() : string.Empty;
-                    //string replyToId = message.ReplyTo is not null ? message.ReplyTo.reply_to_msg_id.ToString() : string.Empty;
-                    await DownloadFile(message, TgSettings.DestDirectory);
+                    // It could be: "(no message)"
+                    DownloadFile(message, TgSettings.DestDirectory, refreshStatus);
                 }
-                TgSettings.AddMessageStartId();
-                if (TgSettings.MessageCount < 1)
-                    lastId = TgSettings.MessageStartId + 1;
+                TgSettings.AddMessageCurrentId();
             }
-        }
-        catch (Exception ex)
-        {
-            Log.MarkupLineStamp(ex.Message);
-            if (ex.InnerException is not null)
-                Log.MarkupLineStamp(ex.InnerException.Message);
-        }
+        }, refreshStatus);
     }
 
-    private async Task DownloadFile(MessageBase messageBase, string folder)
+    private void DownloadFile(MessageBase messageBase, string folder, Action<string> refreshStatus)
     {
-        try
+        TryCatchAction(() =>
         {
             if (messageBase is null) return;
-            if (messageBase is not Message { media: MessageMediaDocument { document: Document document } }) return;
-
-            string fileName = Path.Combine(folder, document.Filename);
-            if (!CheckDownloadFileProcess(fileName, document)) return;
-            DeleteFileIfExists(fileName);
-
-            // DownloadFile v1.
-            //await File.WriteAllTextAsync(path, content);
-
-            // DownloadFile v2.
-            //await using MemoryStream memoryStream = new();
-            //await WClient.DownloadFileAsync(document, memoryStream);
-            //byte[] bytes = memoryStream.ToArray();
-            //await using FileStream fileStream = File.Create(fileName);
-            //await fileStream.WriteAsync(bytes);
-            //fileStream.Close();
-            //memoryStream.Close();
-
-            // DownloadFile v3.
-            await using FileStream fileStream = File.Create(fileName);
-            await WClient.DownloadFileAsync(document, fileStream);
-            fileStream.Close();
-        }
-        catch (Exception ex)
-        {
-            string messageId = messageBase is not null ? messageBase.ID.ToString() : string.Empty;
-            Log.MarkupLineStamp($"Exception at the message ID: {messageId}");
-            Log.MarkupLineStamp(ex.Message);
-            if (ex.InnerException is not null)
-                Log.MarkupLineStamp(ex.InnerException.Message);
-        }
-    }
-
-    private bool CheckDownloadFileProcess(string fileName, Document document)
-    {
-        bool result = true;
-        if (File.Exists(fileName))
-        {
-            Log.MarkupLineStamp($"File {Path.GetFileName(fileName)} is exists");
-            result = false;
-            using FileStream fileStream = File.OpenRead(fileName);
-            if (fileStream.Length < document.size)
+            if (messageBase is not Message { media: MessageMediaDocument { document: Document document } })
             {
-                Log.MarkupLineStamp($"File {Path.GetFileName(fileName)} have {fileStream.Length} size, but document have {document.size} size. It will be re-download");
-                result = true;
+                refreshStatus($"Read the message {messageBase.ID} without document");
+                return;
             }
+            string fileName = Path.Combine(folder, document.Filename);
+            (bool IsNeed, long Size) fileToDelete = IsFileNeedDelete(fileName, document, refreshStatus);
+            if (fileToDelete.IsNeed)
+                DeleteFile(fileName, fileToDelete.Size, refreshStatus);
+            refreshStatus($"Read the message {messageBase.ID} with document \"{document.Filename}\" (size {FileUtils.GetFileSizeString(document.size)}) in progress");
+            // Download file.
+            using FileStream fileStream = File.Create(fileName);
+            WClient.DownloadFileAsync(document, fileStream).ConfigureAwait(true).GetAwaiter().GetResult();
             fileStream.Close();
-        }
-        return result;
+            // Callback.
+            refreshStatus($"Read the message {messageBase.ID} with document \"{fileName}\" was complete");
+        }, refreshStatus);
     }
 
-    private void DeleteFileIfExists(string fileName)
+    private (bool, long) IsFileNeedDelete(string fileName, Document document, Action<string> refreshStatus)
+    {
+        bool result = false;
+        long size = 0;
+        TryCatchAction(() =>
+        {
+            if (File.Exists(fileName))
+            {
+                using FileStream fileStream = File.OpenRead(fileName);
+                size = fileStream.Length;
+                result = fileStream.Length < document.size;
+                fileStream.Close();
+            }
+        }, refreshStatus);
+        return (result, size);
+    }
+
+    private void DeleteFile(string fileName, long size, Action<string> refreshStatus)
     {
         if (!File.Exists(fileName)) return;
-        File.Delete(fileName);
-        Log.MarkupLineStamp($"File {Path.GetFileName(fileName)} was deleted");
+        TryCatchAction(() =>
+        {
+            refreshStatus($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)}) in progress");
+            File.Delete(fileName);
+            //Log.MarkupLineStampInfo($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)})");
+            refreshStatus($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)}) was complete");
+        }, refreshStatus);
     }
 
     private void PrintAccessHashInfo(Channel channel, string userName)
@@ -573,7 +519,7 @@ public class TgClientHelper
         Log.MarkupLineStamp("Saving all collected access hashes to disk for next run...");
         HashesChannels = WClient.AllAccessHashesFor<Channel>().ToList();
         HashesUsers = WClient.AllAccessHashesFor<User>().ToList();
-        
+
         //string StateFilename = "SavedState.json";
         //using FileStream stateStream = File.Create(StateFilename);
         //JsonSerializer.Serialize(stateStream, this);

@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using TgDownloaderCore.Helpers;
-using TgDownloaderCore.Locales;
 
 namespace TgDownloaderCore.Models;
 
@@ -14,30 +13,33 @@ public class TgSettingsModel
     public LogHelper Log => LogHelper.Instance;
     public string SourceUserName { get; private set; }
     public string DestDirectory { get; private set; }
-    public int MessageStartId { get; private set; }
+    public int MessageCurrentId { get; private set; }
     public int MessageCount { get; private set; }
-    public int MessageMaxCount { get; private set; }
 
     public TgSettingsModel()
     {
-        SourceUserName = string.Empty;
-        DestDirectory = string.Empty;
-        MessageStartId = -1;
-        MessageCount = -1;
-        MessageMaxCount = -1;
+        SetDefault();
     }
 
     #endregion
 
     #region Public and private methods
 
-    public void SetSourceUserName()
+    private void SetDefault()
     {
         SourceUserName = string.Empty;
+        DestDirectory = string.Empty;
+        MessageCurrentId = 1;
+        MessageCount = 0;
+    }
+
+    public void SetSourceUserName()
+    {
+        SetDefault();
         bool isCheck;
         do
         {
-            string userName = Log.AskString(Locale.Question.TypeTgSourceUserName);
+            string userName = Log.AskString(Locale.TypeTgSourceUserName);
             if (!string.IsNullOrEmpty(userName))
             {
                 SourceUserName = userName.StartsWith(@"https://t.me/")
@@ -57,13 +59,13 @@ public class TgSettingsModel
             {
                 if (!string.IsNullOrEmpty(DestDirectory) &&
                     !Directory.Exists(DestDirectory))
-                    Log.MarkupLineStamp(Locale.Warning.DirNotFound(DestDirectory));
-                DestDirectory = Log.AskString(Locale.Info.DestDirectory);
+                    Log.MarkupLineStamp(Locale.DirNotFound(DestDirectory));
+                DestDirectory = Log.AskString(Locale.DestDirectory);
             } while (!Directory.Exists(DestDirectory));
             if (!Directory.Exists(DestDirectory))
             {
                 DestDirectory = string.Empty;
-                Log.MarkupLineStamp(Locale.Warning.DirIsNotExists);
+                Log.MarkupLineStamp(Locale.DirIsNotExists);
             }
             else
             {
@@ -72,27 +74,17 @@ public class TgSettingsModel
         } while (!isCheck);
     }
 
-    public void SetMessageStartId()
+    public void SetMessageCurrentId()
     {
-        MessageStartId = Log.AskInt(Locale.Question.TypeTgMessageStartId);
-        MessageStartId = MessageStartId < 1 ? 1 : MessageStartId;
+        MessageCurrentId = Log.AskInt(Locale.TypeTgMessageStartId);
+        MessageCurrentId = MessageCurrentId < 1 ? 1 : MessageCurrentId;
     }
 
-    public void AddMessageStartId(int count = 1)
-    {
-        MessageStartId += count;
-    }
+    public void SetMessageCurrentIdDefault() => MessageCurrentId = 1;
 
-    public void SetMessageCount()
-    {
-        MessageCount = Log.AskInt(Locale.Question.TypeTgMessageCount);
-        MessageCount = MessageCount < 0 ? 0 : MessageCount;
-    }
+    public void AddMessageCurrentId(int count = 1) => MessageCurrentId += count;
 
-    public void SetMessageMaxCount(int count)
-    {
-        MessageMaxCount = count;
-    }
+    public void SetMessageCount(int count) => MessageCount = count;
 
     #endregion
 }

@@ -62,16 +62,34 @@ public class LogHelper
         _askBool = askBool;
     }
 
-    public string GetMarkupString(string line) =>
-        line.Replace("[", "[[").Replace("]", "]]");
+    public string GetMarkupString(string message) =>
+        message
+            .Replace("[", "[[").Replace("]", "]]")
+            .Replace("'", "''")
+        ;
 
-    public void MarkupLineStamp(string message)
+    public string GetLineStamp(string message) => 
+        $" {DateTime.Now:yyyy-MM-dd HH:mm:ss} | {GetMarkupString(message)}";
+
+    public void MarkupLineStamp(string message) => _markupLineStamp(GetLineStamp(message));
+
+    public string GetLineStampInfo(string message)
     {
         message = message.Replace("[", "[[").Replace("]", "]]");
         message = message.Replace("'", "''");
-        string result = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | {message}";
-        _markupLineStamp(result);
+        return $"[green] {DateTime.Now:yyyy-MM-dd HH:mm:ss} | i {message}[/]";
     }
+
+    public void MarkupLineStampInfo(string message) => _markupLineStamp(GetLineStampInfo(message));
+
+    public string GetLineStampWarning(string message)
+    {
+        message = message.Replace("[", "[[").Replace("]", "]]");
+        message = message.Replace("'", "''");
+        return $"[red] {DateTime.Now:yyyy-MM-dd HH:mm:ss} | x {message}[/]";
+    }
+
+    public void MarkupLineStampWarning(string message) => _markupLineStamp(GetLineStampWarning(message));
 
     public string AskString(string message) => _askString(message);
 

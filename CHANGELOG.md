@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.180] - 2022-12-13
+### Added
+- Info menu
+- Download progress
+### Changed
+- Connect menu
+- Settings menu
+- Collect info after set user name
+- Try catch exceptions
+
 ## [0.1.150] - 2022-12-10
 ### Added
 - MenuHelper into TgDownloaderConsole

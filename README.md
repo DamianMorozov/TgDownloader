@@ -19,6 +19,12 @@ Download all the files from the channel you are a member of from Telegram.
 - Fill out the form to register a new Telegram app
 - Copy the values of the "App api_id" and "App api_hash" fields
 
+## Quick start
+- Connect TG client, enter requred fields
+- Get info about your dialogs (optional)
+- Fill the settings
+- Download files
+
 ## Screenshots
 ![](Assets/Main_menu.png?raw=true)
 

@@ -3,12 +3,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <Version>0.1.150.0</Version>
+    <Version>0.1.180.0</Version>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Locales\" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WTelegramClient" Version="3.1.5" />
   </ItemGroup>

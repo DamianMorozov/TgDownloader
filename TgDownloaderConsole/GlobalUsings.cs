@@ -8,5 +8,4 @@ global using Spectre.Console;
 global using TgDownloaderConsole.Helpers;
 global using TgDownloaderCore.Enums;
 global using TgDownloaderCore.Helpers;
-global using TgDownloaderCore.Locales;
 global using TL;

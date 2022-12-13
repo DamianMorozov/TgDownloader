@@ -18,19 +18,6 @@ internal class MenuHelper
     internal static TgClientHelper TgClient => TgClientHelper.Instance;
     internal static Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
 
-    internal long SourceFileSize { get; set; }
-    internal long SourceFileRead { get; set; }
-    internal double SourceFileProgress
-    {
-        get
-        {
-            if (SourceFileSize == 0)
-                return 0;
-            return (double)(SourceFileRead * 100) / SourceFileSize;
-        }
-    }
-    internal TgMenu MenuItem { get; set; } = TgMenu.Exit;
-
     #endregion
 
     #region Public and internal methods
@@ -46,7 +33,7 @@ internal class MenuHelper
     internal void ShowTable(string title)
     {
         AnsiConsole.Clear();
-        AnsiConsole.Write(new FigletText(Locale.Info.AppTitle).Alignment(Justify.Center).Color(Color.Yellow));
+        AnsiConsole.Write(new FigletText(Locale.AppTitle).Alignment(Justify.Center).Color(Color.Yellow));
         Table table = new()
         {
             ShowHeaders = true,
@@ -66,130 +53,116 @@ internal class MenuHelper
         if (table.Columns.Count > 0) return;
 
         table.AddColumn(new TableColumn(
-            new Markup(Locale.Info.AppName, StyleMain)) { Width = 20 }.LeftAligned());
+            new Markup(Locale.AppName, StyleMain)) { Width = 20 }.LeftAligned());
         table.AddColumn(new TableColumn(
-            new Markup(Locale.Info.AppValue, StyleMain)) { Width = 80 }.LeftAligned());
+            new Markup(Locale.AppValue, StyleMain)) { Width = 80 }.LeftAligned());
     }
 
     internal void FillTableRows(Table table)
     {
         if (table.Rows.Count > 0) table.Rows.Clear();
 
-        table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.AppVersion)), new Markup($@"v{GetAppVersion()}"));
+        table.AddRow(new Markup(Locale.InfoMessage(Locale.AppVersion)), new Markup($@"v{GetAppVersion()}"));
 
         // TG client info.
         if (!TgClient.IsConnected)
         {
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgClientUserName)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgClientUserId)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgClientUserIsActive)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgClientUserStatus)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgClientUserName)),
+                new Markup(Locale.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgClientUserId)),
+                new Markup(Locale.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgClientUserIsActive)),
+                new Markup(Locale.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgClientUserStatus)),
+                new Markup(Locale.TgSettingsNotSet));
         }
         else
         {
             User user = TgClient.MySelfUser;
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgClientUserName)),
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgClientUserName)),
                 new Markup(user.username));
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgClientUserId)),
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgClientUserId)),
                 new Markup(user.id.ToString()));
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgClientUserIsActive)),
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgClientUserIsActive)),
                 new Markup(user.IsActive.ToString()));
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgClientUserStatus)),
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgClientUserStatus)),
                 new Markup(user.status.ToString() ?? ""));
         }
 
         // TG source user name.
         if (string.IsNullOrEmpty(TgClient.TgSettings.SourceUserName))
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsSourceUserName)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgSettingsSourceUserName)),
+                new Markup(Locale.TgSettingsNotSet));
         else
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgSettingsSourceUserName)),
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgSettingsSourceUserName)),
                 new Markup(TgClient.TgSettings.SourceUserName));
 
+        // TG messages count.
+        if (TgClient.TgSettings.MessageCount < 0)
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgSettingsMessageCount)),
+                new Markup(Locale.TgSettingsNotSet));
+        else
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgSettingsMessageCount)),
+                new Markup(TgClient.TgSettings.MessageCount.ToString()));
+        
         // Dest dir.
         if (string.IsNullOrEmpty(TgClient.TgSettings.DestDirectory))
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsDestDirectory)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgSettingsDestDirectory)),
+                new Markup(Locale.TgSettingsNotSet));
         else
         {
             if (!Directory.Exists(TgClient.TgSettings.DestDirectory))
-                table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsDestDirectory)),
-                    new Markup(Locale.Warning.DirIsNotExists));
+                table.AddRow(new Markup(Locale.WarningMessage(Locale.TgSettingsDestDirectory)),
+                    new Markup(Locale.DirIsNotExists));
             else
-                table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgSettingsDestDirectory)),
+                table.AddRow(new Markup(Locale.InfoMessage(Locale.TgSettingsDestDirectory)),
                     new Markup(TgClient.TgSettings.DestDirectory));
         }
 
         // TG start ID.
-        if (TgClient.TgSettings.MessageStartId < 0)
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsMessageStartId)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
+        if (TgClient.TgSettings.MessageCurrentId < 0)
+            table.AddRow(new Markup(Locale.WarningMessage(Locale.TgSettingsMessageStartId)),
+                new Markup(Locale.TgSettingsNotSet));
         else
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgSettingsMessageStartId)),
-                new Markup(TgClient.TgSettings.MessageStartId.ToString()));
-        
-        // TG messages count.
-        if (TgClient.TgSettings.MessageCount < 0)
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsMessageCount)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
-        else
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgSettingsMessageCount)),
-                new Markup(TgClient.TgSettings.MessageCount.ToString()));
-        
-        // TG messages max count.
-        if (TgClient.TgSettings.MessageMaxCount < 0)
-            table.AddRow(new Markup(Locale.WarningMessage(Locale.Info.TgSettingsMessageMaxCount)),
-                new Markup(Locale.Warning.TgSettingsNotSet));
-        else
-            table.AddRow(new Markup(Locale.InfoMessage(Locale.Info.TgSettingsMessageMaxCount)),
-                new Markup(TgClient.TgSettings.MessageMaxCount.ToString()));
+            table.AddRow(new Markup(Locale.InfoMessage(Locale.TgSettingsMessageStartId)),
+                new Markup(TgClient.TgSettings.MessageCurrentId.ToString()));
     }
 
-    internal string GetTableRowsSize(long value)
+    internal TgMenuSettings SetOptionsSetupTg()
     {
-        if (value > 0)
-        {
-            if (value < 1024)
-                return $"{value:##0.000} B";
-            if (value < 1024 * 1024)
-                return $"{(double)value / 1024:##0.000} KB";
-            return value < 1024 * 1024 * 1024 
-                ? $"{(double)value / 1024L / 1024:##0.000} MB" 
-                : $"{(double)value / 1024L / 1024L / 1024:##0.000} GB";
-        }
-        return "0 B";
-    }
-
-    internal void SetOptionsSetupTg()
-    {
-        string subMenu = AnsiConsole.Prompt(
+        string menu = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title(Locale.Info.MenuSwitchNumber)
-                .PageSize(6)
-                .MoreChoicesText(Locale.Info.MoveUpDown)
+                .Title(Locale.MenuSwitchNumber)
+                .PageSize(4)
+                .MoreChoicesText(Locale.MoveUpDown)
                 .AddChoices(
                     "Return", 
                     "Setup user name", 
                     "Setup download folder", 
-                    "Setup message start ID",
-                    "Setup messages count"));
-        MenuItem = subMenu switch
+                    "Setup message current ID"));
+        return menu switch
         {
-            "Return" => TgMenu.Return,
-            "Setup user name" => TgMenu.SetTgSourceUsername,
-            "Setup download folder" => TgMenu.SetTgDestDirectory,
-            "Setup message start ID" => TgMenu.SetTgMessageStartId,
-            "Setup messages count" => TgMenu.SetTgMessageCount,
-            _ => MenuItem
+            "Setup user name" => TgMenuSettings.SourceUsername,
+            "Setup download folder" => TgMenuSettings.DestDirectory,
+            "Setup message current ID" => TgMenuSettings.MessageCurrentId,
+            _ => TgMenuSettings.Return
         };
     }
 
-    internal string GetStatusInfo(Stopwatch sw) => 
-        $"{sw.Elapsed} | {SourceFileProgress:##0.000} % | {GetTableRowsSize(SourceFileRead)} |";
+    internal double CalcSourceProgress(long count, long current) =>
+        count == 0 ? 0 : (double)(current * 100) / count;
+
+    private string GetLongString(long current) => current > 999 ? $"{current:### ###}" : $"{current:###}";
+
+    public string GetStatus(Stopwatch sw, long count, long current) =>
+        count == 0 && current == 0
+            ? $"{sw.Elapsed} | "
+            : $"{sw.Elapsed} | {CalcSourceProgress(count, current):#00.00} % | {GetLongString(current)}/{GetLongString(count)}";
+
+    public string GetStatus(long count, long current) =>
+        count == 0 && current == 0
+            ? string.Empty
+            : $"{CalcSourceProgress(count, current):#00.00} % | {GetLongString(current)}/{GetLongString(count)}";
 
     public bool CheckTgSettings() => 
         TgClient.IsConnected &&

@@ -3,11 +3,10 @@
 
 namespace TgDownloaderCore.Enums;
 
-public enum TgMenu
+public enum TgMenuSettings
 {
-    Exit,
-    Connect,
-    Info,
-    Settings,
-    DownloadFiles
+    Return,
+    SourceUsername,
+    DestDirectory,
+    MessageCurrentId,
 }

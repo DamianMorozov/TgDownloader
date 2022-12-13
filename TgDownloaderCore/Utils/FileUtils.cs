@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using TgDownloaderCore.Helpers;
-using TgDownloaderCore.Locales;
 
 namespace TgDownloaderCore.Utils;
 
@@ -128,9 +127,9 @@ public static class FileUtils
         }
         catch (Exception ex)
         {
-            Log.MarkupLineStamp(Locale.Info.StatusException + Log.GetMarkupString(ex.Message));
+            Log.MarkupLineStamp(Locale.StatusException + Log.GetMarkupString(ex.Message));
             if (ex.InnerException is not null)
-                Log.MarkupLineStamp(Locale.Info.StatusInnerException + Log.GetMarkupString(ex.InnerException.Message));
+                Log.MarkupLineStamp(Locale.StatusInnerException + Log.GetMarkupString(ex.InnerException.Message));
             return 0L;
         }
     }
@@ -140,6 +139,17 @@ public static class FileUtils
         if (!File.Exists(file)) return 0L;
         return new FileInfo(file).Length;
     }
+
+    public static string GetFileSizeString(long value) =>
+        value > 0
+            ? value switch
+            {
+                < 1024 => $"{value:###} B",
+                < 1024 * 1024 => $"{(double)value / 1024L:###} KB",
+                < 1024 * 1024 * 1024 => $"{(double)value / 1024L / 1024L:###} MB",
+                _ => $"{(double)value / 1024L / 1024L / 1024L:###} GB"
+            }
+            : "0 B";
 
     #endregion
 }

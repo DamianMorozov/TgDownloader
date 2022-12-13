@@ -6,46 +6,50 @@ LocaleHelper locale = LocaleHelper.Instance;
 LogHelper log = LogHelper.Instance;
 MenuHelper menu = MenuHelper.Instance;
 TgClientHelper tgClient = TgClientHelper.Instance;
+StatusContext globalStatusContext = null;
 
 SetLog();
 
+TgMenu menuMain = TgMenu.Exit;
 do
 {
     try
     {
-        menu.ShowTable("");
-        menu.MenuItem = TgMenu.Return;
-        string mainMenu = AnsiConsole.Prompt(
+        menu.ShowTable(locale.AppMainMenu);
+        string menuAsk = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-            .Title(locale.Info.MenuSwitchNumber)
-            .PageSize(6)
-            .MoreChoicesText(locale.Info.MoveUpDown)
-            .AddChoices(locale.Info.MenuMain));
-        switch (mainMenu)
+            .Title(locale.MenuSwitchNumber)
+            .PageSize(10)
+            .MoreChoicesText(locale.MoveUpDown)
+            .AddChoices(locale.MenuMain));
+        switch (menuAsk)
         {
-            case "Exit":
-                menu.MenuItem = TgMenu.Exit;
-                break;
             case "Connect":
+                menuMain = TgMenu.Connect;
                 ConnectTgClient();
                 break;
+            case "Info":
+                menuMain = TgMenu.Info;
+                GetTgInfo();
+                break;
             case "Settings":
+                menuMain = TgMenu.Settings;
                 SetupTgSettings();
                 break;
             case "Download files":
-                menu.MenuItem = TgMenu.DownloadFiles;
+                menuMain = TgMenu.DownloadFiles;
                 RunMenuJob(DownloadFiles);
                 break;
         }
     }
     catch (Exception ex)
     {
-        log.MarkupLineStamp(locale.Info.StatusException + log.GetMarkupString(ex.Message));
+        log.MarkupLineStamp(locale.StatusException + log.GetMarkupString(ex.Message));
         if (ex.InnerException is not null)
-            log.MarkupLineStamp(locale.Info.StatusInnerException + log.GetMarkupString(ex.InnerException.Message));
-        menu.MenuItem = TgMenu.Exit;
+            log.MarkupLineStamp(locale.StatusInnerException + log.GetMarkupString(ex.InnerException.Message));
+        menuMain = TgMenu.Exit;
     }
-} while (menu.MenuItem is not TgMenu.Exit);
+} while (menuMain is not TgMenu.Exit);
 
 void SetLog()
 {
@@ -58,65 +62,100 @@ void SetLog()
 
 void SetupTgSettings()
 {
-    menu.ShowTable(locale.Info.MenuSetupTg);
-    menu.SetOptionsSetupTg();
-
-    switch (menu.MenuItem)
+    TgMenuSettings menuSettings;
+    do
     {
-        case TgMenu.SetTgSourceUsername:
-            tgClient.TgSettings.SetSourceUserName();
-            break;
-        case TgMenu.SetTgDestDirectory:
-            tgClient.TgSettings.SetDestDirectory();
-            break;
-        case TgMenu.SetTgMessageStartId:
-            tgClient.TgSettings.SetMessageStartId();
-            break;
-        case TgMenu.SetTgMessageCount:
-            tgClient.TgSettings.SetMessageCount();
-            break;
-    }
+        menu.ShowTable(locale.TgSettings);
+        menuSettings = menu.SetOptionsSetupTg();
+        switch (menuSettings)
+        {
+            case TgMenuSettings.SourceUsername:
+                tgClient.TgSettings.SetSourceUserName();
+                tgClient.PrepareCollectMessages();
+                break;
+            case TgMenuSettings.DestDirectory:
+                tgClient.TgSettings.SetDestDirectory();
+                break;
+            case TgMenuSettings.MessageCurrentId:
+                tgClient.TgSettings.SetMessageCurrentId();
+                break;
+        }
+    } while (menuSettings is not TgMenuSettings.Return);
 }
 
-void RunMenuJob(Action action)
+void RunMenuJob(Action<Stopwatch> action)
 {
-    menu.ShowTable(locale.Info.MenuDownloadFiles);
-    log.MarkupLineStamp(locale.Info.StatusStart);
+    menu.ShowTable(locale.MenuDownloadFiles);
+    log.MarkupLineStamp(locale.StatusStart);
+    if (!menu.CheckTgSettings())
+    {
+        log.MarkupLineStampWarning(locale.TgMustSetSettings);
+        Console.ReadKey();
+        return;
+    }
 
     AnsiConsole.Status()
         .AutoRefresh(true)
-        .Spinner(Spinner.Known.Aesthetic)
+        .Spinner(Spinner.Known.Ascii)
         .SpinnerStyle(Style.Parse("green"))
         .Start("Thinking...", statusContext =>
         {
+            globalStatusContext = statusContext;
             Stopwatch sw = new();
             sw.Start();
-            statusContext.Status($"{menu.GetStatusInfo(sw)} | Process job.");
+            statusContext.Status($"{menu.GetStatus(sw, 
+                tgClient.TgSettings.MessageCurrentId, tgClient.TgSettings.MessageCount)} | Process job");
             statusContext.Refresh();
-            action();
+            action(sw);
             sw.Stop();
-            statusContext.Status($"{menu.GetStatusInfo(sw)} | Job is complete.");
+            statusContext.Status($"{menu.GetStatus(sw,
+                tgClient.TgSettings.MessageCurrentId, tgClient.TgSettings.MessageCount)} | Job is complete");
             statusContext.Refresh();
         });
-    log.MarkupLineStamp(locale.Info.MenuReturn);
+    globalStatusContext = null;
+    log.MarkupLineStamp(locale.MenuReturn);
     Console.ReadKey();
 }
 
 void ConnectTgClient()
 {
+    menu.ShowTable(locale.TgClientConnect);
     tgClient.Connect();
     tgClient.CollectAllChats().GetAwaiter().GetResult();
-    tgClient.PrintChatsInfo(tgClient.ListSmallGroups, "small groups", true);
-    tgClient.PrintChannelsInfo(tgClient.ListGroups, "groups", true);
-    tgClient.PrintChannelsInfo(tgClient.ListChannels, "channels", true);
-    log.MarkupLineStamp(locale.Info.AnyKey);
+    log.MarkupLineStampInfo(locale.TgClientSetupComplete);
     Console.ReadKey();
 }
 
-void DownloadFiles()
+void GetTgInfo()
 {
-    if (!menu.CheckTgSettings()) return;
+    menu.ShowTable(locale.TgClientGetInfo);
+    if (!tgClient.IsConnected)
+    {
+        log.MarkupLineStampWarning(locale.TgMustClientConnect);
+        Console.ReadKey();
+        return;
+    }
+
+    Dictionary<long, ChatBase> dicDialogs = tgClient.CollectAllDialogs();
+    tgClient.PrintChatsInfo(dicDialogs, "dialogs", RefreshStatus);
+    
+    log.MarkupLineStampInfo(locale.TgGetInfoComplete);
+    Console.ReadKey();
+}
+
+void DownloadFiles(Stopwatch sw)
+{
+    AnsiConsole.Clear();
     Channel channel = tgClient.PrepareCollectMessages();
-    menu.ShowTable(locale.Info.MenuDownloadFiles);
-    tgClient.CollectMessages(channel).GetAwaiter().GetResult();
+    menu.ShowTable(locale.MenuDownloadFiles);
+    tgClient.CollectMessages(channel, sw, RefreshStatus);
+    tgClient.TgSettings.SetMessageCurrentIdDefault();
+}
+
+void RefreshStatus(string message)
+{
+    //AnsiConsole.Clear();
+    if (globalStatusContext is null) return;
+    globalStatusContext.Status(log.GetMarkupString($"{menu.GetStatus(tgClient.TgSettings.MessageCount, tgClient.TgSettings.MessageCurrentId)} | {message}"));
+    globalStatusContext.Refresh();
 }
