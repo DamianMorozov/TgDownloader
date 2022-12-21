@@ -1,15 +1,5 @@
-# TgDownloader
+﻿# TgDownloader
 Telegram Files Downloader
-
-## Quick links
-- [CHANGELOG](CHANGELOG.md)
-- [LICENSE](LICENSE.md)
-- [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
-- [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
-- [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
-- [TgDownloader News](https://t.me/TgDownloader)
-- [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
-- [TgDownloader Chat Rus](https://t.me/TgDownloaderChatRus)
 
 ## Overview
 Download all the files from the channel you are a member of from Telegram.
@@ -36,3 +26,14 @@ Download all the files from the channel you are a member of from Telegram.
 
 ## Support
 Please click the `star` button if this tool was helpful to you.
+
+## Quick links
+- [CHANGELOG](CHANGELOG.md)
+- [LICENSE](LICENSE.md)
+- [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
+- [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
+- [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+- [TgDownloader News](https://t.me/TgDownloader)
+- [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
+- [TgDownloader Chat Rus](https://t.me/TgDownloaderChatRus)
+- [Project description in Russian](README-RUS.md)

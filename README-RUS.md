@@ -36,3 +36,14 @@
 
 ## Поддержка
 Пожалуйста, нажмите на кнопку `звездочку`, если эта программа была вам полезна.
+
+## Быстрые ссылки
+- [История версий](CHANGELOG-RUS.md)
+- [Лицензия](LICENSE.md)
+- [Сообщить об ошибке](https://github.com/DamianMorozov/TgDownloader/issues)
+- [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
+- [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+- [Новости TgDownloader](https://t.me/TgDownloader)
+- [Глобальный чат TgDownloader](https://t.me/TgDownloaderChat)
+- [Русскоязычный чат TgDownloader](https://t.me/TgDownloaderChatRus)
+- [Описание проекта на английском языке](README.md)
