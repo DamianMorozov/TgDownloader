@@ -3,5 +3,9 @@
 
 global using System.Diagnostics;
 global using System.IO.Enumeration;
+global using System.Reflection;
+global using System.Runtime.CompilerServices;
+global using TgDownloaderCore.Utils;
+global using TgLocaleCore.Helpers;
 global using TL;
 global using WTelegram;

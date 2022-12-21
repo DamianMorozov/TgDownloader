@@ -3,14 +3,20 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>disable</Nullable>
+		<Nullable>enable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.1.180.0</Version>
+		<Version>0.1.250.0</Version>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="Locale\**" />
-	  <EmbeddedResource Remove="Locale\**" />
-	  <None Remove="Locale\**" />
+	  <Compile Remove="TgLocale\**" />
+	  <EmbeddedResource Remove="TgLocale\**" />
+	  <None Remove="TgLocale\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Spectre.Console" Version="0.45.0" />
@@ -18,8 +24,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\TgDownloaderCore\TgDownloaderCore.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Helpers\" />
+	  <ProjectReference Include="..\TgLocaleCore\TgLocaleCore.csproj" />
+	  <ProjectReference Include="..\TgStorageCore\TgStorageCore.csproj" />
 	</ItemGroup>
 </Project>

@@ -7,16 +7,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderConsole", "TgDo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83EEBD4F-D943-4FBC-9F37-40641C6D8D4F}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOG-RUS.md = CHANGELOG-RUS.md
 		CHANGELOG.md = CHANGELOG.md
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgDownloaderCore", "TgDownloaderCore\TgDownloaderCore.csproj", "{41B506E0-857A-4398-9995-D4D3DFC08DCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderCore", "TgDownloaderCore\TgDownloaderCore.csproj", "{41B506E0-857A-4398-9995-D4D3DFC08DCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgDownloaderCoreTest", "TgDownloaderCoreTest\TgDownloaderCoreTest.csproj", "{ACAA12F3-5667-4E3B-9257-70E42C925C96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderCoreTest", "TgDownloaderCoreTest\TgDownloaderCoreTest.csproj", "{ACAA12F3-5667-4E3B-9257-70E42C925C96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgDownloaderConsoleTest", "TgDownloaderConsoleTest\TgDownloaderConsoleTest.csproj", "{3B97381D-1120-4DD8-ACFA-40953F1A5378}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderConsoleTest", "TgDownloaderConsoleTest\TgDownloaderConsoleTest.csproj", "{3B97381D-1120-4DD8-ACFA-40953F1A5378}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgLocaleCore", "TgLocaleCore\TgLocaleCore.csproj", "{DCBD5877-EB12-4B67-A416-3B0A384BE728}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgStorageCore", "TgStorageCore\TgStorageCore.csproj", "{CDB4A716-0218-49EE-B98E-DAA05843CC6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgStorageCoreTest", "TgStorageCoreTest\TgStorageCoreTest.csproj", "{75D3A95F-8400-4ABF-A593-45F6FEFC184C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +47,18 @@ Global
 		{3B97381D-1120-4DD8-ACFA-40953F1A5378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B97381D-1120-4DD8-ACFA-40953F1A5378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B97381D-1120-4DD8-ACFA-40953F1A5378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCBD5877-EB12-4B67-A416-3B0A384BE728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCBD5877-EB12-4B67-A416-3B0A384BE728}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCBD5877-EB12-4B67-A416-3B0A384BE728}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCBD5877-EB12-4B67-A416-3B0A384BE728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB4A716-0218-49EE-B98E-DAA05843CC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB4A716-0218-49EE-B98E-DAA05843CC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB4A716-0218-49EE-B98E-DAA05843CC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB4A716-0218-49EE-B98E-DAA05843CC6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D3A95F-8400-4ABF-A593-45F6FEFC184C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D3A95F-8400-4ABF-A593-45F6FEFC184C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D3A95F-8400-4ABF-A593-45F6FEFC184C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D3A95F-8400-4ABF-A593-45F6FEFC184C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,16 +1,14 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloaderCore.Helpers;
-
 namespace TgDownloaderCore.Utils;
 
 public static class FileUtils
 {
     #region Public and private fields, properties, constructor
 
-    private static readonly LocaleHelper Locale = LocaleHelper.Instance;
-    private static readonly LogHelper Log = LogHelper.Instance;
+    private static readonly TgLocaleHelper TgLocale = TgLocaleHelper.Instance;
+    private static readonly TgLogHelper TgLog = TgLogHelper.Instance;
 
     #endregion
 
@@ -44,7 +42,7 @@ public static class FileUtils
         int bytesRead;
         while ((bytesRead = streamReader.Read(byteBuffer, 0, byteBuffer.Length)) > 0)
         {
-            var i = 0;
+            int i = 0;
             for (; i <= bytesRead - bytesAtTheTime; i += bytesAtTheTime)
             {
                 currentChar = byteBuffer[i];
@@ -127,9 +125,9 @@ public static class FileUtils
         }
         catch (Exception ex)
         {
-            Log.MarkupLineStamp(Locale.StatusException + Log.GetMarkupString(ex.Message));
+            TgLog.Line(TgLocale.StatusException + TgLog.GetMarkupString(ex.Message));
             if (ex.InnerException is not null)
-                Log.MarkupLineStamp(Locale.StatusInnerException + Log.GetMarkupString(ex.InnerException.Message));
+                TgLog.Line(TgLocale.StatusInnerException + TgLog.GetMarkupString(ex.InnerException.Message));
             return 0L;
         }
     }

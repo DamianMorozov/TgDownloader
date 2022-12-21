@@ -1,12 +1,15 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgDownloaderCore.Enums;
+namespace TgLocaleCore.Enums;
 
-public enum TgMenuSettings
+public enum MenuStorage
 {
     Return,
-    SourceUsername,
-    DestDirectory,
-    MessageCurrentId,
+    CreateNew,
+    DeleteExists,
+    CreateTables,
+    DropTables,
+    ViewStatistics,
+    ClearTables,
 }

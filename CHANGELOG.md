@@ -6,32 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.250] - 2022-12-21
+### Added
+- Storage settings
+- Skip downloaded files
+- Autosave connection info at local storage file
+### Changed
+- Client settings
+- Download settings
+
 ## [0.1.180] - 2022-12-13
 ### Added
-- Info menu
+- Info sub menu
 - Download progress
 ### Changed
-- Connect menu
-- Settings menu
-- Collect info after set user name
+- Client menu
+- Download menu
+- Collect info
 - Try catch exceptions
 
 ## [0.1.150] - 2022-12-10
 ### Added
-- MenuHelper into TgDownloaderConsole
-- LogHelper into TgDownloaderCore
-- TgClientHelper into TgDownloaderCore
-- TgSettingsHelper into TgDownloaderCore
-- FileUtils into TgDownloaderCore
 - First release
+- Menu
+- Log
+- Client
+- Download
 
 ## [0.1.100] - 2022-12-08
 ### Added
-- TgDownloaderConsoleTest project
-- TgDownloaderCore project
-- TgDownloaderCoreTest project
-- TgDownloaderCore.Locales classes
-- Locales into TgDownloaderCore
+- English localisation
+- Tests
 
 ## [0.1.020] - 2022-12-07
 ### Added

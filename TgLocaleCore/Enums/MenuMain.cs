@@ -1,13 +1,12 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgDownloaderCore.Enums;
+namespace TgLocaleCore.Enums;
 
-public enum TgMenu
+public enum MenuMain
 {
     Exit,
-    Connect,
-    Info,
-    Settings,
-    DownloadFiles
+    SetStorage,
+    SetClient,
+    SetDownload,
 }

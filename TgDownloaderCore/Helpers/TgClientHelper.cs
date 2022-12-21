@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloaderCore.Models;
-using TgDownloaderCore.Utils;
 using Channel = TL.Channel;
 using Document = TL.Document;
 
@@ -12,29 +10,31 @@ public partial class TgClientHelper
 {
     #region Design pattern "Lazy Singleton"
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private static TgClientHelper _instance;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public static TgClientHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
     #endregion
 
     #region Public and private fields, properties, constructor
 
-    private LocaleHelper Locale => LocaleHelper.Instance;
-    private LogHelper Log => LogHelper.Instance;
-    public TgSettingsModel TgSettings { get; } = new();
-    private Client _client;
-    private Client WClient { get => _client; set { _client = value; IsExists = value is not null; } }
+    private TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+    private TgLogHelper TgLog => TgLogHelper.Instance;
+    public TgDownloadHelper TgDownload => TgDownloadHelper.Instance;
+    private Client? _client;
+    public Client? WClient { get => _client; set { _client = value; IsExists = value is not null; } }
     public bool IsExists { get; private set; }
-    public bool IsConnected => IsExists && !WClient.Disconnected;
-    private User _mySelfUser;
+    public bool IsReady => WClient is { } && IsExists && !WClient.Disconnected;
+    private User? _mySelfUser;
     public User MySelfUser
     {
         get
         {
             if (_mySelfUser is not null)
                 return _mySelfUser;
-            _mySelfUser = IsConnected ? WClient.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
-            return _mySelfUser;
+            _mySelfUser = IsReady ? WClient?.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult() : new();
+            return _mySelfUser ?? new();
         }
     }
 
@@ -47,6 +47,9 @@ public partial class TgClientHelper
     public List<ChatBase> ListSmallGroups { get; }
     public List<KeyValuePair<long, long>> HashesChannels { get; private set; }
     public List<KeyValuePair<long, long>> HashesUsers { get; private set; }
+    public string ApiId { get; private set; }
+    public string ApiHash { get; private set; }
+    public string PhoneNumber { get; private set; }
 
     public TgClientHelper()
     {
@@ -59,50 +62,69 @@ public partial class TgClientHelper
         ListChannels = new();
         ListGroups = new();
         ListSmallGroups = new();
+        ApiId = string.Empty;
+        ApiHash = string.Empty;
+        PhoneNumber = string.Empty;
 
-        // Log to VS Output debugging pane in addition.
-        WTelegram.Helpers.Log += (_, str) => Debug.WriteLine(str);
+        // TgLog to VS Output debugging pane in addition.
+        //WTelegram.Helpers.Log += (_, str) => Debug.WriteLine(str);
         // Disable logging.
         WTelegram.Helpers.Log = (_, _) => { };
+
+        //Database.InitialiseConnection();
     }
 
     #endregion
 
     #region Public and private methods
 
-    public string GetConfig(string what)
-    {
-        return what switch
+    public string? GetConfig(string what) =>
+        what switch
         {
-            "api_id" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupAppId)),
-            "api_hash" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupApiHash)),
-            "phone_number" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupPhone)),
-            "verification_code" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupCode)),
-            "notifications" => Log.AskBool(Log.GetLineStampInfo(Locale.TgSetupNotifications)).ToString(),
-            "first_name" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupFirstName)),
-            "last_name" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupLastName)),
+            "api_id" => ApiId = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
+            "api_hash" => ApiHash = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupApiHash)),
+            "phone_number" => PhoneNumber = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupPhone)),
+            "verification_code" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
+            "notifications" => TgLog.AskBool(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
+            "first_name" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
+            "last_name" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
             "session_pathname" => "TgDownloader.session",
-            "password" => Log.AskString(Log.GetLineStampInfo(Locale.TgSetupPassword)),
+            "password" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
             _ => null
         };
-        // if enabled 2FA
-        //case "password":
-        //    BeginInvoke(new Action(() => CodeNeeded(what.Replace('_', ' '))));
-        //    _codeReady.Reset();
-        //    _codeReady.Wait();
-        //    return textBoxCode.Text;
-    }
 
-    public void Connect()
+    public string? GetExistsConfig(string what) =>
+        what switch
+        {
+            "api_id" => ApiId = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
+            "api_hash" => ApiHash,
+            "phone_number" => PhoneNumber,
+            "verification_code" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
+            "notifications" => TgLog.AskBool(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
+            "first_name" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
+            "last_name" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
+            "session_pathname" => "TgDownloader.session",
+            "password" => TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
+            _ => null
+        };
+
+    public void Connect(string apiHash, string phoneNumber)
     {
-        if (WClient is not null && IsConnected) return;
+        if (WClient is not null && IsReady) return;
         if (WClient is not null)
         {
             WClient.OnUpdate -= Client_OnUpdate;
             WClient.Dispose();
         }
 
-        WClient = new(GetConfig);
+        if (!string.IsNullOrEmpty(apiHash) && !string.IsNullOrEmpty(phoneNumber))
+        {
+            ApiHash = apiHash;
+            PhoneNumber = phoneNumber;
+        }
+        WClient = !string.IsNullOrEmpty(apiHash) && !string.IsNullOrEmpty(phoneNumber)
+            ? new(GetExistsConfig)
+            : new(GetConfig);
         WClient.OnUpdate += Client_OnUpdate;
 
         _ = MySelfUser;
@@ -149,7 +171,7 @@ public partial class TgClientHelper
     public async Task CollectAllChats()
     {
         DicChatsAll = new();
-        if (IsConnected)
+        if (IsReady)
         {
             Messages_Chats messages = await WClient.Messages_GetAllChats().ConfigureAwait(true);
             DicChatsAll = messages.chats;
@@ -159,13 +181,17 @@ public partial class TgClientHelper
 
     public Dictionary<long, ChatBase> CollectAllDialogs()
     {
-        if (IsConnected)
+        switch (IsReady)
         {
-            Messages_Dialogs messages = WClient.Messages_GetAllDialogs()
-                .ConfigureAwait(true).GetAwaiter().GetResult();
-            return messages.chats;
+            case true when WClient is { }:
+            {
+                Messages_Dialogs messages = WClient.Messages_GetAllDialogs()
+                    .ConfigureAwait(true).GetAwaiter().GetResult();
+                return messages.chats;
+            }
+            default:
+                return new();
         }
-        return new();
     }
 
     private void FillListChats(Dictionary<long, ChatBase> dic)
@@ -271,10 +297,10 @@ public partial class TgClientHelper
         switch (messageBase)
         {
             case Message message:
-                Log.MarkupLineStamp($"{GetPeerUpdatedName(message.from_id) ?? message.post_author} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
+                TgLog.Line($"{GetPeerUpdatedName(message.from_id) ?? message.post_author} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
                 break;
             case MessageService messageService:
-                Log.MarkupLineStamp($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
+                TgLog.Line($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
                 break;
         }
     }
@@ -283,14 +309,15 @@ public partial class TgClientHelper
     {
         await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
         Console.Write("Type a chat ID to send a message: ");
-        string input = Console.ReadLine();
+        string? input = Console.ReadLine();
         if (!string.IsNullOrEmpty(input))
         {
             long chatId = long.Parse(input);
             ChatBase target = messagesChats.chats[chatId];
-            Log.MarkupLineStamp($"Type the message into the chat: {target.Title} | {chatId}");
+            TgLog.Line($"Type the message into the chat: {target.Title} | {chatId}");
             input = Console.ReadLine();
-            await WClient.SendMessageAsync(target, input);
+            if (WClient is { })
+                await WClient.SendMessageAsync(target, input);
         }
     }
 
@@ -323,10 +350,10 @@ public partial class TgClientHelper
         return result;
     }
 
-    public void PrintChatsInfo(Dictionary<long, ChatBase> dicChats, string name, Action<string> refreshStatus)
+    public void PrintChatsInfo(Dictionary<long, ChatBase> dicChats, string name)
     {
-        Log.MarkupLineStampInfo($"Found {name}: {dicChats.Count}");
-        Log.MarkupLineStampInfo(Locale.TgGetDialogsInfo);
+        TgLog.Info($"Found {name}: {dicChats.Count}");
+        TgLog.Info(TgLocale.TgGetDialogsInfo);
         foreach (KeyValuePair<long, ChatBase> dicChat in dicChats)
         {
             TryCatchAction(() =>
@@ -337,10 +364,10 @@ public partial class TgClientHelper
                         PrintChatsInfoChannel(channel, false);
                         break;
                     default:
-                        Log.MarkupLineStamp(GetChatInfo(dicChat.Value));
+                        TgLog.Line(GetChatInfo(dicChat.Value));
                         break;
                 }
-            }, refreshStatus);
+            });
         }
     }
 
@@ -348,9 +375,9 @@ public partial class TgClientHelper
     {
         Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
         if (fullChannel.full_chat is ChannelFull channelFull)
-            Log.MarkupLineStamp(GetChannelFullInfo(channelFull, channel, isFull));
+            TgLog.Line(GetChannelFullInfo(channelFull, channel, isFull));
         else
-            Log.MarkupLineStamp(GetChatFullBaseInfo(fullChannel.full_chat, channel, isFull));
+            TgLog.Line(GetChatFullBaseInfo(fullChannel.full_chat, channel, isFull));
     }
 
     public string GetChatInfo(ChatBase chat)
@@ -369,10 +396,7 @@ public partial class TgClientHelper
         if (channelFull is null) return string.Empty;
         string result = GetChatInfo(chat);
         if (isFull)
-            result += " | " +
-            $"{nameof(channelFull.About)}: {channelFull.About} | " +
-            $"{nameof(channelFull.TtlPeriod)}: {channelFull.TtlPeriod} | " +
-            $"{nameof(channelFull.read_inbox_max_id)}: {channelFull.read_inbox_max_id}";
+            result += " | " + Environment.NewLine + channelFull.About;
         return result;
     }
 
@@ -381,9 +405,7 @@ public partial class TgClientHelper
         if (chatFull is null) return string.Empty;
         string result = GetChatInfo(chat);
         if (isFull)
-            result += " | " +
-            $"{nameof(chatFull.About)}: {chatFull.About} | " +
-            $"{nameof(chatFull.TtlPeriod)}: {chatFull.TtlPeriod}";
+            result += " | " + Environment.NewLine + chatFull.About;
         return result;
     }
 
@@ -393,59 +415,90 @@ public partial class TgClientHelper
         return fullChannel.full_chat is ChannelFull channelFull ? channelFull.read_inbox_max_id : 0;
     }
 
-    public Channel PrepareCollectMessages()
+    public Channel? PrepareDownloadMessages(bool isSilent)
     {
-        Channel channel = GetChannel(TgSettings.SourceUserName);
-        if (channel.id is 0) return channel;
-
-        PrintChatsInfoChannel(channel, true);
-        TgSettings.SetMessageCount(GetChannelMessagesCount(channel));
-
+        Channel? channel = null;
+        TryCatchAction(() =>
+        {
+            channel = GetChannel(TgDownload.SourceUserName);
+            if (channel.id is 0) return;
+            if (!isSilent)
+                PrintChatsInfoChannel(channel, true);
+            TgDownload.SetMessageCount(GetChannelMessagesCount(channel));
+        });
+        TgDownload.SetSourceId(channel?.id);
         return channel;
     }
 
-    public void CollectMessages(Channel channel, Stopwatch sw, Action<string> refreshStatus)
+    public void DownloadMessages(Action<string> refreshStatus,
+        Action<long?, long?, string, string, long, long> storeMessage, 
+        Func<long?, long?, bool> findExistsMessage)
     {
-        if (channel.id is 0) return;
+        Channel? channel = PrepareDownloadMessages(false);
+        if (channel?.id is 0) return;
         TryCatchAction(() =>
         {
             _ = MySelfUser;
-            while (TgSettings.MessageCurrentId <= TgSettings.MessageCount)
+            while (TgDownload.MessageCurrentId <= TgDownload.MessageCount)
             {
-                Messages_MessagesBase messages =
-                    WClient.Channels_GetMessages(channel, TgSettings.MessageCurrentId).ConfigureAwait(true).GetAwaiter().GetResult();
-
-                foreach (MessageBase message in messages.Messages)
+                if (findExistsMessage(TgDownload.MessageCurrentId, TgDownload.SourceId))
                 {
-                    // It could be: "(no message)"
-                    DownloadFile(message, TgSettings.DestDirectory, refreshStatus);
+                    refreshStatus($"Read the message {TgDownload.MessageCurrentId} | was skipped by storage");
                 }
-                TgSettings.AddMessageCurrentId();
+                else
+                {
+                    Messages_MessagesBase messages =
+                        WClient.Channels_GetMessages(channel, TgDownload.MessageCurrentId).ConfigureAwait(true).GetAwaiter().GetResult();
+                    foreach (MessageBase message in messages.Messages)
+                    {
+                        // It could be: "(no message)"
+                        DownloadFile(message, refreshStatus, storeMessage);
+                    }
+                }
+                TgDownload.AddMessageCurrentId();
             }
+            TgDownload.SetMessageCurrentIdDefault();
         }, refreshStatus);
     }
 
-    private void DownloadFile(MessageBase messageBase, string folder, Action<string> refreshStatus)
+    private void DownloadFile(MessageBase messageBase, Action<string> refreshStatus,
+        Action<long?, long?, string, string, long, long> storeMessage)
     {
         TryCatchAction(() =>
         {
-            if (messageBase is null) return;
+            refreshStatus($"Read the message {messageBase.ID}");
+
             if (messageBase is not Message { media: MessageMediaDocument { document: Document document } })
             {
-                refreshStatus($"Read the message {messageBase.ID} without document");
+                storeMessage(messageBase.ID, TgDownload.SourceId, 
+                    messageBase.ToString() ?? string.Empty, string.Empty, 0, 0);
+                refreshStatus($"Read the message {messageBase.ID} | was complete");
                 return;
             }
-            string fileName = Path.Combine(folder, document.Filename);
-            (bool IsNeed, long Size) fileToDelete = IsFileNeedDelete(fileName, document, refreshStatus);
-            if (fileToDelete.IsNeed)
-                DeleteFile(fileName, fileToDelete.Size, refreshStatus);
-            refreshStatus($"Read the message {messageBase.ID} with document \"{document.Filename}\" (size {FileUtils.GetFileSizeString(document.size)}) in progress");
+
+            string fileName = Path.Combine(TgDownload.DestDirectory, document.Filename);
+            // Delete file.
+            if (TgDownload.IsRewriteFiles)
+            {
+                (bool IsNeed, long Size) fileToDelete = IsFileNeedDelete(fileName, document, refreshStatus);
+                if (fileToDelete.IsNeed)
+                    DeleteFile(fileName, fileToDelete.Size, refreshStatus);
+            }
+            // Create & download file.
+            refreshStatus($"Read the message {messageBase.ID} | " +
+                $"{document.Filename} | size {FileUtils.GetFileSizeString(document.size)}");
             // Download file.
-            using FileStream fileStream = File.Create(fileName);
-            WClient.DownloadFileAsync(document, fileStream).ConfigureAwait(true).GetAwaiter().GetResult();
-            fileStream.Close();
+            if (TgDownload.IsRewriteFiles || !File.Exists(fileName))
+            {
+                using FileStream fileStream = File.Create(fileName);
+                WClient?.DownloadFileAsync(document, fileStream).ConfigureAwait(true).GetAwaiter().GetResult();
+                fileStream.Close();
+            }
             // Callback.
-            refreshStatus($"Read the message {messageBase.ID} with document \"{fileName}\" was complete");
+            refreshStatus($"Read the message {messageBase.ID} | {fileName} | was complete");
+            storeMessage(messageBase.ID, TgDownload.SourceId, 
+                messageBase.ToString() ?? string.Empty, 
+                document.Filename, document.size, document.access_hash);
         }, refreshStatus);
     }
 
@@ -471,19 +524,19 @@ public partial class TgClientHelper
         if (!File.Exists(fileName)) return;
         TryCatchAction(() =>
         {
-            refreshStatus($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)}) in progress");
+            refreshStatus($"Delete | {fileName} | size {FileUtils.GetFileSizeString(size)} | in progress");
             File.Delete(fileName);
-            //Log.MarkupLineStampInfo($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)})");
-            refreshStatus($"Delete file \"{fileName}\" (size {FileUtils.GetFileSizeString(size)}) was complete");
+            refreshStatus($"Delete | {fileName} | {FileUtils.GetFileSizeString(size)} | was complete");
         }, refreshStatus);
     }
 
     private void PrintAccessHashInfo(Channel channel, string userName)
     {
+        if (WClient is not { }) return;
         long accessHash = WClient.GetAccessHashFor<Channel>(channel.ID);
         if (accessHash is not 0)
         {
-            Log.MarkupLineStamp(
+            TgLog.Line(
                 $"Channel has ID {channel.ID} and access hash was already collected: {accessHash:X}");
         }
         else
@@ -496,7 +549,7 @@ public partial class TgClientHelper
             // and many more API methods...
             // The access_hash fields can be found inside instance of User, Channel, Photo, Document, etc..
             // usually listed through their base class UserBase, ChatBase, PhotoBase, DocumentBase, etc...
-            Log.MarkupLineStamp("Resolving channel to get its ID, access hash and other infos...");
+            TgLog.Line("Resolving channel to get its ID, access hash and other infos...");
             Contacts_ResolvedPeer contactsResolved =
                 WClient.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter()
                     .GetResult();
@@ -506,23 +559,19 @@ public partial class TgClientHelper
             accessHash = WClient.GetAccessHashFor<Channel>(channel.ID);
             if (accessHash is 0)
                 throw new("No access hash was automatically collected !? (shouldn't happen)");
-            Log.MarkupLineStamp(
+            TgLog.Line(
                 $"Channel has ID {channel.ID} and access hash was automatically collected: {accessHash:X}");
         }
 
-        Log.MarkupLineStamp("With the access hash, we can now join the channel for example.");
+        TgLog.Line("With the access hash, we can now join the channel for example.");
         WClient.Channels_JoinChannel(new InputChannel(channel.ID, accessHash)).ConfigureAwait(true).GetAwaiter().GetResult();
 
-        Log.MarkupLineStamp("Channel joined. Press any key to save and exit");
+        TgLog.Line("Channel joined. Press any key to save and exit");
         Console.ReadKey(true);
 
-        Log.MarkupLineStamp("Saving all collected access hashes to disk for next run...");
+        TgLog.Line("Saving all collected access hashes to disk for next run...");
         HashesChannels = WClient.AllAccessHashesFor<Channel>().ToList();
         HashesUsers = WClient.AllAccessHashesFor<User>().ToList();
-
-        //string StateFilename = "SavedState.json";
-        //using FileStream stateStream = File.Create(StateFilename);
-        //JsonSerializer.Serialize(stateStream, this);
     }
 
     #endregion
