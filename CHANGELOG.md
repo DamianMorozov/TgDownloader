@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.310] - 2023-01-02
+### Added
+- Message ID in the download settings
+- Saving application settings to an xml file
+### Changed
+- Setting up downloads by channel/group ID
+
 ## [0.1.250] - 2022-12-21
 ### Added
 - Storage settings
