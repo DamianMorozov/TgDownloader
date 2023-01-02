@@ -1,5 +1,14 @@
-﻿# TgDownloader
-Telegram Files Downloader
+﻿# TgDownloader - Telegram Files Downloader
+
+## <p align="center"><img src="Assets/Main_menu.png"></p>
+
+## <div align="center"><b><a href="README.md">English</a> | <a href="README-RUS.md">Русский</a></b></div>
+
+<div align="center">
+	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+	![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
+	![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
+<div>
 
 ## Overview
 Download all the files from the channel you are a member of from Telegram.
@@ -18,9 +27,6 @@ Download all the files from the channel you are a member of from Telegram.
 - Configure Telegram client
 - Configure download
 
-## Screenshots
-![](Assets/Main_menu.png?raw=true)
-
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 
@@ -35,5 +41,4 @@ Please click the `star` button if this tool was helpful to you.
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 - [TgDownloader News](https://t.me/TgDownloader)
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
-- [TgDownloader Chat Rus](https://t.me/TgDownloaderChatRus)
 - [Project description in Russian](README-RUS.md)
