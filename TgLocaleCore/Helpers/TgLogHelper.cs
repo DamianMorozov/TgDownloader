@@ -1,9 +1,12 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Runtime.Serialization;
+using TgLocaleCore.Interfaces;
+
 namespace TgLocaleCore.Helpers;
 
-public class TgLogHelper
+public class TgLogHelper : IHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -24,6 +27,8 @@ public class TgLogHelper
     private AskStringDelegate _askString;
     public delegate int AskIntDelegate(string message);
     private AskIntDelegate _askInt;
+    public delegate long AskLongDelegate(string message);
+    private AskLongDelegate _askLong;
     public delegate bool AskBoolDelegate(string message);
     private AskBoolDelegate _askBool;
 
@@ -32,6 +37,7 @@ public class TgLogHelper
         _markupLineStamp = _ => { };
         _askString = _ => string.Empty;
         _askInt = _ => 0;
+        _askLong = _ => 0;
         _askBool = _ => false;
     }
 
@@ -69,7 +75,17 @@ public class TgLogHelper
         _askInt = askInt;
     }
 
+    public void SetAskLong(AskLongDelegate askLong)
+    {
+        _askLong = askLong;
+    }
+
     public void SetAskBool(AskBoolDelegate askBool)
+    {
+        _askBool = askBool;
+    }
+
+    public void SetAsk<T>(AskBoolDelegate askBool)
     {
         _askBool = askBool;
     }
@@ -84,7 +100,7 @@ public class TgLogHelper
 
     public string GetDtShortStamp() => $"{DateTime.Now:HH:mm:ss}";
 
-    public string GetLineStamp(string message) => 
+    public string GetLineStamp(string message) =>
         $" {GetDtStamp()} | {GetMarkupString(message)}";
 
     public string GetLineStampInfo(string message)
@@ -105,7 +121,33 @@ public class TgLogHelper
 
     public int AskInt(string message) => _askInt(message);
 
+    public long AskLong(string message) => _askLong(message);
+
     public bool AskBool(string message) => _askBool(message);
+
+    #endregion
+
+    #region Public and private methods - ISerializable
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected TgLogHelper(SerializationInfo info, StreamingContext context)
+    {
+        //
+    }
+
+    /// <summary>
+    /// Get object data for serialization info.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        //
+    }
 
     #endregion
 }

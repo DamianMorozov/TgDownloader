@@ -2,11 +2,16 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // See https://aka.ms/new-console-template for more information
 
+using TgDownloaderCore.Models;
+using TgDownloaderCore.Utils;
+using TgLocaleCore.Utils;
 using TgStorageCore.Helpers;
 
+AppModel app;
 MenuHelper menu = MenuHelper.Instance;
 TgLocaleHelper locale = TgLocaleHelper.Instance;
 TgLogHelper log = TgLogHelper.Instance;
+TgStorageHelper tgStorage = TgStorageHelper.Instance;
 
 Setup();
 
@@ -52,15 +57,24 @@ do
 void Setup()
 {
     // App.
-    AppHelper.Instance.SetVersion(Assembly.GetExecutingAssembly());
+    app = AppUtils.LoadSettings();
+    app.SetVersion(Assembly.GetExecutingAssembly());
+    if (!app.IsExistsStoragePath)
+    {
+        app.SetStoragePath(Path.Combine(Directory.GetCurrentDirectory(), FileNameUtils.Storage));
+        AppUtils.StoreSettings(app);
+    }
+    tgStorage.FileName = app.StoragePath;
     // Console.
     Console.OutputEncoding = Encoding.UTF8;
     log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
     log.SetAskString(AnsiConsole.Ask<string>);
     log.SetAskInt(AnsiConsole.Ask<int>);
+    log.SetAskLong(AnsiConsole.Ask<long>);
     log.SetAskBool(AnsiConsole.Ask<bool>);
     // Storage.
-    TgStorageHelper.Instance.CreateOrConnectDb();
+    tgStorage.CreateOrConnectDb();
     // Client.
+    menu.App = app;
     menu.ClientConnectExists();
 }

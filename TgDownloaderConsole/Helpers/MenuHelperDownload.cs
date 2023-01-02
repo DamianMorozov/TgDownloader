@@ -17,18 +17,22 @@ internal partial class MenuHelper
                 .MoreChoicesText(TgLocale.MoveUpDown)
                 .AddChoices(
                     TgLocale.MenuMainReturn, 
-                    TgLocale.MenuDownloadSetUserName, 
+                    TgLocale.MenuDownloadSetSourceId, 
+                    TgLocale.MenuDownloadSetSourceUserName, 
                     TgLocale.MenuDownloadSetFolder, 
-                    //TgLocale.MenuDownloadSetMessageCurrentId,
-                    //TgLocale.MenuDownloadSetIsRewriteFiles,
+                    TgLocale.MenuDownloadSetIsRewriteFiles,
+                    TgLocale.MenuDownloadSetIsRewriteMessages,
+                    TgLocale.MenuDownloadSetIsAddMessageId,
                     TgLocale.MenuDownload
                 ));
         return userChoose switch
         {
-            "Setup user name" => MenuDownload.SetSourceUsername,
+            "Setup source ID" => MenuDownload.SetSourceId,
+            "Setup source user name" => MenuDownload.SetSourceUserName,
             "Setup download folder" => MenuDownload.SetDestDirectory,
-            //"Setup message current ID" => MenuDownload.SetMessageCurrentId,
-            //"Enable rewrite exists files" => MenuDownload.SetIsRewriteFiles,
+            "Enable rewrite exists files" => MenuDownload.SetIsRewriteFiles,
+            "Enable rewrite exists messages" => MenuDownload.SetIsRewriteMessages,
+            "Enable join message ID with file name" => MenuDownload.SetIsAddMessageId,
             "Download" => MenuDownload.Download,
             _ => MenuDownload.Return
         };
@@ -43,21 +47,28 @@ internal partial class MenuHelper
             menu = SetMenuDownload();
             switch (menu)
             {
-                case MenuDownload.SetSourceUsername:
-                    TgClient.TgDownload.SetSourceUserName();
+                case MenuDownload.SetSourceId:
+                    TgClient.TgDownload.SetSourceIdByAsk();
+                    TgClient.PrepareDownloadMessages(true);
+                    break;
+                case MenuDownload.SetSourceUserName:
+                    TgClient.TgDownload.SetSourceUserNameByAsk();
                     TgClient.PrepareDownloadMessages(true);
                     break;
                 case MenuDownload.SetDestDirectory:
                     TgClient.TgDownload.SetDestDirectory();
                     break;
-                case MenuDownload.SetMessageCurrentId:
-                    TgClient.TgDownload.SetMessageCurrentId();
-                    break;
                 case MenuDownload.SetIsRewriteFiles:
                     TgClient.TgDownload.SetIsRewriteFiles();
                     break;
+                case MenuDownload.SetIsRewriteMessages:
+                    TgClient.TgDownload.SetIsRewriteMessages();
+                    break;
+                case MenuDownload.SetIsAddMessageId:
+                    TgClient.TgDownload.SetIsAddMessageId();
+                    break;
                 case MenuDownload.Download:
-                    RunAction(menu, Download);
+                    RunAction(Download);
                     break;
                 case MenuDownload.Return:
                 default:
@@ -69,8 +80,8 @@ internal partial class MenuHelper
     public void Download()
     {
         ShowTableDownload();
-        TgStorage.AddRecordSource(TgClient.TgDownload.SourceId, TgClient.TgDownload.SourceUserName);
-        TgClient.DownloadMessages(RefreshStatusForDownload, StoreMessage, FindExistsMessage);
+        TgStorage.AddOrUpdateRecordSource(TgClient.TgDownload.SourceId, TgClient.TgDownload.SourceUserName, false);
+        TgClient.DownloadAllData(RefreshStatusForDownload, StoreMessage, StoreDocument, FindExistsMessage);
     }
 
     #endregion

@@ -1,12 +1,15 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Runtime.Serialization;
+using TgDownloaderCore.Models;
+using TgLocaleCore.Interfaces;
 using TgStorageCore.Helpers;
 using TgStorageCore.Models;
 
 namespace TgDownloaderConsole.Helpers;
 
-internal partial class MenuHelper
+internal partial class MenuHelper : IHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -15,18 +18,23 @@ internal partial class MenuHelper
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public static MenuHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
+    public MenuHelper()
+    {
+        App = new();
+    }
+
     #endregion
 
     #region Public and internal fields, properties, constructor
 
-    internal AppHelper App => AppHelper.Instance;
     internal TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
     internal TgLogHelper TgLog => TgLogHelper.Instance;
     internal TgClientHelper TgClient => TgClientHelper.Instance;
     internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
     internal StatusContext? StatusContext = null;
     internal TgStorageHelper TgStorage => TgStorageHelper.Instance;
-    internal MenuMain Value = MenuMain.Exit;
+    internal AppModel App { get; set; }
+    internal MenuMain Value { get; set; } = MenuMain.Exit;
 
     #endregion
 
@@ -58,7 +66,7 @@ internal partial class MenuHelper
 
     internal void ShowTableClient() => ShowTableCore(TgLocale.TgSettings, FillTableColumns, FillTableRowsClient);
     
-    internal void ShowTableDownload() => ShowTableCore(TgLocale.MenuMainClient, FillTableColumns, FillTableRowsDownload);
+    internal void ShowTableDownload() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
     internal void FillTableColumns(Table table)
     {
@@ -137,13 +145,21 @@ internal partial class MenuHelper
                 ? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
             new Markup(TgClient.TgDownload.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
+        // Source ID.
+        if (!TgClient.TgDownload.IsReadySourceId)
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceId)),
+                new Markup(TgLocale.SettingsIsNeedSetup));
+        else
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceId)),
+                new Markup(TgClient.TgDownload.SourceId.ToString()));
+
         // Source user name.
-        if (string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName))
+        if (!TgClient.TgDownload.IsReadySourceUserName)
             table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceUserName)),
                 new Markup(TgLocale.SettingsIsNeedSetup));
         else
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgClient.TgDownload.SourceUserName));
+                new Markup(TgClient.TgDownload.SourceUserName ?? TgLocale.Empty));
 
         // Dest dir.
         if (string.IsNullOrEmpty(TgClient.TgDownload.DestDirectory))
@@ -153,9 +169,17 @@ internal partial class MenuHelper
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
                 new Markup(TgClient.TgDownload.DestDirectory));
         
-        //// Is rewrite files.
-        //table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsMessageRewrite)),
-        //    new Markup(TgClient.TgDownload.IsRewriteFiles.ToString()));
+        // Is rewrite files.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
+            new Markup(TgClient.TgDownload.IsRewriteFiles.ToString()));
+        
+        // Is rewrite messages.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteMessages)),
+            new Markup(TgClient.TgDownload.IsRewriteMessages.ToString()));
+
+        // Is join message ID with file name.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsJoinFileNameWithMessageId)),
+            new Markup(TgClient.TgDownload.IsJoinFileNameWithMessageId.ToString()));
     }
 
     internal double CalcSourceProgress(long count, long current) =>
@@ -177,10 +201,8 @@ internal partial class MenuHelper
               $"{CalcSourceProgress(count, current):#00.00} % | " +
               $"{GetLongString(current)} / {GetLongString(count)}";
 
-    public bool CheckTgSettings(MenuDownload menuDownload) =>
-        TgClient.IsReady &&
-        !string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName) &&
-        (!string.IsNullOrEmpty(TgClient.TgDownload.DestDirectory));
+    public bool CheckTgSettings() =>
+        TgClient is { IsReady: true, TgDownload.IsReady: true };
 
     public void RefreshStatusForDownload(string message)
     {
@@ -190,17 +212,45 @@ internal partial class MenuHelper
         StatusContext.Refresh();
     }
 
-    public void StoreMessage(long? id, long? sourceId, string message, 
-        string fileName, long fileSize, long accessHash)
-    {
-        TgStorage.AddRecordMessage(id, sourceId, message, fileName, fileSize, accessHash);
-    }
+    public void StoreMessage(long? id, long? sourceId, string message) => 
+        TgStorage.AddOrUpdateRecordMessage(id, sourceId, message, true);
 
-    public bool FindExistsMessage(long? id, long? sourceId)
+    public void StoreDocument(long? id, long? sourceId, long? messageId, string fileName, long fileSize, long accessHash) => 
+        TgStorage.AddOrUpdateRecordDocument(id, sourceId, messageId, fileName, fileSize, accessHash, true);
+
+    public bool FindExistsMessage(long? id, long? sourceId, string? messageString)
     {
-        TableMessageModel message = TgStorage.GetRecordMessage(id, sourceId);
+        TableMessageModel message = TgStorage.GetRecord<TableMessageModel>(id, sourceId);
         return TgStorage.IsValid(message);
     }
-    
+
+    #endregion
+
+    #region Public and private methods - ISerializable
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected MenuHelper(SerializationInfo info, StreamingContext context)
+    {
+        App = info.GetValue(nameof(App), typeof(AppModel)) as AppModel ?? new();
+        Value = (MenuMain)info.GetValue(nameof(Value), typeof(MenuMain));
+        StatusContext = (StatusContext)info.GetValue(nameof(StatusContext), typeof(StatusContext));
+    }
+
+    /// <summary>
+    /// Get object data for serialization info.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        info.AddValue(nameof(App), App);
+        info.AddValue(nameof(Value), Value);
+        info.AddValue(nameof(StatusContext), StatusContext);
+    }
+
     #endregion
 }

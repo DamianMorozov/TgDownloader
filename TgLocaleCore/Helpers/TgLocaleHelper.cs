@@ -1,11 +1,12 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgLocaleCore.Enums;
+using System.Runtime.Serialization;
+using TgLocaleCore.Interfaces;
 
 namespace TgLocaleCore.Helpers;
 
-public class TgLocaleHelper
+public class TgLocaleHelper : IHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -61,7 +62,7 @@ public class TgLocaleHelper
     #endregion
 
     #region Public and private fields, properties, constructor - Client
-    
+
     public string MenuClientConnect => "Connect the client to TG server";
     public string MenuClientGetInfo => "Get info";
 
@@ -69,11 +70,13 @@ public class TgLocaleHelper
 
     #region Public and private fields, properties, constructor - Download
 
-    public string MenuDownloadSetUserName => "Setup user name";
-    public string MenuDownloadSetFolder => "Setup download folder";
-    public string MenuDownloadSetMessageCurrentId => "Setup message current ID";
-    public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
     public string MenuDownload => "Download";
+    public string MenuDownloadSetFolder => "Setup download folder";
+    public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
+    public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
+    public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
+    public string MenuDownloadSetSourceId => "Setup source ID";
+    public string MenuDownloadSetSourceUserName => "Setup source user name";
 
     #endregion
 
@@ -81,6 +84,7 @@ public class TgLocaleHelper
 
     public string DirIsNotExists => "Directory is not exists!";
     public string DirIsNotExistsSpecify(string dir) => string.IsNullOrEmpty(dir) ? "Directory is not exists!" : $"Directory \"{dir}\" is not exists!";
+    public string Empty => "<Empty>";
     public string FileIsAlreadyExists => "File is already exists!";
     public string FileIsAlreadyExistsSpecify(string file) => $"File \"{file}\" is already exists!";
     public string FileIsExists => "file is exists";
@@ -109,9 +113,11 @@ public class TgLocaleHelper
     public string TgMustClientConnect => "You must connect the client before";
     public string TgMustSetSettings => "You must setup the settings before";
     public string TgSettings => "TG settings";
-    public string TgSettingsDestDirectory => "Destination directory";
-    public string TgSettingsIsMessageRewrite => "Use rewrite message";
-    public string TgSettingsMessageCurrentId => "Message current ID";
+    public string TgSettingsDestDirectory => "Destination";
+    public string TgSettingsIsJoinFileNameWithMessageId => "Join message ID";
+    public string TgSettingsIsRewriteFiles => "Rewrite files";
+    public string TgSettingsIsRewriteMessages => "Rewrite messages";
+    public string TgSettingsSourceId => "Source ID";
     public string TgSettingsSourceUserName => "Source user name";
     public string TgSetupApiHash => "Type API hash: ";
     public string TgSetupAppId => "Type APP ID: ";
@@ -124,9 +130,36 @@ public class TgLocaleHelper
     public string TypeAnyKeyForReturn => "Type any key to return into the main menu.";
     public string TypeDbFileName => "Type the DB file name: ";
     public string TypeDestDirectory => "Type destination directory:";
-    public string TypeTgIsMessageRewrite => "Type the using message rewrite (example: false): ";
+    public string TypeTgIsAddMessageId => "Type the using join message ID with file name(example: true/false): ";
+    public string TypeTgIsRewriteFiles => "Type the using files rewrite (example: true/false): ";
+    public string TypeTgIsRewriteMessages => "Type the using message rewrite (example: true/false): ";
     public string TypeTgMessageStartId => "Type the message start ID (example: 1): ";
+    public string TypeTgSourceId => "Type the source ID: ";
     public string TypeTgSourceUserName => "Type the source user name: ";
-    
+
+    #endregion
+
+    #region Public and private methods - ISerializable
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected TgLocaleHelper(SerializationInfo info, StreamingContext context)
+    {
+        //
+    }
+
+    /// <summary>
+    /// Get object data for serialization info.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        //
+    }
+
     #endregion
 }

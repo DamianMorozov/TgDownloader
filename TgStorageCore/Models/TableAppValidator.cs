@@ -2,11 +2,10 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using FluentValidation;
-using System.Diagnostics;
 
 namespace TgStorageCore.Models;
 
-[DebuggerDisplay("Type = {nameof(TableAppValidator)}")]
+[DebuggerDisplay("{nameof(TableAppValidator)}")]
 public class TableAppValidator : AbstractValidator<TableAppModel>
 {
     #region Public and private fields, properties, constructor

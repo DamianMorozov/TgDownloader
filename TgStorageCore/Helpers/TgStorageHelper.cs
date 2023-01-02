@@ -1,9 +1,11 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgLocaleCore.Interfaces;
+
 namespace TgStorageCore.Helpers;
 
-public class TgStorageHelper
+public partial class TgStorageHelper : IHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -19,23 +21,16 @@ public class TgStorageHelper
     public SQLiteConnection SqLiteCon { get; private set; }
     public TgLogHelper TgLog => TgLogHelper.Instance;
     public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public string FileName => "TgDownloader.sqlite3";
+    public string FileName { get; set; }
 
-    public bool IsReady
-    {
-        get
-        {
-            if (!IsReadyFileExists)
-                return false;
-            return true;
-        }
-    }
+    public bool IsReady => IsReadyFileExists;
 
     public bool IsReadyFileExists => File.Exists(FileName);
 
     public TgStorageHelper()
     {
         SqLiteCon = new("");
+        FileName = FileNameUtils.Storage;
     }
 
     #endregion
@@ -65,6 +60,7 @@ public class TgStorageHelper
         SqLiteCon.CreateTable<TableAppModel>();
         SqLiteCon.CreateTable<TableSourceModel>();
         SqLiteCon.CreateTable<TableMessageModel>();
+        SqLiteCon.CreateTable<TableDocumentModel>();
     }
 
     public void ClearTables()
@@ -100,86 +96,28 @@ public class TgStorageHelper
         SqLiteCon.DropTable<TableAppModel>();
     }
 
-    public void AddRecordApp(string apiHash, string phoneNumber)
+    #endregion
+
+    #region Public and private methods - ISerializable
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    protected TgStorageHelper(SerializationInfo info, StreamingContext context)
     {
-        if (string.IsNullOrEmpty(apiHash) && string.IsNullOrEmpty(phoneNumber)) return;
-        TableAppModel item = GetRecordApp();
-        if (!IsValid(item))
-        {
-            item = new(apiHash, phoneNumber);
-            if (IsValid(item))
-                SqLiteCon.Insert(item);
-        }
+        SqLiteCon = info.GetValue(nameof(SqLiteCon), typeof(SQLiteConnection)) as SQLiteConnection ?? new("");
     }
 
-    public TableAppModel GetRecordApp()
+    /// <summary>
+    /// Get object data for serialization info.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <param name="context"></param>
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-        InitSqLiteCon();
-        List<TableAppModel>? items = SqLiteCon.Query<TableAppModel>("SELECT * FROM APPS");
-        if (items is null || items.Count == 0) return new();
-        return items.First();
-    }
-
-    public bool IsValid(TableAppModel app)
-    {
-        ValidationResult validationResult = new TableAppValidator().Validate(app);
-        return validationResult.IsValid;
-    }
-
-    public void AddRecordSource(long? id, string userName)
-    {
-        if (id is not { } lid) return;
-        if (string.IsNullOrEmpty(userName)) return;
-        TableSourceModel item = GetRecordSource(id);
-        if (!IsValid(item))
-        {
-            item = new(lid, userName);
-            if (IsValid(item))
-                SqLiteCon.Insert(item);
-        }
-    }
-
-    public TableSourceModel GetRecordSource(long? id)
-    {
-        InitSqLiteCon();
-        List<TableSourceModel>? items = SqLiteCon.Query<TableSourceModel>(
-            $"SELECT * FROM SOURCES WHERE ID = {id}");
-        if (items is null || items.Count == 0) return new();
-        return items.First();
-    }
-
-    public bool IsValid(TableSourceModel source)
-    {
-        ValidationResult validationResult = new TableSourceValidator().Validate(source);
-        return validationResult.IsValid;
-    }
-
-    public void AddRecordMessage(long? id, long? sourceId, string message, string fileName, long fileSize, long accessHash)
-    {
-        if (id is not { } lid) return;
-        if (sourceId is not { } sid) return;
-        TableMessageModel item = GetRecordMessage(id, sourceId);
-        if (!IsValid(item))
-        {
-            item = new(lid, sid, message, fileName, fileSize, accessHash);
-            if (IsValid(item))
-                SqLiteCon.Insert(item);
-        }
-    }
-
-    public TableMessageModel GetRecordMessage(long? id, long? sourceId)
-    {
-        InitSqLiteCon();
-        List<TableMessageModel>? items = SqLiteCon.Query<TableMessageModel>(
-            $"SELECT * FROM MESSAGES WHERE ID = {id} AND SOURCE_ID = {sourceId}");
-        if (items is null || items.Count == 0) return new();
-        return items.First();
-    }
-
-    public bool IsValid(TableMessageModel message)
-    {
-        ValidationResult validationResult = new TableMessageValidator().Validate(message);
-        return validationResult.IsValid;
+        info.AddValue(nameof(Version), SqLiteCon);
     }
 
     #endregion

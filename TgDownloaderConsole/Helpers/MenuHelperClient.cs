@@ -53,7 +53,7 @@ internal partial class MenuHelper
 
     public void ClientConnectExists()
     {
-        TableAppModel app = TgStorage.GetRecordApp();
+        TableAppModel app = TgStorage.GetRecord<TableAppModel>();
         if (TgStorage.IsValid(app))
         {
             TgClient.Connect(app.ApiHash, app.PhoneNumber);
@@ -69,7 +69,7 @@ internal partial class MenuHelper
         TgClient.Connect(string.Empty, string.Empty);
         if (TgClient.IsReady)
         {
-            TgStorage.AddRecordApp(TgClient.ApiHash, TgClient.PhoneNumber);
+            TgStorage.AddOrUpdateRecordApp(TgClient.ApiHash, TgClient.PhoneNumber, false);
             TgClient.CollectAllChats().GetAwaiter().GetResult();
         }
     }

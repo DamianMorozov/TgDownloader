@@ -2,11 +2,10 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using FluentValidation;
-using System.Diagnostics;
 
 namespace TgStorageCore.Models;
 
-[DebuggerDisplay("Type = {nameof(TableSourceValidator)}")]
+[DebuggerDisplay("{nameof(TableSourceValidator)}")]
 public class TableSourceValidator : AbstractValidator<TableSourceModel>
 {
     #region Public and private fields, properties, constructor
@@ -17,9 +16,9 @@ public class TableSourceValidator : AbstractValidator<TableSourceModel>
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0);
-        RuleFor(item => item.UserName)
-                .NotEmpty()
-                .NotNull();
+        //RuleFor(item => item.UserName)
+        //        .NotEmpty()
+        //        .NotNull();
     }
 
     #endregion

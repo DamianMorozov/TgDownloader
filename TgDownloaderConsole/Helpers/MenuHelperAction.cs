@@ -8,9 +8,9 @@ internal partial class MenuHelper
 {
     #region Public and private methods
 
-    public void RunAction(MenuDownload menuDownload, Action action)
+    public void RunAction(Action action)
     {
-        if (!CheckTgSettings(menuDownload))
+        if (!CheckTgSettings())
         {
             TgLog.Warning(TgLocale.TgMustSetSettings);
             Console.ReadKey();
@@ -26,13 +26,13 @@ internal partial class MenuHelper
                 StatusContext = statusContext;
                 Stopwatch sw = new();
                 sw.Start();
-                statusContext.Status($"{GetStatus(sw,
-                    TgClient.TgDownload.MessageCurrentId, TgClient.TgDownload.MessageCount)} | Process job");
-                statusContext.Refresh();
+                //statusContext.Status($"{GetStatus(sw,
+                //    TgClient.TgDownload.MessageCurrentId, TgClient.TgDownload.MessageCount)} | Process job");
+                //statusContext.Refresh();
                 action();
                 sw.Stop();
                 statusContext.Status($"{GetStatus(sw,
-                    TgClient.TgDownload.MessageCurrentId, TgClient.TgDownload.MessageCount)} | Job is complete");
+                    TgClient.TgDownload.MessageCurrentId, TgClient.TgDownload.MessageCount)}");
                 statusContext.Refresh();
             });
         StatusContext = null;
