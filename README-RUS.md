@@ -4,11 +4,9 @@
 
 ## <div align="center"><b><a href="README.md">English</a> | <a href="README-RUS.md">Русский</a></b></div>
 
-<div align="center">
-	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
-	![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
-	![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
-<div>
+![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
+![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## Обзор
 Скачайте файлы из канала Telegram, участником которого вы являетесь.
