@@ -76,7 +76,10 @@ public class TgLocaleHelper : IHelper
     public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
     public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
     public string MenuDownloadSetSourceId => "Setup source ID";
+    public string MenuDownloadSetSourceStartIdAuto => "Setup source start ID auto";
+    public string MenuDownloadSetSourceStartIdManual => "Setup source start ID manual";
     public string MenuDownloadSetSourceUserName => "Setup source user name";
+    public string MenuScanMyChannels => "Scan my channels and groups";
 
     #endregion
 
@@ -95,9 +98,9 @@ public class TgLocaleHelper : IHelper
     public string MoveUpDown => "(Move up and down to switch select)";
     public string SettingsIsNeedSetup => "Something is need setup";
     public string SettingsIsOk => "Everything is ok";
-    public string StatusException => "Exception: ";
+    public string StatusException => "Exception:";
     public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
-    public string StatusInnerException => "Inner exception: ";
+    public string StatusInnerException => "Inner exception:";
     public string StorageFileExists => "Storage is exists";
     public string StorageFileName => "Storage file name";
     public string StorageSetDefaultFileName(string fileName) => $"Set default file name '{fileName}'";
@@ -118,24 +121,26 @@ public class TgLocaleHelper : IHelper
     public string TgSettingsIsRewriteFiles => "Rewrite files";
     public string TgSettingsIsRewriteMessages => "Rewrite messages";
     public string TgSettingsSourceId => "Source ID";
+    public string TgSettingsSourceStartLastId => "Start / last ID";
     public string TgSettingsSourceUserName => "Source user name";
-    public string TgSetupApiHash => "Type API hash: ";
-    public string TgSetupAppId => "Type APP ID: ";
-    public string TgSetupCode => "Type code: ";
-    public string TgSetupFirstName => "Type first name: ";
-    public string TgSetupLastName => "Type last name: ";
-    public string TgSetupNotifications => "Type use notifications: ";
-    public string TgSetupPassword => "Type password: ";
-    public string TgSetupPhone => "Type phone number: ";
+    public string TgSetupApiHash => "Type API hash:";
+    public string TgSetupAppId => "Type APP ID:";
+    public string TgSetupCode => "Type code:";
+    public string TgSetupFirstName => "Type first name:";
+    public string TgSetupLastName => "Type last name:";
+    public string TgSetupNotifications => "Type use notifications:";
+    public string TgSetupPassword => "Type password:";
+    public string TgSetupPhone => "Type phone number:";
     public string TypeAnyKeyForReturn => "Type any key to return into the main menu.";
-    public string TypeDbFileName => "Type the DB file name: ";
+    public string TypeDbFileName => "Type the DB file name:";
     public string TypeDestDirectory => "Type destination directory:";
-    public string TypeTgIsAddMessageId => "Type the using join message ID with file name(example: true/false): ";
-    public string TypeTgIsRewriteFiles => "Type the using files rewrite (example: true/false): ";
-    public string TypeTgIsRewriteMessages => "Type the using message rewrite (example: true/false): ";
-    public string TypeTgMessageStartId => "Type the message start ID (example: 1): ";
-    public string TypeTgSourceId => "Type the source ID: ";
-    public string TypeTgSourceUserName => "Type the source user name: ";
+    public string TypeTgIsAddMessageId => "Type the using join message ID with file name(example: true/false):";
+    public string TypeTgIsRewriteFiles => "Type the using files rewrite (example: true/false):";
+    public string TypeTgIsRewriteMessages => "Type the using message rewrite (example: true/false):";
+    public string TypeTgMessageStartId => "Type the message start ID (example: 1):";
+    public string TypeTgSourceId => "Type the source ID:";
+    public string TypeTgSourceStartId => "Type the source start ID:";
+    public string TypeTgSourceUserName => "Type the source user name:";
 
     #endregion
 

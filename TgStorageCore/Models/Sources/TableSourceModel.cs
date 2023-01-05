@@ -1,7 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorageCore.Models;
+namespace TgStorageCore.Models.Sources;
 
 [DebuggerDisplay("{nameof(TableSourcesModel)} | {Id} | {UserName}")]
 [Table("SOURCES")]
@@ -17,17 +17,32 @@ public class TableSourceModel : TableBase
     [Column("USER_NAME")]
     [DefaultValue("")]
     public string UserName { get; set; }
+    [Column("TITLE")]
+    [DefaultValue("")]
+    public string Title { get; set; }
+    [Column("ABOUT")]
+    [DefaultValue("")]
+    public string About { get; set; }
+    [Column("COUNT")]
+    [DefaultValue(0)]
+    public int Count { get; set; }
 
     public TableSourceModel()
     {
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
         UserName = this.GetPropertyDefaultValueAsString(nameof(UserName));
+        Title = this.GetPropertyDefaultValueAsString(nameof(Title));
+        About = this.GetPropertyDefaultValueAsString(nameof(About));
+        Count = this.GetPropertyDefaultValueAsInt(nameof(Count));
     }
 
-    public TableSourceModel(long id, string userName)
+    public TableSourceModel(long id, string userName, string title, string about, int count)
     {
         Id = id;
         UserName = userName;
+        Title = title;
+        About = about;
+        Count = count;
     }
 
     #endregion
@@ -43,6 +58,9 @@ public class TableSourceModel : TableBase
     {
         Id = info.GetInt64(nameof(Id));
         UserName = info.GetString(nameof(UserName)) ?? this.GetPropertyDefaultValueAsString(nameof(UserName));
+        Title = info.GetString(nameof(Title)) ?? this.GetPropertyDefaultValueAsString(nameof(Title));
+        About = info.GetString(nameof(About)) ?? this.GetPropertyDefaultValueAsString(nameof(About));
+        Count = info.GetInt32(nameof(Count));
     }
 
     /// <summary>
@@ -55,6 +73,9 @@ public class TableSourceModel : TableBase
         base.GetObjectData(info, context);
         info.AddValue(nameof(Id), Id);
         info.AddValue(nameof(UserName), UserName);
+        info.AddValue(nameof(Title), Title);
+        info.AddValue(nameof(About), About);
+        info.AddValue(nameof(Count), Count);
     }
 
     #endregion

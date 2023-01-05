@@ -3,7 +3,7 @@
 
 using FluentValidation;
 
-namespace TgStorageCore.Models;
+namespace TgStorageCore.Models.Apps;
 
 [DebuggerDisplay("{nameof(TableAppValidator)}")]
 public class TableAppValidator : AbstractValidator<TableAppModel>

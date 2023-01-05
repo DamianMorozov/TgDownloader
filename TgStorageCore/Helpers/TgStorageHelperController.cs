@@ -1,6 +1,13 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgStorageCore.Models.Apps;
+using TgStorageCore.Models.Documents;
+using TgStorageCore.Models.Messages;
+using TgStorageCore.Models.Sources;
+using TgStorageCore.Models.SourcesSettings;
+using TgStorageCore.Utils;
+
 namespace TgStorageCore.Helpers;
 
 public partial class TgStorageHelper
@@ -84,23 +91,45 @@ public partial class TgStorageHelper
         }
     }
 
-    public void AddOrUpdateRecordSource(long? id, string userName, bool isUseUpdate)
+    public void AddOrUpdateRecordSource(long? id, string userName, string title, string about, int count, bool isUseUpdate)
     {
         if (id is not { } lid) return;
         TableSourceModel item = GetRecord<TableSourceModel>(id);
         if (!IsValid(item))
         {
-            item = new(lid, userName);
+            item = new(lid, userName, title, about, count);
             if (IsValid(item))
                 SqLiteCon.Insert(item);
         }
         else if (isUseUpdate)
         {
             item.UserName = userName;
+            item.Title = title;
+            item.About = about;
             if (IsValid(item))
             {
                 SqLiteCon.Delete(item);
                 SqLiteCon.Insert(item);
+            }
+        }
+    }
+
+    public void AddOrUpdateRecordSourceSetting(long? sourceId, string directory, bool isUseUpdate)
+    {
+        if (sourceId is not { } sid) return;
+        TableSourceSettingModel item = GetRecord<TableSourceSettingModel>(null, sourceId);
+        if (!IsValid(item))
+        {
+            item = new(sid, directory);
+            if (IsValid(item))
+                SqLiteCon.Insert(item);
+        }
+        else if (isUseUpdate)
+        {
+            item.Directory = directory;
+            if (IsValid(item))
+            {
+                SqLiteCon.Update(item);
             }
         }
     }
@@ -112,16 +141,22 @@ public partial class TgStorageHelper
         switch (typeof(T))
         {
             case var cls when cls == typeof(TableAppModel):
-                items = SqLiteCon.Query<T>("SELECT * FROM APPS");
-                break;
-            case var cls when cls == typeof(TableSourceModel):
-                items = SqLiteCon.Query<T>($"SELECT * FROM SOURCES WHERE ID = {firstId}");
-                break;
-            case var cls when cls == typeof(TableMessageModel):
-                items = SqLiteCon.Query<T>($"SELECT * FROM MESSAGES WHERE ID = {firstId} AND SOURCE_ID = {secondId}");
+                items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Apps}");
                 break;
             case var cls when cls == typeof(TableDocumentModel):
-                items = SqLiteCon.Query<T>($"SELECT * FROM DOCUMENTS WHERE ID = {firstId} AND SOURCE_ID = {secondId} AND MESSAGE_ID = {thirdId}");
+                items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Documents} WHERE ID = {firstId} AND SOURCE_ID = {secondId} AND MESSAGE_ID = {thirdId}");
+                break;
+            case var cls when cls == typeof(TableMessageModel):
+                items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Messages} WHERE ID = {firstId} AND SOURCE_ID = {secondId}");
+                break;
+            case var cls when cls == typeof(TableSourceModel):
+                items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Sources} WHERE ID = {firstId}");
+                break;
+            case var cls when cls == typeof(TableSourceSettingModel):
+                if (firstId is not null)
+                    items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.SourcesSettings} WHERE ID = {firstId}");
+                else if (secondId is not null)
+                    items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.SourcesSettings} WHERE SOURCE_ID = {secondId}");
                 break;
         }
         if (items is null || items.Count == 0) return new();
@@ -152,22 +187,15 @@ public partial class TgStorageHelper
 
     public bool IsValid<T>(T item) where T : TableBase, new()
     {
-        ValidationResult? validationResult = null;
-        switch (item)
+        ValidationResult? validationResult = item switch
         {
-            case TableAppModel app:
-                validationResult = new TableAppValidator().Validate(app);
-                break;
-            case TableDocumentModel document:
-                validationResult = new TableDocumentValidator().Validate(document);
-                break;
-            case TableMessageModel message:
-                validationResult = new TableMessageValidator().Validate(message);
-                break;
-            case TableSourceModel source:
-                validationResult = new TableSourceValidator().Validate(source);
-                break;
-        }
+            TableAppModel app => new TableAppValidator().Validate(app),
+            TableDocumentModel document => new TableDocumentValidator().Validate(document),
+            TableMessageModel message => new TableMessageValidator().Validate(message),
+            TableSourceModel source => new TableSourceValidator().Validate(source),
+            TableSourceSettingModel sourceSetting => new TableSourceSettingValidator().Validate(sourceSetting),
+            _ => null
+        };
         return validationResult?.IsValid ?? false;
     }
 

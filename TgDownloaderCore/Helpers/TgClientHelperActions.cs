@@ -14,29 +14,14 @@ public partial class TgClientHelper
         }
         catch (Exception ex)
         {
-            string fileName = Path.GetFileName(filePath);
+            // It should be saved and asked to be sent to the developer.
+            //string fileName = Path.GetFileName(filePath);
             if (refreshStatus is not null)
             {
-                //TgLog.MarkupLineStamp($"Exception at | {nameof(fileName)}: {fileName} | {nameof(lineNumber)}: {lineNumber} | {nameof(memberName)}: {memberName}");
-                refreshStatus($"Exception at | {nameof(fileName)}: {fileName} | {nameof(lineNumber)}: {lineNumber} | {nameof(memberName)}: {memberName}");
-                //TgLog.MarkupLineStamp(ex.Message);
+                //refreshStatus($"Exception at | {nameof(fileName)}: {fileName} | {nameof(lineNumber)}: {lineNumber} | {nameof(memberName)}: {memberName}");
                 refreshStatus(ex.Message);
                 if (ex.InnerException is not null)
-                {
-                    //TgLog.MarkupLineStamp(ex.InnerException.Message);
                     refreshStatus(ex.InnerException.Message);
-                }
-                /*
-                string messageId = messageBase is not null ? messageBase.ID.ToString() : string.Empty;
-                TgLog.MarkupLineStamp($"Exception | {messageId} | {ex.Message}");
-                refreshStatus($"Exception | {messageId} |");
-                refreshStatus(ex.Message);
-                if (ex.InnerException is not null)
-                {
-                    TgLog.MarkupLineStamp(ex.InnerException.Message);
-                    refreshStatus(ex.InnerException.Message);
-                }
-                */
             }
         }
     }

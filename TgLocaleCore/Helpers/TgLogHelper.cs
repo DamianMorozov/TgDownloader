@@ -1,12 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Runtime.Serialization;
-using TgLocaleCore.Interfaces;
-
 namespace TgLocaleCore.Helpers;
 
-public class TgLogHelper : IHelper
+public class TgLogHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -21,24 +18,10 @@ public class TgLogHelper : IHelper
 
     public delegate void MarkupLineStampDelegate(string message);
     private MarkupLineStampDelegate _markupLineStamp;
-    //public delegate T AskDelegate<T>(string message);
-    //private AskDelegate<T> _ask<T>;
-    public delegate string AskStringDelegate(string message);
-    private AskStringDelegate _askString;
-    public delegate int AskIntDelegate(string message);
-    private AskIntDelegate _askInt;
-    public delegate long AskLongDelegate(string message);
-    private AskLongDelegate _askLong;
-    public delegate bool AskBoolDelegate(string message);
-    private AskBoolDelegate _askBool;
 
     public TgLogHelper()
     {
         _markupLineStamp = _ => { };
-        _askString = _ => string.Empty;
-        _askInt = _ => 0;
-        _askLong = _ => 0;
-        _askBool = _ => false;
     }
 
     #endregion
@@ -58,36 +41,6 @@ public class TgLogHelper : IHelper
     public void SetMarkupLineStamp(MarkupLineStampDelegate markupLineStamp)
     {
         _markupLineStamp = markupLineStamp;
-    }
-
-    //public void SetAsk<T>(AskDelegate<T> ask)
-    //{
-    //    AskDelegate<T> foo = ask;
-    //}
-
-    public void SetAskString(AskStringDelegate askString)
-    {
-        _askString = askString;
-    }
-
-    public void SetAskInt(AskIntDelegate askInt)
-    {
-        _askInt = askInt;
-    }
-
-    public void SetAskLong(AskLongDelegate askLong)
-    {
-        _askLong = askLong;
-    }
-
-    public void SetAskBool(AskBoolDelegate askBool)
-    {
-        _askBool = askBool;
-    }
-
-    public void SetAsk<T>(AskBoolDelegate askBool)
-    {
-        _askBool = askBool;
     }
 
     public string GetMarkupString(string message) =>
@@ -115,38 +68,6 @@ public class TgLogHelper : IHelper
         message = message.Replace("[", "[[").Replace("]", "]]");
         message = message.Replace("'", "''");
         return $"[red] {GetDtStamp()} | x {message}[/]";
-    }
-
-    public string AskString(string message) => _askString(message);
-
-    public int AskInt(string message) => _askInt(message);
-
-    public long AskLong(string message) => _askLong(message);
-
-    public bool AskBool(string message) => _askBool(message);
-
-    #endregion
-
-    #region Public and private methods - ISerializable
-
-    /// <summary>
-    /// Constructor.
-    /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
-    protected TgLogHelper(SerializationInfo info, StreamingContext context)
-    {
-        //
-    }
-
-    /// <summary>
-    /// Get object data for serialization info.
-    /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
-    public void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        //
     }
 
     #endregion

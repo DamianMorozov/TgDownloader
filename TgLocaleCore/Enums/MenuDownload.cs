@@ -9,8 +9,11 @@ public enum MenuDownload
     SetSourceId,
     SetSourceUserName,
     SetDestDirectory,
+    SetSourceStartIdAuto,
+    SetSourceStartIdManual,
     SetIsRewriteFiles,
     SetIsRewriteMessages,
     SetIsAddMessageId,
     Download,
+    ScanChannels,
 }

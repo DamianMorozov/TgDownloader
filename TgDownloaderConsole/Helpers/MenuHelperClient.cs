@@ -1,8 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
-// See https://aka.ms/new-console-template for more information
 
-using TgStorageCore.Models;
+using TgLocaleCore.Utils;
+using TgStorageCore.Models.Apps;
 
 namespace TgDownloaderConsole.Helpers;
 
@@ -51,27 +51,52 @@ internal partial class MenuHelper
         } while (menu is not MenuClient.Return);
     }
 
+    private string? GetConfigExists(string what) =>
+        what switch
+        {
+            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
+            "api_hash" => TgClient.ApiHash,
+            "phone_number" => TgClient.PhoneNumber,
+            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
+            "notifications" => AnsiConsole.Ask<bool>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
+            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
+            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
+            "session_pathname" => FileNameUtils.Session,
+            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
+            _ => null
+        };
+
+    private string? GetConfigUser(string what) =>
+        what switch
+        {
+            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
+            "api_hash" => TgClient.ApiHash = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupApiHash)),
+            "phone_number" => TgClient.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPhone)),
+            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
+            "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
+            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
+            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
+            "session_pathname" => FileNameUtils.Session,
+            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
+            _ => null
+        };
+
     public void ClientConnectExists()
     {
         TableAppModel app = TgStorage.GetRecord<TableAppModel>();
         if (TgStorage.IsValid(app))
         {
-            TgClient.Connect(app.ApiHash, app.PhoneNumber);
-            if (TgClient.IsReady)
-            {
-                TgClient.CollectAllChats().GetAwaiter().GetResult();
-            }
+            TgClient.Connect(app.ApiHash, app.PhoneNumber, GetConfigExists, null);
+            TgClient.CollectAllChats().GetAwaiter().GetResult();
         }
     }
 
     public void ClientConnectNew()
     {
-        TgClient.Connect(string.Empty, string.Empty);
+        TgClient.Connect(string.Empty, string.Empty, null, GetConfigUser);
         if (TgClient.IsReady)
-        {
             TgStorage.AddOrUpdateRecordApp(TgClient.ApiHash, TgClient.PhoneNumber, false);
-            TgClient.CollectAllChats().GetAwaiter().GetResult();
-        }
+        TgClient.CollectAllChats().GetAwaiter().GetResult();
     }
 
     public void ClientConnect()

@@ -2,6 +2,8 @@
 
 ## <p align="center"><img src="Assets/Main_menu.png"></p>
 
+## <p align="center"><img src="Assets/Download_menu.png"></p>
+
 ## <div align="center"><b><a href="README.md">English</a> | <a href="README-RUS.md">Русский</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)

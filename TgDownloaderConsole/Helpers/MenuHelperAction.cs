@@ -1,6 +1,5 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
-// See https://aka.ms/new-console-template for more information
 
 namespace TgDownloaderConsole.Helpers;
 
@@ -8,9 +7,9 @@ internal partial class MenuHelper
 {
     #region Public and private methods
 
-    public void RunAction(Action action)
+    public void RunAction(Action action, bool isSkipCheckTgSettings)
     {
-        if (!CheckTgSettings())
+        if (!CheckTgSettings() && !isSkipCheckTgSettings)
         {
             TgLog.Warning(TgLocale.TgMustSetSettings);
             Console.ReadKey();
@@ -32,7 +31,7 @@ internal partial class MenuHelper
                 action();
                 sw.Stop();
                 statusContext.Status($"{GetStatus(sw,
-                    TgClient.TgDownload.MessageCurrentId, TgClient.TgDownload.MessageCount)}");
+                    TgClient.TgDownload.SourceStartId, TgClient.TgDownload.SourceLastId)}");
                 statusContext.Refresh();
             });
         StatusContext = null;
