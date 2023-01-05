@@ -6,12 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.350] - 2023-01-05
+### Added
+- Auto calculation of the start message identifier
+- Manual set start message identifier
+- Auto renaming downloaded files if the option to add an identifier to the file name is enabled
+- Autosave and autoload the catalog to download the channel/group
+### Changed
+- Switch method for choice boolean answer
+### Fixed
+- Rewriting messages
+
 ## [0.1.310] - 2023-01-02
 ### Added
-- Message ID in the download settings
+- Message identifier in the download settings
 - Saving application settings to an xml file
 ### Changed
-- Setup downloads by channel/group ID
+- Setup downloads by channel/group identifier
 
 ## [0.1.250] - 2022-12-21
 ### Added
