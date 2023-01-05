@@ -20,29 +20,32 @@ public class TgDownloadModel : IModel
 
     #region Public and private fields, properties, constructor
 
-    public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public TgLogHelper TgLog => TgLogHelper.Instance;
-
     [DefaultValue(null)]
-    public long? SourceId { get; private set; }
+    public long? SourceId { get; set; }
     [DefaultValue("")]
-    public string SourceUserName { get; private set; }
+    public string SourceUserName { get; set; }
     [DefaultValue("")]
-    public string DestDirectory { get; private set; }
+    public string SourceTitle { get; private set; }
+    [DefaultValue("")]
+    public string SourceAbout { get; private set; }
+    [DefaultValue("")]
+    public string DestDirectory { get; set; }
     [DefaultValue(-1)]
-    public int MessageCurrentId { get; private set; }
-    [DefaultValue(0)]
-    public int MessageCount { get; private set; }
+    public int SourceStartId { get; set; }
+    [DefaultValue(-1)]
+    public int SourceLastId { get; set; }
     [DefaultValue(false)]
-    public bool IsRewriteFiles { get; private set; }
+    public bool IsRewriteFiles { get; set; }
     [DefaultValue(false)]
-    public bool IsRewriteMessages { get; private set; }
+    public bool IsRewriteMessages { get; set; }
     [DefaultValue(true)]
-    public bool IsJoinFileNameWithMessageId { get; private set; }
+    public bool IsJoinFileNameWithMessageId { get; set; }
 
-    public bool IsReady => (IsReadySourceId || IsReadySourceUserName) && IsReadyDestDirectory;
+    public bool IsReady => IsReadySourceId && IsReadyDestDirectory;
     public bool IsReadySourceId => SourceId is not null && SourceId is not 0;
+    public bool IsReadySourceStartId => SourceStartId > 0;
     public bool IsReadySourceUserName => !Equals(SourceUserName, string.Empty);
+    public bool IsReadyDescription => !string.IsNullOrEmpty(SourceAbout);
     public bool IsReadyDestDirectory => !string.IsNullOrEmpty(DestDirectory);
 
     public TgDownloadModel()
@@ -51,97 +54,37 @@ public class TgDownloadModel : IModel
         IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
         IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
-        MessageCount = this.GetPropertyDefaultValueAsInt(nameof(MessageCount));
-        MessageCurrentId = this.GetPropertyDefaultValueAsInt(nameof(MessageCurrentId));
+        SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
+        SourceStartId = this.GetPropertyDefaultValueAsInt(nameof(SourceStartId));
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
         SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
+        SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
+        SourceAbout= this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
     }
 
     #endregion
 
     #region Public and private methods
 
-    private void SetDefault(int messageCurrentId)
+    public void SetDefault(int messageCurrentId)
     {
         DestDirectory = this.GetPropertyDefaultValueAsString(nameof(DestDirectory));
         IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
         IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
-        MessageCount = this.GetPropertyDefaultValueAsInt(nameof(MessageCount));
-        MessageCurrentId = messageCurrentId;
+        SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
+        SourceStartId = messageCurrentId;
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
         SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
+        SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
+        SourceAbout = this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
     }
 
-    public void SetSourceIdByAsk()
-    {
-        SetDefault(1);
-        bool isCheck;
-        do
-        {
-            SourceId = TgLog.AskLong(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceId));
-            isCheck = IsReadySourceId;
-        } while (!isCheck);
-    }
-
-    public void SetSourceUserNameByAsk()
-    {
-        SetDefault(1);
-        bool isCheck;
-        do
-        {
-            string sourceUserName = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceUserName));
-            if (!string.IsNullOrEmpty(sourceUserName))
-            {
-                SourceUserName = sourceUserName.StartsWith(@"https://t.me/")
-                    ? sourceUserName.Replace("https://t.me/", string.Empty) : sourceUserName;
-            }
-            isCheck = !string.IsNullOrEmpty(SourceUserName);
-        } while (!isCheck);
-    }
-
-    public void SetSourceUserNameByName(string sourceUserName)
-    {
-        SourceUserName = sourceUserName;
-    }
-
-    public void SetDestDirectory()
-    {
-        DestDirectory = string.Empty;
-        do
-        {
-            DestDirectory = TgLog.AskString(TgLog.GetLineStampInfo(TgLocale.TypeDestDirectory));
-            if (!Directory.Exists(DestDirectory))
-                TgLog.Info(TgLocale.DirIsNotExistsSpecify(DestDirectory));
-        } while (!Directory.Exists(DestDirectory));
-    }
-
-    public void SetMessageCurrentId()
-    {
-        MessageCurrentId = TgLog.AskInt(TgLocale.TypeTgMessageStartId);
-        MessageCurrentId = MessageCurrentId < 1 ? 1 : MessageCurrentId;
-    }
-
-    public void SetIsRewriteFiles() =>
-        IsRewriteFiles = TgLog.AskBool(TgLocale.TypeTgIsRewriteFiles);
-
-    public void SetIsRewriteMessages() =>
-        IsRewriteMessages = TgLog.AskBool(TgLocale.TypeTgIsRewriteMessages);
-
-    public void SetIsAddMessageId()
-    {
-        IsJoinFileNameWithMessageId = TgLog.AskBool(TgLocale.TypeTgIsAddMessageId);
-    }
-
-    public void SetMessageCurrentIdDefault() => MessageCurrentId = 1;
-
-    public void AddMessageCurrentId(int count = 1) => MessageCurrentId += count;
-
-    public void SetMessageCount(int count) => MessageCount = count;
-
-    public void SetSourceId(long? id)
+    public void SetSource(long? id, string title, string about)
     {
         SourceId = id;
+        SourceTitle = title;
+        SourceAbout = about;
     }
 
     #endregion
@@ -159,10 +102,13 @@ public class TgDownloadModel : IModel
         IsJoinFileNameWithMessageId = info.GetBoolean(nameof(IsJoinFileNameWithMessageId));
         IsRewriteFiles = info.GetBoolean(nameof(IsRewriteFiles));
         IsRewriteMessages = info.GetBoolean(nameof(IsRewriteMessages));
-        MessageCount = info.GetInt32(nameof(MessageCount));
-        MessageCurrentId = info.GetInt32(nameof(MessageCurrentId));
+        SourceLastId = info.GetInt32(nameof(SourceLastId));
+        SourceStartId = info.GetInt32(nameof(SourceStartId));
         SourceId = info.GetInt64(nameof(SourceId));
+        SourceStartId = info.GetInt32(nameof(SourceStartId));
         SourceUserName = info.GetString(nameof(SourceUserName)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
+        SourceTitle = info.GetString(nameof(SourceTitle)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
+        SourceAbout = info.GetString(nameof(SourceAbout)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
     }
 
     /// <summary>
@@ -176,10 +122,13 @@ public class TgDownloadModel : IModel
         info.AddValue(nameof(IsJoinFileNameWithMessageId), IsJoinFileNameWithMessageId);
         info.AddValue(nameof(IsRewriteFiles), IsRewriteFiles);
         info.AddValue(nameof(IsRewriteMessages), IsRewriteMessages);
-        info.AddValue(nameof(MessageCount), MessageCount);
-        info.AddValue(nameof(MessageCurrentId), MessageCurrentId);
+        info.AddValue(nameof(SourceLastId), SourceLastId);
+        info.AddValue(nameof(SourceStartId), SourceStartId);
         info.AddValue(nameof(SourceId), SourceId);
+        info.AddValue(nameof(SourceStartId), SourceStartId);
         info.AddValue(nameof(SourceUserName), SourceUserName);
+        info.AddValue(nameof(SourceTitle), SourceTitle);
+        info.AddValue(nameof(SourceAbout), SourceAbout);
     }
 
     #endregion

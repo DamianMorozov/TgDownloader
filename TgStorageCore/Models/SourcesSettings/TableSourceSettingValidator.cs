@@ -3,24 +3,25 @@
 
 using FluentValidation;
 
-namespace TgStorageCore.Models;
+namespace TgStorageCore.Models.SourcesSettings;
 
-[DebuggerDisplay("{nameof(TableMessageValidator)}")]
-public class TableMessageValidator : AbstractValidator<TableMessageModel>
+[DebuggerDisplay("{nameof(TableSourceSettingValidator)}")]
+public class TableSourceSettingValidator : AbstractValidator<TableSourceSettingModel>
 {
     #region Public and private fields, properties, constructor
 
-    public TableMessageValidator()
+    public TableSourceSettingValidator()
     {
-        RuleFor(item => item.Id)
-                .NotEmpty()
-                .NotNull()
-                .GreaterThan(0);
+        //RuleFor(item => item.Id)
+        //        .NotEmpty()
+        //        .NotNull()
+        //        .NotEqual(0);
         RuleFor(item => item.SourceId)
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0);
-        RuleFor(item => item.Message)
+        RuleFor(item => item.Directory)
+                .NotEmpty()
                 .NotNull();
     }
 

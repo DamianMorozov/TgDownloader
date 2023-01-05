@@ -1,6 +1,5 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
-// See https://aka.ms/new-console-template for more information
 
 using TgDownloaderCore.Models;
 using TgDownloaderCore.Utils;
@@ -68,10 +67,6 @@ void Setup()
     // Console.
     Console.OutputEncoding = Encoding.UTF8;
     log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
-    log.SetAskString(AnsiConsole.Ask<string>);
-    log.SetAskInt(AnsiConsole.Ask<int>);
-    log.SetAskLong(AnsiConsole.Ask<long>);
-    log.SetAskBool(AnsiConsole.Ask<bool>);
     // Storage.
     tgStorage.CreateOrConnectDb();
     // Client.

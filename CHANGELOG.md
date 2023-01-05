@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto calculation of the start message identifier
 - Manual set start message identifier
 - Auto renaming downloaded files if the option to add an identifier to the file name is enabled
-- Autosave and autoload the catalog to download the channel/group
+- Autosave and autoload the directory to download the channel/group
 ### Changed
 - Switch method for choice boolean answer
 ### Fixed

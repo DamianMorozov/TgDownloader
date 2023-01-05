@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using TgDownloaderCore.Models;
 using TgLocaleCore.Interfaces;
 using TgStorageCore.Helpers;
-using TgStorageCore.Models;
+using TgStorageCore.Models.Messages;
 
 namespace TgDownloaderConsole.Helpers;
 
@@ -68,6 +68,8 @@ internal partial class MenuHelper : IHelper
     
     internal void ShowTableDownload() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
+    internal void ShowTableScanRange() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScanRange);
+
     internal void FillTableColumns(Table table)
     {
         if (table.Columns.Count > 0) return;
@@ -128,7 +130,7 @@ internal partial class MenuHelper : IHelper
         }
         else
         {
-            User user = TgClient.MySelfUser;
+            User user = TgClient.Me;
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientUserName)),
                 new Markup(user.username));
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientUserId)),
@@ -151,7 +153,7 @@ internal partial class MenuHelper : IHelper
                 new Markup(TgLocale.SettingsIsNeedSetup));
         else
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceId)),
-                new Markup(TgClient.TgDownload.SourceId.ToString()));
+                new Markup(TgClient.TgDownload.SourceId is { } sid ? sid.ToString() : TgLocale.Empty));
 
         // Source user name.
         if (!TgClient.TgDownload.IsReadySourceUserName)
@@ -159,7 +161,7 @@ internal partial class MenuHelper : IHelper
                 new Markup(TgLocale.SettingsIsNeedSetup));
         else
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgClient.TgDownload.SourceUserName ?? TgLocale.Empty));
+                new Markup(TgClient.TgDownload.SourceUserName));
 
         // Dest dir.
         if (string.IsNullOrEmpty(TgClient.TgDownload.DestDirectory))
@@ -169,6 +171,10 @@ internal partial class MenuHelper : IHelper
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
                 new Markup(TgClient.TgDownload.DestDirectory));
         
+        // Source start ID / last ID.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceStartLastId)),
+            new Markup($"{TgClient.TgDownload.SourceStartId} / {TgClient.TgDownload.SourceLastId}"));
+
         // Is rewrite files.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
             new Markup(TgClient.TgDownload.IsRewriteFiles.ToString()));
@@ -180,6 +186,25 @@ internal partial class MenuHelper : IHelper
         // Is join message ID with file name.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsJoinFileNameWithMessageId)),
             new Markup(TgClient.TgDownload.IsJoinFileNameWithMessageId.ToString()));
+    }
+
+    internal void FillTableRowsScanRange(Table table)
+    {
+        // Source ID.
+        if (!TgClient.TgDownload.IsReadySourceId)
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceId)),
+                new Markup(TgLocale.SettingsIsNeedSetup));
+        else
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceId)),
+                new Markup(TgClient.TgDownload.SourceId is { } sid ? sid.ToString() : TgLocale.Empty));
+
+        // Source user name.
+        if (!TgClient.TgDownload.IsReadySourceUserName)
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceUserName)),
+                new Markup(TgLocale.SettingsIsNeedSetup));
+        else
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceUserName)),
+                new Markup(TgClient.TgDownload.SourceUserName));
     }
 
     internal double CalcSourceProgress(long count, long current) =>
@@ -208,7 +233,7 @@ internal partial class MenuHelper : IHelper
     {
         if (StatusContext is null) return;
         StatusContext.Status(TgLog.GetMarkupString(
-            $"{GetStatus(TgClient.TgDownload.MessageCount, TgClient.TgDownload.MessageCurrentId)} | {message}"));
+            $"{GetStatus(TgClient.TgDownload.SourceLastId, TgClient.TgDownload.SourceStartId)} | {message}"));
         StatusContext.Refresh();
     }
 
@@ -218,7 +243,7 @@ internal partial class MenuHelper : IHelper
     public void StoreDocument(long? id, long? sourceId, long? messageId, string fileName, long fileSize, long accessHash) => 
         TgStorage.AddOrUpdateRecordDocument(id, sourceId, messageId, fileName, fileSize, accessHash, true);
 
-    public bool FindExistsMessage(long? id, long? sourceId, string? messageString)
+    public bool FindExistsMessage(long? id, long? sourceId)
     {
         TableMessageModel message = TgStorage.GetRecord<TableMessageModel>(id, sourceId);
         return TgStorage.IsValid(message);

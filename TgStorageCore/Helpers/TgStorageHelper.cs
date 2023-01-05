@@ -2,6 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using TgLocaleCore.Interfaces;
+using TgStorageCore.Models.Apps;
+using TgStorageCore.Models.Documents;
+using TgStorageCore.Models.Messages;
+using TgStorageCore.Models.Sources;
+using TgStorageCore.Models.SourcesSettings;
 
 namespace TgStorageCore.Helpers;
 
@@ -31,6 +36,8 @@ public partial class TgStorageHelper : IHelper
     {
         SqLiteCon = new("");
         FileName = FileNameUtils.Storage;
+        // https://github.com/softlion/SQLite.Net-PCL2
+        SQLitePCL.Batteries_V2.Init();
     }
 
     #endregion
@@ -46,8 +53,6 @@ public partial class TgStorageHelper : IHelper
     private void InitSqLiteCon()
     {
         if (!string.IsNullOrEmpty(SqLiteCon.DatabasePath)) return;
-        //if (!SqLiteCon.Handle.IsInvalid && !SqLiteCon.Handle.IsClosed) return;
-        //if (!SqLiteCon.Handle.IsClosed) return;
 
         SQLiteConnectionString options = new(FileName, false);
         SqLiteCon = new(options);
@@ -58,9 +63,10 @@ public partial class TgStorageHelper : IHelper
         InitSqLiteCon();
         if (!IsReady) return;
         SqLiteCon.CreateTable<TableAppModel>();
-        SqLiteCon.CreateTable<TableSourceModel>();
-        SqLiteCon.CreateTable<TableMessageModel>();
         SqLiteCon.CreateTable<TableDocumentModel>();
+        SqLiteCon.CreateTable<TableMessageModel>();
+        SqLiteCon.CreateTable<TableSourceModel>();
+        SqLiteCon.CreateTable<TableSourceSettingModel>();
     }
 
     public void ClearTables()
@@ -68,6 +74,10 @@ public partial class TgStorageHelper : IHelper
         InitSqLiteCon();
         if (!IsReady) return;
         SqLiteCon.DeleteAll<TableAppModel>();
+        SqLiteCon.DeleteAll<TableDocumentModel>();
+        SqLiteCon.DeleteAll<TableMessageModel>();
+        SqLiteCon.DeleteAll<TableSourceSettingModel>();
+        SqLiteCon.DeleteAll<TableSourceModel>();
     }
 
     public void DeleteExistsDb()
@@ -94,6 +104,10 @@ public partial class TgStorageHelper : IHelper
     {
         InitSqLiteCon();
         SqLiteCon.DropTable<TableAppModel>();
+        SqLiteCon.DropTable<TableDocumentModel>();
+        SqLiteCon.DropTable<TableMessageModel>();
+        SqLiteCon.DropTable<TableSourceSettingModel>();
+        SqLiteCon.DropTable<TableSourceModel>();
     }
 
     #endregion
@@ -108,6 +122,7 @@ public partial class TgStorageHelper : IHelper
     protected TgStorageHelper(SerializationInfo info, StreamingContext context)
     {
         SqLiteCon = info.GetValue(nameof(SqLiteCon), typeof(SQLiteConnection)) as SQLiteConnection ?? new("");
+        FileName = info.GetString(nameof(FileName)) ?? this.GetPropertyDefaultValueAsString(nameof(FileName));
     }
 
     /// <summary>
@@ -118,6 +133,7 @@ public partial class TgStorageHelper : IHelper
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         info.AddValue(nameof(Version), SqLiteCon);
+        info.AddValue(nameof(FileName), FileName);
     }
 
     #endregion
