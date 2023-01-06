@@ -419,7 +419,7 @@ public partial class TgClientHelper : IHelper
 
     public void SetChannelMessageIdFirst(ChatBase chat, Action<string> refreshStatus)
     {
-        refreshStatus("Get the start ID message is run.");
+        refreshStatus("Get the first ID message is run.");
         GetChannelMessageCore(chat, channelFull =>
         {
             int max = channelFull.read_inbox_max_id;
@@ -435,7 +435,7 @@ public partial class TgClientHelper : IHelper
                 {
                     inputMessages[i] = offset + i + 1;
                 }
-                TgDownload.SourceStartId = offset;
+                TgDownload.SourceFirstId = offset;
                 refreshStatus($"Read from {offset} to {offset + partition} messages.");
                 Messages_MessagesBase? messages = WClient.Channels_GetMessages(chat as Channel, inputMessages).ConfigureAwait(true).GetAwaiter().GetResult();
                 for (int i = messages.Offset; i < messages.Count; i++)
@@ -463,8 +463,8 @@ public partial class TgClientHelper : IHelper
             // Finally.
             if (min >= max)
                 min = 1;
-            TgDownload.SourceStartId = min;
-            refreshStatus($"Get the start ID message '{min}' is complete.");
+            TgDownload.SourceFirstId = min;
+            refreshStatus($"Get the first ID message '{min}' is complete.");
         });
     }
 
@@ -537,14 +537,15 @@ public partial class TgClientHelper : IHelper
         TryCatchAction(() =>
         {
             _ = Me;
-            while (TgDownload.SourceStartId <= TgDownload.SourceLastId)
+            int backupId = TgDownload.SourceFirstId;
+            while (TgDownload.SourceFirstId <= TgDownload.SourceLastId)
             {
                 TryCatchAction(() =>
                 {
                     bool isAccessToMessages = WClient.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
                     if (isAccessToMessages)
                     {
-                        Messages_MessagesBase messages = WClient.Channels_GetMessages(channel, TgDownload.SourceStartId)
+                        Messages_MessagesBase messages = WClient.Channels_GetMessages(channel, TgDownload.SourceFirstId)
                             .ConfigureAwait(true).GetAwaiter().GetResult();
                         foreach (MessageBase message in messages.Messages)
                         {
@@ -560,9 +561,9 @@ public partial class TgClientHelper : IHelper
                         }
                     }
                 }, refreshStatus);
-                TgDownload.SourceStartId++;
+                TgDownload.SourceFirstId++;
             }
-            TgDownload.SourceStartId = 1;
+            TgDownload.SourceFirstId = backupId;
         }, refreshStatus);
     }
 
@@ -596,7 +597,7 @@ public partial class TgClientHelper : IHelper
             }
             
             // Finally.
-            if (findExistsMessage(TgDownload.SourceStartId, TgDownload.SourceId) && TgDownload.IsRewriteMessages)
+            if (findExistsMessage(TgDownload.SourceFirstId, TgDownload.SourceId) && TgDownload.IsRewriteMessages)
                 storeMessage(messageBase.ID, TgDownload.SourceId, messageBase.ToString() ?? string.Empty);
             refreshStatus("Read the message completed");
         }, refreshStatus);

@@ -21,8 +21,8 @@ internal partial class MenuHelper
                     TgLocale.MenuDownloadSetSourceId, 
                     TgLocale.MenuDownloadSetSourceUserName, 
                     TgLocale.MenuDownloadSetFolder, 
-                    TgLocale.MenuDownloadSetSourceStartIdAuto, 
-                    TgLocale.MenuDownloadSetSourceStartIdManual, 
+                    TgLocale.MenuDownloadSetSourceFirstIdAuto, 
+                    TgLocale.MenuDownloadSetSourceFirstIdManual, 
                     TgLocale.MenuDownloadSetIsRewriteFiles,
                     TgLocale.MenuDownloadSetIsRewriteMessages,
                     TgLocale.MenuDownloadSetIsAddMessageId,
@@ -34,8 +34,8 @@ internal partial class MenuHelper
             "Setup source ID" => MenuDownload.SetSourceId,
             "Setup source user name" => MenuDownload.SetSourceUserName,
             "Setup download folder" => MenuDownload.SetDestDirectory,
-            "Setup source start ID auto" => MenuDownload.SetSourceStartIdAuto,
-            "Setup source start ID manual" => MenuDownload.SetSourceStartIdManual,
+            "Setup source first ID auto" => MenuDownload.SetSourceFirstIdAuto,
+            "Setup source first ID manual" => MenuDownload.SetSourceFirstIdManual,
             "Enable rewrite exists files" => MenuDownload.SetIsRewriteFiles,
             "Enable rewrite exists messages" => MenuDownload.SetIsRewriteMessages,
             "Enable join message ID with file name" => MenuDownload.SetIsAddMessageId,
@@ -60,13 +60,13 @@ internal partial class MenuHelper
                     LoadTgClientSettings();
                     SetSourceWithSettings();
                     break;
-                case MenuDownload.SetSourceStartIdAuto:
-                    RunAction(SetTgDownloadSourceStartIdAuto, true);
+                case MenuDownload.SetSourceFirstIdAuto:
+                    RunAction(SetTgDownloadSourceFirstIdAuto, true);
                     LoadTgClientSettings();
                     SetSourceWithSettings();
                     break;
-                case MenuDownload.SetSourceStartIdManual:
-                    SetTgDownloadSourceStartIdManual();
+                case MenuDownload.SetSourceFirstIdManual:
+                    SetTgDownloadSourceFirstIdManual();
                     LoadTgClientSettings();
                     SetSourceWithSettings();
                     break;
@@ -106,64 +106,55 @@ internal partial class MenuHelper
     {
         TgClient.TgDownload.SetDefault(1);
         bool isCheck;
-        long sourceId;
         do
         {
-            sourceId = AnsiConsole.Ask<long>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceId));
+            TgClient.TgDownload.SourceId = AnsiConsole.Ask<long>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceId));
             isCheck = TgClient.TgDownload.IsReadySourceId;
         } while (!isCheck);
-        TgClient.TgDownload.SourceId = sourceId;
     }
 
-    private void SetTgDownloadSourceStartIdAuto()
+    private void SetTgDownloadSourceFirstIdAuto()
     {
         Channel? channel = TgClient.PrepareDownloadMessages(true);
         if (channel is null) return;
         TgClient.SetChannelMessageIdFirst(channel, RefreshStatusForDownload);
     }
 
-    private void SetTgDownloadSourceStartIdManual()
+    private void SetTgDownloadSourceFirstIdManual()
     {
         bool isCheck;
-        int startId;
         do
         {
-            startId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceStartId));
-            isCheck = TgClient.TgDownload.IsReadySourceStartId;
+            TgClient.TgDownload.SourceFirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceFirstId));
+            isCheck = TgClient.TgDownload.IsReadySourceFirstId;
         } while (!isCheck);
-        TgClient.TgDownload.SourceStartId = startId;
     }
 
     private void SetTgDownloadSourceUserName()
     {
         TgClient.TgDownload.SetDefault(1);
         bool isCheck;
-        string sourceUserName;
         do
         {
-            sourceUserName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceUserName));
-            if (!string.IsNullOrEmpty(sourceUserName))
+            TgClient.TgDownload.SourceUserName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceUserName));
+            if (!string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName))
             {
-                sourceUserName = sourceUserName.StartsWith(@"https://t.me/")
-                    ? sourceUserName.Replace("https://t.me/", string.Empty)
-                    : sourceUserName;
+                TgClient.TgDownload.SourceUserName = TgClient.TgDownload.SourceUserName.StartsWith(@"https://t.me/")
+                    ? TgClient.TgDownload.SourceUserName.Replace("https://t.me/", string.Empty)
+                    : TgClient.TgDownload.SourceUserName;
             }
-
-            isCheck = !string.IsNullOrEmpty(sourceUserName);
+            isCheck = !string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName);
         } while (!isCheck);
-        TgClient.TgDownload.SourceUserName = sourceUserName;
     }
 
     private void SetTgDownloadDestDirectory()
     {
-        string destDirectory;
         do
         {
-            destDirectory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TypeDestDirectory));
-            if (!Directory.Exists(destDirectory))
-                TgLog.Info(TgLocale.DirIsNotExistsSpecify(destDirectory));
-        } while (!Directory.Exists(destDirectory));
-        TgClient.TgDownload.DestDirectory = destDirectory;
+            TgClient.TgDownload.DestDirectory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TypeDestDirectory));
+            if (!Directory.Exists(TgClient.TgDownload.DestDirectory))
+                TgLog.Info(TgLocale.DirIsNotExistsSpecify(TgClient.TgDownload.DestDirectory));
+        } while (!Directory.Exists(TgClient.TgDownload.DestDirectory));
     }
 
     private void SetTgDownloadIsRewriteFiles()
@@ -201,7 +192,8 @@ internal partial class MenuHelper
         if (!TgClient.TgDownload.IsReady) return;
         TgStorage.AddOrUpdateRecordSource(TgClient.TgDownload.SourceId, TgClient.TgDownload.SourceUserName, 
             TgClient.TgDownload.SourceTitle, TgClient.TgDownload.SourceAbout, TgClient.TgDownload.SourceLastId, true);
-        TgStorage.AddOrUpdateRecordSourceSetting(TgClient.TgDownload.SourceId, TgClient.TgDownload.DestDirectory, true);
+        TgStorage.AddOrUpdateRecordSourceSetting(TgClient.TgDownload.SourceId, TgClient.TgDownload.DestDirectory, 
+            TgClient.TgDownload.SourceFirstId, true);
     }
 
     private void LoadTgClientSettings()

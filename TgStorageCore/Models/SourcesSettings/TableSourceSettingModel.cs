@@ -20,18 +20,23 @@ public class TableSourceSettingModel : TableBase
     [Column("DIRECTORY")]
     [DefaultValue("")]
     public string Directory { get; set; }
+    [Column("FIRST_ID")]
+    [DefaultValue(1)]
+    public int FirstId { get; set; }
 
     public TableSourceSettingModel()
     {
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-        SourceId = this.GetPropertyDefaultValueAsLong(nameof(SourceId));
+        SourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
         Directory = this.GetPropertyDefaultValueAsString(nameof(Directory));
+        FirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
     }
 
-    public TableSourceSettingModel(long sourceId, string directory) : this()
+    public TableSourceSettingModel(long sourceId, string directory, int firstId) : this()
     {
         SourceId = sourceId;
         Directory = directory;
+        FirstId = firstId;
     }
 
     #endregion
@@ -48,6 +53,7 @@ public class TableSourceSettingModel : TableBase
         Id = info.GetInt64(nameof(Id));
         SourceId = info.GetInt64(nameof(SourceId));
         Directory = info.GetString(nameof(Directory)) ?? this.GetPropertyDefaultValueAsString(nameof(Directory));
+        FirstId = info.GetInt32(nameof(FirstId));
     }
 
     /// <summary>

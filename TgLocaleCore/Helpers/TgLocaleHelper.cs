@@ -76,8 +76,8 @@ public class TgLocaleHelper : IHelper
     public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
     public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
     public string MenuDownloadSetSourceId => "Setup source ID";
-    public string MenuDownloadSetSourceStartIdAuto => "Setup source start ID auto";
-    public string MenuDownloadSetSourceStartIdManual => "Setup source start ID manual";
+    public string MenuDownloadSetSourceFirstIdAuto => "Setup source first ID auto";
+    public string MenuDownloadSetSourceFirstIdManual => "Setup source first ID manual";
     public string MenuDownloadSetSourceUserName => "Setup source user name";
     public string MenuScanMyChannels => "Scan my channels and groups";
 
@@ -121,7 +121,7 @@ public class TgLocaleHelper : IHelper
     public string TgSettingsIsRewriteFiles => "Rewrite files";
     public string TgSettingsIsRewriteMessages => "Rewrite messages";
     public string TgSettingsSourceId => "Source ID";
-    public string TgSettingsSourceStartLastId => "Start / last ID";
+    public string TgSettingsSourceFirstLastId => "First / last ID";
     public string TgSettingsSourceUserName => "Source user name";
     public string TgSetupApiHash => "Type API hash:";
     public string TgSetupAppId => "Type APP ID:";
@@ -137,9 +137,8 @@ public class TgLocaleHelper : IHelper
     public string TypeTgIsAddMessageId => "Type the using join message ID with file name(example: true/false):";
     public string TypeTgIsRewriteFiles => "Type the using files rewrite (example: true/false):";
     public string TypeTgIsRewriteMessages => "Type the using message rewrite (example: true/false):";
-    public string TypeTgMessageStartId => "Type the message start ID (example: 1):";
     public string TypeTgSourceId => "Type the source ID:";
-    public string TypeTgSourceStartId => "Type the source start ID:";
+    public string TypeTgSourceFirstId => "Type the source first ID:";
     public string TypeTgSourceUserName => "Type the source user name:";
 
     #endregion
