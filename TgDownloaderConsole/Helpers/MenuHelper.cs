@@ -172,8 +172,8 @@ internal partial class MenuHelper : IHelper
                 new Markup(TgClient.TgDownload.DestDirectory));
         
         // Source start ID / last ID.
-        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceStartLastId)),
-            new Markup($"{TgClient.TgDownload.SourceStartId} / {TgClient.TgDownload.SourceLastId}"));
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
+            new Markup($"{TgClient.TgDownload.SourceFirstId} / {TgClient.TgDownload.SourceLastId}"));
 
         // Is rewrite files.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
@@ -233,7 +233,7 @@ internal partial class MenuHelper : IHelper
     {
         if (StatusContext is null) return;
         StatusContext.Status(TgLog.GetMarkupString(
-            $"{GetStatus(TgClient.TgDownload.SourceLastId, TgClient.TgDownload.SourceStartId)} | {message}"));
+            $"{GetStatus(TgClient.TgDownload.SourceLastId, TgClient.TgDownload.SourceFirstId)} | {message}"));
         StatusContext.Refresh();
     }
 

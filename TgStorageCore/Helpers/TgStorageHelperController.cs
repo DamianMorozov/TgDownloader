@@ -114,13 +114,13 @@ public partial class TgStorageHelper
         }
     }
 
-    public void AddOrUpdateRecordSourceSetting(long? sourceId, string directory, bool isUseUpdate)
+    public void AddOrUpdateRecordSourceSetting(long? sourceId, string directory, int firstId, bool isUseUpdate)
     {
         if (sourceId is not { } sid) return;
         TableSourceSettingModel item = GetRecord<TableSourceSettingModel>(null, sourceId);
         if (!IsValid(item))
         {
-            item = new(sid, directory);
+            item = new(sid, directory, firstId);
             if (IsValid(item))
                 SqLiteCon.Insert(item);
         }

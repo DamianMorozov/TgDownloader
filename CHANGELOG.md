@@ -6,12 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.360] - 2023-01-06
+### Fixed
+- Entering a source ID
+- Autosave and autoload settings to download a channel/group
+
 ## [0.1.350] - 2023-01-05
 ### Added
 - Auto calculation of the start message identifier
 - Manual set start message identifier
 - Auto renaming downloaded files if the option to add an identifier to the file name is enabled
-- Autosave and autoload the directory to download the channel/group
+- Autosave and autoload the directory to download a channel/group
 ### Changed
 - Switch method for choice boolean answer
 ### Fixed

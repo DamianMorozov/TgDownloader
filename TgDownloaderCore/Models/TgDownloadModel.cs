@@ -30,9 +30,9 @@ public class TgDownloadModel : IModel
     public string SourceAbout { get; private set; }
     [DefaultValue("")]
     public string DestDirectory { get; set; }
-    [DefaultValue(-1)]
-    public int SourceStartId { get; set; }
-    [DefaultValue(-1)]
+    [DefaultValue(1)]
+    public int SourceFirstId { get; set; }
+    [DefaultValue(1)]
     public int SourceLastId { get; set; }
     [DefaultValue(false)]
     public bool IsRewriteFiles { get; set; }
@@ -43,7 +43,7 @@ public class TgDownloadModel : IModel
 
     public bool IsReady => IsReadySourceId && IsReadyDestDirectory;
     public bool IsReadySourceId => SourceId is not null && SourceId is not 0;
-    public bool IsReadySourceStartId => SourceStartId > 0;
+    public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsReadySourceUserName => !Equals(SourceUserName, string.Empty);
     public bool IsReadyDescription => !string.IsNullOrEmpty(SourceAbout);
     public bool IsReadyDestDirectory => !string.IsNullOrEmpty(DestDirectory);
@@ -55,7 +55,7 @@ public class TgDownloadModel : IModel
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
         IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
         SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
-        SourceStartId = this.GetPropertyDefaultValueAsInt(nameof(SourceStartId));
+        SourceFirstId = this.GetPropertyDefaultValueAsInt(nameof(SourceFirstId));
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
         SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
         SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
@@ -73,7 +73,7 @@ public class TgDownloadModel : IModel
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
         IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
         SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
-        SourceStartId = messageCurrentId;
+        SourceFirstId = messageCurrentId;
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
         SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
         SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
@@ -103,9 +103,9 @@ public class TgDownloadModel : IModel
         IsRewriteFiles = info.GetBoolean(nameof(IsRewriteFiles));
         IsRewriteMessages = info.GetBoolean(nameof(IsRewriteMessages));
         SourceLastId = info.GetInt32(nameof(SourceLastId));
-        SourceStartId = info.GetInt32(nameof(SourceStartId));
+        SourceFirstId = info.GetInt32(nameof(SourceFirstId));
         SourceId = info.GetInt64(nameof(SourceId));
-        SourceStartId = info.GetInt32(nameof(SourceStartId));
+        SourceFirstId = info.GetInt32(nameof(SourceFirstId));
         SourceUserName = info.GetString(nameof(SourceUserName)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
         SourceTitle = info.GetString(nameof(SourceTitle)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
         SourceAbout = info.GetString(nameof(SourceAbout)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
@@ -123,9 +123,9 @@ public class TgDownloadModel : IModel
         info.AddValue(nameof(IsRewriteFiles), IsRewriteFiles);
         info.AddValue(nameof(IsRewriteMessages), IsRewriteMessages);
         info.AddValue(nameof(SourceLastId), SourceLastId);
-        info.AddValue(nameof(SourceStartId), SourceStartId);
+        info.AddValue(nameof(SourceFirstId), SourceFirstId);
         info.AddValue(nameof(SourceId), SourceId);
-        info.AddValue(nameof(SourceStartId), SourceStartId);
+        info.AddValue(nameof(SourceFirstId), SourceFirstId);
         info.AddValue(nameof(SourceUserName), SourceUserName);
         info.AddValue(nameof(SourceTitle), SourceTitle);
         info.AddValue(nameof(SourceAbout), SourceAbout);

@@ -31,7 +31,7 @@ internal partial class MenuHelper
                 action();
                 sw.Stop();
                 statusContext.Status($"{GetStatus(sw,
-                    TgClient.TgDownload.SourceStartId, TgClient.TgDownload.SourceLastId)}");
+                    TgClient.TgDownload.SourceFirstId, TgClient.TgDownload.SourceLastId)}");
                 statusContext.Refresh();
             });
         StatusContext = null;
