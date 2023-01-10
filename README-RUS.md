@@ -1,31 +1,25 @@
 ﻿# TgDownloader - Загрузчик файлов Telegram
 
-## <p align="center"><img src="Assets/Main_menu.png"></p>
-
-## <p align="center"><img src="Assets/Download_menu.png"></p>
-
 ## <div align="center"><b><a href="README.md">English</a> | <a href="README-RUS.md">Русский</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
+## <p align="center"><img src="Assets/Main_menu.png"></p>
+
 ## Обзор
-Скачайте файлы из канала Telegram, участником которого вы являетесь.
+Скачайте файлы каналов или групп Telegram, в которых вы состоите.
 
 ## Требования к установке
-- [.NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
-- [Аккаунт Telegram](https://telegram.org/)
-
-## Получите конфигурацию приложения Telegram:
-- [Посетите официальный сайт Telegram](https://my.telegram.org/apps/)
-- Заполните форму для регистрации нового приложения Telegram
-- Скопируйте значения полей "App api_id" и "App api_hash"
+- [Установите .NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps/)
+- Сохраните значения полей "App api_id" и "App api_hash"
 
 ## Быстрый старт
-- Настройте локальное хранилище
-- Настройте Telegram клиент
-- Настройте скачивание
+- Настройте локальное хранилище из TgDownloader
+- Настройте Telegram клиент из TgDownloader
+- Настройте скачивание из TgDownloader
 
 ## Статус
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")

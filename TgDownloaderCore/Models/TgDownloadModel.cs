@@ -20,8 +20,8 @@ public class TgDownloadModel : IModel
 
     #region Public and private fields, properties, constructor
 
-    [DefaultValue(null)]
-    public long? SourceId { get; set; }
+    [DefaultValue(0)]
+    public long SourceId { get; set; }
     [DefaultValue("")]
     public string SourceUserName { get; set; }
     [DefaultValue("")]
@@ -42,7 +42,7 @@ public class TgDownloadModel : IModel
     public bool IsJoinFileNameWithMessageId { get; set; }
 
     public bool IsReady => IsReadySourceId && IsReadyDestDirectory;
-    public bool IsReadySourceId => SourceId is not null && SourceId is not 0;
+    public bool IsReadySourceId => SourceId is not 0;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsReadySourceUserName => !Equals(SourceUserName, string.Empty);
     public bool IsReadyDescription => !string.IsNullOrEmpty(SourceAbout);
@@ -80,7 +80,7 @@ public class TgDownloadModel : IModel
         SourceAbout = this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
     }
 
-    public void SetSource(long? id, string title, string about)
+    public void SetSource(long id, string title, string about)
     {
         SourceId = id;
         SourceTitle = title;

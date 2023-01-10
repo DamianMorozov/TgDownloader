@@ -6,8 +6,7 @@ namespace TgLocaleCore.Enums;
 public enum MenuDownload
 {
     Return,
-    SetSourceId,
-    SetSourceUserName,
+    SetSource,
     SetDestDirectory,
     SetSourceFirstIdAuto,
     SetSourceFirstIdManual,
@@ -15,5 +14,6 @@ public enum MenuDownload
     SetIsRewriteMessages,
     SetIsAddMessageId,
     Download,
-    ScanChannels,
+    Scan,
+    Update,
 }

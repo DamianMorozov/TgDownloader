@@ -31,7 +31,7 @@ public static class AppUtils
     public static void SetSettings(AppModel app)
     {
         //string xml = SerializeAsXmlString<TgSettingsModel>(true);
-        string xml = XmlUtils.SerializeAsXmlDocument<AppModel>(app, true).InnerXml;
+        string xml = XmlUtils.SerializeAsXmlDocument(app, true).InnerXml;
         xml = XmlUtils.GetPrettyXml(xml);
         using FileStream fileStream = new(LocalFilePath, FileMode.Create);
         using StreamWriter streamWriter = new(fileStream, Encoding.Unicode);
