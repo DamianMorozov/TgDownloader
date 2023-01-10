@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Collections.Concurrent;
 using System.Runtime.Serialization;
 using TgDownloaderCore.Models;
 using TgLocaleCore.Interfaces;
@@ -50,8 +49,6 @@ public partial class TgClientHelper : IHelper
     public List<Channel> ListGroups { get; }
     public List<ChatBase> ListChats { get; }
     public List<ChatBase> ListSmallGroups { get; }
-    public List<KeyValuePair<long, long>> ListHashesChannels { get; private set; }
-    public List<KeyValuePair<long, long>> ListHashesUsers { get; private set; }
     public string ApiId { get; set; }
     public string ApiHash { get; set; }
     public string PhoneNumber { get; set; }
@@ -66,8 +63,6 @@ public partial class TgClientHelper : IHelper
         ListChannels = new();
         ListChats = new();
         ListGroups = new();
-        ListHashesChannels = new();
-        ListHashesUsers = new();
         ListSmallGroups = new();
         PhoneNumber = string.Empty;
 
@@ -75,8 +70,6 @@ public partial class TgClientHelper : IHelper
         //WTelegram.Helpers.Log += (_, str) => Debug.WriteLine(str);
         // Disable logging.
         WTelegram.Helpers.Log = (_, _) => { };
-
-        //Database.InitialiseConnection();
     }
 
     #endregion
@@ -119,25 +112,38 @@ public partial class TgClientHelper : IHelper
 
     public ChatBase GetChatUpdated(long id) => DicChatsUpdated.TryGetValue(ReduceChatId(id), out ChatBase chat) ? chat : new Chat();
 
-    public Channel GetChannel(long? sourceId)
+    public Channel GetChannel()
     {
-        if (sourceId is { } sid)
+        long backupId = TgDownload.SourceId;
+        if (TgDownload.IsReadySourceId)
         {
-            sourceId = ReduceChatId(sid);
+            TgDownload.SourceId = ReduceChatId(TgDownload.SourceId);
             foreach (KeyValuePair<long, ChatBase> chatBase in DicChatsAll)
             {
-                if (chatBase.Value is Channel channel && Equals(channel.id, sourceId)) return channel;
+                if (chatBase.Value is Channel channel && Equals(channel.id, TgDownload.SourceId))
+                    if (IsChannelAccess(channel)) return channel;
             }
         }
-        return new();
-    }
-
-    public Channel GetChannel(string sourceUserName)
-    {
-        foreach (KeyValuePair<long, ChatBase> chatBase in DicChatsAll)
+        else
         {
-            if (chatBase.Value is Channel channel && Equals(channel.username, sourceUserName)) return channel;
+            foreach (KeyValuePair<long, ChatBase> chatBase in DicChatsAll)
+            {
+                if (chatBase.Value is Channel channel && Equals(channel.username, TgDownload.SourceUserName))
+                    if (IsChannelAccess(channel)) return channel;
+            }
         }
+
+        if (TgDownload.SourceId is 0)
+            TgDownload.SourceId = GetPeerId(TgDownload.SourceUserName);
+        //if (WClient is not null) WClient.CollectAccessHash = true;
+        Messages_Chats? messagesChats = WClient.Channels_GetChannels(new InputChannel(backupId, Me.access_hash))
+            .ConfigureAwait(true).GetAwaiter().GetResult();
+        foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
+        {
+            if (chat.Value is Channel channel)
+                return channel;
+        }
+
         return new();
     }
 
@@ -276,7 +282,7 @@ public partial class TgClientHelper : IHelper
         switch (messageBase)
         {
             case Message message:
-                TgLog.Line($"{GetPeerUpdatedName(message.from_id) ?? message.post_author} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
+                TgLog.Line($"{GetPeerUpdatedName(message.from_id)} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
                 break;
             case MessageService messageService:
                 TgLog.Line($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
@@ -390,27 +396,28 @@ public partial class TgClientHelper : IHelper
         return result;
     }
 
-    public void GetChannelMessageCore(ChatBase chat, Action<ChannelFull> action)
+    public bool IsChannelAccess(ChatBase chat)
     {
-        if (!TgDownload.IsReadySourceId) return;
-        if (chat is Channel channel)
+        if (chat.ID is 0 || chat is not Channel channel) return false;
+        return WClient.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+    }
+
+    public void ActionChannelAccess(ChatBase chat, Action<ChannelFull> action)
+    {
+        if (chat.ID is 0 || chat is not Channel channel) return;
+        Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+        if (fullChannel.full_chat is not ChannelFull channelFull) return;
+        bool isAccessToMessages = WClient.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+        if (isAccessToMessages)
         {
-            Messages_ChatFull fullChannel = WClient.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
-            if (fullChannel.full_chat is ChannelFull channelFull)
-            {
-                bool isAccessToMessages = WClient.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
-                if (isAccessToMessages)
-                {
-                    action(channelFull);
-                }
-            }
+            action(channelFull);
         }
     }
 
     public int GetChannelMessageIdLast(ChatBase chat)
     {
         int max = 0;
-        GetChannelMessageCore(chat, channelFull =>
+        ActionChannelAccess(chat, channelFull =>
         {
             max = channelFull.read_inbox_max_id;
         });
@@ -420,7 +427,7 @@ public partial class TgClientHelper : IHelper
     public void SetChannelMessageIdFirst(ChatBase chat, Action<string> refreshStatus)
     {
         refreshStatus("Get the first ID message is run.");
-        GetChannelMessageCore(chat, channelFull =>
+        ActionChannelAccess(chat, channelFull =>
         {
             int max = channelFull.read_inbox_max_id;
             int min = max;
@@ -473,8 +480,8 @@ public partial class TgClientHelper : IHelper
         Channel? channel = null;
         TryCatchAction(() =>
         {
-            channel = TgDownload.IsReadySourceId ? GetChannel(TgDownload.SourceId) : GetChannel(TgDownload.SourceUserName);
-            if (channel.id is 0) return;
+            channel = GetChannel();
+            if (!IsChannelAccess(channel)) return;
             TgDownload.SourceUserName = !string.IsNullOrEmpty(channel.username) ? channel.username : string.Empty;
             Messages_ChatFull? chatFull = PrintChatsInfoChannel(channel, true, isSilent);
             TgDownload.SourceLastId = GetChannelMessageIdLast(channel);
@@ -528,9 +535,8 @@ public partial class TgClientHelper : IHelper
         });
     }
 
-    public void DownloadAllData(Action<string> refreshStatus, Action<long?, long?, string> storeMessage,
-        Action<long?, long?, long?, string, long, long> storeDocument, 
-        Func<long?, long?, bool> findExistsMessage)
+    public void DownloadAllData(Action<string> refreshStatus, Action<long?, long?, DateTime, string, string, long> storeMessage,
+        Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage)
     {
         Channel? channel = PrepareDownloadMessages(false);
         if (channel?.id is 0) return;
@@ -563,11 +569,11 @@ public partial class TgClientHelper : IHelper
                 }, refreshStatus);
                 TgDownload.SourceFirstId++;
             }
-            TgDownload.SourceFirstId = backupId;
+            TgDownload.SourceFirstId = TgDownload.SourceLastId;
         }, refreshStatus);
     }
 
-    private void DownloadData(MessageBase messageBase, Action<string> refreshStatus, Action<long?, long?, string> storeMessage, 
+    private void DownloadData(MessageBase messageBase, Action<string> refreshStatus, Action<long?, long?, DateTime, string, string, long> storeMessage, 
         Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage)
     {
         if (messageBase is not Message message)
@@ -578,162 +584,190 @@ public partial class TgClientHelper : IHelper
 
         TryCatchAction(() =>
         {
-            if (message.media is MessageMediaDocument mediaDocument)
+            // Store message.
+            bool isExistsMessage = findExistsMessage(TgDownload.SourceFirstId, TgDownload.SourceId);
+            if ((isExistsMessage && TgDownload.IsRewriteMessages) || !isExistsMessage)
+                storeMessage(messageBase.ID, TgDownload.SourceId, messageBase.Date, messageBase.ToString() ?? string.Empty, string.Empty, 0);
+            // Parse documents and photos.
+            if ((message.flags & Message.Flags.has_media) != 0)
             {
-                if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) != 0)
+                if (message.media is MessageMediaDocument mediaDocument)
                 {
-                    if (mediaDocument.document is Document document)
+                    if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) != 0)
                     {
-                        DownloadDataCore(messageBase, document, null, refreshStatus, storeDocument);
+                        if (mediaDocument.document is Document document)
+                        {
+                            DownloadDataCore(messageBase, document, null, refreshStatus, storeMessage, storeDocument, findExistsMessage);
+                        }
                     }
                 }
-            }
-            else if (message.media is MessageMediaPhoto mediaPhoto)
-            {
-                if (mediaPhoto.photo is Photo photo)
+                else if (message.media is MessageMediaPhoto { photo: Photo photo })
                 {
-                    DownloadDataCore(messageBase, null, photo, refreshStatus, storeDocument);
+                    DownloadDataCore(messageBase, null, photo, refreshStatus, storeMessage, storeDocument, findExistsMessage);
                 }
             }
-            
-            // Finally.
-            if (findExistsMessage(TgDownload.SourceFirstId, TgDownload.SourceId) && TgDownload.IsRewriteMessages)
-                storeMessage(messageBase.ID, TgDownload.SourceId, messageBase.ToString() ?? string.Empty);
             refreshStatus("Read the message completed");
         }, refreshStatus);
     }
 
-    private void DownloadDataCore(MessageBase messageBase, Document? document, Photo? photo,
-        Action<string> refreshStatus, Action<long?, long?, long?, string, long, long> storeDocument)
+    private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(Document? document, Photo? photo)
     {
-        string originFileName = document?.Filename ?? (photo is { } ? $"{photo.ID}.jpg" : string.Empty);
-        string newFileName = originFileName;
-        long remoteFileSize = document?.size ?? (photo is { } ? photo.sizes.Length > 0 ? photo.sizes[0].FileSize : 0 : 0);
-        long accessHash = document?.access_hash ?? photo?.access_hash ?? 0;
-        string file = document is not null ? "document" : "photo";
-
-        if (TgDownload.IsJoinFileNameWithMessageId)
-            newFileName = TgDownload.SourceLastId switch
+        if (document is { })
+        {
+            if (!string.IsNullOrEmpty(document.Filename))
+                return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { (document.Filename, document.size, document.date, string.Empty, string.Empty) };
+            if (document.attributes.Length > 0)
             {
-                < 1000 => $"{messageBase.ID:000} {newFileName}",
-                < 10000 => $"{messageBase.ID:0000} {newFileName}",
-                < 100000 => $"{messageBase.ID:00000} {newFileName}",
-                < 1000000 => $"{messageBase.ID:000000} {newFileName}",
-                < 10000000 => $"{messageBase.ID:0000000} {newFileName}",
-                < 100000000 => $"{messageBase.ID:00000000} {newFileName}",
-                < 1000000000 => $"{messageBase.ID:000000000} {newFileName}",
-                _ => newFileName
-            };
-        string localOriginFileName = Path.Combine(TgDownload.DestDirectory, originFileName);
-        string localNewFileName = Path.Combine(TgDownload.DestDirectory, newFileName);
-        // Delete file.
-        (bool IsNeed, long Size) localFile = IsFileNeedDelete(localNewFileName, remoteFileSize, refreshStatus);
-        if (TgDownload.IsRewriteFiles && localFile.IsNeed)
-            DeleteFile(localNewFileName, localFile.Size, refreshStatus);
+                if (document.attributes.Any(x => x is DocumentAttributeVideo))
+                    return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.mp4", document.size, document.date, string.Empty, string.Empty) };
+                if (document.attributes.Any(x => x is DocumentAttributeAudio))
+                    return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.mp3", document.size, document.date, string.Empty, string.Empty) };
+            }
+            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.unknown", document.size, document.date, string.Empty, string.Empty) };
+        }
+        
+        if (photo is { })
+        {
+            //return photo.sizes.Select(x => ($"{photo.ID} {x.Width}x{x.Height}.{GetPhotoExt(x.Type)}", Convert.ToInt64(x.FileSize), photo.date, string.Empty, string.Empty)).ToArray();
+            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{photo.ID}.jpg", photo.sizes.Last().FileSize, photo.date, string.Empty, string.Empty) };
+        }
 
-        // Create & download file.
-        refreshStatus($"Read the {file} | {newFileName} | size {FileUtils.GetFileSizeString(remoteFileSize)}");
+        return Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>();
+    }
+
+    private void SetFilesLocalNames(MessageBase messageBase, ref (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files)
+    {
+        // Join ID.
+        for (int i = 0; i < files.Length; i++)
+        {
+            files[i].Join = TgDownload.SourceLastId switch
+            {
+                < 1000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000} {files[i].Remote}" : files[i].Remote,
+                < 10000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000} {files[i].Remote}" : files[i].Remote,
+                < 100000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000} {files[i].Remote}" : files[i].Remote,
+                < 1000000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000} {files[i].Remote}" : files[i].Remote,
+                < 10000000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000000} {files[i].Remote}" : files[i].Remote,
+                < 100000000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000000} {files[i].Remote}" : files[i].Remote,
+                < 1000000000 => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000000} {files[i].Remote}" : files[i].Remote,
+                _ => TgDownload.IsJoinFileNameWithMessageId ? $"{messageBase.ID} {files[i].Remote}" : files[i].Remote
+            };
+        }
+        // Join TgDownload.DestDirectory.
+        for (int i = 0; i < files.Length; i++)
+        {
+            files[i].Local = Path.Combine(TgDownload.DestDirectory, files[i].Remote);
+            files[i].Join = Path.Combine(TgDownload.DestDirectory, files[i].Join);
+        }
+    }
+
+    private void DeleteExistsFiles((string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files, Action<string> refreshStatus)
+    {
+        if (!TgDownload.IsRewriteFiles) return;
+        TryCatchAction(() =>
+        {
+            for (int i = 0; i < files.Length; i++)
+            {
+                string fileName = TgDownload.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
+                if (File.Exists(fileName))
+                {
+                    //using FileStream fileStream = File.OpenRead(fileName);
+                    //long size = fileStream.Length;
+                    //fileStream.Close();
+                    //if (size < files[i].Size)
+                        File.Delete(fileName);
+                }
+            }
+        }, refreshStatus);
+    }
+
+    private void DownloadDataCore(MessageBase messageBase, Document? document, Photo? photo,
+        Action<string> refreshStatus, Action<long?, long?, DateTime, string, string, long> storeMessage,
+        Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage)
+    {
+        (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files = GetFiles(document, photo);
+        if (Equals(files, Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>())) return;
+        SetFilesLocalNames(messageBase, ref files);
+        long accessHash = document?.access_hash ?? photo?.access_hash ?? 0;
+
+        // Delete files.
+        DeleteExistsFiles(files, refreshStatus);
 
         // Download file.
-        if (TgDownload.IsRewriteFiles || !File.Exists(localNewFileName))
+        for (int i = 0; i < files.Length; i++)
         {
-            if (File.Exists(localOriginFileName))
+            // Move exists file.
+            if (TgDownload.IsJoinFileNameWithMessageId)
             {
-                File.Move(localOriginFileName, localNewFileName);
+                if (File.Exists(files[i].Local) && !File.Exists(files[i].Join))
+                    File.Move(files[i].Local, files[i].Join);
             }
-            else
+            // FileName.
+            string fileName = TgDownload.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
+            // Scanning subdirectories for downloaded files to move them to the root directory.
+            foreach (string directory in Directory.GetDirectories(TgDownload.DestDirectory))
             {
-                using FileStream localFileStream = File.Create(localNewFileName);
+                string fileSubDir = Path.Combine(directory, files[i].Remote);
+                if (File.Exists(fileSubDir) && !File.Exists(fileName))
+                    File.Move(fileSubDir, fileName);
+            }
+            // Download new file.
+            if (!File.Exists(fileName))
+            {
+                using FileStream localFileStream = File.Create(fileName);
                 if (WClient is not null)
                 {
                     if (document is not null)
                     {
                         WClient.DownloadFileAsync(document, localFileStream).ConfigureAwait(true).GetAwaiter().GetResult();
-                        //long? id, long? sourceId, long? messageId, string fileName, long fileSize, long accessHash
-                        storeDocument(document.ID, TgDownload.SourceId, messageBase.ID, newFileName, remoteFileSize, accessHash);
+                        storeDocument(document.ID, TgDownload.SourceId, messageBase.ID, fileName, files[i].Size, accessHash);
                     }
                     else if (photo is not null)
                     {
-                        WClient.DownloadFileAsync(photo, localFileStream).ConfigureAwait(true).GetAwaiter().GetResult();
-                        //storeDocument(photo.ID, );
+                        //WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
+                        //    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, 
+                        //        size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
+                        WClient.DownloadFileAsync(photo, localFileStream)
+                            .ConfigureAwait(true).GetAwaiter().GetResult();
                     }
                 }
                 localFileStream.Close();
             }
-        }
-    }
-
-    private (bool, long) IsFileNeedDelete(string fileName, long remoteFileSize, Action<string> refreshStatus)
-    {
-        bool result = false;
-        long size = 0;
-        TryCatchAction(() =>
-        {
+            // Store message.
+            bool isExistsMessage = findExistsMessage(TgDownload.SourceFirstId, TgDownload.SourceId);
+            if (document is not null && ((isExistsMessage && TgDownload.IsRewriteMessages) || !isExistsMessage))
+            {
+                storeMessage(messageBase.ID, TgDownload.SourceId, files[i].DtCreate, files[i].Remote, nameof(Document), files[i].Size);
+            }
+            else if (photo is not null && ((isExistsMessage && TgDownload.IsRewriteMessages) || !isExistsMessage))
+            {
+                storeMessage(messageBase.ID, TgDownload.SourceId, files[i].DtCreate, files[i].Remote, nameof(Photo), files[i].Size);
+            }
+            // Set file date time.
             if (File.Exists(fileName))
             {
-                using FileStream fileStream = File.OpenRead(fileName);
-                size = fileStream.Length;
-                result = fileStream.Length < remoteFileSize;
-                fileStream.Close();
+                //File.SetCreationTime(fileName, files[i].DtCreate);
+                FileInfo fileInfo = new(fileName)
+                {
+                    CreationTimeUtc = files[i].DtCreate,
+                    LastAccessTimeUtc = files[i].DtCreate,
+                    LastWriteTimeUtc = files[i].DtCreate
+                };
             }
-        }, refreshStatus);
-        return (result, size);
-    }
-
-    private void DeleteFile(string fileName, long size, Action<string> refreshStatus)
-    {
-        if (!File.Exists(fileName)) return;
-        TryCatchAction(() =>
-        {
-            refreshStatus($"Delete | {fileName} | size {FileUtils.GetFileSizeString(size)} | in progress");
-            File.Delete(fileName);
-            refreshStatus($"Delete | {fileName} | {FileUtils.GetFileSizeString(size)} | was complete");
-        }, refreshStatus);
-    }
-
-    private void PrintAccessHashInfo(Channel channel, string userName)
-    {
-        if (WClient is not { }) return;
-        long accessHash = WClient.GetAccessHashFor<Channel>(channel.ID);
-        if (accessHash is not 0)
-        {
-            TgLog.Line(
-                $"Channel has ID {channel.ID} and access hash was already collected: {accessHash:X}");
         }
-        else
-        {
-            // Zero means the access hash for Channel was not collected yet.
-            // So we need to obtain it through Client API calls whose results contains the access_hash field, such as:
-            // - Messages_GetAllChats   (see Program_GetAllChats.cs   for an example on how to use it)
-            // - Messages_GetAllDialogs (see Program_ListenUpdates.cs for an example on how to use it)
-            // - Contacts_ResolveUsername                (see below for an example on how to use it)
-            // and many more API methods...
-            // The access_hash fields can be found inside instance of User, Channel, Photo, Document, etc..
-            // usually listed through their base class UserBase, ChatBase, PhotoBase, DocumentBase, etc...
-            TgLog.Line("Resolving channel to get its ID, access hash and other infos...");
-            Contacts_ResolvedPeer contactsResolved =
-                WClient.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter()
-                    .GetResult();
-            if (contactsResolved.peer.ID != channel.ID)
-                throw new("has changed channel ID ?!");
-            // should have been collected from the previous API result
-            accessHash = WClient.GetAccessHashFor<Channel>(channel.ID);
-            if (accessHash is 0)
-                throw new("No access hash was automatically collected !? (shouldn't happen)");
-            TgLog.Line(
-                $"Channel has ID {channel.ID} and access hash was automatically collected: {accessHash:X}");
-        }
-
-        TgLog.Line("With the access hash, we can now join the channel for example.");
-        WClient.Channels_JoinChannel(new InputChannel(channel.ID, accessHash)).ConfigureAwait(true).GetAwaiter().GetResult();
-
-        TgLog.Line("Channel joined. Press any key to save and exit");
-        Console.ReadKey(true);
-
-        TgLog.Line("Saving all collected access hashes to disk for next run...");
-        ListHashesChannels = WClient.AllAccessHashesFor<Channel>().ToList();
-        ListHashesUsers = WClient.AllAccessHashesFor<User>().ToList();
     }
+
+    private long GetAccessHash(long channelId) => WClient?.GetAccessHashFor<Channel>(channelId) ?? 0;
+
+    private long GetAccessHash(string userName)
+    {
+        Contacts_ResolvedPeer contactsResolved = WClient.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult();
+        //WClient.Channels_JoinChannel(new InputChannel(channelId, accessHash)).ConfigureAwait(true).GetAwaiter().GetResult();
+        return GetAccessHash(contactsResolved.peer.ID);
+    }
+
+    private long GetPeerId(string userName) =>
+        WClient.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult().peer.ID;
+
 
     #endregion
 
@@ -754,8 +788,6 @@ public partial class TgClientHelper : IHelper
         ListChannels = info.GetValue(nameof(ListChannels), typeof(List<Channel>)) as List<Channel> ?? new();
         ListChats = info.GetValue(nameof(ListChats), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
         ListGroups = info.GetValue(nameof(ListGroups), typeof(List<Channel>)) as List<Channel> ?? new();
-        ListHashesChannels = info.GetValue(nameof(ListHashesChannels), typeof(List<KeyValuePair<long, long>>)) as List<KeyValuePair<long, long>> ?? new();
-        ListHashesUsers = info.GetValue(nameof(ListHashesUsers), typeof(List<KeyValuePair<long, long>>)) as List<KeyValuePair<long, long>> ?? new();
         ListSmallGroups = info.GetValue(nameof(ListSmallGroups), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
         PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValueAsString(nameof(PhoneNumber));
     }
@@ -775,8 +807,6 @@ public partial class TgClientHelper : IHelper
         info.AddValue(nameof(Version), ListChannels);
         info.AddValue(nameof(Version), ListChats);
         info.AddValue(nameof(Version), ListGroups);
-        info.AddValue(nameof(Version), ListHashesChannels);
-        info.AddValue(nameof(Version), ListHashesUsers);
         info.AddValue(nameof(Version), ListSmallGroups);
         info.AddValue(nameof(Version), PhoneNumber);
     }

@@ -73,7 +73,7 @@ internal partial class MenuHelper
             "api_hash" => TgClient.ApiHash = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupApiHash)),
             "phone_number" => TgClient.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPhone)),
             "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
-            "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
+            "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)),
             "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
             "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
             "session_pathname" => FileNameUtils.Session,

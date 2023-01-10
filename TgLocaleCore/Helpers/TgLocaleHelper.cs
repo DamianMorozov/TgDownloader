@@ -75,11 +75,11 @@ public class TgLocaleHelper : IHelper
     public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
     public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
     public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
-    public string MenuDownloadSetSourceId => "Setup source ID";
-    public string MenuDownloadSetSourceFirstIdAuto => "Setup source first ID auto";
-    public string MenuDownloadSetSourceFirstIdManual => "Setup source first ID manual";
-    public string MenuDownloadSetSourceUserName => "Setup source user name";
-    public string MenuScanMyChannels => "Scan my channels and groups";
+    public string MenuDownloadSetSource => "Setup source (ID/username)";
+    public string MenuDownloadSetSourceFirstIdAuto => "Setup first ID auto";
+    public string MenuDownloadSetSourceFirstIdManual => "Setup first ID manual";
+    public string MenuScan => "Scan my sources";
+    public string MenuUpdate => "Update marked source";
 
     #endregion
 
@@ -120,8 +120,8 @@ public class TgLocaleHelper : IHelper
     public string TgSettingsIsJoinFileNameWithMessageId => "Join message ID";
     public string TgSettingsIsRewriteFiles => "Rewrite files";
     public string TgSettingsIsRewriteMessages => "Rewrite messages";
-    public string TgSettingsSourceId => "Source ID";
-    public string TgSettingsSourceFirstLastId => "First / last ID";
+    public string TgSettingsSource => "Source ID/username";
+    public string TgSettingsSourceFirstLastId => "First/last ID";
     public string TgSettingsSourceUserName => "Source user name";
     public string TgSetupApiHash => "Type API hash:";
     public string TgSetupAppId => "Type APP ID:";
@@ -132,14 +132,8 @@ public class TgLocaleHelper : IHelper
     public string TgSetupPassword => "Type password:";
     public string TgSetupPhone => "Type phone number:";
     public string TypeAnyKeyForReturn => "Type any key to return into the main menu.";
-    public string TypeDbFileName => "Type the DB file name:";
     public string TypeDestDirectory => "Type destination directory:";
-    public string TypeTgIsAddMessageId => "Type the using join message ID with file name(example: true/false):";
-    public string TypeTgIsRewriteFiles => "Type the using files rewrite (example: true/false):";
-    public string TypeTgIsRewriteMessages => "Type the using message rewrite (example: true/false):";
-    public string TypeTgSourceId => "Type the source ID:";
     public string TypeTgSourceFirstId => "Type the source first ID:";
-    public string TypeTgSourceUserName => "Type the source user name:";
 
     #endregion
 

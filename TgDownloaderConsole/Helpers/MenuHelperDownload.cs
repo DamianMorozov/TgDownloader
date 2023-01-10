@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Globalization;
 using TgStorageCore.Models.SourcesSettings;
 
 namespace TgDownloaderConsole.Helpers;
@@ -17,30 +18,30 @@ internal partial class MenuHelper
                 .PageSize(10)
                 .MoreChoicesText(TgLocale.MoveUpDown)
                 .AddChoices(
-                    TgLocale.MenuMainReturn, 
-                    TgLocale.MenuDownloadSetSourceId, 
-                    TgLocale.MenuDownloadSetSourceUserName, 
-                    TgLocale.MenuDownloadSetFolder, 
-                    TgLocale.MenuDownloadSetSourceFirstIdAuto, 
-                    TgLocale.MenuDownloadSetSourceFirstIdManual, 
+                    TgLocale.MenuMainReturn,
+                    TgLocale.MenuDownloadSetSource,
+                    TgLocale.MenuDownloadSetFolder,
+                    TgLocale.MenuDownloadSetSourceFirstIdAuto,
+                    TgLocale.MenuDownloadSetSourceFirstIdManual,
                     TgLocale.MenuDownloadSetIsRewriteFiles,
                     TgLocale.MenuDownloadSetIsRewriteMessages,
                     TgLocale.MenuDownloadSetIsAddMessageId,
                     TgLocale.MenuDownload
-                    //TgLocale.MenuScanMyChannels
+                    //TgLocale.MenuScan
+                    //TgLocale.MenuUpdate
                 ));
         return userChoose switch
         {
-            "Setup source ID" => MenuDownload.SetSourceId,
-            "Setup source user name" => MenuDownload.SetSourceUserName,
+            "Setup source (ID/username)" => MenuDownload.SetSource,
             "Setup download folder" => MenuDownload.SetDestDirectory,
-            "Setup source first ID auto" => MenuDownload.SetSourceFirstIdAuto,
-            "Setup source first ID manual" => MenuDownload.SetSourceFirstIdManual,
+            "Setup first ID auto" => MenuDownload.SetSourceFirstIdAuto,
+            "Setup first ID manual" => MenuDownload.SetSourceFirstIdManual,
             "Enable rewrite exists files" => MenuDownload.SetIsRewriteFiles,
             "Enable rewrite exists messages" => MenuDownload.SetIsRewriteMessages,
             "Enable join message ID with file name" => MenuDownload.SetIsAddMessageId,
             "Download" => MenuDownload.Download,
-            //"Scan my channels and groups" => MenuDownload.ScanChannels,
+            "Scan my sources" => MenuDownload.Scan,
+            "Update marked source" => MenuDownload.Update,
             _ => MenuDownload.Return
         };
     }
@@ -54,31 +55,17 @@ internal partial class MenuHelper
             menu = SetMenuDownload();
             switch (menu)
             {
-                case MenuDownload.SetSourceId:
-                    SetTgDownloadSourceId();
-                    TgClient.PrepareDownloadMessages(true);
-                    LoadTgClientSettings();
-                    SetSourceWithSettings();
+                case MenuDownload.SetSource:
+                    SetupDownloadSource();
                     break;
                 case MenuDownload.SetSourceFirstIdAuto:
-                    RunAction(SetTgDownloadSourceFirstIdAuto, true);
-                    LoadTgClientSettings();
-                    SetSourceWithSettings();
+                    SetupDownloadSourceFirstIdAuto();
                     break;
                 case MenuDownload.SetSourceFirstIdManual:
-                    SetTgDownloadSourceFirstIdManual();
-                    LoadTgClientSettings();
-                    SetSourceWithSettings();
-                    break;
-                case MenuDownload.SetSourceUserName:
-                    SetTgDownloadSourceUserName();
-                    TgClient.PrepareDownloadMessages(true);
-                    LoadTgClientSettings();
-                    SetSourceWithSettings();
+                    SetupDownloadSourceFirstIdManual();
                     break;
                 case MenuDownload.SetDestDirectory:
-                    SetTgDownloadDestDirectory();
-                    SetSourceWithSettings();
+                    SetupDownloadDestDirectory();
                     break;
                 case MenuDownload.SetIsRewriteFiles:
                     SetTgDownloadIsRewriteFiles();
@@ -92,8 +79,11 @@ internal partial class MenuHelper
                 case MenuDownload.Download:
                     RunAction(Download, false);
                     break;
-                case MenuDownload.ScanChannels:
-                    RunAction(ScanRange, true);
+                case MenuDownload.Scan:
+                    RunAction(Scan, true);
+                    break;
+                case MenuDownload.Update:
+                    RunAction(Update, true);
                     break;
                 case MenuDownload.Return:
                 default:
@@ -102,52 +92,54 @@ internal partial class MenuHelper
         } while (menu is not MenuDownload.Return);
     }
 
-    private void SetTgDownloadSourceId()
+    private void SetupDownloadSource(long? sId = null)
     {
         TgClient.TgDownload.SetDefault(1);
-        bool isCheck;
+        bool isCheck = false;
         do
         {
-            TgClient.TgDownload.SourceId = AnsiConsole.Ask<long>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceId));
-            isCheck = TgClient.TgDownload.IsReadySourceId;
+            string source = sId is { } lId ? lId.ToString() : AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetSource}:"));
+            if (!string.IsNullOrEmpty(source))
+            {
+                if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
+                {
+                    TgClient.TgDownload.SourceId = sourceId;
+                    isCheck = TgClient.TgDownload.IsReadySourceId;
+                }
+                else
+                {
+                    TgClient.TgDownload.SourceUserName = source.StartsWith(@"https://t.me/")
+                        ? source.Replace("https://t.me/", string.Empty)
+                        : source;
+                    isCheck = !string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName);
+                }
+            }
         } while (!isCheck);
+        TgClient.PrepareDownloadMessages(true);
+        LoadTgClientSettings(false, false);
     }
 
-    private void SetTgDownloadSourceFirstIdAuto()
+    private void SetupDownloadSourceFirstIdAuto()
     {
-        Channel? channel = TgClient.PrepareDownloadMessages(true);
-        if (channel is null) return;
-        TgClient.SetChannelMessageIdFirst(channel, RefreshStatusForDownload);
+        RunAction(() =>
+        {
+            Channel? channel = TgClient.PrepareDownloadMessages(true);
+            if (channel is null) return;
+            TgClient.SetChannelMessageIdFirst(channel, RefreshStatusForDownload);
+        }, true);
+        LoadTgClientSettings(true, false);
     }
 
-    private void SetTgDownloadSourceFirstIdManual()
+    private void SetupDownloadSourceFirstIdManual()
     {
-        bool isCheck;
         do
         {
             TgClient.TgDownload.SourceFirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceFirstId));
-            isCheck = TgClient.TgDownload.IsReadySourceFirstId;
-        } while (!isCheck);
+        } while (!TgClient.TgDownload.IsReadySourceFirstId);
+        LoadTgClientSettings(true, false);
     }
 
-    private void SetTgDownloadSourceUserName()
-    {
-        TgClient.TgDownload.SetDefault(1);
-        bool isCheck;
-        do
-        {
-            TgClient.TgDownload.SourceUserName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TypeTgSourceUserName));
-            if (!string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName))
-            {
-                TgClient.TgDownload.SourceUserName = TgClient.TgDownload.SourceUserName.StartsWith(@"https://t.me/")
-                    ? TgClient.TgDownload.SourceUserName.Replace("https://t.me/", string.Empty)
-                    : TgClient.TgDownload.SourceUserName;
-            }
-            isCheck = !string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName);
-        } while (!isCheck);
-    }
-
-    private void SetTgDownloadDestDirectory()
+    private void SetupDownloadDestDirectory()
     {
         do
         {
@@ -196,10 +188,12 @@ internal partial class MenuHelper
             TgClient.TgDownload.SourceFirstId, true);
     }
 
-    private void LoadTgClientSettings()
+    private void LoadTgClientSettings(bool isSkipFirstId, bool isSkipDestDirectory)
     {
         TableSourceSettingModel sourceSettings = TgStorage.GetRecord<TableSourceSettingModel>(null, TgClient.TgDownload.SourceId);
-        if (!TgClient.TgDownload.IsReadyDescription)
+        if (!isSkipFirstId)
+            TgClient.TgDownload.SourceFirstId = sourceSettings.FirstId;
+        if (!isSkipDestDirectory)
             TgClient.TgDownload.DestDirectory = sourceSettings.Directory;
     }
 
@@ -209,16 +203,31 @@ internal partial class MenuHelper
             TgStorage.AddOrUpdateRecordSource(channel.id, channel.username, channel.title, about, count, true);
     }
 
-    private void Download()
+    private void Scan()
     {
-        ShowTableDownload();
-        TgClient.DownloadAllData(RefreshStatusForDownload, StoreMessage, StoreDocument, FindExistsMessage);
+        ShowTableScan();
+        TgClient.FindAndStoreChannel(RefreshStatusForDownload, StoreSource);
     }
 
-    private void ScanRange()
+    private void Download()
     {
-        ShowTableScanRange();
-        TgClient.FindAndStoreChannel(RefreshStatusForDownload, StoreSource);
+        SetSourceWithSettings();
+        ShowTableDownload();
+        TgClient.DownloadAllData(RefreshStatusForDownload, StoreMessage, StoreDocument, FindExistsMessage);
+        SetSourceWithSettings();
+    }
+
+    private void Update()
+    {
+        List<TableSourceSettingModel> sourceSettings = TgStorage.GetRecords<TableSourceSettingModel>();
+        foreach (TableSourceSettingModel sourceSetting in sourceSettings)
+        {
+            if (sourceSetting.IsTaskUpdate)
+            {
+                SetupDownloadSource(sourceSetting.SourceId);
+                Download();
+            }
+        }
     }
 
     #endregion

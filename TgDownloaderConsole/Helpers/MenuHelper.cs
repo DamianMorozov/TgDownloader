@@ -68,7 +68,7 @@ internal partial class MenuHelper : IHelper
     
     internal void ShowTableDownload() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
-    internal void ShowTableScanRange() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScanRange);
+    internal void ShowTableScan() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScan);
 
     internal void FillTableColumns(Table table)
     {
@@ -140,6 +140,21 @@ internal partial class MenuHelper : IHelper
         }
     }
 
+    internal void FillTableRowsSource(Table table)
+    {
+        if (!TgClient.TgDownload.IsReadySourceId)
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSource)),
+                new Markup(TgLocale.SettingsIsNeedSetup));
+        else
+        {
+            string sourceValue = TgClient.TgDownload.IsReadySourceId ? TgClient.TgDownload.SourceId.ToString() : TgLocale.Empty;
+            if (!string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName))
+                sourceValue += $" | @{TgClient.TgDownload.SourceUserName}";
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSource)), new Markup(sourceValue));
+
+        }
+    }
+
     internal void FillTableRowsDownload(Table table)
     {
         // Download settings.
@@ -147,21 +162,8 @@ internal partial class MenuHelper : IHelper
                 ? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
             new Markup(TgClient.TgDownload.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-        // Source ID.
-        if (!TgClient.TgDownload.IsReadySourceId)
-            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceId)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
-        else
-            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceId)),
-                new Markup(TgClient.TgDownload.SourceId is { } sid ? sid.ToString() : TgLocale.Empty));
-
-        // Source user name.
-        if (!TgClient.TgDownload.IsReadySourceUserName)
-            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
-        else
-            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgClient.TgDownload.SourceUserName));
+        // Source ID/username.
+        FillTableRowsSource(table);
 
         // Dest dir.
         if (string.IsNullOrEmpty(TgClient.TgDownload.DestDirectory))
@@ -188,23 +190,10 @@ internal partial class MenuHelper : IHelper
             new Markup(TgClient.TgDownload.IsJoinFileNameWithMessageId.ToString()));
     }
 
-    internal void FillTableRowsScanRange(Table table)
+    internal void FillTableRowsScan(Table table)
     {
-        // Source ID.
-        if (!TgClient.TgDownload.IsReadySourceId)
-            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceId)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
-        else
-            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceId)),
-                new Markup(TgClient.TgDownload.SourceId is { } sid ? sid.ToString() : TgLocale.Empty));
-
-        // Source user name.
-        if (!TgClient.TgDownload.IsReadySourceUserName)
-            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
-        else
-            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceUserName)),
-                new Markup(TgClient.TgDownload.SourceUserName));
+        // Source ID/username.
+        FillTableRowsSource(table);
     }
 
     internal double CalcSourceProgress(long count, long current) =>
@@ -237,8 +226,8 @@ internal partial class MenuHelper : IHelper
         StatusContext.Refresh();
     }
 
-    public void StoreMessage(long? id, long? sourceId, string message) => 
-        TgStorage.AddOrUpdateRecordMessage(id, sourceId, message, true);
+    public void StoreMessage(long? id, long? sourceId, DateTime dtCreate, string message, string type, long size) => 
+        TgStorage.AddOrUpdateRecordMessage(id, sourceId, dtCreate, message, type, size, true);
 
     public void StoreDocument(long? id, long? sourceId, long? messageId, string fileName, long fileSize, long accessHash) => 
         TgStorage.AddOrUpdateRecordDocument(id, sourceId, messageId, fileName, fileSize, accessHash, true);

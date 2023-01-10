@@ -23,6 +23,9 @@ public class TableSourceSettingModel : TableBase
     [Column("FIRST_ID")]
     [DefaultValue(1)]
     public int FirstId { get; set; }
+    [Column("IS_TASK_UPDATE")]
+    [DefaultValue(0)]
+    public bool IsTaskUpdate { get; set; }
 
     public TableSourceSettingModel()
     {
@@ -30,13 +33,15 @@ public class TableSourceSettingModel : TableBase
         SourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
         Directory = this.GetPropertyDefaultValueAsString(nameof(Directory));
         FirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
+        IsTaskUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsTaskUpdate));
     }
 
-    public TableSourceSettingModel(long sourceId, string directory, int firstId) : this()
+    public TableSourceSettingModel(long sourceId, string directory, int firstId, bool isTaskUpdate) : this()
     {
         SourceId = sourceId;
         Directory = directory;
         FirstId = firstId;
+        IsTaskUpdate = isTaskUpdate;
     }
 
     #endregion
@@ -54,6 +59,7 @@ public class TableSourceSettingModel : TableBase
         SourceId = info.GetInt64(nameof(SourceId));
         Directory = info.GetString(nameof(Directory)) ?? this.GetPropertyDefaultValueAsString(nameof(Directory));
         FirstId = info.GetInt32(nameof(FirstId));
+        IsTaskUpdate = info.GetBoolean(nameof(IsTaskUpdate));
     }
 
     /// <summary>
@@ -67,6 +73,8 @@ public class TableSourceSettingModel : TableBase
         info.AddValue(nameof(Id), Id);
         info.AddValue(nameof(SourceId), SourceId);
         info.AddValue(nameof(Directory), Directory);
+        info.AddValue(nameof(FirstId), FirstId);
+        info.AddValue(nameof(IsTaskUpdate), IsTaskUpdate);
     }
 
     #endregion
