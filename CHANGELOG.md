@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.390] - 2023-01-10
+### Added
+- Set file date and time
+- Scanning subdirectories for downloaded files to move them to the root directory
+### Changed
+- Combining source ID and user name settings
+
 ## [0.1.360] - 2023-01-06
 ### Fixed
 - Entering a source ID
