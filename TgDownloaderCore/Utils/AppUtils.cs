@@ -2,8 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.Text;
+using TgCore.Utils;
 using TgDownloaderCore.Models;
-using TgLocaleCore.Utils;
 
 namespace TgDownloaderCore.Utils;
 
@@ -23,7 +23,7 @@ public static class AppUtils
         if (!IsExistsLocalFile) return new();
         using StreamReader streamReader = new(LocalFilePath, Encoding.Unicode);
         string xml = streamReader.ReadToEnd();
-        return !string.IsNullOrEmpty(xml) ? XmlUtils.DeserializeFromXml<AppModel>(xml) : new();
+        return !string.IsNullOrEmpty(xml) ? DataFormatUtils.DeserializeFromXml<AppModel>(xml) : new();
     }
 
     public static AppModel LoadSettings() => GetSettings();
@@ -31,8 +31,8 @@ public static class AppUtils
     public static void SetSettings(AppModel app)
     {
         //string xml = SerializeAsXmlString<TgSettingsModel>(true);
-        string xml = XmlUtils.SerializeAsXmlDocument(app, true).InnerXml;
-        xml = XmlUtils.GetPrettyXml(xml);
+        string xml = DataFormatUtils.SerializeAsXmlDocument(app, true).InnerXml;
+        xml = DataFormatUtils.GetPrettyXml(xml);
         using FileStream fileStream = new(LocalFilePath, FileMode.Create);
         using StreamWriter streamWriter = new(fileStream, Encoding.Unicode);
         streamWriter.Write(xml);

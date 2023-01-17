@@ -12,11 +12,6 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.4.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
+    <ProjectReference Include="..\TgCore\TgCore.csproj" />
   </ItemGroup>
 </Project>

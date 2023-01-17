@@ -1,7 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgLocaleCore.Utils;
+using TgCore.Utils;
+using TgDownloaderCore.Models;
+using TgLocalization.Enums;
 using TgStorageCore.Models.Apps;
 
 namespace TgDownloaderConsole.Helpers;
@@ -29,20 +31,20 @@ internal partial class MenuHelper
         };
     }
 
-    public void SetupClient()
+    public void SetupClient(TgDownloadSettingsModel tgDownloadSettings)
     {
         MenuClient menu;
         do
         {
-            ShowTableClient();
+            ShowTableClient(tgDownloadSettings);
             menu = SetMenuClient();
             switch (menu)
             {
                 case MenuClient.Connect:
-                    ClientConnect();
+                    ClientConnect(tgDownloadSettings);
                     break;
                 case MenuClient.GetInfo:
-                    ClientGetInfo();
+                    ClientGetInfo(tgDownloadSettings);
                     break;
                 case MenuClient.Return:
                 default:
@@ -54,36 +56,36 @@ internal partial class MenuHelper
     private string? GetConfigExists(string what) =>
         what switch
         {
-            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
+            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:")),
             "api_hash" => TgClient.ApiHash,
             "phone_number" => TgClient.PhoneNumber,
-            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
-            "notifications" => AnsiConsole.Ask<bool>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)).ToString(),
-            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
-            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
+            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupCode}:")),
+            "notifications" => AnsiConsole.Ask<bool>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:")).ToString(),
+            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:")),
+            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:")),
             "session_pathname" => FileNameUtils.Session,
-            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
+            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:")),
             _ => null
         };
 
     private string? GetConfigUser(string what) =>
         what switch
         {
-            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupAppId)),
-            "api_hash" => TgClient.ApiHash = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupApiHash)),
-            "phone_number" => TgClient.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPhone)),
-            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupCode)),
-            "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupNotifications)),
-            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupFirstName)),
-            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupLastName)),
+            "api_id" => TgClient.ApiId = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:")),
+            "api_hash" => TgClient.ApiHash = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:")),
+            "phone_number" => TgClient.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:")),
+            "verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupCode}:")),
+            "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:")),
+            "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:")),
+            "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:")),
             "session_pathname" => FileNameUtils.Session,
-            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo(TgLocale.TgSetupPassword)),
+            "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:")),
             _ => null
         };
 
     public void ClientConnectExists()
     {
-        TableAppModel app = TgStorage.GetRecord<TableAppModel>();
+        SqlTableAppModel app = TgStorage.GetItem<SqlTableAppModel>();
         if (TgStorage.IsValid(app))
         {
             TgClient.Connect(app.ApiHash, app.PhoneNumber, GetConfigExists, null);
@@ -99,17 +101,17 @@ internal partial class MenuHelper
         TgClient.CollectAllChats().GetAwaiter().GetResult();
     }
 
-    public void ClientConnect()
+    public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
     {
-        ShowTableClient();
+        ShowTableClient(tgDownloadSettings);
         ClientConnectNew();
         TgLog.Info(TgLocale.TgClientSetupComplete);
         Console.ReadKey();
     }
 
-    public void ClientGetInfo()
+    public void ClientGetInfo(TgDownloadSettingsModel tgDownloadSettings)
     {
-        ShowTableClient();
+        ShowTableClient(tgDownloadSettings);
         if (!TgClient.IsReady)
         {
             TgLog.Warning(TgLocale.TgMustClientConnect);

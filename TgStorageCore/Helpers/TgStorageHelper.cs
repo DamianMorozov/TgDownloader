@@ -1,7 +1,10 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgLocaleCore.Interfaces;
+using TgCore.Helpers;
+using TgCore.Interfaces;
+using TgCore.Utils;
+using TgLocalization.Helpers;
 using TgStorageCore.Models.Apps;
 using TgStorageCore.Models.Documents;
 using TgStorageCore.Models.Messages;
@@ -62,22 +65,22 @@ public partial class TgStorageHelper : IHelper
     {
         InitSqLiteCon();
         if (!IsReady) return;
-        SqLiteCon.CreateTable<TableAppModel>();
-        SqLiteCon.CreateTable<TableDocumentModel>();
-        SqLiteCon.CreateTable<TableMessageModel>();
-        SqLiteCon.CreateTable<TableSourceModel>();
-        SqLiteCon.CreateTable<TableSourceSettingModel>();
+        SqLiteCon.CreateTable<SqlTableAppModel>();
+        SqLiteCon.CreateTable<SqlTableDocumentModel>();
+        SqLiteCon.CreateTable<SqlTableMessageModel>();
+        SqLiteCon.CreateTable<SqlTableSourceModel>();
+        SqLiteCon.CreateTable<SqlTableSourceSettingModel>();
     }
 
     public void ClearTables()
     {
         InitSqLiteCon();
         if (!IsReady) return;
-        SqLiteCon.DeleteAll<TableAppModel>();
-        SqLiteCon.DeleteAll<TableDocumentModel>();
-        SqLiteCon.DeleteAll<TableMessageModel>();
-        SqLiteCon.DeleteAll<TableSourceSettingModel>();
-        SqLiteCon.DeleteAll<TableSourceModel>();
+        SqLiteCon.DeleteAll<SqlTableAppModel>();
+        SqLiteCon.DeleteAll<SqlTableDocumentModel>();
+        SqLiteCon.DeleteAll<SqlTableMessageModel>();
+        SqLiteCon.DeleteAll<SqlTableSourceSettingModel>();
+        SqLiteCon.DeleteAll<SqlTableSourceModel>();
     }
 
     public void DeleteExistsDb()
@@ -90,7 +93,7 @@ public partial class TgStorageHelper : IHelper
     {
         InitSqLiteCon();
         TgLog.Info(TgLocale.MenuClientGetInfo);
-        List<SQLiteConnection.ColumnInfo>? info = SqLiteCon.GetTableInfo(nameof(TableAppModel));
+        List<SQLiteConnection.ColumnInfo>? info = SqLiteCon.GetTableInfo(nameof(SqlTableAppModel));
         if (info is not null)
         {
             foreach (SQLiteConnection.ColumnInfo columnInfo in info)
@@ -103,11 +106,11 @@ public partial class TgStorageHelper : IHelper
     public void DropTables()
     {
         InitSqLiteCon();
-        SqLiteCon.DropTable<TableAppModel>();
-        SqLiteCon.DropTable<TableDocumentModel>();
-        SqLiteCon.DropTable<TableMessageModel>();
-        SqLiteCon.DropTable<TableSourceSettingModel>();
-        SqLiteCon.DropTable<TableSourceModel>();
+        SqLiteCon.DropTable<SqlTableAppModel>();
+        SqLiteCon.DropTable<SqlTableDocumentModel>();
+        SqLiteCon.DropTable<SqlTableMessageModel>();
+        SqLiteCon.DropTable<SqlTableSourceSettingModel>();
+        SqLiteCon.DropTable<SqlTableSourceModel>();
     }
 
     #endregion

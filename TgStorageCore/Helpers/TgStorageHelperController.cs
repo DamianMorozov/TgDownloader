@@ -17,7 +17,7 @@ public partial class TgStorageHelper
     public void AddOrUpdateRecordApp(string apiHash, string phoneNumber, bool isUseUpdate)
     {
         if (string.IsNullOrEmpty(apiHash) && string.IsNullOrEmpty(phoneNumber)) return;
-        TableAppModel item = GetRecord<TableAppModel>();
+        SqlTableAppModel item = GetItem<SqlTableAppModel>();
         if (!IsValid(item))
         {
             item = new(apiHash, phoneNumber);
@@ -37,7 +37,7 @@ public partial class TgStorageHelper
     {
         if (id is not { } lid) return;
         if (sourceId is not { } sid) return;
-        TableMessageModel item = GetRecord<TableMessageModel>(id, sid);
+        SqlTableMessageModel item = GetItem<SqlTableMessageModel>(id, sid);
         message = FixMessageString(item.SourceId, message);
 
         if (!IsValid(item))
@@ -70,7 +70,7 @@ public partial class TgStorageHelper
         if (id is not { } lid) return;
         if (sourceId is not { } sid) return;
         if (messageId is not { } mid) return;
-        TableDocumentModel item = GetRecord<TableDocumentModel>(id, sid, mid);
+        SqlTableDocumentModel item = GetItem<SqlTableDocumentModel>(id, sid, mid);
         if (!IsValid(item))
         {
             item = new(lid, sid, mid, fileName, fileSize, accessHash);
@@ -97,7 +97,7 @@ public partial class TgStorageHelper
     public void AddOrUpdateRecordSource(long? id, string userName, string title, string about, int count, bool isUseUpdate)
     {
         if (id is not { } lid) return;
-        TableSourceModel item = GetRecord<TableSourceModel>(id);
+        SqlTableSourceModel item = GetItem<SqlTableSourceModel>(id);
         if (!IsValid(item))
         {
             item = new(lid, userName, title, about, count);
@@ -118,13 +118,13 @@ public partial class TgStorageHelper
         }
     }
 
-    public void AddOrUpdateRecordSourceSetting(long? sourceId, string directory, int firstId, bool isUseUpdate)
+    public void AddOrUpdateRecordSourceSetting(long? sourceId, string directory, int firstId, bool isAutoUpdate, bool isUseUpdate)
     {
         if (sourceId is not { } sid) return;
-        TableSourceSettingModel item = GetRecord<TableSourceSettingModel>(null, sourceId);
+        SqlTableSourceSettingModel item = GetItem<SqlTableSourceSettingModel>(null, sourceId);
         if (!IsValid(item))
         {
-            item = new(sid, directory, firstId, false);
+            item = new(sid, directory, firstId, isAutoUpdate);
             if (IsValid(item))
                 SqLiteCon.Insert(item);
         }
@@ -132,6 +132,7 @@ public partial class TgStorageHelper
         {
             item.FirstId = firstId;
             item.Directory = directory;
+            item.IsAutoUpdate = isAutoUpdate;
             if (IsValid(item))
             {
                 SqLiteCon.Update(item);
@@ -139,25 +140,25 @@ public partial class TgStorageHelper
         }
     }
 
-    public T GetRecord<T>(long? firstId = null, long? secondId = null, long? thirdId = null) where T : TableBase, new()
+    public T GetItem<T>(long? firstId = null, long? secondId = null, long? thirdId = null) where T : SqlTableBase, new()
     {
         InitSqLiteCon();
         List<T>? items = null;
         switch (typeof(T))
         {
-            case var cls when cls == typeof(TableAppModel):
+            case var cls when cls == typeof(SqlTableAppModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Apps}");
                 break;
-            case var cls when cls == typeof(TableDocumentModel):
+            case var cls when cls == typeof(SqlTableDocumentModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Documents} WHERE ID = {firstId} AND SOURCE_ID = {secondId} AND MESSAGE_ID = {thirdId}");
                 break;
-            case var cls when cls == typeof(TableMessageModel):
+            case var cls when cls == typeof(SqlTableMessageModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Messages} WHERE ID = {firstId} AND SOURCE_ID = {secondId}");
                 break;
-            case var cls when cls == typeof(TableSourceModel):
+            case var cls when cls == typeof(SqlTableSourceModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Sources} WHERE ID = {firstId}");
                 break;
-            case var cls when cls == typeof(TableSourceSettingModel):
+            case var cls when cls == typeof(SqlTableSourceSettingModel):
                 if (firstId is not null)
                     items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.SourcesSettings} WHERE ID = {firstId}");
                 else if (secondId is not null)
@@ -168,25 +169,25 @@ public partial class TgStorageHelper
         return items.First();
     }
 
-    public List<T> GetRecords<T>(long? firstId = null, long? secondId = null, long? thirdId = null) where T : TableBase, new()
+    public List<T> GetList<T>(long? firstId = null, long? secondId = null, long? thirdId = null) where T : SqlTableBase, new()
     {
         InitSqLiteCon();
         List<T>? items = null;
         switch (typeof(T))
         {
-            case var cls when cls == typeof(TableAppModel):
+            case var cls when cls == typeof(SqlTableAppModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Apps}");
                 break;
-            case var cls when cls == typeof(TableDocumentModel):
+            case var cls when cls == typeof(SqlTableDocumentModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Documents} WHERE ID = {firstId} AND SOURCE_ID = {secondId} AND MESSAGE_ID = {thirdId}");
                 break;
-            case var cls when cls == typeof(TableMessageModel):
+            case var cls when cls == typeof(SqlTableMessageModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Messages} WHERE ID = {firstId} AND SOURCE_ID = {secondId}");
                 break;
-            case var cls when cls == typeof(TableSourceModel):
+            case var cls when cls == typeof(SqlTableSourceModel):
                 items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Sources} WHERE ID = {firstId}");
                 break;
-            case var cls when cls == typeof(TableSourceSettingModel):
+            case var cls when cls == typeof(SqlTableSourceSettingModel):
                 if (firstId is null && secondId is null && thirdId is null)
                     items = SqLiteCon.Query<T>($@"
 SELECT * FROM [{TableNamesUtils.SourcesSettings}] [SS]
@@ -225,15 +226,15 @@ ORDER BY [S].[USER_NAME]
         return message;
     }
 
-    public bool IsValid<T>(T item) where T : TableBase, new()
+    public bool IsValid<T>(T item) where T : SqlTableBase, new()
     {
         ValidationResult? validationResult = item switch
         {
-            TableAppModel app => new TableAppValidator().Validate(app),
-            TableDocumentModel document => new TableDocumentValidator().Validate(document),
-            TableMessageModel message => new TableMessageValidator().Validate(message),
-            TableSourceModel source => new TableSourceValidator().Validate(source),
-            TableSourceSettingModel sourceSetting => new TableSourceSettingValidator().Validate(sourceSetting),
+            SqlTableAppModel app => new SqlTableAppValidator().Validate(app),
+            SqlTableDocumentModel document => new SqlTableDocumentValidator().Validate(document),
+            SqlTableMessageModel message => new SqlTableMessageValidator().Validate(message),
+            SqlTableSourceModel source => new SqlTableSourceValidator().Validate(source),
+            SqlTableSourceSettingModel sourceSetting => new SqlTableSourceSettingValidator().Validate(sourceSetting),
             _ => null
         };
         return validationResult?.IsValid ?? false;
