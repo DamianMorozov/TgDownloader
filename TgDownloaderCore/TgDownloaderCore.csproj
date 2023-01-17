@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.390.0</Version>
+    <Version>0.1.430.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -15,6 +15,6 @@
     <PackageReference Include="WTelegramClient" Version="3.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TgLocaleCore\TgLocaleCore.csproj" />
+    <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
   </ItemGroup>
 </Project>

@@ -3,8 +3,8 @@
 
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using TgLocaleCore.Interfaces;
-using TgLocaleCore.Utils;
+using TgCore.Interfaces;
+using TgCore.Utils;
 
 namespace TgDownloaderCore.Models;
 

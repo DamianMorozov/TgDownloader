@@ -7,6 +7,4 @@ global using System.Text;
 global using Spectre.Console;
 global using TgDownloaderConsole.Helpers;
 global using TgDownloaderCore.Helpers;
-global using TgLocaleCore.Enums;
-global using TgLocaleCore.Helpers;
 global using TL;

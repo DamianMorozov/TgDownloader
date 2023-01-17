@@ -8,6 +8,4 @@ global using System.Diagnostics;
 global using System.Runtime.Serialization;
 global using FluentValidation.Results;
 global using SQLite;
-global using TgLocaleCore.Helpers;
-global using TgLocaleCore.Utils;
 global using TgStorageCore.Models;

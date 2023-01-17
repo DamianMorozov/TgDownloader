@@ -2,8 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.Runtime.Serialization;
+using TgCore.Helpers;
+using TgCore.Interfaces;
 using TgDownloaderCore.Models;
-using TgLocaleCore.Interfaces;
+using TgLocalization.Enums;
+using TgLocalization.Helpers;
 using TgStorageCore.Helpers;
 using TgStorageCore.Models.Messages;
 
@@ -18,11 +21,6 @@ internal partial class MenuHelper : IHelper
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public static MenuHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
-    public MenuHelper()
-    {
-        App = new();
-    }
-
     #endregion
 
     #region Public and internal fields, properties, constructor
@@ -31,16 +29,20 @@ internal partial class MenuHelper : IHelper
     internal TgLogHelper TgLog => TgLogHelper.Instance;
     internal TgClientHelper TgClient => TgClientHelper.Instance;
     internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
-    internal StatusContext? StatusContext = null;
     internal TgStorageHelper TgStorage => TgStorageHelper.Instance;
     internal AppModel App { get; set; }
     internal MenuMain Value { get; set; } = MenuMain.Exit;
+
+    public MenuHelper()
+    {
+        App = new();
+    }
 
     #endregion
 
     #region Public and internal methods
 
-    internal void ShowTableCore(string title, Action<Table> fillTableColumns, Action<Table> fillTableRows)
+    internal void ShowTableCore(TgDownloadSettingsModel tgDownloadSettings, string title, Action<Table> fillTableColumns, Action<TgDownloadSettingsModel, Table> fillTableRows)
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new FigletText(TgLocale.AppTitle).Alignment(Justify.Center).Color(Color.Yellow));
@@ -54,21 +56,21 @@ internal partial class MenuHelper : IHelper
         fillTableColumns(table);
         
         if (table.Rows.Count > 0) table.Rows.Clear();
-        fillTableRows(table);
+        fillTableRows(tgDownloadSettings, table);
 
         table.Expand();
         AnsiConsole.Write(table);
     }
 
-    internal void ShowTableMain() => ShowTableCore(TgLocale.MenuMain, FillTableColumns, FillTableRowsMain);
+    internal void ShowTableMain(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMain, FillTableColumns, FillTableRowsMain);
 
-    internal void ShowTableStorageSettings() => ShowTableCore(TgLocale.MenuMainStorage, FillTableColumns, FillTableRowsStorage);
+    internal void ShowTableStorageSettings(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainStorage, FillTableColumns, FillTableRowsStorage);
 
-    internal void ShowTableClient() => ShowTableCore(TgLocale.TgSettings, FillTableColumns, FillTableRowsClient);
+    internal void ShowTableClient(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.TgSettings, FillTableColumns, FillTableRowsClient);
     
-    internal void ShowTableDownload() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
+    internal void ShowTableDownload(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
-    internal void ShowTableScan() => ShowTableCore(TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScan);
+    internal void ShowTableScan(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScan);
 
     internal void FillTableColumns(Table table)
     {
@@ -80,7 +82,7 @@ internal partial class MenuHelper : IHelper
             new Markup(TgLocale.AppValue, StyleMain)) { Width = 80 }.LeftAligned());
     }
 
-    internal void FillTableRowsMain(Table table)
+    internal void FillTableRowsMain(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(App.Version));
 
@@ -95,12 +97,12 @@ internal partial class MenuHelper : IHelper
             new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
         // Download settings.
-        table.AddRow(new Markup(TgClient.TgDownload.IsReady
+        table.AddRow(new Markup(tgDownloadSettings.IsReady
             ? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
-            new Markup(TgClient.TgDownload.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+            new Markup(tgDownloadSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
     }
 
-    internal void FillTableRowsStorage(Table table)
+    internal void FillTableRowsStorage(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         // Storage settings.
         table.AddRow(new Markup(TgStorage.IsReady
@@ -112,7 +114,7 @@ internal partial class MenuHelper : IHelper
             new Markup(TgStorage.IsReadyFileExists ? TgLocale.FileIsExists : TgLocale.FileIsNotExists));
     }
 
-    internal void FillTableRowsClient(Table table)
+    internal void FillTableRowsClient(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         // TG client settings.
         table.AddRow(new Markup(TgClient.IsReady ?
@@ -140,90 +142,64 @@ internal partial class MenuHelper : IHelper
         }
     }
 
-    internal void FillTableRowsSource(Table table)
+    internal void FillTableRowsSource(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
-        if (!TgClient.TgDownload.IsReadySourceId)
-            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsSource)),
+        if (!tgDownloadSettings.IsReadySourceId)
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
                 new Markup(TgLocale.SettingsIsNeedSetup));
         else
         {
-            string sourceValue = TgClient.TgDownload.IsReadySourceId ? TgClient.TgDownload.SourceId.ToString() : TgLocale.Empty;
-            if (!string.IsNullOrEmpty(TgClient.TgDownload.SourceUserName))
-                sourceValue += $" | @{TgClient.TgDownload.SourceUserName}";
-            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSource)), new Markup(sourceValue));
+            string sourceValue = tgDownloadSettings.IsReadySourceId ? tgDownloadSettings.SourceId.ToString() : TgLocale.Empty;
+            if (!string.IsNullOrEmpty(tgDownloadSettings.SourceUserName))
+                sourceValue += $" | @{tgDownloadSettings.SourceUserName}";
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)), new Markup(sourceValue));
 
         }
     }
 
-    internal void FillTableRowsDownload(Table table)
+    internal void FillTableRowsDownload(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         // Download settings.
-        table.AddRow(new Markup(TgClient.TgDownload.IsReady
+        table.AddRow(new Markup(tgDownloadSettings.IsReady
                 ? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
-            new Markup(TgClient.TgDownload.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+            new Markup(tgDownloadSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
         // Source ID/username.
-        FillTableRowsSource(table);
+        FillTableRowsSource(tgDownloadSettings, table);
 
         // Dest dir.
-        if (string.IsNullOrEmpty(TgClient.TgDownload.DestDirectory))
+        if (string.IsNullOrEmpty(tgDownloadSettings.DestDirectory))
             table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsDestDirectory)),
                 new Markup(TgLocale.SettingsIsNeedSetup));
         else
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
-                new Markup(TgClient.TgDownload.DestDirectory));
+                new Markup(tgDownloadSettings.DestDirectory));
         
         // Source start ID / last ID.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
-            new Markup($"{TgClient.TgDownload.SourceFirstId} / {TgClient.TgDownload.SourceLastId}"));
+            new Markup($"{tgDownloadSettings.SourceFirstId} / {tgDownloadSettings.SourceLastId}"));
 
         // Is rewrite files.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
-            new Markup(TgClient.TgDownload.IsRewriteFiles.ToString()));
+            new Markup(tgDownloadSettings.IsRewriteFiles.ToString()));
         
         // Is rewrite messages.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteMessages)),
-            new Markup(TgClient.TgDownload.IsRewriteMessages.ToString()));
+            new Markup(tgDownloadSettings.IsRewriteMessages.ToString()));
 
         // Is join message ID with file name.
         table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsJoinFileNameWithMessageId)),
-            new Markup(TgClient.TgDownload.IsJoinFileNameWithMessageId.ToString()));
+            new Markup(tgDownloadSettings.IsJoinFileNameWithMessageId.ToString()));
+
+        // Is auto update.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuIsAutoUpdate)),
+            new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
     }
 
-    internal void FillTableRowsScan(Table table)
+    internal void FillTableRowsScan(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         // Source ID/username.
-        FillTableRowsSource(table);
-    }
-
-    internal double CalcSourceProgress(long count, long current) =>
-        count == 0 ? 0 : (double)(current * 100) / count;
-
-    private string GetLongString(long current) => current > 999 ? $"{current:### ###}" : $"{current:###}";
-
-    public string GetStatus(Stopwatch sw, long count, long current) =>
-        count == 0 && current == 0
-            ? $"{TgLog.GetDtShortStamp()} | {sw.Elapsed} | "
-            : $"{TgLog.GetDtShortStamp()} | {sw.Elapsed} | " +
-              $"{CalcSourceProgress(count, current):#00.00} % | " +
-              $"{GetLongString(current)} / {GetLongString(count)}";
-
-    public string GetStatus(long count, long current) =>
-        count == 0 && current == 0
-            ? TgLog.GetDtShortStamp()
-            : $"{TgLog.GetDtShortStamp()} | " +
-              $"{CalcSourceProgress(count, current):#00.00} % | " +
-              $"{GetLongString(current)} / {GetLongString(count)}";
-
-    public bool CheckTgSettings() =>
-        TgClient is { IsReady: true, TgDownload.IsReady: true };
-
-    public void RefreshStatusForDownload(string message)
-    {
-        if (StatusContext is null) return;
-        StatusContext.Status(TgLog.GetMarkupString(
-            $"{GetStatus(TgClient.TgDownload.SourceLastId, TgClient.TgDownload.SourceFirstId)} | {message}"));
-        StatusContext.Refresh();
+        FillTableRowsSource(tgDownloadSettings, table);
     }
 
     public void StoreMessage(long? id, long? sourceId, DateTime dtCreate, string message, string type, long size) => 
@@ -234,7 +210,7 @@ internal partial class MenuHelper : IHelper
 
     public bool FindExistsMessage(long? id, long? sourceId)
     {
-        TableMessageModel message = TgStorage.GetRecord<TableMessageModel>(id, sourceId);
+        SqlTableMessageModel message = TgStorage.GetItem<SqlTableMessageModel>(id, sourceId);
         return TgStorage.IsValid(message);
     }
 
@@ -251,7 +227,6 @@ internal partial class MenuHelper : IHelper
     {
         App = info.GetValue(nameof(App), typeof(AppModel)) as AppModel ?? new();
         Value = (MenuMain)info.GetValue(nameof(Value), typeof(MenuMain));
-        StatusContext = (StatusContext)info.GetValue(nameof(StatusContext), typeof(StatusContext));
     }
 
     /// <summary>
@@ -263,7 +238,6 @@ internal partial class MenuHelper : IHelper
     {
         info.AddValue(nameof(App), App);
         info.AddValue(nameof(Value), Value);
-        info.AddValue(nameof(StatusContext), StatusContext);
     }
 
     #endregion

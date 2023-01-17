@@ -1,9 +1,12 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgCore.Helpers;
+using TgCore.Utils;
 using TgDownloaderCore.Models;
 using TgDownloaderCore.Utils;
-using TgLocaleCore.Utils;
+using TgLocalization.Enums;
+using TgLocalization.Helpers;
 using TgStorageCore.Helpers;
 
 AppModel app;
@@ -11,6 +14,7 @@ MenuHelper menu = MenuHelper.Instance;
 TgLocaleHelper locale = TgLocaleHelper.Instance;
 TgLogHelper log = TgLogHelper.Instance;
 TgStorageHelper tgStorage = TgStorageHelper.Instance;
+TgDownloadSettingsModel tgDownloadSettings = new();
 
 Setup();
 
@@ -18,7 +22,7 @@ do
 {
     try
     {
-        menu.ShowTableMain();
+        menu.ShowTableMain(tgDownloadSettings);
         string userChoose = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title(locale.MenuSwitchNumber)
@@ -32,15 +36,15 @@ do
                 break;
             case "Storage settings":
                 menu.Value = MenuMain.SetStorage;
-                menu.SetupStorage();
+                menu.SetupStorage(tgDownloadSettings);
                 break;
             case "Client settings":
                 menu.Value = MenuMain.SetClient;
-                menu.SetupClient();
+                menu.SetupClient(tgDownloadSettings);
                 break;
             case "Download settings":
                 menu.Value = MenuMain.SetDownload;
-                menu.SetupDownload();
+                menu.SetupDownload(tgDownloadSettings);
                 break;
         }
     }

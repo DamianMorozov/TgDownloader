@@ -4,7 +4,18 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Неизданное]
+- Прокси для загрузки
+- Справочное меню
+- Русская локализация
+- Настраиваемые фильтры загрузок
+
+## [0.1.430] - 2023-01-17
+### Добавлено
+- Авто скачивание
+### Скриншоты
+<p align="center"><img src="Assets/v0.1.430/TgDownloaderConsole_Download_settings.png"></p>
+
 
 ## [0.1.390] - 2023-01-10
 ### Добавлено

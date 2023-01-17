@@ -5,7 +5,7 @@ namespace TgDownloaderCore.Helpers;
 
 public partial class TgClientHelper
 {
-    private void TryCatchAction(Action action, Action<string>? refreshStatus = null,
+    private void TryCatchAction(Action action, Action<string, bool>? refreshStatus = null, 
         [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
     {
         try
@@ -19,9 +19,9 @@ public partial class TgClientHelper
             if (refreshStatus is not null)
             {
                 //refreshStatus($"Exception at | {nameof(fileName)}: {fileName} | {nameof(lineNumber)}: {lineNumber} | {nameof(memberName)}: {memberName}");
-                refreshStatus(ex.Message);
+                refreshStatus(ex.Message, false);
                 if (ex.InnerException is not null)
-                    refreshStatus(ex.InnerException.Message);
+                    refreshStatus(ex.InnerException.Message, false);
             }
         }
     }
