@@ -1,6 +1,6 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">English</a> | <a href="README-RUS.md">Русский</a></b></div>
+## <div align="center"><b><a href="README.md">README</a> | <a href="CHANGELOG.md">CHANGELOG</a> | <a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a></b></div>
 
 <div align="center">
 	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
