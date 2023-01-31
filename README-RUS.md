@@ -17,7 +17,7 @@
 - Сохраните значения полей "App api_id" и "App api_hash"
 
 ## Запуск под ОС Windows
-- Распакуйте архив `TgDownloader v1.2.333.zip` в `TgDownloader v1.2.333`.
+- Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`.
 - Измените текущий каталог `cd TgDownloader v1.2.333`.
 - Выполните команду `TgDownloaderConsole.exe`
 

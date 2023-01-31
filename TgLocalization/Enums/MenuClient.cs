@@ -6,6 +6,8 @@ namespace TgLocalization.Enums;
 public enum MenuClient
 {
     Return,
+    EnableProxy,
+    SetProxy,
     Connect,
     GetInfo,
 }

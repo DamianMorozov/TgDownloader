@@ -21,7 +21,7 @@ public class TgLocaleHelper : IHelper
     #region Public and private fields, properties, constructor
 
     public LanguageLocale Language { get; set; }
-    public string InfoMessage(string message) => $"[green]i {message}[/]";
+    public string InfoMessage(string message, bool isUseX = false) => !isUseX ? $"[green]✓ {message}[/]" : $"[green]x {message}[/]";
     public string WarningMessage(string message) => $"[red]x {message}[/]";
 
 
@@ -43,11 +43,12 @@ public class TgLocaleHelper : IHelper
     #region Public and private fields, properties, constructor - Main menu
 
     public string MenuMain => "Main menu";
-    public string MenuMainExit => "Exit";
-    public string MenuMainDownload => "Download settings";
-    public string MenuMainStorage => "Storage settings";
+    public string MenuMainAdvanced => "Advanced";
     public string MenuMainClient => "Client settings";
+    public string MenuMainDownload => "Download settings";
+    public string MenuMainExit => "Exit";
     public string MenuMainReturn => "Return";
+    public string MenuMainStorage => "Storage settings";
 
     #endregion
 
@@ -75,14 +76,18 @@ public class TgLocaleHelper : IHelper
     public string MenuDownloadManual => "Manual download";
     public string MenuDownloadSetFolder => "Setup download folder";
     public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
+    public string MenuDownloadSetIsAutoUpdate => "Enable auto update";
     public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
     public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
     public string MenuDownloadSetSource => "Setup source (ID/username)";
     public string MenuDownloadSetSourceFirstIdAuto => "Setup first ID auto";
     public string MenuDownloadSetSourceFirstIdManual => "Setup first ID manual";
-    public string MenuIsAutoUpdate => "Enable auto update";
+    public string MenuProxyEnable => "Enable proxy";
+    public string MenuProxyDisable => "Disable proxy";
     public string MenuSaveSettings => "Save settings";
-    public string MenuScan => "Scan my sources";
+    public string MenuScanSources => "Scan local sources";
+    public string MenuSetProxy => "Setup proxy";
+    public string MenuViewSources => "View local sources";
 
     #endregion
 
@@ -97,10 +102,15 @@ public class TgLocaleHelper : IHelper
     public string FileIsExistsSpecify(string file) => $"File \"{file}\" is exists.";
     public string FileIsNotExists => "File is not exists!";
     public string FileIsNotExistsSpecify(string file) => $"File \"{file}\" is not exists!";
+    public string IsFalse => "False";
+    public string IsTrue => "True";
     public string MenuSwitchNumber => "  Switch menu number";
     public string MoveUpDown => "(Move up and down to switch select)";
+    public string SettingIsDisabled => "Setting is disabled";
+    public string SettingIsEnabled => "Setting is enabled";
     public string SettingsIsNeedSetup => "Something is need setup";
     public string SettingsIsOk => "Everything is ok";
+    public string SettingsSource => "Source ID/username";
     public string StatusException => "Exception:";
     public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
     public string StatusInnerException => "Inner exception:";
@@ -110,7 +120,16 @@ public class TgLocaleHelper : IHelper
     public string StorageTablesExists => "Tables are exists";
     public string TablesAreExists => "Tables are exists";
     public string TablesAreNotExists => "Tables are not exists";
-    public string TgClientSetupComplete => "Setup the TG client was complete";
+    public string TgClientException => "Client exception";
+    public string TgClientProxyException => "Proxy exception";
+    public string TgClientProxyHostName => "Proxy hostname";
+    public string TgClientProxyPort => "Proxy port";
+    public string TgClientProxySecret => "Proxy secret";
+    public string TgClientProxySetup => "Proxy setup";
+    public string TgClientProxyType => "Proxy type";
+    public string TgClientProxyUsage => "Proxy usage";
+    public string TgClientSetupCompleteSuccess => "The TG client setup was completed successfully";
+    public string TgClientSetupCompleteError => "The TG client setup was completed with errors";
     public string TgClientUserId => "User ID";
     public string TgClientUserIsActive => "User active";
     public string TgClientUserName => "User name";
@@ -123,7 +142,6 @@ public class TgLocaleHelper : IHelper
     public string TgSettingsIsJoinFileNameWithMessageId => "Join message ID";
     public string TgSettingsIsRewriteFiles => "Rewrite files";
     public string TgSettingsIsRewriteMessages => "Rewrite messages";
-    public string SettingsSource => "Source ID/username";
     public string TgSettingsSourceFirstLastId => "First/last ID";
     public string TgSetupApiHash => "Type API hash";
     public string TgSetupAppId => "Type APP ID";
@@ -135,6 +153,10 @@ public class TgLocaleHelper : IHelper
     public string TgSetupPhone => "Type phone number";
     public string TypeAnyKeyForReturn => "Type any key to return into the main menu";
     public string TypeDestDirectory => "Type destination directory";
+    public string TypeTgProxyHostName => "Type the proxy host name or ip-address";
+    public string TypeTgProxyPort => "Type the proxy port";
+    public string TypeTgProxySecret => "Type the secret";
+    public string TypeTgProxyType => "Type the proxy type";
     public string TypeTgSourceFirstId => "Type the source first ID";
 
     #endregion

@@ -5,16 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Proxy for downloads
 - Help menu
 - Russian localization
 - Customizable download filters
+- Scanning of local channels/groups
+
+## [0.1.500] - 2023-01-31
+### Added
+- Proxy for downloads
+- Client and proxy exception messages
 
 ## [0.1.430] - 2023-01-17
 ### Added
 - Auto download
-### Screenshots
-<p align="center"><img src="Assets/v0.1.430/TgDownloaderConsole_Download_settings.png"></p>
 
 ## [0.1.390] - 2023-01-10
 ### Added

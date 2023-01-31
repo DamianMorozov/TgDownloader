@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloaderCore.Models;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class MenuHelper
@@ -11,7 +9,7 @@ internal partial class MenuHelper
 
     public bool CheckTgSettingsWithWarning(TgDownloadSettingsModel tgDownloadSettings)
     {
-        bool result = TgClient is { IsReady: true } && tgDownloadSettings.IsReadySourceId;
+        bool result = TgClient is { IsReady: true } && tgDownloadSettings.IsReady;
         if (!result)
         {
             TgLog.Warning(TgLocale.TgMustSetSettings);
@@ -22,7 +20,7 @@ internal partial class MenuHelper
 
     public void RunAction(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel, Action<string, bool>> action, bool isSkipCheckTgSettings)
     {
-        if (!CheckTgSettingsWithWarning(tgDownloadSettings) && !isSkipCheckTgSettings)
+        if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
             return;
 
         AnsiConsole.Status()

@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.1.430.0</Version>
+		<Version>0.1.500.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -55,12 +55,12 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Spectre.Console" Version="0.45.0" />
+		<PackageReference Include="Spectre.Console" Version="0.46.0" />
 		<PackageReference Include="WTelegramClient" Version="3.2.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\TgDownloaderCore\TgDownloaderCore.csproj" />
+	  <ProjectReference Include="..\TgDownloader\TgDownloader.csproj" />
 	  <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
-	  <ProjectReference Include="..\TgStorageCore\TgStorageCore.csproj" />
+	  <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
 	</ItemGroup>
 </Project>

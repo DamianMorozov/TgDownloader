@@ -2,10 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.Globalization;
-using TgDownloaderCore.Models;
-using TgLocalization.Enums;
-using TgStorageCore.Models.Sources;
-using TgStorageCore.Models.SourcesSettings;
 
 namespace TgDownloaderConsole.Helpers;
 
@@ -15,7 +11,7 @@ internal partial class MenuHelper
 
     private MenuDownload SetMenuDownload()
     {
-        string userChoose = AnsiConsole.Prompt(
+        string prompt = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title(TgLocale.MenuSwitchNumber)
                 .PageSize(12)
@@ -29,13 +25,11 @@ internal partial class MenuHelper
                     TgLocale.MenuDownloadSetIsRewriteFiles,
                     TgLocale.MenuDownloadSetIsRewriteMessages,
                     TgLocale.MenuDownloadSetIsAddMessageId,
-                    TgLocale.MenuIsAutoUpdate,
-                    //TgLocale.MenuScan
+                    TgLocale.MenuDownloadSetIsAutoUpdate,
                     TgLocale.MenuSaveSettings,
-                    TgLocale.MenuDownloadAuto,
                     TgLocale.MenuDownloadManual
                 ));
-        return userChoose switch
+        return prompt switch
         {
             "Setup source (ID/username)" => MenuDownload.SetSource,
             "Setup download folder" => MenuDownload.SetDestDirectory,
@@ -45,9 +39,7 @@ internal partial class MenuHelper
             "Enable rewrite exists messages" => MenuDownload.SetIsRewriteMessages,
             "Enable join message ID with file name" => MenuDownload.SetIsAddMessageId,
             "Enable auto update" => MenuDownload.SetIsAutoUpdate,
-            "Scan my sources" => MenuDownload.Scan,
             "Save settings" => MenuDownload.SettingsSave,
-            "Auto download" => MenuDownload.DownloadAuto,
             "Manual download" => MenuDownload.DownloadManual,
             _ => MenuDownload.Return
         };
@@ -86,20 +78,11 @@ internal partial class MenuHelper
                 case MenuDownload.SetIsAutoUpdate:
                     SetTgDownloadIsAutoUpdate(tgDownloadSettings);
                     break;
-                case MenuDownload.Scan:
-                    RunAction(tgDownloadSettings, Scan, true);
-                    break;
                 case MenuDownload.SettingsSave:
                     RunAction(tgDownloadSettings, SaveSettings, true);
                     break;
-                case MenuDownload.DownloadAuto:
-                    RunAction(tgDownloadSettings, AutoDownload, true);
-                    break;
                 case MenuDownload.DownloadManual:
                     RunAction(tgDownloadSettings, ManualDownload, false);
-                    break;
-                case MenuDownload.Return:
-                default:
                     break;
             }
         } while (menu is not MenuDownload.Return);
@@ -134,9 +117,9 @@ internal partial class MenuHelper
 
     private void SetupDownloadSourceFirstIdAuto(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
     {
-            Channel? channel = TgClient.PrepareDownloadMessages(tgDownloadSettings, true);
-            if (channel is null) return;
-            TgClient.SetChannelMessageIdFirst(tgDownloadSettings, channel, refreshStatus);
+        Channel? channel = TgClient.PrepareDownloadMessages(tgDownloadSettings, true);
+        if (channel is null) return;
+        TgClient.SetChannelMessageIdFirst(tgDownloadSettings, channel, refreshStatus);
         LoadTgClientSettings(tgDownloadSettings, true, false);
     }
 
@@ -161,48 +144,64 @@ internal partial class MenuHelper
 
     private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsModel tgDownloadSettings)
     {
-        bool isResult = AnsiConsole.Prompt(new SelectionPrompt<bool>()
+        string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title(TgLocale.TgSettingsIsRewriteFiles)
             .PageSize(10)
-            .AddChoices(true, false));
-        tgDownloadSettings.IsRewriteFiles = isResult;
+            .AddChoices(TgLocale.IsTrue, TgLocale.IsFalse));
+        tgDownloadSettings.IsRewriteFiles = prompt switch
+        {
+            "True" => true,
+            _ => false
+        };
     }
 
     private void SetTgDownloadIsRewriteMessages(TgDownloadSettingsModel tgDownloadSettings)
     {
-        bool isResult = AnsiConsole.Prompt(new SelectionPrompt<bool>()
+        string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title(TgLocale.TgSettingsIsRewriteMessages)
             .PageSize(10)
-            .AddChoices(true, false));
-        tgDownloadSettings.IsRewriteMessages = isResult;
+            .AddChoices(TgLocale.IsTrue, TgLocale.IsFalse));
+        tgDownloadSettings.IsRewriteMessages = prompt switch
+        {
+            "True" => true,
+            _ => false
+        };
     }
 
     private void SetTgDownloadIsJoinFileNameWithMessageId(TgDownloadSettingsModel tgDownloadSettings)
     {
-        bool isResult = AnsiConsole.Prompt(new SelectionPrompt<bool>()
+        string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title(TgLocale.TgSettingsIsJoinFileNameWithMessageId)
             .PageSize(10)
-            .AddChoices(true, false));
-        tgDownloadSettings.IsJoinFileNameWithMessageId = isResult;
+            .AddChoices(TgLocale.IsTrue, TgLocale.IsFalse));
+        tgDownloadSettings.IsJoinFileNameWithMessageId = prompt switch
+        {
+            "True" => true,
+            _ => false
+        };
     }
 
     private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings)
     {
-        bool isResult = AnsiConsole.Prompt(new SelectionPrompt<bool>()
-            .Title(TgLocale.MenuIsAutoUpdate)
+        string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title(TgLocale.MenuDownloadSetIsAutoUpdate)
             .PageSize(10)
-            .AddChoices(true, false));
-        tgDownloadSettings.IsAutoUpdate = isResult;
+            .AddChoices(TgLocale.IsTrue, TgLocale.IsFalse));
+        tgDownloadSettings.IsAutoUpdate = prompt switch
+        {
+            "True" => true,
+            _ => false
+        };
     }
 
     private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
     {
         if (!tgDownloadSettings.IsReady) return;
         // Update source.
-        TgStorage.AddOrUpdateRecordSource(tgDownloadSettings.SourceId, tgDownloadSettings.SourceUserName, 
+        TgStorage.AddOrUpdateItemSourceDeprecated(tgDownloadSettings.SourceId, tgDownloadSettings.SourceUserName,
             tgDownloadSettings.SourceTitle, tgDownloadSettings.SourceAbout, tgDownloadSettings.SourceLastId, true);
         // Update source settings.
-        TgStorage.AddOrUpdateRecordSourceSetting(tgDownloadSettings.SourceId, tgDownloadSettings.DestDirectory, 
+        TgStorage.AddOrUpdateItemSourceSettingDeprecated(tgDownloadSettings.SourceId, tgDownloadSettings.DestDirectory,
             tgDownloadSettings.SourceFirstId, tgDownloadSettings.IsAutoUpdate, true);
         // Refresh.
         refreshStatus(TgLocale.SettingsSource, false);
@@ -210,7 +209,7 @@ internal partial class MenuHelper
 
     private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipFirstId, bool isSkipDestDirectory)
     {
-        SqlTableSourceSettingModel sourceSettings = TgStorage.GetItem<SqlTableSourceSettingModel>(null, tgDownloadSettings.SourceId);
+        SqlTableSourceSettingModel sourceSettings = TgStorage.GetItemDeprecated<SqlTableSourceSettingModel>(null, tgDownloadSettings.SourceId);
         if (!isSkipFirstId)
             tgDownloadSettings.SourceFirstId = sourceSettings.FirstId;
         if (!isSkipDestDirectory)
@@ -221,7 +220,7 @@ internal partial class MenuHelper
     private void UpdateSource(ChatBase chat, string about, int count)
     {
         if (chat is Channel channel)
-            TgStorage.AddOrUpdateRecordSource(channel.id, channel.username, channel.title, about, count, true);
+            TgStorage.AddOrUpdateItemSourceDeprecated(channel.id, channel.username, channel.title, about, count, true);
     }
 
     private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
@@ -233,41 +232,8 @@ internal partial class MenuHelper
         UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
     }
 
-    private void AutoDownload(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
-    {
-        List<SqlTableSourceSettingModel> sourceSettings = TgStorage.GetList<SqlTableSourceSettingModel>();
-        foreach (SqlTableSourceSettingModel sourceSetting in sourceSettings.Where(sourceSetting => sourceSetting.IsAutoUpdate))
-        {
-            SetupDownloadSource(tgDownloadSettings, sourceSetting.SourceId);
-
-            SqlTableSourceModel source = TgStorage.GetItem<SqlTableSourceModel>(sourceSetting.SourceId);
-            string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
-            // StatusContext.
-            if (source.Count <= 0)
-            {
-                refreshStatus($"The source {sourceId} hasn't any messages!", false);
-            }
-            else
-            {
-                refreshStatus($"The source {sourceId} has {source.Count} messages.", false);
-            }
-            // ManualDownload.
-            if (source.Count > 0)
-            {
-                ManualDownload(tgDownloadSettings, refreshStatus);
-            }
-        }
-    }
-
-    private void Scan(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
-    {
-        ShowTableScan(tgDownloadSettings);
-        TgClient.FindAndStoreChannel(refreshStatus, UpdateSource);
-    }
-
     private void SaveSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
     {
-        ShowTableScan(tgDownloadSettings);
         UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
     }
 

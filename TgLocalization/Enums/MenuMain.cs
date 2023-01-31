@@ -6,7 +6,8 @@ namespace TgLocalization.Enums;
 public enum MenuMain
 {
     Exit,
-    SetStorage,
-    SetClient,
-    SetDownload,
+    Storage,
+    Client,
+    Download,
+    Advanced,
 }
