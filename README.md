@@ -1,6 +1,6 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">README</a> | <a href="CHANGELOG.md">CHANGELOG</a> | <a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a></b></div>
+## <div align="center"><b><a href="README.md">README</a> | <a href="CHANGELOG.md">CHANGELOG</a> | <a href="SCREENSHOTS.md">SCREENSHOTS</a> | <a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a></b></div>
 
 <div align="center">
 	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
@@ -19,12 +19,12 @@ Download files of the Telegram channels or groups you are a member of.
 - Save the values of the "App api_id" and "App api_hash" fields
 
 ## Run under Windows OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333`
+- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
 - Change the current directory to `cd TgDownloader v1.2.333`
-- Run `TgDownloaderConsole.exe`
+- Run the `TgDownloaderConsole.exe` command or double click the file
 
 ## Run under Linux OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333`
+- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
 - Change the current directory to `cd TgDownloader v1.2.333`
 - Run the `dotnet TgDownloaderConsole.dll` command
 
