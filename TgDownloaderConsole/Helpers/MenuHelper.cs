@@ -1,15 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Runtime.Serialization;
-using TgCore.Helpers;
-using TgCore.Interfaces;
-using TgDownloaderCore.Models;
-using TgLocalization.Enums;
-using TgLocalization.Helpers;
-using TgStorageCore.Helpers;
-using TgStorageCore.Models.Messages;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class MenuHelper : IHelper
@@ -30,7 +21,7 @@ internal partial class MenuHelper : IHelper
     internal TgClientHelper TgClient => TgClientHelper.Instance;
     internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
     internal TgStorageHelper TgStorage => TgStorageHelper.Instance;
-    internal AppModel App { get; set; }
+    internal AppXmlModel App { get; set; }
     internal MenuMain Value { get; set; } = MenuMain.Exit;
 
     public MenuHelper()
@@ -45,7 +36,7 @@ internal partial class MenuHelper : IHelper
     internal void ShowTableCore(TgDownloadSettingsModel tgDownloadSettings, string title, Action<Table> fillTableColumns, Action<TgDownloadSettingsModel, Table> fillTableRows)
     {
         AnsiConsole.Clear();
-        AnsiConsole.Write(new FigletText(TgLocale.AppTitle).Alignment(Justify.Center).Color(Color.Yellow));
+        AnsiConsole.Write(new FigletText(TgLocale.AppTitle).Centered().Color(Color.Yellow));
         Table table = new()
         {
             ShowHeaders = true,
@@ -70,7 +61,11 @@ internal partial class MenuHelper : IHelper
     
     internal void ShowTableDownload(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
-    internal void ShowTableScan(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScan);
+    internal void ShowTableAdvanced(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsAdvanced);
+
+    internal void ShowTableScanSources(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScanSources);
+
+    internal void ShowTableViewSources(TgDownloadSettingsModel tgDownloadSettings) => ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsViewSources);
 
     internal void FillTableColumns(Table table)
     {
@@ -121,24 +116,87 @@ internal partial class MenuHelper : IHelper
                 TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
             new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-        if (!TgClient.IsReady)
+        if (TgClient.Me is null)
         {
             table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientUserName)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
+                new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
             table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientUserId)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
+                new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
             table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientUserIsActive)),
-                new Markup(TgLocale.SettingsIsNeedSetup));
+                new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
         }
         else
         {
-            User user = TgClient.Me;
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientUserName)),
-                new Markup(user.username));
+                new Markup(TgLog.GetMarkupString(TgClient.Me.username)));
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientUserId)),
-                new Markup(user.id.ToString()));
+                new Markup(TgLog.GetMarkupString(TgClient.Me.id.ToString())));
             table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientUserIsActive)),
-                new Markup(user.IsActive.ToString()));
+                new Markup(TgLog.GetMarkupString(TgClient.Me.IsActive.ToString())));
+        }
+
+        // Enable proxy.
+        if (!TgStorage.App.IsUseProxy)
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyUsage, true)),
+                new Markup(TgLog.GetMarkupString(TgLocale.SettingIsDisabled)));
+        else
+            table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyUsage)),
+                new Markup(TgLog.GetMarkupString(TgLocale.SettingIsEnabled)));
+
+
+        // Proxy usage.
+        if (Equals(TgStorage.App.ProxyUid, Guid.Empty))
+        {
+            if (TgStorage.App.IsUseProxy)
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+            else
+                table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
+        }
+        else
+        {
+            // Proxy is not found.
+            if (TgStorage.Proxy.IsNotExists || TgClient.Me is null)
+            {
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyType)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyHostName)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyPort)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+                table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySecret)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
+            }
+            // Proxy is found.
+            else
+            {
+                table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
+                    new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
+                table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
+                    new Markup(TgLog.GetMarkupString(TgStorage.Proxy.Type.ToString())));
+                table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
+                    new Markup(TgLog.GetMarkupString(TgStorage.Proxy.HostName)));
+                table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
+                    new Markup(TgLog.GetMarkupString(TgStorage.Proxy.Port.ToString())));
+                if (Equals(TgStorage.Proxy.Type, ProxyType.MtProto))
+                    table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
+                        new Markup(TgLog.GetMarkupString(TgStorage.Proxy.Secret)));
+            }
+        }
+
+        // Exceptions.
+        if (TgClient.ProxyException.IsExists)
+        {
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyException)),
+                new Markup(TgLog.GetMarkupString(TgClient.ProxyException.Message)));
+        }
+        if (TgClient.ClientException.IsExists)
+        {
+            table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientException)),
+                new Markup(TgLog.GetMarkupString(TgClient.ClientException.Message)));
         }
     }
 
@@ -192,25 +250,38 @@ internal partial class MenuHelper : IHelper
             new Markup(tgDownloadSettings.IsJoinFileNameWithMessageId.ToString()));
 
         // Is auto update.
-        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuIsAutoUpdate)),
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
             new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
     }
 
-    internal void FillTableRowsScan(TgDownloadSettingsModel tgDownloadSettings, Table table)
+    internal void FillTableRowsAdvanced(TgDownloadSettingsModel tgDownloadSettings, Table table)
+    {
+        // Is auto update.
+        table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
+            new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
+    }
+
+    internal void FillTableRowsScanSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
+    {
+        // Source ID/username.
+        FillTableRowsSource(tgDownloadSettings, table);
+    }
+
+    internal void FillTableRowsViewSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
     {
         // Source ID/username.
         FillTableRowsSource(tgDownloadSettings, table);
     }
 
     public void StoreMessage(long? id, long? sourceId, DateTime dtCreate, string message, string type, long size) => 
-        TgStorage.AddOrUpdateRecordMessage(id, sourceId, dtCreate, message, type, size, true);
+        TgStorage.AddOrUpdateItemMessageDeprecated(id, sourceId, dtCreate, message, type, size, true);
 
     public void StoreDocument(long? id, long? sourceId, long? messageId, string fileName, long fileSize, long accessHash) => 
-        TgStorage.AddOrUpdateRecordDocument(id, sourceId, messageId, fileName, fileSize, accessHash, true);
+        TgStorage.AddOrUpdateItemDocumentDeprecated(id, sourceId, messageId, fileName, fileSize, accessHash, true);
 
     public bool FindExistsMessage(long? id, long? sourceId)
     {
-        SqlTableMessageModel message = TgStorage.GetItem<SqlTableMessageModel>(id, sourceId);
+        SqlTableMessageModel message = TgStorage.GetItemDeprecated<SqlTableMessageModel>(id, sourceId);
         return TgStorage.IsValid(message);
     }
 
@@ -225,8 +296,9 @@ internal partial class MenuHelper : IHelper
     /// <param name="context"></param>
     protected MenuHelper(SerializationInfo info, StreamingContext context)
     {
-        App = info.GetValue(nameof(App), typeof(AppModel)) as AppModel ?? new();
-        Value = (MenuMain)info.GetValue(nameof(Value), typeof(MenuMain));
+        App = info.GetValue(nameof(App), typeof(AppXmlModel)) as AppXmlModel ?? new();
+        object? value = info.GetValue(nameof(Value), typeof(MenuMain));
+        Value = value is not null ? (MenuMain)value : MenuMain.Exit;
     }
 
     /// <summary>

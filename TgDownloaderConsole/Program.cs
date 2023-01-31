@@ -1,15 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgCore.Helpers;
-using TgCore.Utils;
-using TgDownloaderCore.Models;
-using TgDownloaderCore.Utils;
-using TgLocalization.Enums;
-using TgLocalization.Helpers;
-using TgStorageCore.Helpers;
+using TgDownloader.Utils;
 
-AppModel app;
+AppXmlModel app;
 MenuHelper menu = MenuHelper.Instance;
 TgLocaleHelper locale = TgLocaleHelper.Instance;
 TgLogHelper log = TgLogHelper.Instance;
@@ -23,28 +17,33 @@ do
     try
     {
         menu.ShowTableMain(tgDownloadSettings);
-        string userChoose = AnsiConsole.Prompt(
+        string prompt = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title(locale.MenuSwitchNumber)
             .PageSize(10)
             .MoreChoicesText(locale.MoveUpDown)
-            .AddChoices(locale.MenuMainExit, locale.MenuMainStorage, locale.MenuMainClient, locale.MenuMainDownload));
-        switch (userChoose)
+            .AddChoices(locale.MenuMainExit, locale.MenuMainStorage, locale.MenuMainClient, 
+                locale.MenuMainDownload, locale.MenuMainAdvanced));
+        switch (prompt)
         {
             case "Exit":
                 menu.Value = MenuMain.Exit;
                 break;
             case "Storage settings":
-                menu.Value = MenuMain.SetStorage;
+                menu.Value = MenuMain.Storage;
                 menu.SetupStorage(tgDownloadSettings);
                 break;
             case "Client settings":
-                menu.Value = MenuMain.SetClient;
+                menu.Value = MenuMain.Client;
                 menu.SetupClient(tgDownloadSettings);
                 break;
             case "Download settings":
-                menu.Value = MenuMain.SetDownload;
+                menu.Value = MenuMain.Download;
                 menu.SetupDownload(tgDownloadSettings);
+                break;
+            case "Advanced":
+                menu.Value = MenuMain.Advanced;
+                menu.SetupAdvanced(tgDownloadSettings);
                 break;
         }
     }
@@ -60,7 +59,7 @@ do
 void Setup()
 {
     // App.
-    app = AppUtils.LoadSettings();
+    app = AppUtils.LoadXmlSettings();
     app.SetVersion(Assembly.GetExecutingAssembly());
     if (!app.IsExistsStoragePath)
     {
@@ -72,8 +71,8 @@ void Setup()
     Console.OutputEncoding = Encoding.UTF8;
     log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
     // Storage.
-    tgStorage.CreateOrConnectDb();
+    tgStorage.CreateOrConnectDb(true);
     // Client.
     menu.App = app;
-    menu.ClientConnectExists();
+    menu.ClientConnectExists(tgDownloadSettings);
 }

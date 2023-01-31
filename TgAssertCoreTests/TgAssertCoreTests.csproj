@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.430.0</Version>
+    <Version>0.1.500.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TgDownloader\TgDownloader.csproj" />
     <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
-    <ProjectReference Include="..\TgStorageCore\TgStorageCore.csproj" />
+    <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
   </ItemGroup>
 
 </Project>

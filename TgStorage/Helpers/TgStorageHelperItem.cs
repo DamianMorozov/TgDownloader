@@ -1,0 +1,86 @@
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
+using DevExpress.Xpo;
+using TgStorage.Models;
+using TgStorage.Models.Apps;
+using TgStorage.Models.Documents;
+using TgStorage.Models.Messages;
+using TgStorage.Models.Proxies;
+using TgStorage.Models.Sources;
+using TgStorage.Models.SourcesSettings;
+using TgStorage.Utils;
+
+namespace TgStorage.Helpers;
+
+public partial class TgStorageHelper : IHelper
+{
+    #region Public and private methods
+
+    public T? GetItemNullable<T>() where T : ISqlTable =>
+        new UnitOfWork().Query<T>().Select(item => item).FirstOrDefault();
+
+    public T GetItem<T>() where T : ISqlTable, new() => GetItemNullable<T>() ?? new T();
+
+    public T? GetItemNullable<T>(Guid uid) where T : ISqlTable =>
+        new UnitOfWork().Query<T>().Select(item => item).FirstOrDefault(item => Equals(item.Uid, uid));
+
+    public T GetItem<T>(Guid uid) where T : ISqlTable, new() => GetItemNullable<T>(uid) ?? new T();
+
+    public T GetItem<T>(T item) where T : ISqlTable, new() => GetItemNullable<T>(item.Uid) ?? new T();
+
+    public SqlTableXpLiteBase NewEmpty<T>() where T : ISqlTable
+    {
+        switch (typeof(T))
+        {
+            case var cls when cls == typeof(SqlTableAppModel):
+                return NewEmptyApp();
+            case var cls when cls == typeof(SqlTableProxyModel):
+                return NewEmptyProxy();
+        }
+        return new();
+    }
+
+    public void AddOrUpdateItem<T>(T item) where T : ISqlTable, new()
+    {
+        // Try find item.
+        T itemDb = GetItem(item);
+        // Add item.
+        if (!itemDb.IsExists)
+            AddItem(item);
+        // Update item.
+        else
+            UpdateItem(item);
+    }
+
+    private void AddItem<T>(T item) where T : ISqlTable, new()
+    {
+        using UnitOfWork uow = new();
+        switch (typeof(T))
+        {
+            case var cls when cls == typeof(SqlTableAppModel):
+                AddItemApp(item, uow);
+                break;
+            case var cls when cls == typeof(SqlTableProxyModel):
+                AddItemProxy(item, uow);
+                break;
+        }
+    }
+
+    private void UpdateItem<T>(T item) where T : ISqlTable, new()
+    {
+        switch (typeof(T))
+        {
+            case var cls when cls == typeof(SqlTableAppModel):
+                if (item is SqlTableAppModel app)
+                    UpdateItemApp(app);
+                break;
+            case var cls when cls == typeof(SqlTableProxyModel):
+                if (item is SqlTableProxyModel proxy)
+                    UpdateItemProxy(proxy);
+                break;
+        }
+    }
+
+    #endregion
+}

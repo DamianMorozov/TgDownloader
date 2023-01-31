@@ -1,9 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloaderCore.Models;
-using TgLocalization.Enums;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class MenuHelper
@@ -12,7 +9,7 @@ internal partial class MenuHelper
 
     private MenuStorage SetMenuStorage()
     {
-        string userChoose = AnsiConsole.Prompt(
+        string prompt = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title(TgLocale.MenuSwitchNumber)
                 .PageSize(10)
@@ -20,19 +17,11 @@ internal partial class MenuHelper
                 .AddChoices(TgLocale.MenuMainReturn,
                     TgLocale.MenuStorageCreateNew,
                     TgLocale.MenuStorageDeleteExists
-                    //TgLocale.MenuStorageCreateTables,
-                    //TgLocale.MenuStorageDropTables,
-                    //TgLocale.MenuStorageViewStatistics,
-                    //TgLocale.MenuStorageClearTables
                 ));
-        return userChoose switch
+        return prompt switch
         {
             "Create new storage" => MenuStorage.CreateNew,
             "Delete exists storage" => MenuStorage.DeleteExists,
-            //"Create tables" => MenuStorage.CreateTables,
-            //"Drop tables" => MenuStorage.DropTables,
-            //"View statistics" => MenuStorage.ViewStatistics,
-            //"Clear tables" => MenuStorage.ClearTables,
             _ => MenuStorage.Return
         };
     }
@@ -47,7 +36,7 @@ internal partial class MenuHelper
             switch (menu)
             {
                 case MenuStorage.CreateNew:
-                    TgStorage.CreateOrConnectDb();
+                    TgStorage.CreateOrConnectDb(true);
                     break;
                 case MenuStorage.DeleteExists:
                     TgStorage.DeleteExistsDb();
