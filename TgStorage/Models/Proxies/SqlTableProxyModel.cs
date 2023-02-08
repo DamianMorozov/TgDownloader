@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using DevExpress.Xpo;
-using TgStorage.Enums;
+using TgCore.Enums;
 
 namespace TgStorage.Models.Proxies;
 
@@ -17,32 +17,32 @@ public class SqlTableProxyModel : SqlTableXpLiteBase
     [Persistent("TYPE")]
     public ProxyType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
 
+    [DefaultValue("")]
     private string _hostName;
     [Size(128)]
-    [DefaultValue("")]
     [Persistent("HOST_NAME")]
     public string HostName { get => _hostName; set => SetPropertyValue(nameof(_hostName), ref _hostName, value); }
 
-    private ushort _port;
     [DefaultValue("0")]
+    private ushort _port;
     [Persistent("PORT")]
     public ushort Port { get => _port; set => SetPropertyValue(nameof(_port), ref _port, value); }
 
+    [DefaultValue("")]
     private string _userName;
     [Size(128)]
-    [DefaultValue("")]
     [Persistent("USER_NAME")]
     public string UserName { get => _userName; set => SetPropertyValue(nameof(_userName), ref _userName, value); }
 
+    [DefaultValue("")]
     private string _password;
     [Size(128)]
-    [DefaultValue("")]
     [Persistent("PASSWORD")]
     public string Password { get => _password; set => SetPropertyValue(nameof(_password), ref _password, value); }
 
+    [DefaultValue("")]
     private string _secret;
     [Size(128)]
-    [DefaultValue("")]
     [Persistent("SECRET")]
     public string Secret { get => _secret; set => SetPropertyValue(nameof(_secret), ref _secret, value); }
 
@@ -52,11 +52,11 @@ public class SqlTableProxyModel : SqlTableXpLiteBase
     public SqlTableProxyModel()
     {
         _type = this.GetPropertyDefaultValueAsGeneric<ProxyType>(nameof(_type));
-        _hostName = this.GetPropertyDefaultValueAsString(nameof(_hostName));
+        _hostName = this.GetPropertyDefaultValue(nameof(_hostName));
         _port = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_port));
-        _userName = this.GetPropertyDefaultValueAsString(nameof(_userName));
-        _password = this.GetPropertyDefaultValueAsString(nameof(_password));
-        _secret = this.GetPropertyDefaultValueAsString(nameof(_secret));
+        _userName = this.GetPropertyDefaultValue(nameof(_userName));
+        _password = this.GetPropertyDefaultValue(nameof(_password));
+        _secret = this.GetPropertyDefaultValue(nameof(_secret));
     }
 
     /// <summary>
@@ -66,11 +66,11 @@ public class SqlTableProxyModel : SqlTableXpLiteBase
     public SqlTableProxyModel(Session session) : base(session)
     {
         _type = this.GetPropertyDefaultValueAsGeneric<ProxyType>(nameof(_type));
-        _hostName = this.GetPropertyDefaultValueAsString(nameof(_hostName));
+        _hostName = this.GetPropertyDefaultValue(nameof(_hostName));
         _port = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_port));
-        _userName = this.GetPropertyDefaultValueAsString(nameof(_userName));
-        _password = this.GetPropertyDefaultValueAsString(nameof(_password));
-        _secret = this.GetPropertyDefaultValueAsString(nameof(_secret));
+        _userName = this.GetPropertyDefaultValue(nameof(_userName));
+        _password = this.GetPropertyDefaultValue(nameof(_password));
+        _secret = this.GetPropertyDefaultValue(nameof(_secret));
     }
 
     #endregion

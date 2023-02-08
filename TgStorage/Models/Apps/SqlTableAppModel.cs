@@ -11,30 +11,25 @@ public class SqlTableAppModel : SqlTableXpLiteBase
 {
     #region Public and private fields, properties, constructor
 
+    [DefaultValue("")]
     private string _apiHash;
     [Size(32)]
-    [DefaultValue("")]
     [Persistent("API_HASH")]
     public string ApiHash { get => _apiHash; set => SetPropertyValue(nameof(_apiHash), ref _apiHash, value); }
 
+    [DefaultValue("")]
     private string _phoneNumber;
     [Size(32)]
-    [DefaultValue("")]
     [Persistent("PHONE_NUMBER")]
     public string PhoneNumber { get => _phoneNumber; set => SetPropertyValue(nameof(_phoneNumber), ref _phoneNumber, value); }
 
-    private bool _isUseProxy;
-    [DefaultValue(0)]
-    [Persistent("IS_USE_PROXY")]
-    public bool IsUseProxy { get => _isUseProxy; set => SetPropertyValue(nameof(_isUseProxy), ref _isUseProxy, value); }
-
-    private Guid _proxyUid;
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
+    private Guid _proxyUid;
     [Persistent("PROXY_UID")]
     public Guid ProxyUid { get => _proxyUid; set => SetPropertyValue(nameof(_proxyUid), ref _proxyUid, value); }
 
+    [DefaultValue("11")]
     private ushort _dbVersion;
-    [DefaultValue("0")]
     [Persistent("DB_VERSION")]
     public ushort DbVersion { get => _dbVersion; set => SetPropertyValue(nameof(_dbVersion), ref _dbVersion, value); }
     
@@ -43,9 +38,8 @@ public class SqlTableAppModel : SqlTableXpLiteBase
     /// </summary>
     public SqlTableAppModel()
     {
-        _apiHash = this.GetPropertyDefaultValueAsString(nameof(_apiHash));
-        _phoneNumber = this.GetPropertyDefaultValueAsString(nameof(_phoneNumber));
-        _isUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isUseProxy));
+        _apiHash = this.GetPropertyDefaultValue(nameof(_apiHash));
+        _phoneNumber = this.GetPropertyDefaultValue(nameof(_phoneNumber));
         _proxyUid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
         _dbVersion = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
     }
@@ -56,9 +50,8 @@ public class SqlTableAppModel : SqlTableXpLiteBase
     /// <param name="session"></param>
     public SqlTableAppModel(Session session) : base(session)
     {
-        _apiHash = this.GetPropertyDefaultValueAsString(nameof(_apiHash));
-        _phoneNumber = this.GetPropertyDefaultValueAsString(nameof(_phoneNumber));
-        _isUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isUseProxy));
+        _apiHash = this.GetPropertyDefaultValue(nameof(_apiHash));
+        _phoneNumber = this.GetPropertyDefaultValue(nameof(_phoneNumber));
         _proxyUid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
         _dbVersion = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
     }
@@ -74,9 +67,8 @@ public class SqlTableAppModel : SqlTableXpLiteBase
     /// <param name="context"></param>
     protected SqlTableAppModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
-        _apiHash = info.GetString(nameof(_apiHash)) ?? this.GetPropertyDefaultValueAsString(nameof(_apiHash));
-        _phoneNumber = info.GetString(nameof(_phoneNumber)) ?? this.GetPropertyDefaultValueAsString(nameof(_phoneNumber));
-        _isUseProxy = info.GetBoolean(nameof(_isUseProxy));
+        _apiHash = info.GetString(nameof(_apiHash)) ?? this.GetPropertyDefaultValue(nameof(_apiHash));
+        _phoneNumber = info.GetString(nameof(_phoneNumber)) ?? this.GetPropertyDefaultValue(nameof(_phoneNumber));
         object? proxyUid = info.GetValue(nameof(_proxyUid), typeof(Guid));
         _proxyUid = proxyUid is Guid pUid ? pUid : this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
         _dbVersion = info.GetUInt16(nameof(_dbVersion));
@@ -92,7 +84,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         base.GetObjectData(info, context);
         info.AddValue(nameof(_apiHash), _apiHash);
         info.AddValue(nameof(_phoneNumber), _phoneNumber);
-        info.AddValue(nameof(_isUseProxy), _isUseProxy);
         info.AddValue(nameof(_proxyUid), _proxyUid);
         info.AddValue(nameof(_dbVersion), _dbVersion);
     }
@@ -107,16 +98,16 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         base.ToString() + " | " +
         $"{nameof(ApiHash)} = {ApiHash} | " +
         $"{nameof(PhoneNumber)} = {PhoneNumber} | " +
-        $"{nameof(IsUseProxy)} = {IsUseProxy} | " +
         $"{nameof(ProxyUid)} = {ProxyUid} | " +
         $"{nameof(DbVersion)} = {DbVersion}";
 
     #endregion
 
-    public void UpdateDbVersion()
+    public ushort GetLastDbVersion()
     {
-        //_dbVersion = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
-        _dbVersion = 10;
+        //ushort foo = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
+        string str = this.GetPropertyDefaultValue(nameof(_dbVersion));
+        return ushort.TryParse(str, out ushort result) ? result : default;
     }
 
     #endregion

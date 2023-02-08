@@ -1,6 +1,7 @@
 ﻿# TgDownloader - Загрузчик файлов Telegram
 
-## <div align="center"><b><a href="README.md">README</a> | <a href="CHANGELOG.md">CHANGELOG</a> | <a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="SCREENSHOTS.md">Screenshots</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="SCREENSHOTS.md">Скриншоты</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
@@ -27,9 +28,13 @@
 - Выполните команду `dotnet TgDownloaderConsole.dll`
 
 ## Быстрый старт
-- Настройте локальное хранилище из TgDownloader
-- Настройте Telegram клиент из TgDownloader
-- Настройте скачивание из TgDownloader
+- Измените настройки приложения
+- Настройте хранилище
+- Настройте Telegram клиент
+- Настройте скачивание
+
+## Настройки по умолчанию
+- Удалите файл `TgDownloader.xml`.
 
 ## Статус
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")

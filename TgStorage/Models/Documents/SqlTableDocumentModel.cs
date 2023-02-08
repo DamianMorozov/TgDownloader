@@ -9,28 +9,30 @@ public class SqlTableDocumentModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    //[PrimaryKey]
     [Indexed]
     [Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
-    //[PrimaryKey]
+    
     [Indexed]
     [Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
-    //[PrimaryKey]
+    
     [Indexed]
     [Column("MESSAGE_ID")]
     [DefaultValue("")]
     public long MessageId { get; set; }
+    
     [Indexed]
     [Column("FILE_NAME")]
     [DefaultValue("")]
     public string FileName { get; set; }
+    
     [Column("FILE_SIZE")]
     [DefaultValue(0)]
     public long FileSize { get; set; }
+    
     [Column("ACCESS_HASH")]
     [DefaultValue(0)]
     public long AccessHash { get; set; }
@@ -40,7 +42,7 @@ public class SqlTableDocumentModel : SqlTableBase
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
         SourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
         MessageId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(MessageId));
-        FileName = this.GetPropertyDefaultValueAsString(nameof(FileName));
+        FileName = this.GetPropertyDefaultValue(nameof(FileName));
         FileSize = this.GetPropertyDefaultValueAsGeneric<long>(nameof(FileSize));
         AccessHash = this.GetPropertyDefaultValueAsGeneric<long>(nameof(AccessHash));
     }
@@ -69,7 +71,7 @@ public class SqlTableDocumentModel : SqlTableBase
         Id = info.GetInt64(nameof(Id));
         SourceId = info.GetInt64(nameof(SourceId));
         MessageId = info.GetInt64(nameof(MessageId));
-        FileName = info.GetString(nameof(FileName)) ?? this.GetPropertyDefaultValueAsString(nameof(FileName));
+        FileName = info.GetString(nameof(FileName)) ?? this.GetPropertyDefaultValue(nameof(FileName));
         FileSize = info.GetInt64(nameof(FileSize));
         AccessHash = info.GetInt64(nameof(AccessHash));
     }

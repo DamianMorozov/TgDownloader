@@ -1,12 +1,10 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using DevExpress.Xpo;
 using TgStorage.Models;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Documents;
 using TgStorage.Models.Messages;
-using TgStorage.Models.Proxies;
 using TgStorage.Models.Sources;
 using TgStorage.Models.SourcesSettings;
 using TgStorage.Utils;

@@ -19,13 +19,11 @@ internal partial class MenuHelper
                 .MoreChoicesText(TgLocale.MoveUpDown)
                 .AddChoices(
                     TgLocale.MenuMainReturn,
-                    TgLocale.MenuProxyEnable,
                     TgLocale.MenuSetProxy,
                     TgLocale.MenuClientConnect,
                     TgLocale.MenuClientGetInfo));
         return prompt switch
         {
-            "Enable proxy" => MenuClient.EnableProxy,
             "Setup proxy" => MenuClient.SetProxy,
             "Connect the client to TG server" => MenuClient.Connect,
             "Get info" => MenuClient.GetInfo,
@@ -42,11 +40,9 @@ internal partial class MenuHelper
             menu = SetMenuClient();
             switch (menu)
             {
-                case MenuClient.EnableProxy:
-                    EnableClientProxy(tgDownloadSettings);
-                    break;
                 case MenuClient.SetProxy:
                     SetupClientProxy();
+                    AskClientConnect(tgDownloadSettings);
                     break;
                 case MenuClient.Connect:
                     ClientConnect(tgDownloadSettings);
@@ -91,32 +87,10 @@ SqlTableProxyModel proxy = new()
         proxy = TgStorage.GetItemProxy(proxy.Type, proxy.HostName, proxy.Port);
 
         SqlTableAppModel app = TgStorage.App;
-        app.IsUseProxy = !Equals(proxy.Type, ProxyType.None);
         app.ProxyUid = proxy.Uid;
         TgStorage.AddOrUpdateItem(app);
 
         return proxy;
-    }
-
-    private void EnableClientProxy(TgDownloadSettingsModel tgDownloadSettings)
-    {
-            string prompt = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title(TgLocale.MenuSwitchNumber)
-                    .PageSize(10)
-                    .MoreChoicesText(TgLocale.MoveUpDown)
-                    .AddChoices(TgLocale.MenuProxyDisable, TgLocale.MenuProxyEnable));
-            bool isUseProxy = prompt switch
-            {
-                "Enable proxy" => true,
-                _ => false
-            };
-
-            SqlTableAppModel app = TgStorage.GetItem<SqlTableAppModel>();
-            app.IsUseProxy = isUseProxy;
-            TgStorage.AddOrUpdateItem(app);
-
-            SetupClientProxyCore();
     }
 
     private void SetupClientProxyCore()
@@ -133,7 +107,6 @@ SqlTableProxyModel proxy = new()
     private void SetupClientProxy()
     {
         SqlTableProxyModel proxy = AddOrUpdateProxy();
-        if (!TgStorage.App.IsUseProxy) return;
 
         if (proxy.Type == ProxyType.MtProto)
         {
@@ -167,7 +140,7 @@ SqlTableProxyModel proxy = new()
             "notifications" => AnsiConsole.Ask<bool>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:")).ToString(),
             "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:")),
             "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:")),
-            "session_pathname" => FileNameUtils.Session,
+            "session_pathname" => FileUtils.Session,
             "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:")),
             _ => null
         };
@@ -182,7 +155,7 @@ SqlTableProxyModel proxy = new()
             "notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:")),
             "first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:")),
             "last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:")),
-            "session_pathname" => FileNameUtils.Session,
+            "session_pathname" => AppSettings.AppXml.FileSession,
             "password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:")),
             _ => null
         };
@@ -212,6 +185,23 @@ SqlTableProxyModel proxy = new()
         }
     }
 
+    private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
+    {
+        string prompt = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title(TgLocale.MenuClientConnect)
+                .PageSize(10)
+                .MoreChoicesText(TgLocale.MoveUpDown)
+                .AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
+        bool isConnect = prompt switch
+        {
+            "Yes" => true,
+            _ => false
+        };
+        if (isConnect)
+            ClientConnect(tgDownloadSettings);
+    }
+    
     public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
     {
         ShowTableClient(tgDownloadSettings);

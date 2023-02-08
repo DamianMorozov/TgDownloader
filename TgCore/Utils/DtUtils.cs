@@ -21,11 +21,11 @@ public static class DtUtils
 
     public static long CastDtAsLong(DateTime dt) => dt.Ticks;
 
-    public static long CastAsLong(this DateTime dt) => dt.Ticks;
+    public static long CastAsLong(this DateTime dt) => CastDtAsLong(dt);
 
     public static DateTime CastLongAsDt(long ticks) => new(ticks);
 
-    public static DateTime CastAsDt(this long ticks) => new(ticks);
+    public static DateTime CastAsDt(this long ticks) => CastLongAsDt(ticks);
 
     #endregion
 }

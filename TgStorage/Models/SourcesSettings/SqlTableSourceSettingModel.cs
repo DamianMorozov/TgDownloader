@@ -13,16 +13,20 @@ public class SqlTableSourceSettingModel : SqlTableBase
     [Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
+    
     [Indexed]
     [Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
+    
     [Column("DIRECTORY")]
     [DefaultValue("")]
     public string Directory { get; set; }
+    
     [Column("FIRST_ID")]
     [DefaultValue(1)]
     public int FirstId { get; set; }
+    
     [Column("IS_AUTO_UPDATE")]
     [DefaultValue(0)]
     public bool IsAutoUpdate { get; set; }
@@ -31,7 +35,7 @@ public class SqlTableSourceSettingModel : SqlTableBase
     {
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
         SourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
-        Directory = this.GetPropertyDefaultValueAsString(nameof(Directory));
+        Directory = this.GetPropertyDefaultValue(nameof(Directory));
         FirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
         IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
     }
@@ -57,7 +61,7 @@ public class SqlTableSourceSettingModel : SqlTableBase
     {
         Id = info.GetInt64(nameof(Id));
         SourceId = info.GetInt64(nameof(SourceId));
-        Directory = info.GetString(nameof(Directory)) ?? this.GetPropertyDefaultValueAsString(nameof(Directory));
+        Directory = info.GetString(nameof(Directory)) ?? this.GetPropertyDefaultValue(nameof(Directory));
         FirstId = info.GetInt32(nameof(FirstId));
         IsAutoUpdate = info.GetBoolean(nameof(IsAutoUpdate));
     }

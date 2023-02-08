@@ -13,16 +13,20 @@ public class SqlTableSourceModel : SqlTableBase
     [Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
+    
     [Indexed]
     [Column("USER_NAME")]
     [DefaultValue("")]
     public string UserName { get; set; }
+    
     [Column("TITLE")]
     [DefaultValue("")]
     public string Title { get; set; }
+    
     [Column("ABOUT")]
     [DefaultValue("")]
     public string About { get; set; }
+    
     [Column("COUNT")]
     [DefaultValue(0)]
     public int Count { get; set; }
@@ -30,9 +34,9 @@ public class SqlTableSourceModel : SqlTableBase
     public SqlTableSourceModel()
     {
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-        UserName = this.GetPropertyDefaultValueAsString(nameof(UserName));
-        Title = this.GetPropertyDefaultValueAsString(nameof(Title));
-        About = this.GetPropertyDefaultValueAsString(nameof(About));
+        UserName = this.GetPropertyDefaultValue(nameof(UserName));
+        Title = this.GetPropertyDefaultValue(nameof(Title));
+        About = this.GetPropertyDefaultValue(nameof(About));
         Count = this.GetPropertyDefaultValueAsInt(nameof(Count));
     }
 
@@ -57,9 +61,9 @@ public class SqlTableSourceModel : SqlTableBase
     protected SqlTableSourceModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
         Id = info.GetInt64(nameof(Id));
-        UserName = info.GetString(nameof(UserName)) ?? this.GetPropertyDefaultValueAsString(nameof(UserName));
-        Title = info.GetString(nameof(Title)) ?? this.GetPropertyDefaultValueAsString(nameof(Title));
-        About = info.GetString(nameof(About)) ?? this.GetPropertyDefaultValueAsString(nameof(About));
+        UserName = info.GetString(nameof(UserName)) ?? this.GetPropertyDefaultValue(nameof(UserName));
+        Title = info.GetString(nameof(Title)) ?? this.GetPropertyDefaultValue(nameof(Title));
+        About = info.GetString(nameof(About)) ?? this.GetPropertyDefaultValue(nameof(About));
         Count = info.GetInt32(nameof(Count));
     }
 

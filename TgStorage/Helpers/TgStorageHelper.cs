@@ -4,7 +4,7 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using TgCore.Helpers;
-using TgLocalization.Helpers;
+using TgCore.Localization;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Documents;
 using TgStorage.Models.Messages;
@@ -27,21 +27,17 @@ public partial class TgStorageHelper : IHelper
 
     #region Public and private fields, properties, constructor
 
+    public AppSettingsHelper AppSettings => AppSettingsHelper.Instance;
     public SQLiteConnection SqLiteCon { get; private set; }
     public TgLogHelper TgLog => TgLogHelper.Instance;
     public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public string FileName { get; set; }
-    public bool IsReady => IsReadyFileExists;
-    public bool IsReadyFileExists => File.Exists(FileName);
-    public SqlTableAppModel App => GetItem<SqlTableAppModel>();
+    public bool IsReady => AppSettings.AppXml.IsExistsFileStorage;
+    public SqlTableAppModel App => GetItemApp();
     public SqlTableProxyModel Proxy => GetItem<SqlTableProxyModel>(App.ProxyUid);
 
     public TgStorageHelper()
     {
         SqLiteCon = new("");
-        FileName = FileNameUtils.Storage;
-        // https://github.com/softlion/SQLite.Net-PCL2
-        SQLitePCL.Batteries_V2.Init();
     }
 
     #endregion
@@ -52,12 +48,12 @@ public partial class TgStorageHelper : IHelper
     {
         if (string.IsNullOrEmpty(SqLiteCon.DatabasePath))
         {
-            SQLiteConnectionString options = new(FileName, false);
+            SQLiteConnectionString options = new(AppSettings.AppXml.FileStorage, false);
             SqLiteCon = new(options);
         }
         CreateTables();
         // XPO.
-        string connectionString = SQLiteConnectionProvider.GetConnectionString(FileName);
+        string connectionString = SQLiteConnectionProvider.GetConnectionString(AppSettings.AppXml.FileStorage);
         XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
         // Upgrade tables.
         if (isUpgrade)
@@ -87,7 +83,7 @@ public partial class TgStorageHelper : IHelper
     public void DeleteExistsDb()
     {
         if (!IsReady) return;
-        File.Delete(FileName);
+        File.Delete(AppSettings.AppXml.FileStorage);
     }
 
     public void ViewStatistics()
@@ -125,7 +121,6 @@ public partial class TgStorageHelper : IHelper
             {
                 SqlTableAppDeprecatedModel appDeprecated = GetList<SqlTableAppDeprecatedModel>().First();
                 SqLiteCon.DropTable<SqlTableAppDeprecatedModel>();
-                //AddItemApp(appDeprecated.ApiHash, appDeprecated.PhoneNumber);
                 AddOrUpdateItem<SqlTableAppModel>(new () { ApiHash = appDeprecated.ApiHash, PhoneNumber = appDeprecated.PhoneNumber });
                 _ = App;
             }
@@ -149,7 +144,6 @@ public partial class TgStorageHelper : IHelper
     protected TgStorageHelper(SerializationInfo info, StreamingContext context)
     {
         SqLiteCon = info.GetValue(nameof(SqLiteCon), typeof(SQLiteConnection)) as SQLiteConnection ?? new("");
-        FileName = info.GetString(nameof(FileName)) ?? this.GetPropertyDefaultValueAsString(nameof(FileName));
     }
 
     /// <summary>
@@ -160,7 +154,6 @@ public partial class TgStorageHelper : IHelper
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         info.AddValue(nameof(Version), SqLiteCon);
-        info.AddValue(nameof(FileName), FileName);
     }
 
     #endregion

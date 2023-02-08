@@ -1,11 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Runtime.Serialization;
-using TgCore.Interfaces;
-using TgCore.Utils;
-
-namespace TgDownloader.Models;
+namespace TgCore.Models;
 
 public class TgDownloadSettingsModel : IModel
 {
@@ -42,7 +38,7 @@ public class TgDownloadSettingsModel : IModel
 
     public TgDownloadSettingsModel()
     {
-        DestDirectory = this.GetPropertyDefaultValueAsString(nameof(DestDirectory));
+        DestDirectory = this.GetPropertyDefaultValue(nameof(DestDirectory));
         IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
         IsAutoUpdate = this.GetPropertyDefaultValueAsBool(nameof(IsAutoUpdate));
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
@@ -50,9 +46,9 @@ public class TgDownloadSettingsModel : IModel
         SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
         SourceFirstId = this.GetPropertyDefaultValueAsInt(nameof(SourceFirstId));
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
-        SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
-        SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
-        SourceAbout = this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
+        SourceUserName = this.GetPropertyDefaultValue(nameof(SourceUserName));
+        SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
+        SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));
     }
 
     #endregion
@@ -61,7 +57,7 @@ public class TgDownloadSettingsModel : IModel
 
     public void SetDefault(int messageCurrentId)
     {
-        DestDirectory = this.GetPropertyDefaultValueAsString(nameof(DestDirectory));
+        DestDirectory = this.GetPropertyDefaultValue(nameof(DestDirectory));
         IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
         IsAutoUpdate = this.GetPropertyDefaultValueAsBool(nameof(IsAutoUpdate));
         IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
@@ -69,9 +65,9 @@ public class TgDownloadSettingsModel : IModel
         SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
         SourceFirstId = messageCurrentId;
         SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
-        SourceUserName = this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
-        SourceTitle = this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
-        SourceAbout = this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
+        SourceUserName = this.GetPropertyDefaultValue(nameof(SourceUserName));
+        SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
+        SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));
     }
 
     public void SetSource(long id, string title, string about)
@@ -92,7 +88,7 @@ public class TgDownloadSettingsModel : IModel
     /// <param name="context"></param>
     protected TgDownloadSettingsModel(SerializationInfo info, StreamingContext context)
     {
-        DestDirectory = info.GetString(nameof(DestDirectory)) ?? this.GetPropertyDefaultValueAsString(nameof(DestDirectory));
+        DestDirectory = info.GetString(nameof(DestDirectory)) ?? this.GetPropertyDefaultValue(nameof(DestDirectory));
         IsJoinFileNameWithMessageId = info.GetBoolean(nameof(IsJoinFileNameWithMessageId));
         IsAutoUpdate = info.GetBoolean(nameof(IsAutoUpdate));
         IsRewriteFiles = info.GetBoolean(nameof(IsRewriteFiles));
@@ -101,9 +97,9 @@ public class TgDownloadSettingsModel : IModel
         SourceFirstId = info.GetInt32(nameof(SourceFirstId));
         SourceId = info.GetInt64(nameof(SourceId));
         SourceFirstId = info.GetInt32(nameof(SourceFirstId));
-        SourceUserName = info.GetString(nameof(SourceUserName)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceUserName));
-        SourceTitle = info.GetString(nameof(SourceTitle)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceTitle));
-        SourceAbout = info.GetString(nameof(SourceAbout)) ?? this.GetPropertyDefaultValueAsString(nameof(SourceAbout));
+        SourceUserName = info.GetString(nameof(SourceUserName)) ?? this.GetPropertyDefaultValue(nameof(SourceUserName));
+        SourceTitle = info.GetString(nameof(SourceTitle)) ?? this.GetPropertyDefaultValue(nameof(SourceTitle));
+        SourceAbout = info.GetString(nameof(SourceAbout)) ?? this.GetPropertyDefaultValue(nameof(SourceAbout));
     }
 
     /// <summary>

@@ -9,27 +9,28 @@ public class SqlTableMessageModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    //[PrimaryKey]
     [Indexed]
     [Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
-    //[PrimaryKey]
+    
     [Indexed]
     [Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
+    
     [Column("DT_CREATE")]
     [DefaultValue(null)]
     public DateTime DtCreate { get; set; }
-    //private long DtCreateLong { get; set; }
-    //public DateTime DtCreate { get => DtCreateLong.CastAsDt(); set => DtCreateLong = value.CastAsLong(); }
+    
     [Column("TYPE")]
     [DefaultValue("")]
     public string Type { get; set; }
+
     [Column("SIZE")]
     [DefaultValue(0)]
     public long Size { get; set; }
+    
     [Column("MESSAGE")]
     [DefaultValue("")]
     public string Message { get; set; }
@@ -39,8 +40,8 @@ public class SqlTableMessageModel : SqlTableBase
         Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
         SourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
         DtCreate = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtCreate));
-        Message = this.GetPropertyDefaultValueAsString(nameof(Message));
-        Type = this.GetPropertyDefaultValueAsString(nameof(Type));
+        Message = this.GetPropertyDefaultValue(nameof(Message));
+        Type = this.GetPropertyDefaultValue(nameof(Type));
         Size = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Size));
     }
 
@@ -68,8 +69,8 @@ public class SqlTableMessageModel : SqlTableBase
         Id = info.GetInt64(nameof(Id));
         SourceId = info.GetInt64(nameof(SourceId));
         DtCreate = info.GetDateTime(nameof(DtCreate));
-        Message = info.GetString(nameof(Message)) ?? this.GetPropertyDefaultValueAsString(nameof(Message));
-        Type = info.GetString(nameof(Type)) ?? this.GetPropertyDefaultValueAsString(nameof(Type));
+        Message = info.GetString(nameof(Message)) ?? this.GetPropertyDefaultValue(nameof(Message));
+        Type = info.GetString(nameof(Type)) ?? this.GetPropertyDefaultValue(nameof(Type));
         Size = info.GetInt64(nameof(Size));
     }
 

@@ -2,21 +2,15 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using NUnit.Framework;
-using TgAssertCoreTests.Helpers;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Proxies;
+using TgStorageTest.Utils;
 
 namespace TgStorageTest.Helpers;
 
 [TestFixture]
 internal class TgStorageHelperTests
 {
-    #region Public and private fields, properties, constructor
-
-    private static DataCoreHelper DataCore => DataCoreHelper.Instance;
-
-    #endregion
-
     #region Public and private methods
 
     [Test]
@@ -24,13 +18,13 @@ internal class TgStorageHelperTests
     {
         Assert.DoesNotThrow(() =>
         {
-            SqlTableAppModel? app = DataCore.TgStorage.GetItemNullable<SqlTableAppModel>();
+            SqlTableAppModel? app = TgStorageTestsUtils.DataCore.TgStorage.GetItemNullable<SqlTableAppModel>();
             TestContext.WriteLine(app is { } ? app.ToString() : "<Empty>");
-            app = DataCore.TgStorage.GetItem<SqlTableAppModel>();
+            app = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableAppModel>();
             TestContext.WriteLine(app);
             if (app.IsExists)
-                DataCore.TgStorage.AddOrUpdateItem(app);
-            app = DataCore.TgStorage.GetItem<SqlTableAppModel>();
+                TgStorageTestsUtils.DataCore.TgStorage.AddOrUpdateItem(app);
+            app = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableAppModel>();
             TestContext.WriteLine(app);
         });
     }
@@ -40,13 +34,13 @@ internal class TgStorageHelperTests
     {
         Assert.DoesNotThrow(() =>
         {
-            SqlTableProxyModel? proxy = DataCore.TgStorage.GetItemNullable<SqlTableProxyModel>();
+            SqlTableProxyModel? proxy = TgStorageTestsUtils.DataCore.TgStorage.GetItemNullable<SqlTableProxyModel>();
             TestContext.WriteLine(proxy is { } ? proxy.ToString() : "<Empty>");
-            proxy = DataCore.TgStorage.GetItem<SqlTableProxyModel>();
+            proxy = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableProxyModel>();
             TestContext.WriteLine(proxy);
             if (proxy.IsExists)
-                DataCore.TgStorage.AddOrUpdateItem(proxy);
-            proxy = DataCore.TgStorage.GetItem<SqlTableProxyModel>();
+                TgStorageTestsUtils.DataCore.TgStorage.AddOrUpdateItem(proxy);
+            proxy = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableProxyModel>();
             TestContext.WriteLine(proxy);
         });
     }

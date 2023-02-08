@@ -1,9 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloader.Utils;
+using TgCore.Localization;
 
-AppXmlModel app;
+AppSettingsHelper appSettings = AppSettingsHelper.Instance;
 MenuHelper menu = MenuHelper.Instance;
 TgLocaleHelper locale = TgLocaleHelper.Instance;
 TgLogHelper log = TgLogHelper.Instance;
@@ -22,12 +22,17 @@ do
             .Title(locale.MenuSwitchNumber)
             .PageSize(10)
             .MoreChoicesText(locale.MoveUpDown)
-            .AddChoices(locale.MenuMainExit, locale.MenuMainStorage, locale.MenuMainClient, 
+            .AddChoices(
+                locale.MenuMainExit, locale.MenuMainAppSettings, locale.MenuMainStorage, locale.MenuMainClient, 
                 locale.MenuMainDownload, locale.MenuMainAdvanced));
         switch (prompt)
         {
             case "Exit":
                 menu.Value = MenuMain.Exit;
+                break;
+            case "Application settings":
+                menu.Value = MenuMain.AppSettings;
+                menu.SetupAppSettings(tgDownloadSettings);
                 break;
             case "Storage settings":
                 menu.Value = MenuMain.Storage;
@@ -59,20 +64,12 @@ do
 void Setup()
 {
     // App.
-    app = AppUtils.LoadXmlSettings();
-    app.SetVersion(Assembly.GetExecutingAssembly());
-    if (!app.IsExistsStoragePath)
-    {
-        app.SetStoragePath(Path.Combine(Directory.GetCurrentDirectory(), FileNameUtils.Storage));
-        AppUtils.StoreSettings(app);
-    }
-    tgStorage.FileName = app.StoragePath;
+    appSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
     // Console.
     Console.OutputEncoding = Encoding.UTF8;
     log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
     // Storage.
     tgStorage.CreateOrConnectDb(true);
     // Client.
-    menu.App = app;
     menu.ClientConnectExists(tgDownloadSettings);
 }

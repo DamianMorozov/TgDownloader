@@ -5,15 +5,15 @@ using ProxyLib.Proxy;
 using System.Runtime.Serialization;
 using TgCore.Helpers;
 using TgCore.Interfaces;
+using TgCore.Localization;
+using TgCore.Models;
 using TgCore.Utils;
-using TgDownloader.Models;
-using TgLocalization.Helpers;
 using TgStorage.Helpers;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Proxies;
 using Channel = TL.Channel;
 using Document = TL.Document;
-using ProxyType = TgStorage.Enums.ProxyType;
+using ProxyType = TgCore.Enums.ProxyType;
 
 namespace TgDownloader.Helpers;
 
@@ -30,6 +30,7 @@ public partial class TgClientHelper : IHelper
 
     #region Public and private fields, properties, constructor
 
+    private AppSettingsHelper AppSettings => AppSettingsHelper.Instance;
     private TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
     private TgStorageHelper TgStorage => TgStorageHelper.Instance;
     private TgLogHelper TgLog => TgLogHelper.Instance;
@@ -37,9 +38,9 @@ public partial class TgClientHelper : IHelper
     public bool IsClientReady => Client is not null && !Client.Disconnected;
     public ExceptionModel ClientException { get; private set; }
     public ExceptionModel ProxyException { get; private set; }
-    public bool IsReady => Client is { } && IsClientReady && (!TgStorage.App.IsUseProxy ||
-                                                                (TgStorage.App.IsUseProxy && TgStorage.GetItem<SqlTableProxyModel>(TgStorage.App.ProxyUid).IsExists)) &&
-        !ProxyException.IsExists && !ClientException.IsExists;
+    public bool IsReady => AppSettings.AppXml.IsExistsFileSession && Client is { } && IsClientReady && (!AppSettings.AppXml.IsUseProxy ||
+                               (AppSettings.AppXml.IsUseProxy && TgStorage.GetItem<SqlTableProxyModel>(TgStorage.App.ProxyUid).IsExists)) &&
+                           !ProxyException.IsExists && !ClientException.IsExists;
     public User? Me { get; set; }
     public Dictionary<long, ChatBase> DicChatsAll { get; private set; }
     public Dictionary<long, ChatBase> DicChatsUpdated { get; }
@@ -99,7 +100,7 @@ public partial class TgClientHelper : IHelper
     {
         if (!IsClientReady) return;
         if (Client is null) return;
-        if (!TgStorage.App.IsUseProxy) return;
+        if (!AppSettings.AppXml.IsUseProxy) return;
         if (Equals(proxy.Type, ProxyType.None)) return;
         if (!TgStorage.IsValidXpLite(proxy)) return;
 
@@ -697,7 +698,6 @@ public partial class TgClientHelper : IHelper
     private void DeleteExistsFiles(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus,
           (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files)
     {
-        if (!tgDownloadSettings.IsRewriteFiles) return;
         TryCatchAction(() =>
         {
             for (int i = 0; i < files.Length; i++)
@@ -705,11 +705,11 @@ public partial class TgClientHelper : IHelper
                 string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
                 if (File.Exists(fileName))
                 {
-                    //using FileStream fileStream = File.OpenRead(fileName);
-                    //long size = fileStream.Length;
-                    //fileStream.Close();
-                    //if (size < files[i].Size)
-                    File.Delete(fileName);
+                    long fileSize = FileUtils.CalculateFileSize(fileName);
+                    if (tgDownloadSettings.IsRewriteFiles && fileSize < files[i].Size || fileSize == 0)
+                    {
+                        File.Delete(fileName);
+                    }
                 }
             }
         }, refreshStatus);
@@ -855,8 +855,8 @@ public partial class TgClientHelper : IHelper
     /// <param name="context"></param>
     protected TgClientHelper(SerializationInfo info, StreamingContext context)
     {
-        ApiHash = info.GetString(nameof(ApiHash)) ?? this.GetPropertyDefaultValueAsString(nameof(ApiHash));
-        ApiId = info.GetString(nameof(ApiId)) ?? this.GetPropertyDefaultValueAsString(nameof(ApiId));
+        ApiHash = info.GetString(nameof(ApiHash)) ?? this.GetPropertyDefaultValue(nameof(ApiHash));
+        ApiId = info.GetString(nameof(ApiId)) ?? this.GetPropertyDefaultValue(nameof(ApiId));
         DicChatsAll = info.GetValue(nameof(DicChatsAll), typeof(Dictionary<long, ChatBase>)) as Dictionary<long, ChatBase> ?? new();
         DicChatsUpdated = info.GetValue(nameof(DicChatsUpdated), typeof(Dictionary<long, ChatBase>)) as Dictionary<long, ChatBase> ?? new();
         DicUsersUpdated = info.GetValue(nameof(DicUsersUpdated), typeof(Dictionary<long, User>)) as Dictionary<long, User> ?? new();
@@ -864,7 +864,7 @@ public partial class TgClientHelper : IHelper
         ListChats = info.GetValue(nameof(ListChats), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
         ListGroups = info.GetValue(nameof(ListGroups), typeof(List<Channel>)) as List<Channel> ?? new();
         ListSmallGroups = info.GetValue(nameof(ListSmallGroups), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
-        PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValueAsString(nameof(PhoneNumber));
+        PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValue(nameof(PhoneNumber));
         object? clientException = info.GetValue(nameof(ClientException), typeof(ExceptionModel));
         ClientException = clientException is not null ? (ExceptionModel)clientException : new();
         object? proxyException = info.GetValue(nameof(ProxyException), typeof(ExceptionModel));
@@ -878,18 +878,18 @@ public partial class TgClientHelper : IHelper
     /// <param name="context"></param>
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-        info.AddValue(nameof(Version), ApiHash);
-        info.AddValue(nameof(Version), ApiId);
-        info.AddValue(nameof(Version), DicChatsAll);
-        info.AddValue(nameof(Version), DicChatsUpdated);
-        info.AddValue(nameof(Version), DicUsersUpdated);
-        info.AddValue(nameof(Version), ListChannels);
-        info.AddValue(nameof(Version), ListChats);
-        info.AddValue(nameof(Version), ListGroups);
-        info.AddValue(nameof(Version), ListSmallGroups);
-        info.AddValue(nameof(Version), PhoneNumber);
-        info.AddValue(nameof(Version), ClientException);
-        info.AddValue(nameof(Version), ProxyException);
+        info.AddValue(nameof(ApiHash), ApiHash);
+        info.AddValue(nameof(ApiId), ApiId);
+        info.AddValue(nameof(DicChatsAll), DicChatsAll);
+        info.AddValue(nameof(DicChatsUpdated), DicChatsUpdated);
+        info.AddValue(nameof(DicUsersUpdated), DicUsersUpdated);
+        info.AddValue(nameof(ListChannels), ListChannels);
+        info.AddValue(nameof(ListChats), ListChats);
+        info.AddValue(nameof(ListGroups), ListGroups);
+        info.AddValue(nameof(ListSmallGroups), ListSmallGroups);
+        info.AddValue(nameof(PhoneNumber), PhoneNumber);
+        info.AddValue(nameof(ClientException), ClientException);
+        info.AddValue(nameof(ProxyException), ProxyException);
     }
 
     #endregion

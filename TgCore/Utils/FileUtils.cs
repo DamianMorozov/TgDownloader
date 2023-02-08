@@ -1,17 +1,19 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgCore.Helpers;
-using TgLocalization.Helpers;
+using TgCore.Localization;
 
-namespace TgDownloader.Utils;
+namespace TgCore.Utils;
 
 public static class FileUtils
 {
     #region Public and private fields, properties, constructor
 
-    private static readonly TgLocaleHelper TgLocale = TgLocaleHelper.Instance;
-    private static readonly TgLogHelper TgLog = TgLogHelper.Instance;
+    private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+    private static TgLogHelper TgLog => TgLogHelper.Instance;
+    public static string AppXmlSettings => "TgDownloader.xml";
+    public static string Session => "TgDownloader.session";
+    public static string Storage => "TgDownloader.db";
 
     #endregion
 
@@ -30,7 +32,6 @@ public static class FileUtils
         return rows;
     }
 
-    // https://www.nimaara.com/counting-lines-of-a-text-file/
     public static ulong GetContentRowsCountFast(string sourceFile)
     {
         ulong lineCount = 0L;
@@ -103,7 +104,6 @@ public static class FileUtils
         return lineCount;
     }
 
-    // https://blogs.msdn.microsoft.com/jeremykuhne/2018/03/09/custom-directory-enumeration-in-net-core-2-1/
     public static long CalculateDirSize(string dir)
     {
         if (!Directory.Exists(dir)) return 0L;
@@ -135,11 +135,8 @@ public static class FileUtils
         }
     }
 
-    public static long CalculateFileSize(string file)
-    {
-        if (!File.Exists(file)) return 0L;
-        return new FileInfo(file).Length;
-    }
+    public static long CalculateFileSize(string file) => 
+        !File.Exists(file) ? 0L : new FileInfo(file).Length;
 
     public static string GetFileSizeString(long value) =>
         value > 0

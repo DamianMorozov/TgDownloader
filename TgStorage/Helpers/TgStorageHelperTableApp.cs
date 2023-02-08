@@ -15,18 +15,17 @@ public partial class TgStorageHelper
 
     private void AddItemApp<T>(T item, UnitOfWork uow) where T : ISqlTable, new()
     {
-        if (item is not SqlTableAppModel app) return;
-        app = new (uow)
+        if (item is not SqlTableAppModel itemDb) return;
+        itemDb = new (uow)
         {
             DtCreated = DateTime.Now,
             DtChanged = DateTime.Now,
-            ApiHash = app.ApiHash,
-            PhoneNumber = app.PhoneNumber,
-            IsUseProxy = app.IsUseProxy,
-            ProxyUid = app.ProxyUid,
-            DbVersion = 10,
+            ApiHash = itemDb.ApiHash,
+            PhoneNumber = itemDb.PhoneNumber,
+            ProxyUid = itemDb.ProxyUid,
+            DbVersion = itemDb.GetLastDbVersion(),
         };
-        if (IsValidXpLite(app))
+        if (IsValidXpLite(itemDb))
             uow.CommitChanges();
     }
 
@@ -37,9 +36,8 @@ public partial class TgStorageHelper
             itemDb.DtChanged = DateTime.Now;
         itemDb.ApiHash = item.ApiHash;
         itemDb.PhoneNumber = item.PhoneNumber;
-        itemDb.IsUseProxy = item.IsUseProxy;
         itemDb.ProxyUid = item.ProxyUid;
-        itemDb.DbVersion = 10;
+        itemDb.DbVersion = item.GetLastDbVersion();
         if (IsValidXpLite(itemDb))
         {
             itemDb.Session.Save(itemDb);
@@ -55,6 +53,15 @@ public partial class TgStorageHelper
 
     public SqlTableAppModel GetItemApp(string apiHash) =>
         GetItemNullableApp(apiHash) ?? new();
+
+    public SqlTableAppModel? GetItemNullableApp() =>
+        new UnitOfWork()
+            .Query<SqlTableAppModel>()
+            .Select(item => item)
+            .FirstOrDefault(item => !Equals(item.ApiHash, Guid.Empty.ToString().Replace("-", "")));
+
+    public SqlTableAppModel GetItemApp() =>
+        GetItemNullableApp() ?? new();
 
     #endregion
 }
