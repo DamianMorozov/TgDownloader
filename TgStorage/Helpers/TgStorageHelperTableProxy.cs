@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using DevExpress.Xpo;
-using TgStorage.Enums;
+using TgCore.Enums;
 using TgStorage.Models.Proxies;
 
 namespace TgStorage.Helpers;

@@ -1,7 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgDownloader.Models;
+namespace TgCore.Models;
 
 public class ExceptionModel
 {
@@ -21,7 +21,7 @@ public class ExceptionModel
 
     #region Public and private methods
 
-    internal void Set(Exception ex)
+    public void Set(Exception ex)
     {
         Exception = ex;
     }

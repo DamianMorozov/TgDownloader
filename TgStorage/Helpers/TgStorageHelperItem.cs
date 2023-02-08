@@ -4,12 +4,7 @@
 using DevExpress.Xpo;
 using TgStorage.Models;
 using TgStorage.Models.Apps;
-using TgStorage.Models.Documents;
-using TgStorage.Models.Messages;
 using TgStorage.Models.Proxies;
-using TgStorage.Models.Sources;
-using TgStorage.Models.SourcesSettings;
-using TgStorage.Utils;
 
 namespace TgStorage.Helpers;
 
@@ -20,7 +15,7 @@ public partial class TgStorageHelper : IHelper
     public T? GetItemNullable<T>() where T : ISqlTable =>
         new UnitOfWork().Query<T>().Select(item => item).FirstOrDefault();
 
-    public T GetItem<T>() where T : ISqlTable, new() => GetItemNullable<T>() ?? new T();
+    public T GetItemFirstOrDefault<T>() where T : ISqlTable, new() => GetItemNullable<T>() ?? new T();
 
     public T? GetItemNullable<T>(Guid uid) where T : ISqlTable =>
         new UnitOfWork().Query<T>().Select(item => item).FirstOrDefault(item => Equals(item.Uid, uid));
@@ -31,14 +26,12 @@ public partial class TgStorageHelper : IHelper
 
     public SqlTableXpLiteBase NewEmpty<T>() where T : ISqlTable
     {
-        switch (typeof(T))
+        return typeof(T) switch
         {
-            case var cls when cls == typeof(SqlTableAppModel):
-                return NewEmptyApp();
-            case var cls when cls == typeof(SqlTableProxyModel):
-                return NewEmptyProxy();
-        }
-        return new();
+            var cls when cls == typeof(SqlTableAppModel) => NewEmptyApp(),
+            var cls when cls == typeof(SqlTableProxyModel) => NewEmptyProxy(),
+            _ => new()
+        };
     }
 
     public void AddOrUpdateItem<T>(T item) where T : ISqlTable, new()

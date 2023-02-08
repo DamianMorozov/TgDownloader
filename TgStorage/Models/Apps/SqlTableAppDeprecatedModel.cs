@@ -19,8 +19,8 @@ public class SqlTableAppDeprecatedModel : SqlTableBase
 
     public SqlTableAppDeprecatedModel()
     {
-        ApiHash = this.GetPropertyDefaultValueAsString(nameof(ApiHash));
-        PhoneNumber = this.GetPropertyDefaultValueAsString(nameof(PhoneNumber));
+        ApiHash = this.GetPropertyDefaultValue(nameof(ApiHash));
+        PhoneNumber = this.GetPropertyDefaultValue(nameof(PhoneNumber));
     }
 
     #endregion
@@ -34,8 +34,8 @@ public class SqlTableAppDeprecatedModel : SqlTableBase
     /// <param name="context"></param>
     protected SqlTableAppDeprecatedModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
-        ApiHash = info.GetString(nameof(ApiHash)) ?? this.GetPropertyDefaultValueAsString(nameof(ApiHash));
-        PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValueAsString(nameof(PhoneNumber));
+        ApiHash = info.GetString(nameof(ApiHash)) ?? this.GetPropertyDefaultValue(nameof(ApiHash));
+        PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValue(nameof(PhoneNumber));
     }
 
     /// <summary>

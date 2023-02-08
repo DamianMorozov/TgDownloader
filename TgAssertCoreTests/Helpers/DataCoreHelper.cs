@@ -1,11 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgDownloader.Models;
-using TgDownloader.Utils;
-using TgLocalization.Helpers;
-using TgStorage.Helpers;
-
 namespace TgAssertCoreTests.Helpers;
 
 public class DataCoreHelper
@@ -21,22 +16,23 @@ public class DataCoreHelper
 
     #region Public and private fields, properties, constructor
 
-    public TgLocaleHelper TgLocale { get; } = TgLocaleHelper.Instance;
     public TgStorageHelper TgStorage { get; } = TgStorageHelper.Instance;
-    public AppXmlModel App { get; }
+    public AppSettingsHelper AppSettings => AppSettingsHelper.Instance;
 
     public DataCoreHelper()
     {
-        App = AppUtils.LoadXmlSettings();
-        TgStorage.FileName = App.StoragePath;
-        TgStorage.CreateOrConnectDb(false);
+        Init();
     }
 
     #endregion
 
     #region Public and private methods
 
-    //
+    public void Init()
+    {
+        AppSettings.LoadXmlSettings();
+        TgStorage.CreateOrConnectDb(false);
+    }
 
     #endregion
 }

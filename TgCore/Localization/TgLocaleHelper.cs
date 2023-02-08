@@ -1,11 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Runtime.Serialization;
-using TgCore.Interfaces;
-using TgLocalization.Enums;
-
-namespace TgLocalization.Helpers;
+namespace TgCore.Localization;
 
 public class TgLocaleHelper : IHelper
 {
@@ -24,7 +20,6 @@ public class TgLocaleHelper : IHelper
     public string InfoMessage(string message, bool isUseX = false) => !isUseX ? $"[green]✓ {message}[/]" : $"[green]x {message}[/]";
     public string WarningMessage(string message) => $"[red]x {message}[/]";
 
-
     public TgLocaleHelper()
     {
         Language = LanguageLocale.English;
@@ -33,6 +28,7 @@ public class TgLocaleHelper : IHelper
     #endregion
 
     #region Public and private fields, properties, constructor - App
+
     public string AppName => "Name";
     public string AppTitle => "TG-Downloader";
     public string AppValue => "Value";
@@ -43,12 +39,26 @@ public class TgLocaleHelper : IHelper
     #region Public and private fields, properties, constructor - Main menu
 
     public string MenuMain => "Main menu";
+    public string MenuMainAppSettings => "Application settings";
     public string MenuMainAdvanced => "Advanced";
     public string MenuMainClient => "Client settings";
     public string MenuMainDownload => "Download settings";
     public string MenuMainExit => "Exit";
+    public string MenuMainReset => "Reset";
     public string MenuMainReturn => "Return";
     public string MenuMainStorage => "Storage settings";
+    public string MenuYes => "Yes";
+    public string MenuNo => "No";
+
+    #endregion
+
+    #region Public and private fields, properties, constructor - App settings
+
+    public string MenuAppFileSession => "Setting the path to the session file";
+    public string MenuAppFileStorage => "Setting the path to the storage file";
+    public string MenuAppUseProxy => "Usage proxy";
+    public string MenuAppUseProxyEnable => "Enable proxy";
+    public string MenuAppUseProxyDisable => "Disable proxy";
 
     #endregion
 
@@ -82,8 +92,6 @@ public class TgLocaleHelper : IHelper
     public string MenuDownloadSetSource => "Setup source (ID/username)";
     public string MenuDownloadSetSourceFirstIdAuto => "Setup first ID auto";
     public string MenuDownloadSetSourceFirstIdManual => "Setup first ID manual";
-    public string MenuProxyEnable => "Enable proxy";
-    public string MenuProxyDisable => "Disable proxy";
     public string MenuSaveSettings => "Save settings";
     public string MenuScanSources => "Scan local sources";
     public string MenuSetProxy => "Setup proxy";
@@ -114,10 +122,13 @@ public class TgLocaleHelper : IHelper
     public string StatusException => "Exception:";
     public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
     public string StatusInnerException => "Inner exception:";
-    public string StorageFileExists => "Storage is exists";
-    public string StorageFileName => "Storage file name";
-    public string StorageSetDefaultFileName(string fileName) => $"Set default file name '{fileName}'";
-    public string StorageTablesExists => "Tables are exists";
+    public string FileSession => "File session";
+    public string FileSessionExists => "File session is exists";
+    public string FileStorage => "File storage";
+    public string FileStorageExists => "File storage is exists";
+    public string FileStorageName => "Storage file name";
+    public string FileStorageSetDefaultName(string fileName) => $"Set default file name '{fileName}'";
+    public string FileStorageTablesExists => "Tables are exists";
     public string TablesAreExists => "Tables are exists";
     public string TablesAreNotExists => "Tables are not exists";
     public string TgClientException => "Client exception";

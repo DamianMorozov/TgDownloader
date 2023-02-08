@@ -1,16 +1,13 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.ComponentModel;
-using TgCore.Interfaces;
-
 namespace TgCore.Utils;
 
 public static class ExtUtils
 {
     #region Public and private methods - Core
 
-    private static object? GetPropertyDefaultValueCore<TItem>(this TItem item, string name)
+    private static object? GetPropertyDefaultValueCore<T>(this T item, string name)
     {
         if (item is null) return null;
         AttributeCollection? attributes = TypeDescriptor.GetProperties(item)[name]?.Attributes;
@@ -20,29 +17,26 @@ public static class ExtUtils
         return null;
     }
 
-    private static string GetPropertyDefaultValueAsStringCore<TItem>(this TItem item, string name) =>
+    private static string GetPropertyDefaultValueAsStringCore<T>(this T item, string name) =>
         GetPropertyDefaultValueCore(item, name)?.ToString() ?? string.Empty;
 
-    private static int GetPropertyDefaultValueAsIntCore<TItem>(this TItem item, string name) =>
+    private static int GetPropertyDefaultValueAsIntCore<T>(this T item, string name) =>
         GetPropertyDefaultValueCore(item, name) is int value ? value : default;
 
-    private static long GetPropertyDefaultValueAsLongCore<TItem>(this TItem item, string name) =>
+    private static long GetPropertyDefaultValueAsLongCore<T>(this T item, string name) =>
         GetPropertyDefaultValueCore(item, name) is long value ? value : default;
 
-    private static bool GetPropertyDefaultValueAsBoolCore<TItem>(this TItem item, string name) =>
+    private static bool GetPropertyDefaultValueAsBoolCore<T>(this T item, string name) =>
         GetPropertyDefaultValueCore(item, name) is bool value ? value : default;
 
-    private static TResult? GetPropertyDefaultValueAsGenericCore<TResult, TItem>(this TItem item, string name) =>
+    private static TResult? GetPropertyDefaultValueAsGenericCore<TResult, T>(this T item, string name) =>
         GetPropertyDefaultValueCore(item, name) is TResult value ? value : default;
 
     #endregion
 
     #region Public and private methods - IBase
 
-    public static object? GetPropertyDefaultValue(this IBase item, string name) =>
-        GetPropertyDefaultValueCore(item, name);
-
-    public static string GetPropertyDefaultValueAsString(this IBase item, string name) =>
+    public static string GetPropertyDefaultValue(this IBase item, string name) =>
         GetPropertyDefaultValueAsStringCore(item, name);
 
     public static int GetPropertyDefaultValueAsInt(this IBase item, string name) =>
