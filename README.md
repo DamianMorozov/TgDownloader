@@ -1,6 +1,7 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">README</a> | <a href="CHANGELOG.md">CHANGELOG</a> | <a href="SCREENSHOTS.md">SCREENSHOTS</a> | <a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="SCREENSHOTS.md">Screenshots</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="SCREENSHOTS.md">Скриншоты</a></b></div>
 
 <div align="center">
 	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
@@ -29,9 +30,13 @@ Download files of the Telegram channels or groups you are a member of.
 - Run the `dotnet TgDownloaderConsole.dll` command
 
 ## Quick Start
-- Set up local storage from TgDownloader
-- Set up the Telegram client from TgDownloader
-- Set up a download from TgDownloader
+- Change app settings
+- Set up storage
+- Set up the Telegram client
+- Set up a download
+
+## Default settings
+- Delete the file `TgDownloader.xml`
 
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
