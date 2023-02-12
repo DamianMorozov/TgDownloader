@@ -101,8 +101,10 @@ public class TgLocaleHelper : IHelper
 
     #region Public and private fields, properties, constructor
 
-    public string DirIsNotExists => "Directory is not exists!";
-    public string DirIsNotExistsSpecify(string dir) => string.IsNullOrEmpty(dir) ? "Directory is not exists!" : $"Directory \"{dir}\" is not exists!";
+    public string DirectoryCreate => "Create directory";
+    public string DirectoryCreateIsException(Exception ex) => $"Exception of create directory: {(ex.InnerException is null ? ex.Message : ex.Message + $" | {ex.InnerException.Message}")}";
+    public string DirectoryDestType => "Type destination directory";
+    public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "Th directory is not exists!" : $"Thd directory \"{dir}\" is not exists!";
     public string Empty => "<Empty>";
     public string FileIsAlreadyExists => "File is already exists!";
     public string FileIsAlreadyExistsSpecify(string file) => $"File \"{file}\" is already exists!";
@@ -110,6 +112,13 @@ public class TgLocaleHelper : IHelper
     public string FileIsExistsSpecify(string file) => $"File \"{file}\" is exists.";
     public string FileIsNotExists => "File is not exists!";
     public string FileIsNotExistsSpecify(string file) => $"File \"{file}\" is not exists!";
+    public string FileSession => "File session";
+    public string FileSessionExists => "File session is exists";
+    public string FileStorage => "File storage";
+    public string FileStorageExists => "File storage is exists";
+    public string FileStorageName => "Storage file name";
+    public string FileStorageSetDefaultName(string fileName) => $"Set default file name '{fileName}'";
+    public string FileStorageTablesExists => "Tables are exists";
     public string IsFalse => "False";
     public string IsTrue => "True";
     public string MenuSwitchNumber => "  Switch menu number";
@@ -122,13 +131,6 @@ public class TgLocaleHelper : IHelper
     public string StatusException => "Exception:";
     public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
     public string StatusInnerException => "Inner exception:";
-    public string FileSession => "File session";
-    public string FileSessionExists => "File session is exists";
-    public string FileStorage => "File storage";
-    public string FileStorageExists => "File storage is exists";
-    public string FileStorageName => "Storage file name";
-    public string FileStorageSetDefaultName(string fileName) => $"Set default file name '{fileName}'";
-    public string FileStorageTablesExists => "Tables are exists";
     public string TablesAreExists => "Tables are exists";
     public string TablesAreNotExists => "Tables are not exists";
     public string TgClientException => "Client exception";
@@ -139,8 +141,8 @@ public class TgLocaleHelper : IHelper
     public string TgClientProxySetup => "Proxy setup";
     public string TgClientProxyType => "Proxy type";
     public string TgClientProxyUsage => "Proxy usage";
-    public string TgClientSetupCompleteSuccess => "The TG client setup was completed successfully";
     public string TgClientSetupCompleteError => "The TG client setup was completed with errors";
+    public string TgClientSetupCompleteSuccess => "The TG client setup was completed successfully";
     public string TgClientUserId => "User ID";
     public string TgClientUserIsActive => "User active";
     public string TgClientUserName => "User name";
@@ -163,7 +165,6 @@ public class TgLocaleHelper : IHelper
     public string TgSetupPassword => "Type password";
     public string TgSetupPhone => "Type phone number";
     public string TypeAnyKeyForReturn => "Type any key to return into the main menu";
-    public string TypeDestDirectory => "Type destination directory";
     public string TypeTgProxyHostName => "Type the proxy host name or ip-address";
     public string TypeTgProxyPort => "Type the proxy port";
     public string TypeTgProxySecret => "Type the secret";

@@ -136,9 +136,31 @@ internal partial class MenuHelper
     {
         do
         {
-            tgDownloadSettings.DestDirectory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeDestDirectory}:"));
+            tgDownloadSettings.DestDirectory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.DirectoryDestType}:"));
             if (!Directory.Exists(tgDownloadSettings.DestDirectory))
-                TgLog.Info(TgLocale.DirIsNotExistsSpecify(tgDownloadSettings.DestDirectory));
+            {
+                TgLog.Info(TgLocale.DirectoryIsNotExists(tgDownloadSettings.DestDirectory));
+                string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title($"{TgLocale.DirectoryCreate}?")
+                    .PageSize(10)
+                    .AddChoices(TgLocale.IsTrue, TgLocale.IsFalse));
+                bool isCreate = prompt switch
+                {
+                    "True" => true,
+                    _ => false
+                };
+                if (isCreate)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(tgDownloadSettings.DestDirectory);
+                    }
+                    catch (Exception ex)
+                    {
+                        TgLog.Warning(TgLocale.DirectoryCreateIsException(ex));
+                    }
+                }
+            }
         } while (!Directory.Exists(tgDownloadSettings.DestDirectory));
     }
 
