@@ -31,7 +31,7 @@ public class DataCoreHelper
     public void Init()
     {
         AppSettings.LoadXmlSettings();
-        TgStorage.CreateOrConnectDb(false);
+        TgStorage.CreateOrConnectDb();
     }
 
     #endregion

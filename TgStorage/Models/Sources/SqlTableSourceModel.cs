@@ -4,30 +4,30 @@
 namespace TgStorage.Models.Sources;
 
 [DebuggerDisplay("{nameof(TableSourcesModel)} | {Id} | {UserName}")]
-[Table("SOURCES")]
+[SQLite.Table("SOURCES")]
 public class SqlTableSourceModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    [PrimaryKey]
-    [Column("ID")]
+    [SQLite.PrimaryKey]
+    [SQLite.Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
     
-    [Indexed]
-    [Column("USER_NAME")]
+    [SQLite.Indexed]
+    [SQLite.Column("USER_NAME")]
     [DefaultValue("")]
     public string UserName { get; set; }
     
-    [Column("TITLE")]
+    [SQLite.Column("TITLE")]
     [DefaultValue("")]
     public string Title { get; set; }
     
-    [Column("ABOUT")]
+    [SQLite.Column("ABOUT")]
     [DefaultValue("")]
     public string About { get; set; }
     
-    [Column("COUNT")]
+    [SQLite.Column("COUNT")]
     [DefaultValue(0)]
     public int Count { get; set; }
 

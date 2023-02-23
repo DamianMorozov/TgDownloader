@@ -4,36 +4,36 @@
 namespace TgStorage.Models.Documents;
 
 [DebuggerDisplay("{nameof(TableDocumentModel)} | {Id} | {SourceId} | {MessageId} | {FileName} | {FileSize} | {AccessHash}")]
-[Table("DOCUMENTS")]
+[SQLite.Table("DOCUMENTS")]
 public class SqlTableDocumentModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    [Indexed]
-    [Column("ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
     
-    [Indexed]
-    [Column("SOURCE_ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
     
-    [Indexed]
-    [Column("MESSAGE_ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("MESSAGE_ID")]
     [DefaultValue("")]
     public long MessageId { get; set; }
     
-    [Indexed]
-    [Column("FILE_NAME")]
+    [SQLite.Indexed]
+    [SQLite.Column("FILE_NAME")]
     [DefaultValue("")]
     public string FileName { get; set; }
     
-    [Column("FILE_SIZE")]
+    [SQLite.Column("FILE_SIZE")]
     [DefaultValue(0)]
     public long FileSize { get; set; }
     
-    [Column("ACCESS_HASH")]
+    [SQLite.Column("ACCESS_HASH")]
     [DefaultValue(0)]
     public long AccessHash { get; set; }
 

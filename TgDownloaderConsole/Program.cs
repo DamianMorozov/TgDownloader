@@ -69,7 +69,7 @@ void Setup()
     Console.OutputEncoding = Encoding.UTF8;
     log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
     // Storage.
-    tgStorage.CreateOrConnectDb(true);
+    tgStorage.CreateOrConnectDb();
     // Client.
     menu.ClientConnectExists(tgDownloadSettings);
 }

@@ -36,7 +36,7 @@ internal partial class MenuHelper
             switch (menu)
             {
                 case MenuStorage.CreateNew:
-                    TgStorage.CreateOrConnectDb(true);
+                    TgStorage.CreateOrConnectDb();
                     break;
                 case MenuStorage.DeleteExists:
                     TgStorage.DeleteExistsDb();

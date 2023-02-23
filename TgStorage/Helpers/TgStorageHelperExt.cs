@@ -8,6 +8,7 @@ using TgStorage.Models.Messages;
 using TgStorage.Models.Proxies;
 using TgStorage.Models.Sources;
 using TgStorage.Models.SourcesSettings;
+using TgStorage.Models.Versions;
 
 namespace TgStorage.Helpers;
 
@@ -56,6 +57,7 @@ public partial class TgStorageHelper : IHelper
         {
             SqlTableAppModel app => new SqlTableAppValidator().Validate(app),
             SqlTableProxyModel proxy => new SqlTableProxyValidator().Validate(proxy),
+            SqlTableVersionModel version => new SqlTableVersionValidator().Validate(version),
             _ => null
         };
         return validationResult?.IsValid ?? false;

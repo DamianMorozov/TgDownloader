@@ -4,10 +4,10 @@
 // Global using directives
 
 global using FluentValidation.Results;
-global using SQLite;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Runtime.Serialization;
+global using DevExpress.Xpo;
 global using FluentValidation;
 global using TgCore.Interfaces;
 global using TgCore.Utils;

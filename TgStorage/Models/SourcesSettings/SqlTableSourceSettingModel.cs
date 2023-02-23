@@ -4,30 +4,30 @@
 namespace TgStorage.Models.SourcesSettings;
 
 [DebuggerDisplay("{nameof(TableSourceSettingModel)} | {Id} | {SourceId} | {Directory}")]
-[Table("SOURCES_SETTINGS")]
+[SQLite.Table("SOURCES_SETTINGS")]
 public class SqlTableSourceSettingModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    [PrimaryKey, AutoIncrement]
-    [Column("ID")]
+    [SQLite.PrimaryKey, SQLite.AutoIncrement]
+    [SQLite.Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
     
-    [Indexed]
-    [Column("SOURCE_ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
     
-    [Column("DIRECTORY")]
+    [SQLite.Column("DIRECTORY")]
     [DefaultValue("")]
     public string Directory { get; set; }
     
-    [Column("FIRST_ID")]
+    [SQLite.Column("FIRST_ID")]
     [DefaultValue(1)]
     public int FirstId { get; set; }
     
-    [Column("IS_AUTO_UPDATE")]
+    [SQLite.Column("IS_AUTO_UPDATE")]
     [DefaultValue(0)]
     public bool IsAutoUpdate { get; set; }
 

@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scanning of local channels/groups
 - Storage versioning
 
-## [0.1.610] - 2023-02-12
+## [0.1.620] - 2023-02-23
 ### Fixed
 - Proxy for downloads
 - Overwrite zero size files
@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App setting for the storage file
 - App setting for the usage proxy
 - Auto create directory
+- Storage version table
 
 ## [0.1.500] - 2023-01-31
 ### Added
