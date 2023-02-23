@@ -3,17 +3,17 @@
 
 namespace TgStorage.Models.Apps;
 
-[Table("APPS")]
+[SQLite.Table("APPS")]
 [Obsolete(@"Use SqlTableAppDeprecatedModel")]
 public class SqlTableAppDeprecatedModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    [PrimaryKey]
-    [Column("API_HASH")]
+    [SQLite.PrimaryKey]
+    [SQLite.Column("API_HASH")]
     [DefaultValue("")]
     public string ApiHash { get; set; }
-    [Column("PHONE_NUMBER")]
+    [SQLite.Column("PHONE_NUMBER")]
     [DefaultValue("")]
     public string PhoneNumber { get; set; }
 

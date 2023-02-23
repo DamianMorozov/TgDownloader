@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using TgCore.Helpers;
 using TgCore.Localization;
@@ -11,6 +10,7 @@ using TgStorage.Models.Messages;
 using TgStorage.Models.Proxies;
 using TgStorage.Models.Sources;
 using TgStorage.Models.SourcesSettings;
+using TgStorage.Models.Versions;
 
 namespace TgStorage.Helpers;
 
@@ -28,7 +28,7 @@ public partial class TgStorageHelper : IHelper
     #region Public and private fields, properties, constructor
 
     public AppSettingsHelper AppSettings => AppSettingsHelper.Instance;
-    public SQLiteConnection SqLiteCon { get; private set; }
+    public SQLite.SQLiteConnection SqLiteCon { get; private set; }
     public TgLogHelper TgLog => TgLogHelper.Instance;
     public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
     public bool IsReady => AppSettings.AppXml.IsExistsFileStorage;
@@ -44,11 +44,11 @@ public partial class TgStorageHelper : IHelper
 
     #region Public and private methods
 
-    public void CreateOrConnectDb(bool isUpgrade)
+    public void CreateOrConnectDb()
     {
         if (string.IsNullOrEmpty(SqLiteCon.DatabasePath))
         {
-            SQLiteConnectionString options = new(AppSettings.AppXml.FileStorage, false);
+            SQLite.SQLiteConnectionString options = new(AppSettings.AppXml.FileStorage, false);
             SqLiteCon = new(options);
         }
         CreateTables();
@@ -56,8 +56,7 @@ public partial class TgStorageHelper : IHelper
         string connectionString = SQLiteConnectionProvider.GetConnectionString(AppSettings.AppXml.FileStorage);
         XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
         // Upgrade tables.
-        if (isUpgrade)
-            UpgradeTables();
+        UpgradeTables();
     }
 
     public void CreateTables()
@@ -89,10 +88,10 @@ public partial class TgStorageHelper : IHelper
     public void ViewStatistics()
     {
         TgLog.Info(TgLocale.MenuClientGetInfo);
-        List<SQLiteConnection.ColumnInfo>? info = SqLiteCon.GetTableInfo(nameof(SqlTableAppModel));
+        List<SQLite.SQLiteConnection.ColumnInfo>? info = SqLiteCon.GetTableInfo(nameof(SqlTableAppModel));
         if (info is not null)
         {
-            foreach (SQLiteConnection.ColumnInfo columnInfo in info)
+            foreach (SQLite.SQLiteConnection.ColumnInfo columnInfo in info)
             {
                 TgLog.Info($"{columnInfo.Name}: {columnInfo}");
             }
@@ -125,10 +124,17 @@ public partial class TgStorageHelper : IHelper
                 _ = App;
             }
         }
-        // Update db version.
+        
+        // Update app.
         if (App.IsExists)
-        {
             UpdateItem(App);
+        
+        // Update version.
+        List<SqlTableVersionModel> versions = GetVersionsList();
+        if (!versions.Any())
+        {
+            SqlTableVersionModel version = new() { Version = 11, Description = "Storage version table" };
+            AddItem(version);
         }
     }
 
@@ -143,7 +149,7 @@ public partial class TgStorageHelper : IHelper
     /// <param name="context"></param>
     protected TgStorageHelper(SerializationInfo info, StreamingContext context)
     {
-        SqLiteCon = info.GetValue(nameof(SqLiteCon), typeof(SQLiteConnection)) as SQLiteConnection ?? new("");
+        SqLiteCon = info.GetValue(nameof(SqLiteCon), typeof(SQLite.SQLiteConnection)) as SQLite.SQLiteConnection ?? new("");
     }
 
     /// <summary>

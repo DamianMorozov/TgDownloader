@@ -1,10 +1,10 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using DevExpress.Xpo;
 using TgStorage.Models;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Proxies;
+using TgStorage.Models.Versions;
 
 namespace TgStorage.Helpers;
 
@@ -57,6 +57,9 @@ public partial class TgStorageHelper : IHelper
             case var cls when cls == typeof(SqlTableProxyModel):
                 AddItemProxy(item, uow);
                 break;
+            case var cls when cls == typeof(SqlTableVersionModel):
+                AddItemVersion(item, uow);
+                break;
         }
     }
 
@@ -71,6 +74,10 @@ public partial class TgStorageHelper : IHelper
             case var cls when cls == typeof(SqlTableProxyModel):
                 if (item is SqlTableProxyModel proxy)
                     UpdateItemProxy(proxy);
+                break;
+            case var cls when cls == typeof(SqlTableVersionModel):
+                if (item is SqlTableVersionModel version)
+                    UpdateItemVersion(version);
                 break;
         }
     }

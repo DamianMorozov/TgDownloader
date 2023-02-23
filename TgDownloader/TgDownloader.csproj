@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.610.0</Version>
+    <Version>0.1.620.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -12,14 +12,18 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Compile Remove="Utils\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Utils\**" />
+    <None Remove="Models\**" />
+    <None Remove="Utils\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="ProxyLib" Version="1.0.2" />
     <PackageReference Include="WTelegramClient" Version="3.2.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>

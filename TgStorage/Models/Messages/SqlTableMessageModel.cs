@@ -4,34 +4,34 @@
 namespace TgStorage.Models.Messages;
 
 [DebuggerDisplay("{nameof(TableMessageModel)} | {Id} | {SourceId} | {Message}")]
-[Table("MESSAGES")]
+[SQLite.Table("MESSAGES")]
 public class SqlTableMessageModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    [Indexed]
-    [Column("ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("ID")]
     [DefaultValue(0)]
     public long Id { get; set; }
     
-    [Indexed]
-    [Column("SOURCE_ID")]
+    [SQLite.Indexed]
+    [SQLite.Column("SOURCE_ID")]
     [DefaultValue(0)]
     public long SourceId { get; set; }
     
-    [Column("DT_CREATE")]
+    [SQLite.Column("DT_CREATE")]
     [DefaultValue(null)]
     public DateTime DtCreate { get; set; }
     
-    [Column("TYPE")]
+    [SQLite.Column("TYPE")]
     [DefaultValue("")]
     public string Type { get; set; }
 
-    [Column("SIZE")]
+    [SQLite.Column("SIZE")]
     [DefaultValue(0)]
     public long Size { get; set; }
     
-    [Column("MESSAGE")]
+    [SQLite.Column("MESSAGE")]
     [DefaultValue("")]
     public string Message { get; set; }
 

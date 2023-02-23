@@ -60,7 +60,7 @@ internal partial class MenuHelper
     private void SetFileAppSettings()
     {
         AppSettings.StoreXmlSettings();
-        TgStorage.CreateOrConnectDb(true);
+        TgStorage.CreateOrConnectDb();
     }
 
     private void ResetAppSettings()
