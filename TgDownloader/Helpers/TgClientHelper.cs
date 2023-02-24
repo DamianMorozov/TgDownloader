@@ -577,7 +577,8 @@ public partial class TgClientHelper : IHelper
         TryCatchAction(() =>
         {
             LoginUser();
-            int backupId = tgDownloadSettings.SourceFirstId;
+            //int backupId = tgDownloadSettings.SourceFirstId;
+            CreateDestDirectoryIfNotExists(tgDownloadSettings, refreshStatus);
             while (tgDownloadSettings.SourceFirstId <= tgDownloadSettings.SourceLastId)
             {
                 TryCatchAction(() =>
@@ -605,6 +606,19 @@ public partial class TgClientHelper : IHelper
             }
             tgDownloadSettings.SourceFirstId = tgDownloadSettings.SourceLastId;
         }, refreshStatus);
+    }
+
+    private void CreateDestDirectoryIfNotExists(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
+    {
+        try
+        {
+            Directory.CreateDirectory(tgDownloadSettings.DestDirectory);
+        }
+        catch (Exception ex)
+        {
+            refreshStatus(TgLocale.DirectoryCreateIsException(ex), true);
+            TgLog.Warning(TgLocale.DirectoryCreateIsException(ex));
+        }
     }
 
     private void DownloadData(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus, MessageBase messageBase,
