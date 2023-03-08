@@ -33,8 +33,6 @@ public class SqlTableXpLiteBase : XPLiteObject, ISqlTable
 
     public bool IsNotExists => Equals(Uid, Guid.Empty);
     public bool IsExists => !IsNotExists;
-    public bool IsNew => IsNotExists;
-    public bool IsNotNew => IsExists;
 
     /// <summary>
     /// Default constructor.

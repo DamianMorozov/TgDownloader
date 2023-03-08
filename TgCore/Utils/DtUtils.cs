@@ -5,27 +5,27 @@ namespace TgCore.Utils;
 
 public static class DtUtils
 {
-    #region Public and private methods - Core
+	#region Public and private methods - Core
 
-    /// <summary>
-    /// Get DateTime from unix long.
-    /// </summary>
-    /// <param name="unixDate"></param>
-    /// <returns></returns>
-    public static DateTime CastLongAsDtOldStyle(long unixDate)
-    {
-        DateTime dt = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dt = dt.AddSeconds(unixDate).ToLocalTime();
-        return dt;
-    }
+	/// <summary>
+	/// Get DateTime from unix long.
+	/// </summary>
+	/// <param name="unixDate"></param>
+	/// <returns></returns>
+	public static DateTime CastLongAsDtOldStyle(long unixDate)
+	{
+		DateTime dt = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+		dt = dt.AddSeconds(unixDate).ToLocalTime();
+		return dt;
+	}
 
-    public static long CastDtAsLong(DateTime dt) => dt.Ticks;
+	public static long CastDtAsLong(DateTime dt) => dt.Ticks;
 
-    public static long CastAsLong(this DateTime dt) => CastDtAsLong(dt);
+	public static long CastAsLong(this DateTime dt) => CastDtAsLong(dt);
 
-    public static DateTime CastLongAsDt(long ticks) => new(ticks);
+	public static DateTime CastLongAsDt(long ticks) => new(ticks);
 
-    public static DateTime CastAsDt(this long ticks) => CastLongAsDt(ticks);
+	public static DateTime CastAsDt(this long ticks) => CastLongAsDt(ticks);
 
-    #endregion
+	#endregion
 }

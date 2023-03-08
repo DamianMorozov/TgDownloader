@@ -3,7 +3,9 @@
 
 using NUnit.Framework;
 using TgStorage.Models.Apps;
+using TgStorage.Models.Filters;
 using TgStorage.Models.Proxies;
+using TgStorage.Models.Versions;
 using TgStorageTest.Utils;
 
 namespace TgStorageTest.Helpers;
@@ -29,7 +31,23 @@ internal class TgStorageHelperTests
         });
     }
 
-    [Test]
+	[Test]
+	public void TgStorage_GetItem_Filter()
+	{
+		Assert.DoesNotThrow(() =>
+		{
+			SqlTableFilterModel? filter = TgStorageTestsUtils.DataCore.TgStorage.GetItemNullable<SqlTableFilterModel>();
+			TestContext.WriteLine(filter is { } ? filter.ToString() : "<Empty>");
+			filter = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableFilterModel>();
+			TestContext.WriteLine(filter);
+			if (filter.IsExists)
+				TgStorageTestsUtils.DataCore.TgStorage.AddOrUpdateItem(filter);
+			filter = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableFilterModel>();
+			TestContext.WriteLine(filter);
+		});
+	}
+
+	[Test]
     public void TgStorage_GetItem_Proxy()
     {
         Assert.DoesNotThrow(() =>
@@ -42,6 +60,22 @@ internal class TgStorageHelperTests
                 TgStorageTestsUtils.DataCore.TgStorage.AddOrUpdateItem(proxy);
             proxy = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableProxyModel>();
             TestContext.WriteLine(proxy);
+        });
+    }
+
+	[Test]
+    public void TgStorage_GetItem_Version()
+    {
+        Assert.DoesNotThrow(() =>
+        {
+            SqlTableVersionModel? version = TgStorageTestsUtils.DataCore.TgStorage.GetItemNullable<SqlTableVersionModel>();
+            TestContext.WriteLine(version is { } ? version.ToString() : "<Empty>");
+            version = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableVersionModel>();
+            TestContext.WriteLine(version);
+            if (version.IsExists)
+                TgStorageTestsUtils.DataCore.TgStorage.AddOrUpdateItem(version);
+            version = TgStorageTestsUtils.DataCore.TgStorage.GetItemFirstOrDefault<SqlTableVersionModel>();
+            TestContext.WriteLine(version);
         });
     }
 

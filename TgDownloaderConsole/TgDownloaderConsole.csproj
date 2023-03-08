@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.1.630.0</Version>
+		<Version>0.1.700.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -59,6 +59,7 @@
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Include="..\RELEASE.md" Link="RELEASE.md" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Spectre.Console" Version="0.46.0" />

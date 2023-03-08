@@ -3,10 +3,10 @@
 
 namespace TgCore.Enums;
 
-public enum MenuStorage
+public enum ChatType
 {
-    Return,
-	VersionsView,
-	DbCreateNew,
-	DbDeleteExists,
+	Channel = 0,
+	User = 1,
+	Group = 2,
+	Bot = 3,
 }

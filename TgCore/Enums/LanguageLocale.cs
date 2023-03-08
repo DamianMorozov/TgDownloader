@@ -5,7 +5,7 @@ namespace TgCore.Enums;
 
 public enum LanguageLocale
 {
-    English,
+    English = 0,
     Russian,
     Spanish,
     Chinese,

@@ -1,72 +1,79 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgCore.Helpers;
 
 public class TgLogHelper
 {
-    #region Design pattern "Lazy Singleton"
+	#region Design pattern "Lazy Singleton"
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private static TgLogHelper _instance;
+	private static TgLogHelper _instance;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public static TgLogHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
+	public static TgLogHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
-    #endregion
+	#endregion
 
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    public delegate void MarkupLineStampDelegate(string message);
-    private MarkupLineStampDelegate _markupLineStamp;
+	private Action<string> _markupLine;
+	private Action<string> _markupLineStamp;
 
-    public TgLogHelper()
-    {
-        _markupLineStamp = _ => { };
-    }
+	public TgLogHelper()
+	{
+		_markupLine = _ => { };
+		_markupLineStamp = _ => { };
+	}
 
-    #endregion
+	#endregion
 
-    #region Public and private methods - main
+	#region Public and private methods - main
 
-    public void Line(string message) => _markupLineStamp(GetLineStamp(message));
+	public void WriteLine(string message) => _markupLine(message);
 
-    public void Info(string message) => _markupLineStamp(GetLineStampInfo(message));
+	public void MarkupLine(string message) => _markupLineStamp(GetLineStamp(message));
 
-    public void Warning(string message) => _markupLineStamp(GetLineStampWarning(message));
+	public void MarkupInfo(string message) => _markupLineStamp(GetLineStampInfo(message));
 
-    #endregion
+	public void MarkupWarning(string message) => _markupLineStamp(GetLineStampWarning(message));
 
-    #region Public and private methods
+	#endregion
 
-    public void SetMarkupLineStamp(MarkupLineStampDelegate markupLineStamp)
-    {
-        _markupLineStamp = markupLineStamp;
-    }
+	#region Public and private methods
 
-    public string GetMarkupString(string message) => message
-            .Replace("[", "[[").Replace("]", "]]")
-            .Replace("'", "''");
+	public void SetMarkupLine(Action<string> markupLine)
+	{
+		_markupLine = markupLine;
+	}
 
-    public string GetDtStamp() => $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+	public void SetMarkupLineStamp(Action<string> markupLineStamp)
+	{
+		_markupLineStamp = markupLineStamp;
+	}
 
-    public string GetDtShortStamp() => $"{DateTime.Now:HH:mm:ss}";
+	public string GetMarkupString(string message) => message
+		.Replace("[", "[[").Replace("]", "]]")
+		.Replace("'", "");
 
-    public string GetLineStamp(string message) =>
-        $" {GetDtStamp()} | {GetMarkupString(message)}";
+	public string GetDtStamp() => $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}";
 
-    public string GetLineStampInfo(string message)
-    {
-        message = message.Replace("[", "[[").Replace("]", "]]");
-        message = message.Replace("'", "''");
-        return $"[green] {GetDtStamp()} | i {message}[/]";
-    }
+	public string GetDtShortStamp() => $"{DateTime.Now:HH:mm:ss}";
 
-    public string GetLineStampWarning(string message)
-    {
-        message = message.Replace("[", "[[").Replace("]", "]]");
-        message = message.Replace("'", "''");
-        return $"[red] {GetDtStamp()} | x {message}[/]";
-    }
+	public string GetLineStamp(string message) => $" {GetDtStamp()} | {GetMarkupString(message)}";
 
-    #endregion
+	public string GetLineStampInfo(string message)
+	{
+		message = message.Replace("[", "[[").Replace("]", "]]");
+		message = message.Replace("'", "");
+		return $"[green] {GetDtStamp()} | i {message}[/]";
+	}
+
+	public string GetLineStampWarning(string message)
+	{
+		message = message.Replace("[", "[[").Replace("]", "]]");
+		message = message.Replace("'", "");
+		return $"[red] {GetDtStamp()} | x {message}[/]";
+	}
+
+	#endregion
 }

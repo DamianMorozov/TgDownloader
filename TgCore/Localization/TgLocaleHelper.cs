@@ -1,4 +1,4 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgCore.Localization;
@@ -33,22 +33,24 @@ public class TgLocaleHelper : IHelper
     public string AppTitle => "TG-Downloader";
     public string AppValue => "Value";
     public string AppVersion => "App version";
+    public string StorageVersion => "Storage version";
 
     #endregion
 
     #region Public and private fields, properties, constructor - Main menu
 
     public string MenuMain => "Main menu";
-    public string MenuMainAppSettings => "Application settings";
     public string MenuMainAdvanced => "Advanced";
+    public string MenuMainAppSettings => "Application settings";
     public string MenuMainClient => "Client settings";
     public string MenuMainDownload => "Download settings";
     public string MenuMainExit => "Exit";
+    public string MenuMainFilters => "Filters settings";
     public string MenuMainReset => "Reset";
     public string MenuMainReturn => "Return";
     public string MenuMainStorage => "Storage settings";
-    public string MenuYes => "Yes";
     public string MenuNo => "No";
+    public string MenuYes => "Yes";
 
     #endregion
 
@@ -64,12 +66,10 @@ public class TgLocaleHelper : IHelper
 
     #region Public and private fields, properties, constructor - Storage
 
-    public string MenuStorageClearTables => "Clear tables";
     public string MenuStorageCreateNew => "Create new storage";
-    public string MenuStorageCreateTables => "Create tables";
     public string MenuStorageDeleteExists => "Delete exists storage";
-    public string MenuStorageDropTables => "Drop tables";
-    public string MenuStorageViewStatistics => "View statistics";
+    public string MenuStorageDeleteExistsInfo(string fileName) => $"Exit the program. Manual delete the file: {fileName}";
+    public string MenuStorageVersionsView => "Versions info";
 
     #endregion
 
@@ -99,6 +99,29 @@ public class TgLocaleHelper : IHelper
 
     #endregion
 
+    #region Public and private methods - Filters
+
+    public string MenuFiltersAdd => "Add filter";
+    public string MenuFiltersCount => "Filters count";
+    public string MenuFiltersError => "Error";
+    public string MenuFiltersRemove => "Remove filter";
+    public string MenuFiltersReset => "Reset filters";
+    public string MenuFiltersSetIsActive => "Is active";
+    public string MenuFiltersSetMask => "Set mask";
+    public string MenuFiltersSetMaxSize => "File maximum size";
+    public string MenuFiltersSetMinSize => "File minimum size";
+    public string MenuFiltersSetMultiExtension => "Multi extension";
+    public string MenuFiltersSetMultiName => "Multi name";
+    public string MenuFiltersSetName => "Set name";
+    public string MenuFiltersSetSingleExtension => "Single extension";
+    public string MenuFiltersSetSingleName => "Single name";
+    public string MenuFiltersSetSizeType => "Set file size type";
+    public string MenuFiltersSetType => "Set filter type";
+    public string MenuFiltersView => "View filters";
+
+    #endregion
+
+
     #region Public and private fields, properties, constructor
 
     public string DirectoryCreate => "Create directory";
@@ -127,10 +150,10 @@ public class TgLocaleHelper : IHelper
     public string SettingIsEnabled => "Setting is enabled";
     public string SettingsIsNeedSetup => "Something is need setup";
     public string SettingsIsOk => "Everything is ok";
-    public string SettingsSource => "Source ID/username";
-    public string StatusException => "Exception:";
+    public string SettingsSource => "Source info";
+    public string StatusException => "Exception";
     public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
-    public string StatusInnerException => "Inner exception:";
+    public string StatusInnerException => "Inner exception";
     public string TablesAreExists => "Tables are exists";
     public string TablesAreNotExists => "Tables are not exists";
     public string TgClientException => "Client exception";

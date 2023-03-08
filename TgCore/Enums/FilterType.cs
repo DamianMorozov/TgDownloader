@@ -3,10 +3,13 @@
 
 namespace TgCore.Enums;
 
-public enum MenuStorage
+public enum FilterType
 {
-    Return,
-	VersionsView,
-	DbCreateNew,
-	DbDeleteExists,
+	None = 0,
+	SingleName = 1,
+	SingleExtension = 2,
+	MultiName = 3,
+	MultiExtension = 4,
+	MinSize = 5,
+	MaxSize = 6,
 }

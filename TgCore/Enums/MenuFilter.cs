@@ -3,10 +3,11 @@
 
 namespace TgCore.Enums;
 
-public enum MenuStorage
+public enum MenuFilter
 {
     Return,
-	VersionsView,
-	DbCreateNew,
-	DbDeleteExists,
+    FiltersView,
+    FiltersReset,
+    FiltersAdd,
+    FiltersRemove,
 }

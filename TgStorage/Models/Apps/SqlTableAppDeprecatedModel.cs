@@ -4,7 +4,7 @@
 namespace TgStorage.Models.Apps;
 
 [SQLite.Table("APPS")]
-[Obsolete(@"Use SqlTableAppDeprecatedModel")]
+[Obsolete(@"Use SqlTableAppModel")]
 public class SqlTableAppDeprecatedModel : SqlTableBase
 {
     #region Public and private fields, properties, constructor

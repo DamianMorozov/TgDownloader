@@ -12,7 +12,7 @@ public class SqlTableProxyModel : SqlTableXpLiteBase
     #region Public and private fields, properties, constructor
 
     private ProxyType _type;
-    [DefaultValue("None")]
+    [DefaultValue(ProxyType.None)]
     [Persistent("TYPE")]
     public ProxyType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
 
@@ -22,7 +22,7 @@ public class SqlTableProxyModel : SqlTableXpLiteBase
     [Persistent("HOST_NAME")]
     public string HostName { get => _hostName; set => SetPropertyValue(nameof(_hostName), ref _hostName, value); }
 
-    [DefaultValue("0")]
+    [DefaultValue(0)]
     private ushort _port;
     [Persistent("PORT")]
     public ushort Port { get => _port; set => SetPropertyValue(nameof(_port), ref _port, value); }

@@ -9,6 +9,7 @@ public enum MenuMain
     AppSettings,
     Storage,
     Client,
-    Download,
+	Filters,
+	Download,
     Advanced,
 }

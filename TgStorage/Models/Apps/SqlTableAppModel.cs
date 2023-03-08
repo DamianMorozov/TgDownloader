@@ -26,7 +26,7 @@ public class SqlTableAppModel : SqlTableXpLiteBase
     [Persistent("PROXY_UID")]
     public Guid ProxyUid { get => _proxyUid; set => SetPropertyValue(nameof(_proxyUid), ref _proxyUid, value); }
 
-    [DefaultValue("11")]
+    [DefaultValue(11)]
     private ushort _dbVersion;
     [Persistent("DB_VERSION")]
     public ushort DbVersion { get => _dbVersion; set => SetPropertyValue(nameof(_dbVersion), ref _dbVersion, value); }
