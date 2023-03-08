@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scanning of local channels/groups
 - Storage versioning
 
+## [0.1.700] - 2023-03-08
+### Added
+- Filters settings
+
 ## [0.1.630] - 2023-02-24
 ### Fixed
 - Proxy for downloads
@@ -21,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App setting for the usage proxy
 - Automatic directory creation for manual download
 - Automatic directory creation for auto download
-- Storage version table
+- Storage versions table
 
 ## [0.1.500] - 2023-01-31
 ### Added
