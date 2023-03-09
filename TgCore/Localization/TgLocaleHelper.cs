@@ -103,6 +103,7 @@ public class TgLocaleHelper : IHelper
 
     public string MenuFiltersAdd => "Add filter";
     public string MenuFiltersCount => "Filters count";
+    public string MenuFiltersEdit => "Edit filter";
     public string MenuFiltersError => "Error";
     public string MenuFiltersRemove => "Remove filter";
     public string MenuFiltersReset => "Reset filters";

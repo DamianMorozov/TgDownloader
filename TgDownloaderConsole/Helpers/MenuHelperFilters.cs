@@ -18,16 +18,18 @@ internal partial class MenuHelper
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuMainReturn,
 					TgLocale.MenuFiltersView,
-					TgLocale.MenuFiltersReset,
 					TgLocale.MenuFiltersAdd,
-					TgLocale.MenuFiltersRemove
+					TgLocale.MenuFiltersEdit,
+					TgLocale.MenuFiltersRemove,
+					TgLocale.MenuFiltersReset
 				));
 		return prompt switch
 		{
 			"View filters" => MenuFilter.FiltersView,
-			"Reset filters" => MenuFilter.FiltersReset,
 			"Add filter" => MenuFilter.FiltersAdd,
+			"Edit filter" => MenuFilter.FiltersEdit,
 			"Remove filter" => MenuFilter.FiltersRemove,
+			"Reset filters" => MenuFilter.FiltersReset,
 			_ => MenuFilter.Return
 		};
 	}
@@ -49,6 +51,9 @@ internal partial class MenuHelper
 					break;
 				case MenuFilter.FiltersAdd:
 					SetTgFiltersAdd();
+					break;
+				case MenuFilter.FiltersEdit:
+					SetTgFiltersEdit();
 					break;
 				case MenuFilter.FiltersRemove:
 					SetTgFiltersRemove();
@@ -75,7 +80,8 @@ internal partial class MenuHelper
 				TgLocale.MenuFiltersSetMinSize, TgLocale.MenuFiltersSetMaxSize));
 		if (Equals(type, TgLocale.MenuMainReturn)) return;
 
-		filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
+		//filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
+		filter.IsActive = true;
 		filter.Name = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgLocale.MenuFiltersSetName}:"));
 		switch (type)
 		{
@@ -83,7 +89,7 @@ internal partial class MenuHelper
 				filter.FilterType = FilterType.SingleName;
 				break;
 			case "Single extension":
-				filter.FilterType = FilterType.SingleName;
+				filter.FilterType = FilterType.SingleExtension;
 				break;
 			case "Multi name":
 				filter.FilterType = FilterType.MultiName;
@@ -119,6 +125,18 @@ internal partial class MenuHelper
 		TgFiltersView();
 	}
 
+	private void SetTgFiltersEdit()
+	{
+		List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
+		SqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<SqlTableFilterModel>()
+			.Title(TgLocale.MenuFiltersSetType)
+			.PageSize(10)
+			.AddChoices(filters));
+		filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
+		TgStorage.AddOrUpdateItem(filter);
+		TgFiltersView();
+	}
+
 	private void SetFilterSize(SqlTableFilterModel filter, string question)
 	{
 		filter.SizeType = AnsiConsole.Prompt(new SelectionPrompt<FileSizeType>()
@@ -128,22 +146,21 @@ internal partial class MenuHelper
 		filter.Size = AnsiConsole.Ask<uint>(TgLog.GetMarkupString($"{question}:"));
 	}
 
-	private void SetTgFiltersReset()
-	{
-		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset)) return;
-		TgStorage.DeleteAllFilters();
-		TgFiltersView();
-	}
-
 	private void SetTgFiltersRemove()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuFiltersRemove)) return;
 		List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
 		SqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<SqlTableFilterModel>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(10)
 			.AddChoices(filters));
 		TgStorage.DeleteFilter(filter);
+		TgFiltersView();
+	}
+
+	private void SetTgFiltersReset()
+	{
+		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset)) return;
+		TgStorage.DeleteAllFilters();
 		TgFiltersView();
 	}
 

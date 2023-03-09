@@ -8,6 +8,7 @@ public enum MenuFilter
     Return,
     FiltersView,
     FiltersReset,
-    FiltersAdd,
-    FiltersRemove,
+	FiltersAdd,
+	FiltersEdit,
+	FiltersRemove,
 }

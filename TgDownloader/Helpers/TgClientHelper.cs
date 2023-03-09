@@ -3,7 +3,6 @@
 
 using ProxyLib.Proxy;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using TgCore.Helpers;
 using TgCore.Interfaces;
 using TgCore.Localization;
