@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scanning of local channels/groups
 - Storage versioning
 
-## [0.1.700] - 2023-03-08
+## [0.1.710] - 2023-03-09
 ### Added
 - Filters settings
 

@@ -1,13 +1,11 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Release history</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">История релизов</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
 
-<div align="center">
-	![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
-	![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
-	![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
-<div>
+![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
+![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## <p align="center"><img src="Assets/Main_menu.png"></p>
 
@@ -45,11 +43,8 @@ Download files of the Telegram channels or groups you are a member of.
 Please click the `star` button if this tool was helpful to you.
 
 ## Quick links
-- [CHANGELOG](CHANGELOG.md)
-- [LICENSE](LICENSE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 - [TgDownloader News](https://t.me/TgDownloader)
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
-- [Project description in Russian](README-RUS.md)
