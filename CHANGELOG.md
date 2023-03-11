@@ -9,9 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Russian localization
 - Customizable download filters
 - Scanning of local channels/groups
-- Storage versioning
 
-## [0.1.710] - 2023-03-09
+## [0.1.720] - 2023-03-11
 ### Added
 - Filters settings
 
