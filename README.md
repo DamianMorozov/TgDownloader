@@ -17,25 +17,6 @@ Download files of the Telegram channels or groups you are a member of.
 - [Register Telegram app](https://my.telegram.org/apps/)
 - Save the values of the "App api_id" and "App api_hash" fields
 
-## Run under Windows OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
-- Change the current directory to `cd TgDownloader v1.2.333`
-- Run the `TgDownloaderConsole.exe` command or double click the file
-
-## Run under Linux OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
-- Change the current directory to `cd TgDownloader v1.2.333`
-- Run the `dotnet TgDownloaderConsole.dll` command
-
-## Quick Start
-- Change app settings
-- Set up storage
-- Set up the Telegram client
-- Set up a download
-
-## Default settings
-- Delete the file `TgDownloader.xml`
-
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 

@@ -17,25 +17,6 @@
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps/)
 - Сохраните значения полей "App api_id" и "App api_hash"
 
-## Запуск под ОС Windows
-- Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`.
-- Измените текущий каталог `cd TgDownloader v1.2.333`.
-- Выполните команду `TgDownloaderConsole.exe`
-
-## Запуск под ОС Linux
-- Распакуйте архив `TgDownloader v1.2.333.zip` в `TgDownloader v1.2.333`.
-- Измените текущий каталог `cd TgDownloader v1.2.333`.
-- Выполните команду `dotnet TgDownloaderConsole.dll`
-
-## Быстрый старт
-- Измените настройки приложения
-- Настройте хранилище
-- Настройте Telegram клиент
-- Настройте скачивание
-
-## Настройки по умолчанию
-- Удалите файл `TgDownloader.xml`.
-
 ## Статус
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 

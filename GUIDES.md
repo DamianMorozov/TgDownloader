@@ -1,5 +1,23 @@
-# Guide for downloading groups
+## Run under Windows OS
+- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
+- Change the current directory to `cd TgDownloader v1.2.333`
+- Run the `TgDownloaderConsole.exe` command or double click the file
 
+## Run under Linux OS
+- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
+- Change the current directory to `cd TgDownloader v1.2.333`
+- Run the `dotnet TgDownloaderConsole.dll` command
+
+## Quick Start
+- Change app settings
+- Set up storage
+- Set up the Telegram client
+- Set up a download
+
+## Default settings
+- Delete the file `TgDownloader.xml`
+
+# Guide for downloading groups
 1. Join a group on Telegram.
 2. Right click any message -> `Copy Message Link`.
 3. Edit the link on the clipboard `https://t.me/c/group_id/message_number` like this `group_id`.
