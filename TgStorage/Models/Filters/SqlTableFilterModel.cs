@@ -10,12 +10,12 @@ namespace TgStorage.Models.Filters;
 [Persistent("FILTERS")]
 public class SqlTableFilterModel : SqlTableXpLiteBase
 {
- #region Public and private fields, properties, constructor
+    #region Public and private fields, properties, constructor
 
-    private bool _isActive;
+    private bool _isEnabled;
     [DefaultValue(false)]
-    [Persistent("IS_ACTIVE")]
-    public bool IsActive { get => _isActive; set => SetPropertyValue(nameof(_isActive), ref _isActive, value); }
+    [Persistent("IS_ENABLED")]
+    public bool IsEnabled { get => _isEnabled; set => SetPropertyValue(nameof(_isEnabled), ref _isEnabled, value); }
 
     private FilterType _filterType;
     [DefaultValue(FilterType.None)]
@@ -58,7 +58,7 @@ public class SqlTableFilterModel : SqlTableXpLiteBase
 	/// </summary>
 	public SqlTableFilterModel()
     {
-        _isActive = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isActive));
+        _isEnabled = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isEnabled));
         _filterType = this.GetPropertyDefaultValueAsGeneric<FilterType>(nameof(_filterType));
         _name = this.GetPropertyDefaultValue(nameof(_name));
         _mask = this.GetPropertyDefaultValue(nameof(_mask));
@@ -72,7 +72,7 @@ public class SqlTableFilterModel : SqlTableXpLiteBase
     /// <param name="session"></param>
     public SqlTableFilterModel(Session session) : base(session)
     {
-		_isActive = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isActive));
+		_isEnabled = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(_isEnabled));
 		_filterType = this.GetPropertyDefaultValueAsGeneric<FilterType>(nameof(_filterType));
         _name = this.GetPropertyDefaultValue(nameof(_name));
         _mask = this.GetPropertyDefaultValue(nameof(_mask));
@@ -91,7 +91,7 @@ public class SqlTableFilterModel : SqlTableXpLiteBase
 	/// <param name="context"></param>
 	protected SqlTableFilterModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
-		_isActive = info.GetBoolean(nameof(_isActive));
+		_isEnabled = info.GetBoolean(nameof(_isEnabled));
         object? type = info.GetValue(nameof(_filterType), typeof(FilterType));
         _filterType = type is FilterType proxyTypeCast ? proxyTypeCast : FilterType.None;
         _name = info.GetString(nameof(_name)) ?? string.Empty;
@@ -109,7 +109,7 @@ public class SqlTableFilterModel : SqlTableXpLiteBase
     public new void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         base.GetObjectData(info, context);
-        info.AddValue(nameof(_isActive), _isActive);
+        info.AddValue(nameof(_isEnabled), _isEnabled);
         info.AddValue(nameof(_filterType), _filterType);
         info.AddValue(nameof(_name), _name);
         info.AddValue(nameof(_mask), _mask);
@@ -127,7 +127,7 @@ public class SqlTableFilterModel : SqlTableXpLiteBase
 		_ => $" {GetStringForIsActive()} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
 	};
 
-    private string GetStringForIsActive() => IsActive ? "Is active" : "Isn't active";
+    private string GetStringForIsActive() => IsEnabled ? "Enabled" : "Disabled";
 
     private string GetStringForFilterType() => FilterType switch
     {

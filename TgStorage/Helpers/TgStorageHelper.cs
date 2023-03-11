@@ -105,22 +105,6 @@ public partial class TgStorageHelper : IHelper
 
 	private void UpgradeTables()
 	{
-		// Upgrade table APPS.
-		try
-		{
-			_ = App;
-		}
-		catch (Exception ex)
-		{
-			if (ex.Message.Contains("Unable to create 'Column' 'UID'"))
-			{
-				SqlTableAppDeprecatedModel appDeprecated = GetList<SqlTableAppDeprecatedModel>().First();
-				SqLiteCon.DropTable<SqlTableAppDeprecatedModel>();
-				AddOrUpdateItem<SqlTableAppModel>(new() { ApiHash = appDeprecated.ApiHash, PhoneNumber = appDeprecated.PhoneNumber });
-				_ = App;
-			}
-		}
-
 		// Update app.
 		if (App.IsExists)
 			UpdateItem(App);
@@ -134,35 +118,52 @@ public partial class TgStorageHelper : IHelper
 
 	private void UpgradeTableVersions()
 	{
-		List<SqlTableVersionModel> versions = GetVersionsList();
-		if (!versions.Any())
+		SqlTableVersionModel versionLast = GetVersionLast();
+		if (versionLast.Version < 11)
 		{
 			SqlTableVersionModel version = new() { Version = 11, Description = "Storage version table" };
 			AddItem(version);
 		}
 		else
 		{
+			List<SqlTableVersionModel> versions = GetVersionsList();
 			SqlTableVersionModel? version11 = versions.Find(item => Equals(item.Version, (ushort)11));
 			if (version11 is not null)
 			{
-				version11.Description = "Added versions table";
-				UpdateItem(version11);
+				if (version11.Description != "Added versions table")
+				{
+					version11.Description = "Added versions table";
+					UpdateItem(version11);
+				}
 			}
-			SqlTableVersionModel? version = versions.LastOrDefault();
-			if (version is not null)
-				switch (version.Version)
+			bool isLast = false;
+			while (!isLast)
+			{
+				versionLast = GetVersionLast();
+				switch (versionLast.Version)
 				{
 					case 11:
 						SqlTableVersionModel version12 = new() { Version = 12, Description = "Added filters table" };
 						AddItem(version12);
 						break;
+					case 12:
+						SqlTableVersionModel version13 = new() { Version = 13, Description = "Changed apps table" };
+						AddItem(version13);
+						break;
+					case 13:
+						SqlTableVersionModel version14 = new() { Version = 14, Description = "Changed filters table" };
+						AddItem(version14);
+						break;
 				}
+				if (versionLast.Version >= 14)
+					isLast = true;
+			}
 		}
 	}
 
 	private void UpgradeTableFilters()
 	{
-		List<SqlTableFilterModel> filters = GetFiltersList();
+		_ = GetFiltersList();
 	}
 
 	#endregion

@@ -22,7 +22,6 @@ public partial class TgStorageHelper
 			ApiHash = app.ApiHash,
 			PhoneNumber = app.PhoneNumber,
 			ProxyUid = app.ProxyUid,
-			DbVersion = app.GetLastDbVersion(),
 		};
 		if (IsValidXpLite(app))
 			uow.CommitChanges();
@@ -38,7 +37,6 @@ public partial class TgStorageHelper
 		itemDb.ApiHash = app.ApiHash;
 		itemDb.PhoneNumber = app.PhoneNumber;
 		itemDb.ProxyUid = app.ProxyUid;
-		itemDb.DbVersion = app.GetLastDbVersion();
 		if (IsValidXpLite(itemDb))
 		{
 			itemDb.Session.Save(itemDb);

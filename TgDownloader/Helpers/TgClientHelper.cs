@@ -716,7 +716,7 @@ public partial class TgClientHelper : IHelper
 		TryCatchAction(() =>
 		{
 			// Get filters.
-			List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
+			List<SqlTableFilterModel> filters = TgStorage.GetFiltersEnabledList();
 			// Store message.
 			bool isExistsMessage = findExistsMessage(tgDownloadSettings.SourceFirstId, tgDownloadSettings.SourceId);
 			if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
@@ -792,7 +792,7 @@ public partial class TgClientHelper : IHelper
 	{
 		foreach (SqlTableFilterModel filter in filters)
 		{
-			if (!filter.IsActive) continue;
+			if (!filter.IsEnabled) continue;
 			switch (filter.FilterType)
 			{
 				case TgCore.Enums.FilterType.SingleName:

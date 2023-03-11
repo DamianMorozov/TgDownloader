@@ -99,6 +99,7 @@ internal partial class MenuHelper : IHelper
 
 	internal void FillTableRowsMain(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
+		// App version.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(AppSettings.AppXml.Version));
 		SqlTableVersionModel version = TgStorage.GetVersionLast();
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
@@ -177,7 +178,7 @@ internal partial class MenuHelper : IHelper
 	internal void FillTableRowsFilters(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
 		List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
-		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersCount)), new Markup($"{filters.Count}"));
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), new Markup($"{filters.Count}"));
 	}
 
 	internal void FillTableRowsClient(TgDownloadSettingsModel tgDownloadSettings, Table table)
@@ -317,9 +318,9 @@ internal partial class MenuHelper : IHelper
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
 			new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
 
-		// Filters.
-		List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
-		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersCount)), new Markup($"{filters.Count}"));
+		// Enabled filters.
+		List<SqlTableFilterModel> filters = TgStorage.GetFiltersEnabledList();
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count}"));
 	}
 
 	internal void FillTableRowsAdvanced(TgDownloadSettingsModel tgDownloadSettings, Table table)

@@ -102,12 +102,14 @@ public class TgLocaleHelper : IHelper
     #region Public and private methods - Filters
 
     public string MenuFiltersAdd => "Add filter";
-    public string MenuFiltersCount => "Filters count";
+    public string MenuFiltersAllCount => "All filters count";
+    public string MenuFiltersEnabledCount => "Enabled filters count";
     public string MenuFiltersEdit => "Edit filter";
     public string MenuFiltersError => "Error";
     public string MenuFiltersRemove => "Remove filter";
     public string MenuFiltersReset => "Reset filters";
-    public string MenuFiltersSetIsActive => "Is active";
+    public string MenuFiltersSetEnabled => "Set filter enabled";
+    public string MenuFiltersSetIsEnabled => "Is enabled";
     public string MenuFiltersSetMask => "Set mask";
     public string MenuFiltersSetMaxSize => "File maximum size";
     public string MenuFiltersSetMinSize => "File minimum size";

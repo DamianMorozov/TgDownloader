@@ -81,7 +81,7 @@ internal partial class MenuHelper
 		if (Equals(type, TgLocale.MenuMainReturn)) return;
 
 		//filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
-		filter.IsActive = true;
+		filter.IsEnabled = true;
 		filter.Name = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgLocale.MenuFiltersSetName}:"));
 		switch (type)
 		{
@@ -129,10 +129,10 @@ internal partial class MenuHelper
 	{
 		List<SqlTableFilterModel> filters = TgStorage.GetFiltersList();
 		SqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<SqlTableFilterModel>()
-			.Title(TgLocale.MenuFiltersSetType)
+			.Title(TgLocale.MenuFiltersSetEnabled)
 			.PageSize(10)
 			.AddChoices(filters));
-		filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
+		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
 		TgStorage.AddOrUpdateItem(filter);
 		TgFiltersView();
 	}

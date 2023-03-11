@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.1.710.0</Version>
+		<Version>0.1.720.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

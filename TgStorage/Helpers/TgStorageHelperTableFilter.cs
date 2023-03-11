@@ -18,7 +18,7 @@ public partial class TgStorageHelper
 		if (item is not SqlTableFilterModel filter) return;
 		filter = new(uow)
 		{
-			IsActive = filter.IsActive,
+			IsEnabled = filter.IsEnabled,
 			DtCreated = DateTime.Now,
 			DtChanged = DateTime.Now,
 			FilterType = filter.FilterType,
@@ -34,7 +34,7 @@ public partial class TgStorageHelper
 	public SqlTableFilterModel GetDefaultFilter()
 	{
 		SqlTableFilterModel filter = NewEmptyFilter();
-		filter.IsActive = true;
+		filter.IsEnabled = true;
 		filter.FilterType = FilterType.SingleName;
 		filter.Name = "Any";
 		filter.Mask = "*";
@@ -49,7 +49,7 @@ public partial class TgStorageHelper
 		if (item is not SqlTableFilterModel filter) return;
 		SqlTableFilterModel? itemDb = GetItemNullable<SqlTableFilterModel>(item.Uid);
 		if (itemDb is not { }) return;
-		itemDb.IsActive = filter.IsActive;
+		itemDb.IsEnabled = filter.IsEnabled;
 		itemDb.DtCreated = filter.DtCreated;
 		itemDb.DtChanged = DateTime.Now;
 		itemDb.FilterType = filter.FilterType;
@@ -68,6 +68,13 @@ public partial class TgStorageHelper
 		new UnitOfWork()
 			.Query<SqlTableFilterModel>()
 			.Select(item => item)
+			.ToList();
+
+	public List<SqlTableFilterModel> GetFiltersEnabledList() =>
+		new UnitOfWork()
+			.Query<SqlTableFilterModel>()
+			.Select(item => item)
+			.Where(item => item.IsEnabled)
 			.ToList();
 
 	public void DeleteFilter<T>(T item) where T : ISqlTable, new()

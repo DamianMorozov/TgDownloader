@@ -55,8 +55,8 @@ public partial class TgStorageHelper
 		new UnitOfWork()
 			.Query<SqlTableVersionModel>()
 			.Select(item => item)
-			.OrderBy(item => item.Version)
-			.LastOrDefault();
+			.OrderByDescending(item => item.Version)
+			.FirstOrDefault();
 
 	public SqlTableVersionModel GetVersionLast() => GetVersionLastNullable() ?? new();
 

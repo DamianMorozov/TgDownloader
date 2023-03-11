@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using TgStorage.Models;
-using TgStorage.Models.Apps;
 using TgStorage.Models.Documents;
 using TgStorage.Models.Messages;
 using TgStorage.Models.Sources;
@@ -20,9 +19,6 @@ public partial class TgStorageHelper : IHelper
 		List<T>? items = null;
 		switch (typeof(T))
 		{
-			case var cls when cls == typeof(SqlTableAppDeprecatedModel):
-				items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Apps}");
-				break;
 			case var cls when cls == typeof(SqlTableDocumentModel):
 				items = SqLiteCon.Query<T>($"SELECT * FROM {TableNamesUtils.Documents} WHERE ID = {firstId} AND SOURCE_ID = {secondId} AND MESSAGE_ID = {thirdId}");
 				break;

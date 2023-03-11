@@ -26,11 +26,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
     [Persistent("PROXY_UID")]
     public Guid ProxyUid { get => _proxyUid; set => SetPropertyValue(nameof(_proxyUid), ref _proxyUid, value); }
 
-    [DefaultValue(11)]
-    private ushort _dbVersion;
-    [Persistent("DB_VERSION")]
-    public ushort DbVersion { get => _dbVersion; set => SetPropertyValue(nameof(_dbVersion), ref _dbVersion, value); }
-    
     /// <summary>
     /// Default constructor.
     /// </summary>
@@ -39,7 +34,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         _apiHash = this.GetPropertyDefaultValue(nameof(_apiHash));
         _phoneNumber = this.GetPropertyDefaultValue(nameof(_phoneNumber));
         _proxyUid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
-        _dbVersion = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
     }
 
     /// <summary>
@@ -51,7 +45,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         _apiHash = this.GetPropertyDefaultValue(nameof(_apiHash));
         _phoneNumber = this.GetPropertyDefaultValue(nameof(_phoneNumber));
         _proxyUid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
-        _dbVersion = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
     }
 
     #endregion
@@ -69,7 +62,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         _phoneNumber = info.GetString(nameof(_phoneNumber)) ?? this.GetPropertyDefaultValue(nameof(_phoneNumber));
         object? proxyUid = info.GetValue(nameof(_proxyUid), typeof(Guid));
         _proxyUid = proxyUid is Guid pUid ? pUid : this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(_proxyUid));
-        _dbVersion = info.GetUInt16(nameof(_dbVersion));
     }
 
     /// <summary>
@@ -83,7 +75,6 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         info.AddValue(nameof(_apiHash), _apiHash);
         info.AddValue(nameof(_phoneNumber), _phoneNumber);
         info.AddValue(nameof(_proxyUid), _proxyUid);
-        info.AddValue(nameof(_dbVersion), _dbVersion);
     }
 
     #endregion
@@ -96,17 +87,9 @@ public class SqlTableAppModel : SqlTableXpLiteBase
         base.ToString() + " | " +
         $"{nameof(ApiHash)} = {ApiHash} | " +
         $"{nameof(PhoneNumber)} = {PhoneNumber} | " +
-        $"{nameof(ProxyUid)} = {ProxyUid} | " +
-        $"{nameof(DbVersion)} = {DbVersion}";
+        $"{nameof(ProxyUid)} = {ProxyUid}";
 
     #endregion
-
-    public ushort GetLastDbVersion()
-    {
-        //ushort foo = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(_dbVersion));
-        string str = this.GetPropertyDefaultValue(nameof(_dbVersion));
-        return ushort.TryParse(str, out ushort result) ? result : default;
-    }
 
     #endregion
 }
