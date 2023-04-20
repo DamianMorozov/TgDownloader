@@ -1,7 +1,7 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
@@ -12,29 +12,13 @@
 ## Overview
 Download files of the Telegram channels or groups you are a member of.
 
+### Broken changes
+- Software v0.2.xxx has a new storage format, save the previous file, it will be overwritten
+
 ## Install Requirements
 - [Install .NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
 - [Register Telegram app](https://my.telegram.org/apps/)
 - Save the values of the "App api_id" and "App api_hash" fields
-
-## Run under Windows OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
-- Change the current directory to `cd TgDownloader v1.2.333`
-- Run the `TgDownloaderConsole.exe` command or double click the file
-
-## Run under Linux OS
-- Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
-- Change the current directory to `cd TgDownloader v1.2.333`
-- Run the `dotnet TgDownloaderConsole.dll` command
-
-## Quick Start
-- Change app settings
-- Set up storage
-- Set up the Telegram client
-- Set up a download
-
-## Default settings
-- Delete the file `TgDownloader.xml`
 
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
@@ -43,11 +27,8 @@ Download files of the Telegram channels or groups you are a member of.
 Please click the `star` button if this tool was helpful to you.
 
 ## Quick links
-- [CHANGELOG](CHANGELOG.md)
-- [LICENSE](LICENSE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 - [TgDownloader News](https://t.me/TgDownloader)
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
-- [Project description in Russian](README-RUS.md)

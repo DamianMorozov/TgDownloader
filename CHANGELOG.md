@@ -1,15 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 - Help menu
 - Russian localization
-- Customizable download filters
-- Scanning of local channels/groups
-- Storage versioning
+
+## [0.2.130] - 2023-04-20
+### Changed
+- New ORM-framework for SQLite storage (DevExpress XPO)
+### Added
+- Scanning channels/dialogs with the ability to save as sources
+- Viewing sources in the storage with the ability to go to the download menu
+- Store messages
+### Deprecated
+- Software v0.2.xxx has a new storage format, save the previous file, it will be overwritten
+
+## [0.1.730] - 2023-03-12
+### Added
+- Filters settings
+- Creating backup storage
 
 ## [0.1.630] - 2023-02-24
 ### Fixed
@@ -21,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App setting for the usage proxy
 - Automatic directory creation for manual download
 - Automatic directory creation for auto download
-- Storage version table
+- Storage versions table
 
 ## [0.1.500] - 2023-01-31
 ### Added
