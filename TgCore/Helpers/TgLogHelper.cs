@@ -51,7 +51,11 @@ public class TgLogHelper
 		_markupLineStamp = markupLineStamp;
 	}
 
-	public string GetMarkupString(string message) => message
+	public string GetMarkupString(string message, bool removeSpec = false) => removeSpec
+	? message
+		.Replace("[", "[[").Replace("]", "]]")
+		.Replace("'", "").Replace("/", "")
+	: message
 		.Replace("[", "[[").Replace("]", "]]")
 		.Replace("'", "");
 

@@ -3,7 +3,7 @@
 
 namespace TgCore.Models;
 
-public class FooModel : IBase
+public class FooModel : ITgSerializable
 {
 	#region Public and private fields, properties, constructor
 
@@ -21,7 +21,7 @@ public class FooModel : IBase
 	public FooModel()
 	{
 		_valueUshort = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(ValueUshort));
-		_valueUint = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(ValueUint));
+		_valueUint = this.GetPropertyDefaultValueAsGeneric<uint>(nameof(ValueUint));
 	}
 
 	#endregion
@@ -36,7 +36,7 @@ public class FooModel : IBase
 	protected FooModel(SerializationInfo info, StreamingContext context)
 	{
 		_valueUshort = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(ValueUshort));
-		_valueUint = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(ValueUint));
+		_valueUint = this.GetPropertyDefaultValueAsGeneric<uint>(nameof(ValueUint));
 	}
 
 	/// <summary>
@@ -46,8 +46,8 @@ public class FooModel : IBase
 	/// <param name="context"></param>
 	public void GetObjectData(SerializationInfo info, StreamingContext context)
 	{
-		info.AddValue(nameof(_valueUshort), _valueUshort);
-		info.AddValue(nameof(_valueUint), _valueUint);
+		info.AddValue(nameof(ValueUshort), ValueUshort);
+		info.AddValue(nameof(ValueUint), ValueUint);
 	}
 
 	#endregion

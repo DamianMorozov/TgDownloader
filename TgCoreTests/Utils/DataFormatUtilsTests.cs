@@ -3,7 +3,7 @@
 
 using TgCore.Utils;
 
-namespace TgCoreTests.Models;
+namespace TgCoreTests.Utils;
 
 [TestFixture]
 internal class DataFormatUtilsTests
@@ -16,15 +16,15 @@ internal class DataFormatUtilsTests
 		Assert.DoesNotThrow(() =>
 		{
 			string fileName = "RW-Kotlin-Cheatsheet-1.1.pdf";
-			bool result = DataFormatUtils.CheckFileAtMask(fileName, "kotlin");
+			bool result = TgDataFormatUtils.CheckFileAtMask(fileName, "kotlin");
 			Assert.True(result);
-			result = DataFormatUtils.CheckFileAtMask(fileName, "PDF");
+			result = TgDataFormatUtils.CheckFileAtMask(fileName, "PDF");
 			Assert.True(result);
 
 			fileName = "C# Generics.ZIP";
-			result = DataFormatUtils.CheckFileAtMask(fileName, "c*#");
+			result = TgDataFormatUtils.CheckFileAtMask(fileName, "c*#");
 			Assert.True(result);
-			result = DataFormatUtils.CheckFileAtMask(fileName, "zip");
+			result = TgDataFormatUtils.CheckFileAtMask(fileName, "zip");
 			Assert.True(result);
 		});
 	}

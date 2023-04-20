@@ -1,16 +1,14 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgCore.Localization;
-
-AppSettingsHelper appSettings = AppSettingsHelper.Instance;
-MenuHelper menu = MenuHelper.Instance;
-TgLocaleHelper locale = TgLocaleHelper.Instance;
-TgLogHelper log = TgLogHelper.Instance;
-TgStorageHelper tgStorage = TgStorageHelper.Instance;
+TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
+TgMenuHelper menu = TgMenuHelper.Instance;
+TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
+TgLogHelper tgLog = TgLogHelper.Instance;
+TgSqlContextManagerHelper contextManager = TgSqlContextManagerHelper.Instance;
 TgDownloadSettingsModel tgDownloadSettings = new();
 
-Setup();
+if (!Setup()) return;
 
 do
 {
@@ -19,63 +17,74 @@ do
 		menu.ShowTableMain(tgDownloadSettings);
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title(locale.MenuSwitchNumber)
+			.Title($"  {TgConstants.MenuSwitchNumber}")
 			.PageSize(10)
-			.MoreChoicesText(locale.MoveUpDown)
+			.MoreChoicesText(tgLocale.MoveUpDown)
 			.AddChoices(
-				locale.MenuMainExit, locale.MenuMainAppSettings, locale.MenuMainStorage, locale.MenuMainClient,
-				locale.MenuMainFilters, locale.MenuMainDownload, locale.MenuMainAdvanced));
+				TgConstants.MenuMainExit, TgConstants.MenuMainApp, TgConstants.MenuMainStorage, TgConstants.MenuMainClient,
+				TgConstants.MenuMainFilters, TgConstants.MenuMainDownload, TgConstants.MenuMainAdvanced));
 		switch (prompt)
 		{
-			case "Exit":
-				menu.Value = MenuMain.Exit;
+			case TgConstants.MenuMainExit:
+				menu.Value = TgMenuMain.Exit;
 				break;
-			case "Application settings":
-				menu.Value = MenuMain.AppSettings;
+			case TgConstants.MenuMainApp:
+				menu.Value = TgMenuMain.AppSettings;
 				menu.SetupAppSettings(tgDownloadSettings);
 				break;
-			case "Storage settings":
-				menu.Value = MenuMain.Storage;
+			case TgConstants.MenuMainStorage:
+				menu.Value = TgMenuMain.Storage;
 				menu.SetupStorage(tgDownloadSettings);
 				break;
-			case "Client settings":
-				menu.Value = MenuMain.Client;
+			case TgConstants.MenuMainClient:
+				menu.Value = TgMenuMain.Client;
 				menu.SetupClient(tgDownloadSettings);
 				break;
-			case "Filters settings":
-				menu.Value = MenuMain.Filters;
+			case TgConstants.MenuMainFilters:
+				menu.Value = TgMenuMain.Filters;
 				menu.SetupFilters(tgDownloadSettings);
 				break;
-			case "Download settings":
-				menu.Value = MenuMain.Download;
+			case TgConstants.MenuMainDownload:
+				menu.Value = TgMenuMain.Download;
 				menu.SetupDownload(tgDownloadSettings);
 				break;
-			case "Advanced":
-				menu.Value = MenuMain.Advanced;
+			case TgConstants.MenuMainAdvanced:
+				menu.Value = TgMenuMain.Advanced;
 				menu.SetupAdvanced(tgDownloadSettings);
 				break;
 		}
 	}
 	catch (Exception ex)
 	{
-		log.MarkupLine($"{locale.StatusException}: " + log.GetMarkupString(ex.Message));
+		tgLog.MarkupLine($"{tgLocale.StatusException}: " + tgLog.GetMarkupString(ex.Message));
 		if (ex.InnerException is not null)
-			log.MarkupLine($"{locale.StatusInnerException}: " + log.GetMarkupString(ex.InnerException.Message));
-		log.WriteLine(locale.TypeAnyKeyForReturn);
+			tgLog.MarkupLine($"{tgLocale.StatusInnerException}: " + tgLog.GetMarkupString(ex.InnerException.Message));
+		tgLog.WriteLine(tgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}
-} while (menu.Value is not MenuMain.Exit);
+} while (menu.Value is not TgMenuMain.Exit);
 
-void Setup()
+bool Setup()
 {
 	// App.
-	appSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
+	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
 	// Console.
 	Console.OutputEncoding = Encoding.UTF8;
-	log.SetMarkupLine(AnsiConsole.WriteLine);
-	log.SetMarkupLineStamp(AnsiConsole.MarkupLine);
+	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
+	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
 	// Storage.
-	tgStorage.CreateOrConnectDb();
+	if (!contextManager.IsExistsDb())
+	{
+		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
+		if (menu.AskQuestionReturnNegative(TgConstants.MenuStorageDbCreateNew)) return false;
+	}
+	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.FileStorage), (long)0))
+	{
+		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.FileStorage));
+		if (menu.AskQuestionReturnNegative(TgConstants.MenuStorageDbCreateNew)) return false;
+	}
+	contextManager.CreateOrConnectDb(true);
 	// Client.
-	menu.ClientConnectExists(tgDownloadSettings);
+	menu.ClientConnectExists();
+	return true;
 }

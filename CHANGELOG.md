@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scanning channels/dialogs with the ability to save as sources
 - Viewing sources in the storage with the ability to go to the download menu
 - Store messages
+### Deprecated
+- Software v0.2.xxx has a new storage format, save the previous file, it will be overwritten
 
 ## [0.1.730] - 2023-03-12
 ### Added

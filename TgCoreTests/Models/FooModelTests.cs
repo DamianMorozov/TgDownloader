@@ -16,8 +16,10 @@ internal class FooModelTests
         Assert.DoesNotThrow(() =>
         {
             FooModel foo = new();
-            Assert.AreEqual(123, foo.ValueUshort);
-            Assert.AreEqual(324, foo.ValueUint);
+            TestContext.WriteLine($"{nameof(foo.ValueUshort)}: {foo.ValueUshort}");
+            Assert.That(Equals((ushort)123, foo.ValueUshort));
+			TestContext.WriteLine($"{nameof(foo.ValueUint)}: {foo.ValueUint}");
+			Assert.That(Equals((uint)324, foo.ValueUint));
         });
     }
 

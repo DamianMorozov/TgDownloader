@@ -6,12 +6,12 @@ namespace TgCore.Models;
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{nameof(AppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}")]
-public class AppXmlModel : IModel
+public class AppXmlModel : ITgSerializable
 {
 	#region Public and private fields, properties, constructor
 
 	[XmlIgnore]
-	public string LocalFilePath => FileUtils.AppXmlSettings;
+	public string LocalFilePath => TgFileUtils.AppXmlSettings;
 	[DefaultValue("")]
 	[XmlIgnore]
 	public string Version { get; set; }
@@ -61,22 +61,22 @@ public class AppXmlModel : IModel
 	public void SetFileSessionPath(string path)
 	{
 		FileSession = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, FileUtils.Session)
+			? Path.Combine(path, TgFileUtils.Session)
 			: path;
 		if (!IsExistsFileSession)
 		{
-			FileSession = Path.Combine(Directory.GetCurrentDirectory(), FileUtils.Session);
+			FileSession = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Session);
 		}
 	}
 
 	public void SetFileStoragePath(string path)
 	{
 		FileStorage = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, FileUtils.Storage)
+			? Path.Combine(path, TgFileUtils.Storage)
 			: path;
 		if (!IsExistsFileStorage)
 		{
-			FileStorage = Path.Combine(Directory.GetCurrentDirectory(), FileUtils.Storage);
+			FileStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Storage);
 		}
 	}
 

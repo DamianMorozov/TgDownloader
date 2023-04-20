@@ -3,7 +3,7 @@
 
 namespace TgCore.Models;
 
-public class TgDownloadSettingsModel : IModel
+public class TgDownloadSettingsModel : ITgSerializable
 {
 	#region Public and private fields, properties, constructor
 
@@ -21,6 +21,10 @@ public class TgDownloadSettingsModel : IModel
 	public int SourceFirstId { get; set; }
 	[DefaultValue(1)]
 	public int SourceLastId { get; set; }
+	[DefaultValue(1)]
+	public int SourceScanCurrent { get; set; }
+	[DefaultValue(1)]
+	public int SourceScanCount { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
 	[DefaultValue(false)]
@@ -39,13 +43,15 @@ public class TgDownloadSettingsModel : IModel
 	public TgDownloadSettingsModel()
 	{
 		DestDirectory = this.GetPropertyDefaultValue(nameof(DestDirectory));
-		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
-		IsAutoUpdate = this.GetPropertyDefaultValueAsBool(nameof(IsAutoUpdate));
-		IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
-		IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
-		SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
-		SourceFirstId = this.GetPropertyDefaultValueAsInt(nameof(SourceFirstId));
-		SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
+		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsJoinFileNameWithMessageId));
+		IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
+		IsRewriteFiles = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteFiles));
+		IsRewriteMessages = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteMessages));
+		SourceLastId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceLastId));
+		SourceFirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceFirstId));
+		SourceScanCurrent = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCurrent));
+		SourceScanCount = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCount));
+		SourceId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceId));
 		SourceUserName = this.GetPropertyDefaultValue(nameof(SourceUserName));
 		SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
 		SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));
@@ -55,16 +61,19 @@ public class TgDownloadSettingsModel : IModel
 
 	#region Public and private methods
 
-	public void SetDefault(int messageCurrentId)
+
+	public void Reset()
 	{
 		DestDirectory = this.GetPropertyDefaultValue(nameof(DestDirectory));
-		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsBool(nameof(IsJoinFileNameWithMessageId));
-		IsAutoUpdate = this.GetPropertyDefaultValueAsBool(nameof(IsAutoUpdate));
-		IsRewriteFiles = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteFiles));
-		IsRewriteMessages = this.GetPropertyDefaultValueAsBool(nameof(IsRewriteMessages));
-		SourceLastId = this.GetPropertyDefaultValueAsInt(nameof(SourceLastId));
-		SourceFirstId = messageCurrentId;
-		SourceId = this.GetPropertyDefaultValueAsInt(nameof(SourceId));
+		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsJoinFileNameWithMessageId));
+		IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
+		IsRewriteFiles = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteFiles));
+		IsRewriteMessages = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteMessages));
+		SourceFirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceFirstId));
+		SourceLastId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceLastId));
+		SourceScanCurrent = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCurrent));
+		SourceScanCount = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCount));
+		SourceId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceId));
 		SourceUserName = this.GetPropertyDefaultValue(nameof(SourceUserName));
 		SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
 		SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));

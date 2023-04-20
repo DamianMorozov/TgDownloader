@@ -8,10 +8,11 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+                <xs:element name="IsPrimary" type="xs:boolean" minOccurs="0" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="TgDownloaderCore">
+          <xs:element name="TgDownloader">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="FileName" type="xs:string" default="" />
@@ -26,7 +27,7 @@
         </xs:choice>
       </xs:complexType>
       <xs:unique name="Constraint1" msdata:PrimaryKey="true">
-        <xs:selector xpath=".//TgDownloaderCore" />
+        <xs:selector xpath=".//TgDownloader" />
         <xs:field xpath="FileName" />
         <xs:field xpath="ErrorCode" />
         <xs:field xpath="Message" />
@@ -37,14 +38,15 @@
     </xs:element>
   </xs:schema>
   <SuppressVersion>
-    <CurrentVersion>2</CurrentVersion>
+    <CurrentVersion>3</CurrentVersion>
+    <IsPrimary>false</IsPrimary>
   </SuppressVersion>
-  <TgDownloaderCore>
+  <TgDownloader>
     <FileName>FileUtils.cs</FileName>
     <ErrorCode>V3106</ErrorCode>
     <Message>Possible negative index value. The value of 'i' index could reach -_.</Message>
     <CodePrev>123</CodePrev>
     <CodeCurrent>2665641981</CodeCurrent>
     <CodeNext>0</CodeNext>
-  </TgDownloaderCore>
+  </TgDownloader>
 </NewDataSet>

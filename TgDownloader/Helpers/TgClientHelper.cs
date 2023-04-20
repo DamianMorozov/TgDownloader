@@ -3,6 +3,7 @@
 
 using ProxyLib.Proxy;
 using System.Runtime.Serialization;
+using TgCore.Enums;
 using TgCore.Helpers;
 using TgCore.Interfaces;
 using TgCore.Localization;
@@ -12,13 +13,15 @@ using TgStorage.Helpers;
 using TgStorage.Models.Apps;
 using TgStorage.Models.Filters;
 using TgStorage.Models.Proxies;
+using TgStorage.Models.Sources;
+using TL;
 using Channel = TL.Channel;
 using Document = TL.Document;
-using ProxyType = TgCore.Enums.ProxyType;
+using TgProxyType = TgCore.Enums.TgProxyType;
 
 namespace TgDownloader.Helpers;
 
-public partial class TgClientHelper : IHelper
+public partial class TgClientHelper : ITgHelper, ITgSerializable
 {
 	#region Design pattern "Lazy Singleton"
 
@@ -31,17 +34,29 @@ public partial class TgClientHelper : IHelper
 
 	#region Public and private fields, properties, constructor
 
-	private AppSettingsHelper AppSettings => AppSettingsHelper.Instance;
+	private TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	private TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-	private TgStorageHelper TgStorage => TgStorageHelper.Instance;
+	private TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
 	private TgLogHelper TgLog => TgLogHelper.Instance;
 	public Client? Client { get; set; }
-	public bool IsClientReady => Client is not null && !Client.Disconnected;
+	public bool IsClientReady => Client is { } && !Client.Disconnected;
 	public ExceptionModel ClientException { get; private set; }
 	public ExceptionModel ProxyException { get; private set; }
-	public bool IsReady => AppSettings.AppXml.IsExistsFileSession && Client is { } && IsClientReady && (!AppSettings.AppXml.IsUseProxy ||
-							   (AppSettings.AppXml.IsUseProxy && TgStorage.GetItem<SqlTableProxyModel>(TgStorage.App.ProxyUid).IsExists)) &&
-						   !ProxyException.IsExists && !ClientException.IsExists;
+	public bool IsReady
+	{
+		get
+		{
+			//return TgAppSettings.AppXml.IsExistsFileSession && Client is { } && IsClientReady && (!TgAppSettings.AppXml.IsUseProxy ||
+			//	(TgAppSettings.AppXml.IsUseProxy && TgStorage.Proxies.GetItem(TgStorage.Apps.GetItem().ProxyUid).IsExists)) &&
+			//	!ProxyException.IsExists && !ClientException.IsExists;
+			if (!TgAppSettings.AppXml.IsExistsFileSession) return false;
+			if (!IsClientReady) return false;
+			if (!(!TgAppSettings.AppXml.IsUseProxy ||
+				(TgAppSettings.AppXml.IsUseProxy && ContextManager.Proxies.GetItem(ContextManager.Apps.GetCurrentProxyUid).IsExists))) return false;
+			if (ProxyException.IsExists || ClientException.IsExists) return false;
+			return true;
+		}
+	}
 	public User? Me { get; set; }
 	public Dictionary<long, ChatBase> DicChatsAll { get; private set; }
 	public Dictionary<long, ChatBase> DicChatsUpdated { get; }
@@ -50,14 +65,8 @@ public partial class TgClientHelper : IHelper
 	public List<Channel> ListGroups { get; }
 	public List<ChatBase> ListChats { get; }
 	public List<ChatBase> ListSmallGroups { get; }
-	public string ApiId { get; set; }
-	public string ApiHash { get; set; }
-	public string PhoneNumber { get; set; }
-
 	public TgClientHelper()
 	{
-		ApiHash = string.Empty;
-		ApiId = string.Empty;
 		DicChatsAll = new();
 		DicChatsUpdated = new();
 		DicUsersUpdated = new();
@@ -65,7 +74,6 @@ public partial class TgClientHelper : IHelper
 		ListChats = new();
 		ListGroups = new();
 		ListSmallGroups = new();
-		PhoneNumber = string.Empty;
 		ClientException = new();
 		ProxyException = new();
 
@@ -79,39 +87,33 @@ public partial class TgClientHelper : IHelper
 
 	#region Public and private methods
 
-	public void Connect(SqlTableAppModel app, Func<string, string?>? configExists, Func<string, string?>? configUser, SqlTableProxyModel proxy)
+	public void Connect(Func<string, string?>? config, TgSqlTableProxyModel proxy)
 	{
 		if (IsReady) return;
 		UnLoginUser();
 
-		if (!string.IsNullOrEmpty(app.ApiHash) && !string.IsNullOrEmpty(app.PhoneNumber))
-		{
-			ApiHash = app.ApiHash;
-			PhoneNumber = app.PhoneNumber;
-		}
-
-		Client = !string.IsNullOrEmpty(app.ApiHash) && !string.IsNullOrEmpty(app.PhoneNumber) ? new(configExists) : new(configUser);
+		Client = new(config);
 		ConnectThroughProxy(proxy);
 		Client.OnUpdate += Client_OnUpdate;
 
-		LoginUser();
+		LoginUser(true);
 	}
 
-	public void ConnectThroughProxy(SqlTableProxyModel proxy)
+	public void ConnectThroughProxy(TgSqlTableProxyModel proxy)
 	{
 		if (!IsClientReady) return;
 		if (Client is null) return;
-		if (!AppSettings.AppXml.IsUseProxy) return;
-		if (Equals(proxy.Type, ProxyType.None)) return;
-		if (!TgStorage.IsValidXpLite(proxy)) return;
+		if (!TgAppSettings.AppXml.IsUseProxy) return;
+		if (Equals(proxy.Type, TgProxyType.None)) return;
+		if (!ContextManager.Proxies.IsValidXpLite(proxy)) return;
 
 		try
 		{
 			ProxyException = new();
 			switch (proxy.Type)
 			{
-				case ProxyType.Http:
-				case ProxyType.Socks:
+				case TgProxyType.Http:
+				case TgProxyType.Socks:
 					Client.TcpHandler = (address, port) =>
 					{
 						Socks5ProxyClient proxyClient = string.IsNullOrEmpty(proxy.UserName) && string.IsNullOrEmpty(proxy.Password)
@@ -119,7 +121,7 @@ public partial class TgClientHelper : IHelper
 						return Task.FromResult(proxyClient.CreateConnection(address, port));
 					};
 					break;
-				case ProxyType.MtProto:
+				case TgProxyType.MtProto:
 					Client.MTProxyUrl = string.IsNullOrEmpty(proxy.Secret)
 						? $"https://t.me/proxy?server={proxy.HostName}&port={proxy.Port}"
 						: $"https://t.me/proxy?server={proxy.HostName}&port={proxy.Port}&secret={proxy.Secret}";
@@ -215,14 +217,20 @@ public partial class TgClientHelper : IHelper
 	public string GetPeerUpdatedName(Peer peer) => peer is PeerUser user ? GetUserUpdatedName(user.user_id)
 		: peer is PeerChat or PeerChannel ? GetChatUpdatedName(peer.ID) : $"Peer {peer.ID}";
 
-	public async Task CollectAllChats()
+	public Dictionary<long, ChatBase> CollectAllChats()
 	{
-		if (IsReady)
+		switch (IsReady)
 		{
-			Messages_Chats messages = await Client.Messages_GetAllChats().ConfigureAwait(true);
-			DicChatsAll = messages.chats;
+			case true when Client is { }:
+			{
+					Messages_Chats messages = Client.Messages_GetAllChats()
+					.ConfigureAwait(true).GetAwaiter().GetResult();
+				DicChatsAll = messages.chats;
+					FillListChats(DicChatsAll);
+				return DicChatsAll;
+				}
 		}
-		FillListChats(DicChatsAll);
+		return new();
 	}
 
 	public Dictionary<long, ChatBase> CollectAllDialogs()
@@ -233,11 +241,12 @@ public partial class TgClientHelper : IHelper
 				{
 					Messages_Dialogs messages = Client.Messages_GetAllDialogs()
 						.ConfigureAwait(true).GetAwaiter().GetResult();
+					DicChatsAll = messages.chats;
+					FillListChats(DicChatsAll);
 					return messages.chats;
 				}
-			default:
-				return new();
 		}
+		return new();
 	}
 
 	private void FillListChats(Dictionary<long, ChatBase> dic)
@@ -394,7 +403,7 @@ public partial class TgClientHelper : IHelper
 		return result;
 	}
 
-	public void PrintChatsInfo(Dictionary<long, ChatBase> dicChats, string name)
+	public void PrintChatsInfo(Dictionary<long, ChatBase> dicChats, string name, bool isSave)
 	{
 		TgLog.MarkupInfo($"Found {name}: {dicChats.Count}");
 		TgLog.MarkupInfo(TgLocale.TgGetDialogsInfo);
@@ -405,7 +414,7 @@ public partial class TgClientHelper : IHelper
 				switch (dicChat.Value)
 				{
 					case Channel channel:
-						PrintChatsInfoChannel(channel, false, false);
+						PrintChatsInfoChannel(channel, false, false, isSave);
 						break;
 					default:
 						TgLog.MarkupLine(GetChatInfo(dicChat.Value));
@@ -415,12 +424,14 @@ public partial class TgClientHelper : IHelper
 		}
 	}
 
-	private Messages_ChatFull? PrintChatsInfoChannel(Channel channel, bool isFull, bool isSilent)
+	private Messages_ChatFull? PrintChatsInfoChannel(Channel channel, bool isFull, bool isSilent, bool isSave)
 	{
 		Messages_ChatFull? chatFull = null;
 		try
 		{
 			chatFull = Client.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+			if (isSave)
+				ContextManager.Sources.AddOrUpdateItem(new() { Id = channel.id, UserName = channel.username, Title = channel.title });
 			if (!isSilent)
 			{
 				if (chatFull.full_chat is ChannelFull channelFull)
@@ -440,6 +451,7 @@ public partial class TgClientHelper : IHelper
 	private Messages_ChatFull? PrintChatsInfoChatBase(ChatBase chatBase, bool isFull, bool isSilent)
 	{
 		Messages_ChatFull? chatFull = null;
+		if (Client is null) return chatFull;
 		try
 		{
 			chatFull = Client.GetFullChat(chatBase).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -485,8 +497,9 @@ public partial class TgClientHelper : IHelper
 
 	public void ActionChannelAccess(ChatBase chat, Action<ChatFullBase> action)
 	{
+		if (Client is null) return;
 		if (chat.ID is 0 || chat is not ChatBase chatBase) return;
-
+		
 		if (chatBase is Channel channel)
 		{
 			Messages_ChatFull fullChannel = Client.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
@@ -511,8 +524,6 @@ public partial class TgClientHelper : IHelper
 		{
 			if (chatFullBase is ChannelFull channelFull)
 				max = channelFull.read_inbox_max_id;
-			//else if (chatFullBase is TL.Cha chatFull)
-			//	max = 0;
 		});
 		return max;
 	}
@@ -577,7 +588,7 @@ public partial class TgClientHelper : IHelper
 			if (channel is null) return;
 			if (!IsChannelAccess(channel)) return;
 			tgDownloadSettings.SourceUserName = !string.IsNullOrEmpty(channel.username) ? channel.username : string.Empty;
-			Messages_ChatFull? chatFull = PrintChatsInfoChannel(channel, true, isSilent);
+			Messages_ChatFull? chatFull = PrintChatsInfoChannel(channel, true, isSilent, false);
 			tgDownloadSettings.SourceLastId = GetChannelMessageIdLast(channel);
 			if (chatFull?.full_chat is ChannelFull channelFull)
 				tgDownloadSettings.SetSource(channelFull.ID, channel.Title, channelFull.About);
@@ -600,15 +611,30 @@ public partial class TgClientHelper : IHelper
 		return chatBase;
 	}
 
-	public void ScanLocalSources(Action<string, bool> refreshStatus, Action<ChatBase, string, int> storeSource)
+	public void ScanSource(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus, TgSourceType sourceType, 
+		Action<ChatBase, string, int> storeSource)
 	{
 		TryCatchAction(() =>
 		{
-			LoginUser();
-			CollectAllChats().GetAwaiter().GetResult();
-
+			LoginUser(false);
+			switch (sourceType)
+			{
+				case TgSourceType.None:
+					return;
+				case TgSourceType.Chat:
+					refreshStatus(TgConstants.CollectChats, true);
+					CollectAllChats();
+					break;
+				case TgSourceType.Dialog:
+					refreshStatus(TgConstants.CollectDialogs, true);
+					CollectAllDialogs();
+					break;
+			}
+			tgDownloadSettings.SourceScanCount = DicChatsAll.Count;
+			tgDownloadSettings.SourceScanCurrent = 0;
 			foreach (Channel myChannel in ListChannels)
 			{
+				tgDownloadSettings.SourceScanCurrent++;
 				TryCatchAction(() =>
 				{
 					if (myChannel.IsActive)
@@ -619,11 +645,18 @@ public partial class TgClientHelper : IHelper
 							Messages_ChatFull? chatFull = Client.Channels_GetFullChannel(myChannel)
 								.ConfigureAwait(true).GetAwaiter().GetResult();
 							if (chatFull?.full_chat is ChannelFull channelFull)
+							{
 								storeSource(myChannel, channelFull.about, messagesCount);
+								if (channelFull.about.Length <= 20)
+									refreshStatus($"{myChannel} | {messagesCount} | {channelFull.about}", true);
+								else
+									refreshStatus($"{myChannel} | {messagesCount} | {channelFull.about.Substring(0, 20)}...", true);
+							}
 						}
 						else
 						{
 							storeSource(myChannel, string.Empty, messagesCount);
+							refreshStatus($"{myChannel} | {messagesCount}", true);
 						}
 					}
 				});
@@ -637,6 +670,7 @@ public partial class TgClientHelper : IHelper
 					{
 						int messagesCount = GetChannelMessageIdLast(myGroup);
 						storeSource(myGroup, string.Empty, messagesCount);
+						refreshStatus($"{myGroup} | {messagesCount}", true);
 					}
 				});
 			}
@@ -644,8 +678,8 @@ public partial class TgClientHelper : IHelper
 	}
 
 	public void DownloadAllData(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus,
-		Action<long?, long?, DateTime, string, string, long> storeMessage,
-		Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage)
+		Action<int, long, DateTime, TgMessageType, long, string> storeMessage,
+		Action<long, long, long, string, long, long> storeDocument, Func<long, long, bool> findExistsMessage)
 	{
 		Channel? channel = PrepareChannelDownloadMessages(tgDownloadSettings, false);
 		ChatBase? chatBase = null;
@@ -653,7 +687,7 @@ public partial class TgClientHelper : IHelper
 			chatBase = PrepareChatBaseDownloadMessages(tgDownloadSettings, true);
 		TryCatchAction(() =>
 		{
-			LoginUser();
+			LoginUser(false);
 			//int backupId = tgDownloadSettings.SourceFirstId;
 			CreateDestDirectoryIfNotExists(tgDownloadSettings, refreshStatus);
 			while (tgDownloadSettings.SourceFirstId <= tgDownloadSettings.SourceLastId)
@@ -704,8 +738,8 @@ public partial class TgClientHelper : IHelper
 	}
 
 	private void DownloadData(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus, MessageBase messageBase,
-		Action<long?, long?, DateTime, string, string, long> storeMessage,
-		Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage)
+		Action<int, long, DateTime, TgMessageType, long, string> storeMessage,
+		Action<long, long, long, string, long, long> storeDocument, Func<long, long, bool> findExistsMessage)
 	{
 		if (messageBase is not Message message)
 		{
@@ -716,11 +750,11 @@ public partial class TgClientHelper : IHelper
 		TryCatchAction(() =>
 		{
 			// Get filters.
-			List<SqlTableFilterModel> filters = TgStorage.GetFiltersEnabledList();
+			List<TgSqlTableFilterModel> filters = ContextManager.Filters.GetListEnabled();
 			// Store message.
 			bool isExistsMessage = findExistsMessage(tgDownloadSettings.SourceFirstId, tgDownloadSettings.SourceId);
 			if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
-				storeMessage(messageBase.ID, tgDownloadSettings.SourceId, messageBase.Date, messageBase.ToString() ?? string.Empty, string.Empty, 0);
+				storeMessage(message.ID, tgDownloadSettings.SourceId, message.Date, TgMessageType.Message, 0, message.message);
 			// Parse documents and photos.
 			if ((message.flags & Message.Flags.has_media) is not 0)
 			{
@@ -730,25 +764,27 @@ public partial class TgClientHelper : IHelper
 					{
 						if (mediaDocument.document is Document document)
 						{
-							DownloadDataCore(tgDownloadSettings, refreshStatus, messageBase, document, null, storeMessage, storeDocument, findExistsMessage, filters);
+							DownloadDataCore(tgDownloadSettings, refreshStatus, messageBase, document, null, 
+								storeMessage, storeDocument, findExistsMessage, filters);
 						}
 					}
 				}
 				else if (message.media is MessageMediaPhoto { photo: Photo photo })
 				{
-					DownloadDataCore(tgDownloadSettings, refreshStatus, messageBase, null, photo, storeMessage, storeDocument, findExistsMessage, filters);
+					DownloadDataCore(tgDownloadSettings, refreshStatus, messageBase, null, photo, 
+						storeMessage, storeDocument, findExistsMessage, filters);
 				}
 			}
 			refreshStatus("Read the message", true);
 		}, refreshStatus);
 	}
 
-	private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(Document? document, Photo? photo, List<SqlTableFilterModel> filters)
+	private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(Document? document, Photo? photo, List<TgSqlTableFilterModel> filters)
 	{
 		string extensionName = string.Empty;
 		if (document is { })
 		{
-			if (Path.GetExtension(document.Filename).TrimStart('.') is string str)
+			if (!string.IsNullOrEmpty(document.Filename) && (Path.GetExtension(document.Filename).TrimStart('.') is { } str))
 				extensionName = str;
 			if (!string.IsNullOrEmpty(document.Filename) && CheckFileAtFilter(filters, document.Filename, extensionName, document.size))
 				return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { (document.Filename, document.size, 
@@ -788,39 +824,39 @@ public partial class TgClientHelper : IHelper
 		return Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>();
 	}
 
-	public bool CheckFileAtFilter(List<SqlTableFilterModel> filters, string fileName, string extensionName, long size)
+	public bool CheckFileAtFilter(List<TgSqlTableFilterModel> filters, string fileName, string extensionName, long size)
 	{
-		foreach (SqlTableFilterModel filter in filters)
+		foreach (TgSqlTableFilterModel filter in filters)
 		{
 			if (!filter.IsEnabled) continue;
 			switch (filter.FilterType)
 			{
-				case TgCore.Enums.FilterType.SingleName:
+				case TgFilterType.SingleName:
 					if (string.IsNullOrEmpty(fileName)) continue;
-					if (!DataFormatUtils.CheckFileAtMask(fileName, filter.Mask)) return false;
+					if (!TgDataFormatUtils.CheckFileAtMask(fileName, filter.Mask)) return false;
 					break;
-				case TgCore.Enums.FilterType.SingleExtension:
+				case TgFilterType.SingleExtension:
 					if (string.IsNullOrEmpty(extensionName)) continue;
-					if (!DataFormatUtils.CheckFileAtMask(extensionName, filter.Mask)) return false;
+					if (!TgDataFormatUtils.CheckFileAtMask(extensionName, filter.Mask)) return false;
 					break;
-				case TgCore.Enums.FilterType.MultiName:
+				case TgFilterType.MultiName:
 					if (string.IsNullOrEmpty(fileName)) continue;
 					bool isMultiName = false;
 					foreach (string mask in filter.Mask.Split(','))
-						if (DataFormatUtils.CheckFileAtMask(fileName, mask.TrimStart().TrimEnd())) isMultiName = true;
+						if (TgDataFormatUtils.CheckFileAtMask(fileName, mask.TrimStart().TrimEnd())) isMultiName = true;
 					if (!isMultiName) return false;
 					break;
-				case TgCore.Enums.FilterType.MultiExtension:
+				case TgFilterType.MultiExtension:
 					if (string.IsNullOrEmpty(extensionName)) continue;
 					bool isMultiExtension = false;
 					foreach (string mask in filter.Mask.Split(','))
-						if (DataFormatUtils.CheckFileAtMask(extensionName, mask.TrimStart().TrimEnd())) isMultiExtension = true;
+						if (TgDataFormatUtils.CheckFileAtMask(extensionName, mask.TrimStart().TrimEnd())) isMultiExtension = true;
 					if (!isMultiExtension) return false;
 					break;
-				case TgCore.Enums.FilterType.MinSize:
+				case TgFilterType.MinSize:
 					if (size < filter.SizeAtBytes) return false;
 					break;
-				case TgCore.Enums.FilterType.MaxSize:
+				case TgFilterType.MaxSize:
 					if (size > filter.SizeAtBytes) return false;
 					break;
 			}
@@ -863,7 +899,7 @@ public partial class TgClientHelper : IHelper
 				string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
 				if (File.Exists(fileName))
 				{
-					long fileSize = FileUtils.CalculateFileSize(fileName);
+					long fileSize = TgFileUtils.CalculateFileSize(fileName);
 					if (tgDownloadSettings.IsRewriteFiles && fileSize < files[i].Size || fileSize == 0)
 					{
 						File.Delete(fileName);
@@ -875,8 +911,9 @@ public partial class TgClientHelper : IHelper
 
 	private void DownloadDataCore(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus,
 		MessageBase messageBase, Document? document, Photo? photo,
-		Action<long?, long?, DateTime, string, string, long> storeMessage,
-		Action<long?, long?, long?, string, long, long> storeDocument, Func<long?, long?, bool> findExistsMessage, List<SqlTableFilterModel> filters)
+		Action<int, long, DateTime, TgMessageType, long, string> storeMessage,
+		Action<long, long, long, string, long, long> storeDocument, 
+		Func<long, long, bool> findExistsMessage, List<TgSqlTableFilterModel> filters)
 	{
 		(string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files = GetFiles(document, photo, filters);
 		if (Equals(files, Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>())) return;
@@ -930,11 +967,13 @@ public partial class TgClientHelper : IHelper
 			bool isExistsMessage = findExistsMessage(tgDownloadSettings.SourceFirstId, tgDownloadSettings.SourceId);
 			if (document is not null && ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage))
 			{
-				storeMessage(messageBase.ID, tgDownloadSettings.SourceId, files[i].DtCreate, files[i].Remote, nameof(Document), files[i].Size);
+				storeMessage(messageBase.ID, tgDownloadSettings.SourceId, files[i].DtCreate, 
+					TgMessageType.Document, files[i].Size, files[i].Remote);
 			}
 			else if (photo is not null && ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage))
 			{
-				storeMessage(messageBase.ID, tgDownloadSettings.SourceId, files[i].DtCreate, files[i].Remote, nameof(Photo), files[i].Size);
+				storeMessage(messageBase.ID, tgDownloadSettings.SourceId, files[i].DtCreate, 
+					TgMessageType.Photo, files[i].Size, files[i].Remote);
 			}
 			// Set file date time.
 			if (File.Exists(fileName))
@@ -950,22 +989,20 @@ public partial class TgClientHelper : IHelper
 		}
 	}
 
-	private long GetAccessHash(long channelId) => Client?.GetAccessHashFor<Channel>(channelId) ?? 0;
-
-	private long GetAccessHash(string userName)
-	{
-		Contacts_ResolvedPeer contactsResolved = Client.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult();
-		//WClient.Channels_JoinChannel(new InputChannel(channelId, accessHash)).ConfigureAwait(true).GetAwaiter().GetResult();
-		return GetAccessHash(contactsResolved.peer.ID);
-	}
+	//private long GetAccessHash(long channelId) => Client?.GetAccessHashFor<Channel>(channelId) ?? 0;
+	
+	//private long GetAccessHash(string userName)
+	//{
+	//	Contacts_ResolvedPeer contactsResolved = Client.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult();
+	//	//WClient.Channels_JoinChannel(new InputChannel(channelId, accessHash)).ConfigureAwait(true).GetAwaiter().GetResult();
+	//	return GetAccessHash(contactsResolved.peer.ID);
+	//}
 
 	private long GetPeerId(string userName) =>
 		Client.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult().peer.ID;
 
-	/*
-    AUTH_KEY_DUPLICATED  | rpcException.Code, 406
-    "Could not read payload length : Connection shut down"
-     */
+    // AUTH_KEY_DUPLICATED  | rpcException.Code, 406
+    // "Could not read payload length : Connection shut down"
 	//public string GetClientExceptionMessage() =>
 	//    ClientException switch
 	//    {
@@ -976,7 +1013,7 @@ public partial class TgClientHelper : IHelper
 	//        _ => string.Empty
 	//    };
 
-	public void LoginUser()
+	public void LoginUser(bool isProxyUpdate)
 	{
 		ClientException = new();
 		try
@@ -988,6 +1025,14 @@ public partial class TgClientHelper : IHelper
 			ClientException.Set(ex);
 			Me = null;
 		}
+
+		if (isProxyUpdate && IsReady)
+		{
+			TgSqlTableAppModel app = ContextManager.Apps.GetCurrentItem();
+			app.ProxyUid = ContextManager.Apps.GetCurrentProxy.Uid;
+			ContextManager.Apps.AddOrUpdateItem(app);
+			//CollectAllChats();
+		}
 	}
 
 	public void UnLoginUser()
@@ -997,7 +1042,7 @@ public partial class TgClientHelper : IHelper
 			Client.OnUpdate -= Client_OnUpdate;
 			Client.Dispose();
 			Client = null;
-			ClientException = null;
+			ClientException = new();
 			Me = null;
 		}
 	}
@@ -1013,8 +1058,6 @@ public partial class TgClientHelper : IHelper
 	/// <param name="context"></param>
 	protected TgClientHelper(SerializationInfo info, StreamingContext context)
 	{
-		ApiHash = info.GetString(nameof(ApiHash)) ?? this.GetPropertyDefaultValue(nameof(ApiHash));
-		ApiId = info.GetString(nameof(ApiId)) ?? this.GetPropertyDefaultValue(nameof(ApiId));
 		DicChatsAll = info.GetValue(nameof(DicChatsAll), typeof(Dictionary<long, ChatBase>)) as Dictionary<long, ChatBase> ?? new();
 		DicChatsUpdated = info.GetValue(nameof(DicChatsUpdated), typeof(Dictionary<long, ChatBase>)) as Dictionary<long, ChatBase> ?? new();
 		DicUsersUpdated = info.GetValue(nameof(DicUsersUpdated), typeof(Dictionary<long, User>)) as Dictionary<long, User> ?? new();
@@ -1022,7 +1065,6 @@ public partial class TgClientHelper : IHelper
 		ListChats = info.GetValue(nameof(ListChats), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
 		ListGroups = info.GetValue(nameof(ListGroups), typeof(List<Channel>)) as List<Channel> ?? new();
 		ListSmallGroups = info.GetValue(nameof(ListSmallGroups), typeof(List<ChatBase>)) as List<ChatBase> ?? new();
-		PhoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValue(nameof(PhoneNumber));
 		object? clientException = info.GetValue(nameof(ClientException), typeof(ExceptionModel));
 		ClientException = clientException is not null ? (ExceptionModel)clientException : new();
 		object? proxyException = info.GetValue(nameof(ProxyException), typeof(ExceptionModel));
@@ -1036,8 +1078,6 @@ public partial class TgClientHelper : IHelper
 	/// <param name="context"></param>
 	public void GetObjectData(SerializationInfo info, StreamingContext context)
 	{
-		info.AddValue(nameof(ApiHash), ApiHash);
-		info.AddValue(nameof(ApiId), ApiId);
 		info.AddValue(nameof(DicChatsAll), DicChatsAll);
 		info.AddValue(nameof(DicChatsUpdated), DicChatsUpdated);
 		info.AddValue(nameof(DicUsersUpdated), DicUsersUpdated);
@@ -1045,9 +1085,30 @@ public partial class TgClientHelper : IHelper
 		info.AddValue(nameof(ListChats), ListChats);
 		info.AddValue(nameof(ListGroups), ListGroups);
 		info.AddValue(nameof(ListSmallGroups), ListSmallGroups);
-		info.AddValue(nameof(PhoneNumber), PhoneNumber);
 		info.AddValue(nameof(ClientException), ClientException);
 		info.AddValue(nameof(ProxyException), ProxyException);
+	}
+
+	#endregion
+
+	#region Public and private methods
+
+	private void TryCatchAction(Action action, Action<string, bool>? refreshStatus = null)
+	{
+		try
+		{
+			action();
+		}
+		catch (Exception ex)
+		{
+			// It should be saved and asked to be sent to the developer.
+			if (refreshStatus is not null)
+			{
+				refreshStatus(ex.Message, false);
+				if (ex.InnerException is not null)
+					refreshStatus(ex.InnerException.Message, false);
+			}
+		}
 	}
 
 	#endregion
