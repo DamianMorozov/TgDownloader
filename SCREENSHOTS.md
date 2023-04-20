@@ -1,5 +1,16 @@
 # Screenshots
 
+## [0.2.130] - 2023-04-20
+### Added
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Main_menu.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Application_settings.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Storage_settings.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Client_settings_Proxy.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Client_exception.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Filter_settings.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Download_settings.png"></p>
+<p align="center"><img src="Assets/v0.2.130/TgDownloaderConsole_Advanced.png"></p>
+
 ## [0.1.700] - 2023-03-08
 ### Added
 <p align="center"><img src="Assets/v0.1.700/TgDownloaderConsole_Main_menu.png"></p>

@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Help menu
 - Russian localization
-- Customizable download filters
-- Scanning of local channels/groups
 
-## [0.1.720] - 2023-03-11
+## [0.2.130] - 2023-04-20
+### Changed
+- New ORM-framework for SQLite storage (DevExpress XPO)
+### Added
+- Scanning channels/dialogs with the ability to save as sources
+- Viewing sources in the storage with the ability to go to the download menu
+- Store messages
+
+## [0.1.730] - 2023-03-12
 ### Added
 - Filters settings
+- Creating backup storage
 
 ## [0.1.630] - 2023-02-24
 ### Fixed
