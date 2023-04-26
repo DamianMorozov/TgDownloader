@@ -43,7 +43,7 @@ public sealed class TgSqlVersionHelper : TgSqlHelperBase<TgSqlTableVersionModel>
 	public override TgSqlTableVersionModel GetNewItem() => new UnitOfWork().Query<TgSqlTableVersionModel>().Select(item => item)
 		.FirstOrDefault(item => Equals(item.Version, NewItem().Version) && Equals(item.Description, NewItem().Description)) ?? NewItem();
 
-	public short VersionLast => 17;
+	public short VersionLast => 18;
 
 	public override bool AddItem(TgSqlTableVersionModel item)
 	{

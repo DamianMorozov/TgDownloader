@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 namespace TgCore.Utils;
 
@@ -94,11 +95,14 @@ public static class TgDataFormatUtils
 		return Regex.IsMatch(name, regexPattern, RegexOptions.IgnoreCase);
 	}
 
-	public static Guid ParseStringToGuid(string uid) =>
-		Guid.Parse(uid);
+	public static Guid ParseStringToGuid(string uid) => Guid.Parse(uid);
 
-	public static string ParseGuidToString(Guid uid) =>
-		uid.ToString().Replace("-", "");
+	public static string ParseGuidToString(Guid uid) => uid.ToString().Replace("-", "");
+
+	public static string TrimStringEnd(string value, ushort len = 20) =>
+		value.Length <= len ? value : value.Substring(0, len);
+
+	public static string DtFormat(DateTime dt) => $"{dt:yyyy-MM-dd HH:mm:ss}";
 
 	#endregion
 }

@@ -10,15 +10,18 @@ public static class TgConstants
 
 	public const string AppName = "Name";
 	public const string AppTitle = "TG-Downloader";
+	public const string AppTitleConsole = "TG-Downloader Console app";
+	public const string AppTitleMaui = "TG-Downloader MAUI app";
 	public const string AppValue = "Value";
 	public const string AppVersion = "App version";
 	public const string StorageVersion = "Storage version";
-
 	public const string MenuAppFileSession = "Setting the path to the session file";
 	public const string MenuAppFileStorage = "Setting the path to the storage file";
 	public const string MenuAppUseProxy = "Usage proxy";
 	public const string MenuAppUseProxyEnable = "Enable proxy";
 	public const string MenuAppUseProxyDisable = "Disable proxy";
+	public const string From = "from";
+	public const string Messages = "messages";
 
 	#endregion
 

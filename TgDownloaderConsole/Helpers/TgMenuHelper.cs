@@ -259,6 +259,11 @@ internal partial class TgMenuHelper : ITgHelper
 		}
 	}
 
+	/// <summary>
+	/// Source info.
+	/// </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
 	internal void FillTableRowsDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.IsReadySourceId)
@@ -266,23 +271,21 @@ internal partial class TgMenuHelper : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			string sourceValue = tgDownloadSettings.IsReadySourceId ? tgDownloadSettings.SourceId.ToString() : TgLocale.Empty;
-			if (!string.IsNullOrEmpty(tgDownloadSettings.SourceUserName))
-				sourceValue += $" | https://t.me/{tgDownloadSettings.SourceUserName}";
-			if (!string.IsNullOrEmpty(tgDownloadSettings.SourceTitle))
-				sourceValue += $" | {TgLog.GetMarkupString(tgDownloadSettings.SourceTitle)}";
-			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)), new Markup(sourceValue));
+			TgSqlTableSourceModel source = ContextManager.Sources.GetItem(tgDownloadSettings.SourceId);
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)), new Markup(source.ToString()));
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
+				new Markup(TgDataFormatUtils.DtFormat(source.DtChanged)));
 		}
 	}
 
 	internal void FillTableRowsDownload(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
-		// Download settings.
+		// Download.
 		table.AddRow(new Markup(tgDownloadSettings.IsReady
 				? TgLocale.InfoMessage(TgConstants.MenuMainDownload) : TgLocale.WarningMessage(TgConstants.MenuMainDownload)),
 			new Markup(tgDownloadSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-		// Source ID/username.
+		// Source info.
 		FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
 		// Destination dir.
@@ -293,23 +296,23 @@ internal partial class TgMenuHelper : ITgHelper
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
 				new Markup(tgDownloadSettings.DestDirectory));
 
-		// Source start ID / last ID.
+		// First/last ID.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
 			new Markup($"{tgDownloadSettings.SourceFirstId} / {tgDownloadSettings.SourceLastId}"));
 
-		// Is rewrite files.
+		// Rewrite files.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
 			new Markup(tgDownloadSettings.IsRewriteFiles.ToString()));
 
-		// Is rewrite messages.
+		// Rewrite messages.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteMessages)),
 			new Markup(tgDownloadSettings.IsRewriteMessages.ToString()));
 
-		// Is join message ID with file name.
+		// Join message ID.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsJoinFileNameWithMessageId)),
 			new Markup(tgDownloadSettings.IsJoinFileNameWithMessageId.ToString()));
 
-		// Is auto update.
+		// Enable auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgConstants.MenuDownloadSetIsAutoUpdate)),
 			new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
 
@@ -374,13 +377,16 @@ internal partial class TgMenuHelper : ITgHelper
 	{
 		sources = sources.OrderBy(item => item.Id).ToList();
 		sources = sources.OrderBy(item => item.UserName).ToList();
-		List<string> list = sources.Select(item => TgLog.GetMarkupString(item.ToString())).ToList();
+		List<string> list = new() { TgConstants.MenuMainReturn };
+		list.AddRange(sources.Select(item => TgLog.GetMarkupString(item.ToString())).ToList());
 string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(15)
 			.AddChoices(list));
-return long.TryParse(sourceString.Substring(0, sourceString.IndexOf('|')).TrimEnd(' '), out long id) 
-	? ContextManager.Sources.GetItem(id) : new();
+return Equals(sourceString, TgConstants.MenuMainReturn)
+	? ContextManager.Sources.GetNewItem() :
+	long.TryParse(sourceString.Substring(0, sourceString.IndexOf('|')).TrimEnd(' '), out long id) 
+	? ContextManager.Sources.GetItem(id) : ContextManager.Sources.GetNewItem();
 	}
 
 	#endregion

@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.2.130.0</Version>
+    <Version>0.2.150.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -34,7 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ProxyLib" Version="1.0.2" />
-    <PackageReference Include="WTelegramClient" Version="3.3.3" />
+    <PackageReference Include="WTelegramClient" Version="3.4.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />

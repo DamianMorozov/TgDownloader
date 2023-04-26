@@ -43,6 +43,7 @@ public sealed class TgSqlSourceHelper : TgSqlHelperBase<TgSqlTableSourceModel>
 		TgSqlTableSourceModel itemNew = new(uow)
 		{
 			UserName = item.UserName,
+			DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now,
 			Id = item.Id,
 			Title = item.Title,
 			About = item.About,
@@ -63,8 +64,11 @@ public sealed class TgSqlSourceHelper : TgSqlHelperBase<TgSqlTableSourceModel>
 
 	public override bool UpdateItem(TgSqlTableSourceModel itemSource, TgSqlTableSourceModel itemDest)
 	{
+		itemDest.DtChanged = itemSource.DtChanged > DateTime.MinValue ? itemSource.DtChanged : DateTime.Now;
 itemDest.Id = itemSource.Id;
+if (itemSource.FirstId > itemDest.FirstId)
 itemDest.FirstId = itemSource.FirstId;
+if (itemSource.IsAutoUpdate)
 itemDest.IsAutoUpdate = itemSource.IsAutoUpdate;
 if (!string.IsNullOrEmpty(itemSource.UserName))
 		itemDest.UserName = itemSource.UserName;

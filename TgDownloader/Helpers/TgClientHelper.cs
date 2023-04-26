@@ -647,10 +647,7 @@ public partial class TgClientHelper : ITgHelper, ITgSerializable
 							if (chatFull?.full_chat is ChannelFull channelFull)
 							{
 								storeSource(myChannel, channelFull.about, messagesCount);
-								if (channelFull.about.Length <= 20)
-									refreshStatus($"{myChannel} | {messagesCount} | {channelFull.about}", true);
-								else
-									refreshStatus($"{myChannel} | {messagesCount} | {channelFull.about.Substring(0, 20)}...", true);
+								refreshStatus($"{myChannel} | {messagesCount} | {TgDataFormatUtils.TrimStringEnd(channelFull.about)}", true);
 							}
 						}
 						else

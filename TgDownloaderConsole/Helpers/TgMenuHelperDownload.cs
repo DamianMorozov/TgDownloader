@@ -187,7 +187,7 @@ internal partial class TgMenuHelper
 		tgDownloadSettings.IsAutoUpdate = AskQuestionReturnPositive(TgConstants.MenuDownloadSetIsAutoUpdate, true); ; ; ;
 	}
 
-	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
+	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool>? refreshStatus)
 	{
 		if (!tgDownloadSettings.IsReady) return;
 		// Update source.
@@ -195,7 +195,7 @@ internal partial class TgMenuHelper
 Title = tgDownloadSettings.SourceTitle, About = tgDownloadSettings.SourceAbout, Count = tgDownloadSettings.SourceLastId,
 Directory = tgDownloadSettings.DestDirectory, FirstId = tgDownloadSettings.SourceFirstId, IsAutoUpdate = tgDownloadSettings.IsAutoUpdate });
 		// Refresh.
-		refreshStatus(TgLocale.SettingsSource, false);
+		refreshStatus?.Invoke(TgLocale.SettingsSource, false);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipFirstId, bool isSkipDestDirectory)
@@ -224,7 +224,7 @@ Directory = tgDownloadSettings.DestDirectory, FirstId = tgDownloadSettings.Sourc
 		UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
 	}
 
-	private void SaveSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
+	private void SaveSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool>? refreshStatus = null)
 	{
 		UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
 	}
