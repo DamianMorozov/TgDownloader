@@ -8,9 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.150] - 2023-04-26
+### Changed
+- Storage version 18
+- Viewing sources in the storage
+- Scan my chats / Scan my dialogs
+### Added
+- Date time field for source table
+
 ## [0.2.130] - 2023-04-20
 ### Changed
 - New ORM-framework for SQLite storage (DevExpress XPO)
+- Storage version 17
 ### Added
 - Scanning channels/dialogs with the ability to save as sources
 - Viewing sources in the storage with the ability to go to the download menu
