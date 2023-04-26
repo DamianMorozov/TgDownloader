@@ -66,15 +66,17 @@ internal partial class TgMenuHelper
 			Console.ReadKey();
 			return;
 		}
-		bool isSave = AskQuestionReturnPositive(TgConstants.AdvancedSaveSourceInfo, false);
+		//bool isSave = AskQuestionReturnPositive(TgConstants.AdvancedSaveSourceInfo, false);
 
 		switch (sourceType)
 		{
 			case TgSourceType.Chat:
-				RunAction(tgDownloadSettings, isSave ? ScanSourcesChatsWithSave : ScanSourcesChatsWithoutSave, true, true);
+				//RunAction(tgDownloadSettings, isSave ? ScanSourcesChatsWithSave : ScanSourcesChatsWithoutSave, true, true);
+				RunAction(tgDownloadSettings, ScanSourcesChatsWithSave, true, true);
 				break;
 			case TgSourceType.Dialog:
-		RunAction(tgDownloadSettings, isSave ? ScanSourcesDialogsWithSave : ScanSourcesDialogsWithoutSave, true, true);
+				//RunAction(tgDownloadSettings, isSave ? ScanSourcesDialogsWithSave : ScanSourcesDialogsWithoutSave, true, true);
+				RunAction(tgDownloadSettings, ScanSourcesDialogsWithSave, true, true);
 				break;
 		}
 	}

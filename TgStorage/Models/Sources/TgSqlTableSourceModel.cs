@@ -15,6 +15,12 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	[Indexed]
 	public long Id { get => _id; set => SetPropertyValue(nameof(_id), ref _id, value); }
 
+	private DateTime _dtChanged;
+	[DefaultValue("0001-01-01 00:00:00")]
+	[Persistent(TgSqlConstants.ColumnDtChanged)]
+	[Indexed]
+	public DateTime DtChanged { get => _dtChanged; set => SetPropertyValue(nameof(_dtChanged), ref _dtChanged, value); }
+
 	private string _userName;
 	[DefaultValue("")]
 	[Persistent(TgSqlConstants.ColumnUserName)]
@@ -63,7 +69,8 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	public TgSqlTableSourceModel() : base()
     {
         _id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-        _userName = this.GetPropertyDefaultValue(nameof(UserName));
+        _dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
+		_userName = this.GetPropertyDefaultValue(nameof(UserName));
         _title = this.GetPropertyDefaultValue(nameof(Title));
         _about = this.GetPropertyDefaultValue(nameof(About));
 		_count = this.GetPropertyDefaultValueAsGeneric<int>(nameof(Count));
@@ -79,6 +86,7 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	public TgSqlTableSourceModel(Session session) : base(session)
 	{
 		_id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
+		_dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
 		_userName = this.GetPropertyDefaultValue(nameof(UserName));
 		_title = this.GetPropertyDefaultValue(nameof(Title));
 		_about = this.GetPropertyDefaultValue(nameof(About));
@@ -100,6 +108,7 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	public TgSqlTableSourceModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
         _id = info.GetInt64(nameof(Id));
+		_dtChanged = info.GetDateTime(nameof(DtChanged));
 		_userName = info.GetString(nameof(UserName)) ?? this.GetPropertyDefaultValue(nameof(UserName));
 		_title = info.GetString(nameof(Title)) ?? this.GetPropertyDefaultValue(nameof(Title));
 		_about = info.GetString(nameof(About)) ?? this.GetPropertyDefaultValue(nameof(About));
@@ -118,6 +127,7 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
     {
         base.GetObjectData(info, context);
         info.AddValue(nameof(Id), Id);
+		info.AddValue(nameof(DtChanged), DtChanged);
         info.AddValue(nameof(UserName), UserName);
         info.AddValue(nameof(Title), Title);
         info.AddValue(nameof(About), About);
@@ -133,9 +143,11 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 
 	public override string ToString() =>
 		$"{Id} | " +
+		$"{(IsAutoUpdate ? "a" : " ")} | " +
+		$"{(FirstId == Count ? "✓" : "x")} | " +
 		$"{UserName} | " +
-		$"{Title} | " +
-		$"{FirstId} / {Count}";
+		$"{TgDataFormatUtils.TrimStringEnd(Title)} | " +
+		$"{FirstId} {TgConstants.From} {Count} {TgConstants.Messages}";
 
 	#endregion
 }

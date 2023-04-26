@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "wt": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Dev\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe"
+    },
+    "VsDebugConsole": {
+      "commandName": "Project"
+    }
+  }
+}

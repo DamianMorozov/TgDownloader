@@ -4,6 +4,7 @@
 ## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
 
 - GitHub all releases       	![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+- GitHub release v0.2.150		![GitHub release v0.2.150](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.150/total?style=social)
 - GitHub release v0.2.130		![GitHub release v0.2.130](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.130/total?style=social)
 - GitHub preview v0.1.720		![GitHub preview v0.1.720](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.1.720/total?style=social)
 - GitHub preview v0.1.710		![GitHub preview v0.1.710](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.1.710/total?style=social)

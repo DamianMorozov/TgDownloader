@@ -241,6 +241,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 					TgSqlTableVersionModel version17 = new() { Version = 17, Description = "Upgrade sources table" };
 					Versions.AddItem(version17);
 					break;
+				case 17:
+					TgSqlTableVersionModel version18 = new() { Version = 18, Description = "Upgrade sources table" };
+					Versions.AddItem(version18);
+					break;
 			}
 			if (versionLast.Version >= Versions.VersionLast)
 				isLast = true;

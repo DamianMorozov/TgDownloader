@@ -4,7 +4,7 @@
 // ReSharper disable InconsistentNaming
 namespace TgCore.Localization;
 
-public class TgLocaleHelper : ITgHelper
+public sealed class TgLocaleHelper : ITgHelper
 {
     #region Design pattern "Lazy Singleton"
 
@@ -41,6 +41,7 @@ public class TgLocaleHelper : ITgHelper
 	public string SettingsIsNeedSetup => "Something is need setup";
 	public string SettingsIsOk => "Everything is ok";
 	public string SettingsSource => "Source info";
+	public string SettingsDtChanged => "Changed";
 	public string StatusException => "Exception";
 	public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
 	public string StatusInnerException => "Inner exception";
