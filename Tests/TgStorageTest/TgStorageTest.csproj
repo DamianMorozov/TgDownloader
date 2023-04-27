@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-    <Version>0.2.150.0</Version>
+    <Version>0.2.160.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
@@ -22,7 +22,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
     <ProjectReference Include="..\TgAssertCoreTests\TgAssertCoreTests.csproj" />
-    <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
   </ItemGroup>
 </Project>

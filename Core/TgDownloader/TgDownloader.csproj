@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>0.2.160.0</Version>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Compile Remove="Utils\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Utils\**" />
+    <None Remove="Models\**" />
+    <None Remove="Utils\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ProxyLib" Version="1.0.2" />
+    <PackageReference Include="WTelegramClient" Version="3.4.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
+  </ItemGroup>
+</Project>
