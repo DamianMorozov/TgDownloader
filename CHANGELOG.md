@@ -8,13 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.2.150] - 2023-04-26
+## [0.2.160] - 2023-04-27
 ### Changed
 - Storage version 18
 - Viewing sources in the storage
 - Scan my chats / Scan my dialogs
+- Projects structure and properties
 ### Added
 - Date time field for source table
+- GitHub actions
 
 ## [0.2.130] - 2023-04-20
 ### Changed

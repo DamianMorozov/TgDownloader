@@ -5,27 +5,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<LangVersion>11.0</LangVersion>
-		<Version>0.2.150.0</Version>
+		<Version>0.2.160.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="TgLocale\**" />
@@ -33,46 +15,46 @@
 	  <None Remove="TgLocale\**" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\GUIDES-RUS.md" Link="GUIDES-RUS.md">
+		<None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Include="..\GUIDES.md" Link="GUIDES.md">
+		<None Include="..\..\GUIDES.md" Link="GUIDES.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Include="..\LICENSE.md">
+		<None Include="..\..\LICENSE.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\CHANGELOG.md">
+		<None Include="..\..\CHANGELOG.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\CHANGELOG-RUS.md">
+		<None Include="..\..\CHANGELOG-RUS.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\README.md">
+		<None Include="..\..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\README-RUS.md">
+		<None Include="..\..\README-RUS.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Include="..\RELEASE.md" Link="RELEASE.md">
+		<None Include="..\..\RELEASE.md" Link="RELEASE.md">
 		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
@@ -81,8 +63,8 @@
 		<PackageReference Include="WTelegramClient" Version="3.4.2" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\TgCore\TgCore.csproj" />
-	  <ProjectReference Include="..\TgDownloader\TgDownloader.csproj" />
-	  <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
+	  <ProjectReference Include="..\..\Core\TgCore\TgCore.csproj" />
+	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
+	  <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
 	</ItemGroup>
 </Project>
