@@ -26,11 +26,11 @@ public sealed class TgSqlTableMessageModel : TgSqlTableBase
     [Persistent("DT_CREATED")]
     public DateTime DtCreated { get => _dtCreated; set => SetPropertyValue(nameof(_dtCreated), ref _dtCreated, value); }
 
-	private TgMessageType _type;
+	private TgEnumMessageType _type;
     [DefaultValue("")]
 	[Persistent(TgSqlConstants.ColumnType)]
 	[Indexed]
-	public TgMessageType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
+	public TgEnumMessageType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
 
     private long _size;
     [DefaultValue(0)]
@@ -52,7 +52,7 @@ public sealed class TgSqlTableMessageModel : TgSqlTableBase
         _sourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
         _id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
         _dtCreated = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(_dtCreated));
-		_type = this.GetPropertyDefaultValueAsGeneric<TgMessageType>(nameof(Type));
+		_type = this.GetPropertyDefaultValueAsGeneric<TgEnumMessageType>(nameof(Type));
 		_size = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Size));
         _message = this.GetPropertyDefaultValue(nameof(Message));
     }
@@ -66,7 +66,7 @@ public sealed class TgSqlTableMessageModel : TgSqlTableBase
 		_sourceId = this.GetPropertyDefaultValueAsGeneric<long>(nameof(SourceId));
 		_id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
 		_dtCreated = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(_dtCreated));
-		_type = this.GetPropertyDefaultValueAsGeneric<TgMessageType>(nameof(Type));
+		_type = this.GetPropertyDefaultValueAsGeneric<TgEnumMessageType>(nameof(Type));
 		_size = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Size));
 		_message = this.GetPropertyDefaultValue(nameof(Message));
 	}
@@ -85,8 +85,8 @@ public sealed class TgSqlTableMessageModel : TgSqlTableBase
 		_sourceId = info.GetInt64(nameof(SourceId));
         _id = info.GetInt64(nameof(Id));
 		_dtCreated = info.GetDateTime(nameof(DtCreated));
-		object? type = info.GetValue(nameof(Type), typeof(TgMessageType));
-		_type = type is TgMessageType messageType ? messageType : TgMessageType.Message;
+		object? type = info.GetValue(nameof(Type), typeof(TgEnumMessageType));
+		_type = type is TgEnumMessageType messageType ? messageType : TgEnumMessageType.Message;
 		_size = info.GetInt64(nameof(Size));
 		_message = info.GetString(nameof(Message)) ?? this.GetPropertyDefaultValue(nameof(Message));
     }

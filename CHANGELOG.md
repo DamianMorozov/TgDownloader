@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.230] - 2023-06-13
+### Fixed in TgDownloaderConsole
+- Restore ApiId when session was deleted
+- Auto-update after configuring the download directory
+### Added
+- TgDownloaderWinDesktop project (WPF UI - Fluent Navigation (MVVM | DI))
+### Added in TgDownloaderConsole
+- Menu Advanced -> Auto view events
+- Auto-update last message ID at Advanced -> Auto view events
+
 ## [0.2.160] - 2023-04-27
 ### Changed
 - Storage version 18

@@ -11,7 +11,7 @@ public static class TgFileUtils
 
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
-	public static string AppXmlSettings => "TgDownloader.xml";
+	public static string AppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
 	public static string Session => "TgDownloader.session";
 	public static string Storage => "TgDownloader.db";
 

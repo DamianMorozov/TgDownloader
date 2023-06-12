@@ -1,0 +1,52 @@
+﻿<common:TgBasePage
+	x:Class="TgDownloaderWinDesktop.Views.Pages.TgDownloadPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:common="clr-namespace:TgDownloaderWinDesktop.Common"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
+	Title="{Binding ViewModel.Locale.MenuMainDownload}"
+	d:Background="{DynamicResource ApplicationBackgroundBrush}"
+	d:DataContext="{d:DesignInstance local:TgDownloadPage,
+	                                 IsDesignTimeCreatable=False}"
+	d:DesignHeight="600"
+	d:DesignWidth="900"
+	x:TypeArguments="viewModels:TgDownloadViewModel"
+	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+	mc:Ignorable="d">
+
+	<Grid>
+		<Label Content="{Binding ViewModel.Locale.InDevelopment}" FontSize="50" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="1*" />
+			<RowDefinition Height="1*" />
+		</Grid.RowDefinitions>
+		<!--<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*" />
+			</Grid.RowDefinitions>
+
+			<Page ContainerArea="TgItemSourcePage" />
+
+		</Grid>
+		<Grid Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+				<RowDefinition Height="1*" />
+			</Grid.RowDefinitions>
+			<Button
+				Grid.Row="0"
+				Margin="0"
+				Background="Transparent"
+				Command="{Binding MenuDownloadSetSourceCommand}"
+				SemanticProperties.HeadingLevel="Level2"
+				Text="{Binding Locale.MenuDownloadSetSource}" />
+		</Grid>-->
+	</Grid>
+</common:TgBasePage>

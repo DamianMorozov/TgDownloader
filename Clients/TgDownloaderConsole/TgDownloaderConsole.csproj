@@ -4,8 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<LangVersion>11.0</LangVersion>
-		<Version>0.2.160.0</Version>
+		<Version>0.2.230.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
@@ -59,8 +58,8 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Spectre.Console" Version="0.46.0" />
-		<PackageReference Include="WTelegramClient" Version="3.4.2" />
+		<PackageReference Include="Spectre.Console" Version="0.47.0" />
+		<PackageReference Include="WTelegramClient" Version="3.5.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\TgCore\TgCore.csproj" />

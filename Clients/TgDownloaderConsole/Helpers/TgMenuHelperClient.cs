@@ -8,85 +8,82 @@ internal partial class TgMenuHelper
 {
 	#region Public and private methods
 
-	private TgMenuClient SetMenuClient()
+	private TgEnumMenuClient SetMenuClient()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title($"  {TgConstants.MenuSwitchNumber}")
+				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(10)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
-					TgConstants.MenuMainReturn,
-					TgConstants.MenuSetProxy,
-					TgConstants.MenuClientConnect,
-					TgConstants.MenuClientDisconnect));
-		return prompt switch
-		{
-			TgConstants.MenuSetProxy => TgMenuClient.SetProxy,
-			TgConstants.MenuClientConnect => TgMenuClient.Connect,
-			TgConstants.MenuClientDisconnect => TgMenuClient.Disconnect,
-			_ => TgMenuClient.Return
-		};
+					TgLocale.MenuMainReturn,
+					TgLocale.MenuSetProxy,
+					TgLocale.MenuClientConnect,
+					TgLocale.MenuClientDisconnect));
+		if (prompt.Equals(TgLocale.MenuSetProxy)) return TgEnumMenuClient.SetProxy;
+		if (prompt.Equals(TgLocale.MenuClientConnect)) return TgEnumMenuClient.Connect;
+		if (prompt.Equals(TgLocale.MenuClientDisconnect)) return TgEnumMenuClient.Disconnect;
+		return TgEnumMenuClient.Return;
 	}
 
 	public void SetupClient(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		TgMenuClient menu;
+		TgEnumMenuClient menu;
 		do
 		{
 			ShowTableClient(tgDownloadSettings);
 			menu = SetMenuClient();
 			switch (menu)
 			{
-				case TgMenuClient.SetProxy:
+				case TgEnumMenuClient.SetProxy:
 					SetupClientProxy();
 					AskClientConnect(tgDownloadSettings);
 					break;
-				case TgMenuClient.Connect:
+				case TgEnumMenuClient.Connect:
 					ClientConnect(tgDownloadSettings);
 					break;
-				case TgMenuClient.Disconnect:
+				case TgEnumMenuClient.Disconnect:
 					ClientDisconnect(tgDownloadSettings);
 					break;
 			}
-		} while (menu is not TgMenuClient.Return);
+		} while (menu is not TgEnumMenuClient.Return);
 	}
 
 	private TgSqlTableProxyModel AddOrUpdateProxy()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title($"  {TgConstants.MenuSwitchNumber}")
+				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(10)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
-					nameof(TgProxyType.None),
-					nameof(TgProxyType.Http),
-					nameof(TgProxyType.Socks),
-					nameof(TgProxyType.MtProto)));
+					nameof(TgEnumProxyType.None),
+					nameof(TgEnumProxyType.Http),
+					nameof(TgEnumProxyType.Socks),
+					nameof(TgEnumProxyType.MtProto)));
 		TgSqlTableProxyModel proxy = new()
 		{
 			Type = prompt switch
 			{
-				nameof(TgProxyType.Http) => TgProxyType.Http,
-				nameof(TgProxyType.Socks) => TgProxyType.Socks,
-				nameof(TgProxyType.MtProto) => TgProxyType.MtProto,
-				_ => TgProxyType.None
+				nameof(TgEnumProxyType.Http) => TgEnumProxyType.Http,
+				nameof(TgEnumProxyType.Socks) => TgEnumProxyType.Socks,
+				nameof(TgEnumProxyType.MtProto) => TgEnumProxyType.MtProto,
+				_ => TgEnumProxyType.None
 			},
 		};
-		if (!Equals(proxy.Type, TgProxyType.None))
+		if (!Equals(proxy.Type, TgEnumProxyType.None))
 		{
 			proxy.HostName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyHostName}:"));
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
-		TgSqlTableProxyModel proxyDb = ContextManager.Proxies.GetItem(proxy.Type, proxy.HostName, proxy.Port);
+		TgSqlTableProxyModel proxyDb = ContextManager.ContextTableProxies.GetItem(proxy.Type, proxy.HostName, proxy.Port);
 		if (proxyDb.IsNotExists)
-			ContextManager.Proxies.AddOrUpdateItem(proxy);
-		proxy = ContextManager.Proxies.GetItem(proxy.Type, proxy.HostName, proxy.Port);
+			ContextManager.ContextTableProxies.AddOrUpdateItem(proxy);
+		proxy = ContextManager.ContextTableProxies.GetItem(proxy.Type, proxy.HostName, proxy.Port);
 
-		TgSqlTableAppModel app = ContextManager.Apps.GetCurrentItem();
+		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
 		app.ProxyUid = proxy.Uid;
-		ContextManager.Apps.AddOrUpdateItem(app);
+		ContextManager.ContextTableApps.AddOrUpdateItem(app);
 
 		return proxy;
 	}
@@ -106,11 +103,11 @@ internal partial class TgMenuHelper
 	{
 		TgSqlTableProxyModel proxy = AddOrUpdateProxy();
 
-		if (proxy.Type == TgProxyType.MtProto)
+		if (proxy.Type == TgEnumProxyType.MtProto)
 		{
 			string prompt = AnsiConsole.Prompt(
 				new SelectionPrompt<string>()
-					.Title($"  {TgConstants.MenuSwitchNumber}")
+					.Title($"  {TgLocale.MenuSwitchNumber}")
 					.PageSize(10)
 					.MoreChoicesText(TgLocale.MoveUpDown)
 					.AddChoices("Use secret", "Do not use secret"));
@@ -122,21 +119,22 @@ internal partial class TgMenuHelper
 			if (isSecret)
 				proxy.Secret = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxySecret}:"));
 		}
-		ContextManager.Proxies.AddOrUpdateItem(proxy);
+		ContextManager.ContextTableProxies.AddOrUpdateItem(proxy);
 
 		//SetupClientProxyCore();
 	}
 
 	private string? GetConfig(string what)
 	{
-		TgSqlTableAppModel appNew = ContextManager.Apps.NewItem();
-		TgSqlTableAppModel app = ContextManager.Apps.GetCurrentItem();
+		TgSqlTableAppModel appNew = ContextManager.ContextTableApps.NewItem();
+		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
 		string? result = what switch
 		{
 			"api_hash" => !Equals(app.ApiHash, appNew.ApiHash) ? TgDataFormatUtils.ParseGuidToString(app.ApiHash)
 				: TgDataFormatUtils.ParseGuidToString(app.ApiHash = TgDataFormatUtils.ParseStringToGuid(AnsiConsole.Ask<string>(
 						TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:")))),
-			"api_id" => (app.ApiId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:"))).ToString(),
+			"api_id" => !Equals(app.ApiId, appNew.ApiId) ? app.ApiId.ToString()
+				: (app.ApiId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:"))).ToString(),
 			"phone_number" => !Equals(app.PhoneNumber, appNew.PhoneNumber) ? app.PhoneNumber
 				: app.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:")),
 			"verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupCode}:")),
@@ -152,7 +150,7 @@ internal partial class TgMenuHelper
 			case "api_hash":
 			case "api_id":
 			case "phone_number":
-				ContextManager.Apps.AddOrUpdateItem(app);
+				ContextManager.ContextTableApps.AddOrUpdateItem(app);
 				break;
 		}
 		return result;
@@ -160,25 +158,19 @@ internal partial class TgMenuHelper
 
 	public void ClientConnectExists()
 	{
-		if (!ContextManager.Apps.IsValidXpLite(ContextManager.Apps.GetCurrentItem())) return;
-		TgClient.Connect(GetConfig, ContextManager.Apps.GetCurrentProxy);
-		//if (TgClient.IsReady)
-		//	TgClient.CollectAllChats();
+		if (!ContextManager.ContextTableApps.GetValidXpLite(ContextManager.ContextTableApps.GetCurrentItem()).IsValid) return;
+		TgClient.Connect(GetConfig, ContextManager.ContextTableApps.GetCurrentProxy());
 	}
 
 	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title(TgConstants.MenuClientConnect)
+				.Title(TgLocale.MenuClientConnect)
 				.PageSize(10)
 				.MoreChoicesText(TgLocale.MoveUpDown)
-				.AddChoices(TgConstants.MenuNo, TgConstants.MenuYes));
-		bool isConnect = prompt switch
-		{
-			TgConstants.MenuYes => true,
-			_ => false
-		};
+				.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
+		bool isConnect = prompt.Equals(TgLocale.MenuYes);
 		if (isConnect)
 			ClientConnect(tgDownloadSettings);
 	}
@@ -186,7 +178,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.Connect(GetConfig, ContextManager.Apps.GetCurrentProxy); 
+		TgClient.Connect(GetConfig, ContextManager.ContextTableApps.GetCurrentProxy()); 
 		if (TgClient.ClientException.IsExists || TgClient.ProxyException.IsExists)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else
@@ -197,8 +189,8 @@ internal partial class TgMenuHelper
 	public void ClientDisconnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgSqlTableAppModel app = ContextManager.Apps.GetCurrentItem();
-		ContextManager.Apps.DeleteItem(app);
+		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
+		ContextManager.ContextTableApps.DeleteItem(app);
 		TgClient.UnLoginUser();
 	}
 

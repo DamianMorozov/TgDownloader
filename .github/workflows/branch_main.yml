@@ -1,0 +1,59 @@
+name: Branch Main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.csproj'
+      - '**.razor'
+      - '**.cs'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout to the repository
+        uses: actions/checkout@v3
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+  
+      - name: Setup Nuget Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      - name: Install dependencies
+        run: nuget restore TgDownloader.sln
+
+      - name: Build app for Debug Any CPU
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Debug -property:Platform="Any CPU"
+      
+      - name: Build app for Debug x64
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Debug -property:Platform=x64
+      
+      - name: Build app for Debug x86
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Debug -property:Platform=x86
+      
+      - name: Build app for Release Any CPU
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Release -property:Platform="Any CPU"
+      
+      - name: Build app for Release x64
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Release -property:Platform=x64
+      
+      - name: Build app for Release x86
+        run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Release -property:Platform=x86
+      
+      - name: Tests for Debug Any CPU
+        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform="Any CPU"
+
+      - name: Tests for Debug x64
+        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform=x64
+
+      - name: Tests for Debug x86
+        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform=x86

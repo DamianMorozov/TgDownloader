@@ -15,11 +15,11 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 	[Indexed]
 	public bool IsEnabled { get => _isEnabled; set => SetPropertyValue(nameof(_isEnabled), ref _isEnabled, value); }
 
-	private TgFilterType _filterType;
-	[DefaultValue(TgFilterType.None)]
+	private TgEnumFilterType _filterType;
+	[DefaultValue(TgEnumFilterType.None)]
 	[Persistent(TgSqlConstants.ColumnFilterType)]
 	[Indexed]
-	public TgFilterType FilterType { get => _filterType; set => SetPropertyValue(nameof(_filterType), ref _filterType, value); }
+	public TgEnumFilterType FilterType { get => _filterType; set => SetPropertyValue(nameof(_filterType), ref _filterType, value); }
 
 	private string _name;
 	[DefaultValue("Any")]
@@ -43,18 +43,18 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 	public long Size { get => _size; set => SetPropertyValue(nameof(_size), ref _size, value); }
 	public long SizeAtBytes => SizeType switch
 	{
-		TgFileSizeType.KBytes => Size * 1024,
-		TgFileSizeType.MBytes => Size * 1024 * 1024,
-		TgFileSizeType.GBytes => Size * 1024 * 1024 * 1024,
-		TgFileSizeType.TBytes => Size * 1024 * 1024 * 1024 * 1024,
+		TgEnumFileSizeType.KBytes => Size * 1024,
+		TgEnumFileSizeType.MBytes => Size * 1024 * 1024,
+		TgEnumFileSizeType.GBytes => Size * 1024 * 1024 * 1024,
+		TgEnumFileSizeType.TBytes => Size * 1024 * 1024 * 1024 * 1024,
 		_ => Size,
 	};
 
-	[DefaultValue(TgFileSizeType.Bytes)]
-	private TgFileSizeType _sizeType;
+	[DefaultValue(TgEnumFileSizeType.Bytes)]
+	private TgEnumFileSizeType _sizeType;
 	[Persistent(TgSqlConstants.ColumnSizeType)]
 	[Indexed]
-	public TgFileSizeType SizeType { get => _sizeType; set => SetPropertyValue(nameof(_sizeType), ref _sizeType, value); }
+	public TgEnumFileSizeType SizeType { get => _sizeType; set => SetPropertyValue(nameof(_sizeType), ref _sizeType, value); }
 
 	/// <summary>
 	/// Default constructor.
@@ -62,11 +62,11 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 	public TgSqlTableFilterModel() : base()
 	{
 		_isEnabled = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsEnabled));
-		_filterType = this.GetPropertyDefaultValueAsGeneric<TgFilterType>(nameof(FilterType));
+		_filterType = this.GetPropertyDefaultValueAsGeneric<TgEnumFilterType>(nameof(FilterType));
 		_name = this.GetPropertyDefaultValue(nameof(Name));
 		_mask = this.GetPropertyDefaultValue(nameof(Mask));
 		_size = this.GetPropertyDefaultValueAsGeneric<uint>(nameof(Size));
-		_sizeType = this.GetPropertyDefaultValueAsGeneric<TgFileSizeType>(nameof(SizeType));
+		_sizeType = this.GetPropertyDefaultValueAsGeneric<TgEnumFileSizeType>(nameof(SizeType));
 	}
 
 	/// <summary>
@@ -76,11 +76,11 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 	public TgSqlTableFilterModel(Session session) : base(session)
 	{
 		_isEnabled = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsEnabled));
-		_filterType = this.GetPropertyDefaultValueAsGeneric<TgFilterType>(nameof(FilterType));
+		_filterType = this.GetPropertyDefaultValueAsGeneric<TgEnumFilterType>(nameof(FilterType));
 		_name = this.GetPropertyDefaultValue(nameof(Name));
 		_mask = this.GetPropertyDefaultValue(nameof(Mask));
 		_size = this.GetPropertyDefaultValueAsGeneric<uint>(nameof(Size));
-		_sizeType = this.GetPropertyDefaultValueAsGeneric<TgFileSizeType>(nameof(SizeType));
+		_sizeType = this.GetPropertyDefaultValueAsGeneric<TgEnumFileSizeType>(nameof(SizeType));
 	}
 
 	#endregion
@@ -96,12 +96,12 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 	{
 		_isEnabled = info.GetBoolean(nameof(IsEnabled));
 		object? type = info.GetValue(nameof(FilterType), typeof(Type));
-		_filterType = type is TgFilterType proxyTypeCast ? proxyTypeCast : TgFilterType.None;
+		_filterType = type is TgEnumFilterType proxyTypeCast ? proxyTypeCast : TgEnumFilterType.None;
 		_name = info.GetString(nameof(Name)) ?? string.Empty;
 		_mask = info.GetString(nameof(Mask)) ?? string.Empty;
 		_size = info.GetInt64(nameof(Size));
-		object? sizeType = info.GetValue(nameof(SizeType), typeof(TgFileSizeType));
-		_sizeType = sizeType is TgFileSizeType sizeTypeCast ? sizeTypeCast : TgFileSizeType.Bytes;
+		object? sizeType = info.GetValue(nameof(SizeType), typeof(TgEnumFileSizeType));
+		_sizeType = sizeType is TgEnumFileSizeType sizeTypeCast ? sizeTypeCast : TgEnumFileSizeType.Bytes;
 	}
 
 	/// <summary>
@@ -126,7 +126,7 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 
 	public override string ToString() => FilterType switch
 	{
-		TgFilterType.MinSize or TgFilterType.MaxSize =>
+		TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
 		$" {GetStringForIsEnabled()} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
 		_ => $" {GetStringForIsEnabled()} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
 	};
@@ -135,13 +135,13 @@ public sealed class TgSqlTableFilterModel : TgSqlTableBase
 
 	private string GetStringForFilterType() => FilterType switch
 	{
-		TgFilterType.SingleName => TgConstants.MenuFiltersSetSingleName,
-		TgFilterType.SingleExtension => TgConstants.MenuFiltersSetSingleExtension,
-		TgFilterType.MultiName => TgConstants.MenuFiltersSetMultiName,
-		TgFilterType.MultiExtension => TgConstants.MenuFiltersSetMultiExtension,
-		TgFilterType.MinSize => TgConstants.MenuFiltersSetMinSize,
-		TgFilterType.MaxSize => TgConstants.MenuFiltersSetMaxSize,
-		_ => $"<{TgConstants.MenuFiltersError}>",
+		TgEnumFilterType.SingleName => TgLocaleHelper.Instance.MenuFiltersSetSingleName,
+		TgEnumFilterType.SingleExtension => TgLocaleHelper.Instance.MenuFiltersSetSingleExtension,
+		TgEnumFilterType.MultiName => TgLocaleHelper.Instance.MenuFiltersSetMultiName,
+		TgEnumFilterType.MultiExtension => TgLocaleHelper.Instance.MenuFiltersSetMultiExtension,
+		TgEnumFilterType.MinSize => TgLocaleHelper.Instance.MenuFiltersSetMinSize,
+		TgEnumFilterType.MaxSize => TgLocaleHelper.Instance.MenuFiltersSetMaxSize,
+		_ => $"<{TgLocaleHelper.Instance.MenuFiltersError}>",
 	};
 
 	#endregion

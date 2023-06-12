@@ -17,41 +17,43 @@ do
 		menu.ShowTableMain(tgDownloadSettings);
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-			.Title($"  {TgConstants.MenuSwitchNumber}")
+			.Title($"  {tgLocale.MenuSwitchNumber}")
 			.PageSize(10)
 			.MoreChoicesText(tgLocale.MoveUpDown)
 			.AddChoices(
-				TgConstants.MenuMainExit, TgConstants.MenuMainApp, TgConstants.MenuMainStorage, TgConstants.MenuMainClient,
-				TgConstants.MenuMainFilters, TgConstants.MenuMainDownload, TgConstants.MenuMainAdvanced));
-		switch (prompt)
+				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainStorage, tgLocale.MenuMainClient,
+				tgLocale.MenuMainFilters, tgLocale.MenuMainDownload, tgLocale.MenuMainAdvanced));
+		if (prompt.Equals(tgLocale.MenuMainExit))
+					menu.Value = TgEnumMenuMain.Exit;
+		if (prompt.Equals(tgLocale.MenuMainApp))
 		{
-			case TgConstants.MenuMainExit:
-				menu.Value = TgMenuMain.Exit;
-				break;
-			case TgConstants.MenuMainApp:
-				menu.Value = TgMenuMain.AppSettings;
-				menu.SetupAppSettings(tgDownloadSettings);
-				break;
-			case TgConstants.MenuMainStorage:
-				menu.Value = TgMenuMain.Storage;
-				menu.SetupStorage(tgDownloadSettings);
-				break;
-			case TgConstants.MenuMainClient:
-				menu.Value = TgMenuMain.Client;
-				menu.SetupClient(tgDownloadSettings);
-				break;
-			case TgConstants.MenuMainFilters:
-				menu.Value = TgMenuMain.Filters;
-				menu.SetupFilters(tgDownloadSettings);
-				break;
-			case TgConstants.MenuMainDownload:
-				menu.Value = TgMenuMain.Download;
-				menu.SetupDownload(tgDownloadSettings);
-				break;
-			case TgConstants.MenuMainAdvanced:
-				menu.Value = TgMenuMain.Advanced;
-				menu.SetupAdvanced(tgDownloadSettings);
-				break;
+			menu.Value = TgEnumMenuMain.AppSettings;
+			menu.SetupAppSettings(tgDownloadSettings);
+		}
+		if (prompt.Equals(tgLocale.MenuMainStorage))
+		{
+			menu.Value = TgEnumMenuMain.Storage;
+			menu.SetupStorage(tgDownloadSettings);
+		}
+		if (prompt.Equals(tgLocale.MenuMainClient))
+		{
+			menu.Value = TgEnumMenuMain.Client;
+			menu.SetupClient(tgDownloadSettings);
+		}
+		if (prompt.Equals(tgLocale.MenuMainFilters))
+		{
+			menu.Value = TgEnumMenuMain.Filters;
+			menu.SetupFilters(tgDownloadSettings);
+		}
+		if (prompt.Equals(tgLocale.MenuMainDownload))
+		{
+			menu.Value = TgEnumMenuMain.Download;
+			menu.SetupDownload(tgDownloadSettings);
+		}
+		if (prompt.Equals(tgLocale.MenuMainAdvanced))
+		{
+			menu.Value = TgEnumMenuMain.Advanced;
+			menu.SetupAdvanced(tgDownloadSettings);
 		}
 	}
 	catch (Exception ex)
@@ -62,7 +64,7 @@ do
 		tgLog.WriteLine(tgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}
-} while (menu.Value is not TgMenuMain.Exit);
+} while (menu.Value is not TgEnumMenuMain.Exit);
 
 bool Setup()
 {
@@ -76,12 +78,12 @@ bool Setup()
 	if (!contextManager.IsExistsDb())
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
-		if (menu.AskQuestionReturnNegative(TgConstants.MenuStorageDbCreateNew)) return false;
+		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew)) return false;
 	}
 	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.FileStorage), (long)0))
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.FileStorage));
-		if (menu.AskQuestionReturnNegative(TgConstants.MenuStorageDbCreateNew)) return false;
+		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew)) return false;
 	}
 	contextManager.CreateOrConnectDb(true);
 	// Client.

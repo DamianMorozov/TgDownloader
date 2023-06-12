@@ -28,25 +28,25 @@ internal class TgStorageHelperItemTests
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgSqlTableAppModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Apps.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableApps.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableDocumentModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Documents.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableDocuments.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableFilterModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Filters.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableFilters.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableMessageModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Messages.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableMessages.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableProxyModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Proxies.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableProxies.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableSourceModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Sources.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableSources.NewItem();
 				break;
 			case var cls when cls == typeof(TgSqlTableVersionModel):
-				item = TgStorageTestsUtils.DataCore.ContextManager.Versions.NewItem();
+				item = TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.NewItem();
 				break;
 		}
 		TestContext.WriteLine(item);
@@ -109,31 +109,31 @@ internal class TgStorageHelperItemTests
 				{
 					case var cls when cls == typeof(TgSqlTableAppModel):
 						if (NewItem<TgSqlTableAppModel>() is TgSqlTableAppModel app)
-							TgStorageTestsUtils.DataCore.ContextManager.Apps.GetItem(app);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableApps.GetItem(app);
 						break;
 					case var cls when cls == typeof(TgSqlTableDocumentModel):
 						if (NewItem<TgSqlTableDocumentModel>() is TgSqlTableDocumentModel doc)
-							TgStorageTestsUtils.DataCore.ContextManager.Documents.GetItem(doc);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableDocuments.GetItem(doc);
 						break;
 					case var cls when cls == typeof(TgSqlTableFilterModel):
 						if (NewItem<TgSqlTableFilterModel>() is TgSqlTableFilterModel filter)
-							TgStorageTestsUtils.DataCore.ContextManager.Filters.GetItem(filter);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableFilters.GetItem(filter);
 						break;
 					case var cls when cls == typeof(TgSqlTableMessageModel):
 						if (NewItem<TgSqlTableMessageModel>() is TgSqlTableMessageModel message)
-							TgStorageTestsUtils.DataCore.ContextManager.Messages.GetItem(message);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableMessages.GetItem(message);
 						break;
 					case var cls when cls == typeof(TgSqlTableProxyModel):
 						if (NewItem<TgSqlTableProxyModel>() is TgSqlTableProxyModel proxy)
-							TgStorageTestsUtils.DataCore.ContextManager.Proxies.GetItem(proxy);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableProxies.GetItem(proxy);
 						break;
 					case var cls when cls == typeof(TgSqlTableSourceModel):
 						if (NewItem<TgSqlTableSourceModel>() is TgSqlTableSourceModel source)
-							TgStorageTestsUtils.DataCore.ContextManager.Sources.GetItem(source);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableSources.GetItem(source);
 						break;
 					case var cls when cls == typeof(TgSqlTableVersionModel):
 						if (NewItem<TgSqlTableVersionModel>() is TgSqlTableVersionModel version)
-							TgStorageTestsUtils.DataCore.ContextManager.Versions.GetItem(version);
+							TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetItem(version);
 						break;
 				}
 				TestContext.WriteLine();

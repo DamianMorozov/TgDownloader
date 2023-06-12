@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Versions;
 
-[DebuggerDisplay("{nameof(SqlTableVersionValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableVersionValidator : TgSqlTableValidatorBase<TgSqlTableVersionModel>
 {
     #region Public and private fields, properties, constructor
