@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Sources;
 
-[DebuggerDisplay("{nameof(SqlTableSourceValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableSourceValidator : TgSqlTableValidatorBase<TgSqlTableSourceModel>
 {
     #region Public and private fields, properties, constructor
@@ -11,8 +11,7 @@ public sealed class TgSqlTableSourceValidator : TgSqlTableValidatorBase<TgSqlTab
     public TgSqlTableSourceValidator()
     {
         RuleFor(item => item.Id)
-                .NotNull()
-                .GreaterThanOrEqualTo(0);
+                .GreaterThan(0);
         RuleFor(item => item.UserName)
                 .NotNull();
         RuleFor(item => item.Title)
@@ -20,15 +19,13 @@ public sealed class TgSqlTableSourceValidator : TgSqlTableValidatorBase<TgSqlTab
         RuleFor(item => item.About)
                 .NotNull();
 		RuleFor(item => item.Count)
-				.NotNull()
-				.GreaterThanOrEqualTo(0);
-		RuleFor(item => item.Directory)
-				.NotNull();
+				.GreaterThan(0);
+		//RuleFor(item => item.Directory)
+		//		.NotNull();
 		RuleFor(item => item.FirstId)
-			.NotNull()
-			.GreaterThanOrEqualTo(0);
-		RuleFor(item => item.IsAutoUpdate)
-			.NotNull();
+			.GreaterThan(0);
+		//RuleFor(item => item.IsAutoUpdate)
+		//	.NotNull();
 	}
 
 	#endregion

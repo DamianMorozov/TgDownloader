@@ -3,7 +3,7 @@
 
 namespace TgCore.Helpers;
 
-[DebuggerDisplay("{nameof(AppSettingsHelper)} | {AppXml.Version} | {AppXml.FileSession} | {AppXml.FileStorage}")]
+[DebuggerDisplay("{ToString()}")]
 public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 {
 	#region Design pattern "Lazy Singleton"
@@ -31,7 +31,7 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
+	#region Public and private methods
 
 	/// <summary>
 	/// Constructor.
@@ -75,6 +75,9 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 		using StreamWriter streamWriter = new(fileStream, encoding ?? Encoding.Unicode);
 		streamWriter.Write(xml);
 	}
+
+	public override string ToString() =>
+		$"{AppXml.Version} | {AppXml.FileSession} | {AppXml.FileStorage}";
 
 	#endregion
 }

@@ -8,80 +8,77 @@ internal partial class TgMenuHelper
 {
 	#region Public and private methods
 
-	private TgMenuStorage SetMenuStorage()
+	private TgEnumMenuStorage SetMenuStorage()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title($"  {TgConstants.MenuSwitchNumber}")
+				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(10)
 				.MoreChoicesText(TgLocale.MoveUpDown)
-				.AddChoices(TgConstants.MenuMainReturn,
-					TgConstants.MenuStorageDbBackup,
-					TgConstants.MenuStorageDbCreateNew,
-					TgConstants.MenuStorageDbDeleteExists,
-					TgConstants.MenuStorageTablesVersionsView,
-					TgConstants.MenuStorageTablesClear
+				.AddChoices(TgLocale.MenuMainReturn,
+					TgLocale.MenuStorageDbBackup,
+					TgLocale.MenuStorageDbCreateNew,
+					TgLocale.MenuStorageDbDeleteExists,
+					TgLocale.MenuStorageTablesVersionsView,
+					TgLocale.MenuStorageTablesClear
 				));
-		return prompt switch
-		{
-			TgConstants.MenuStorageDbBackup => TgMenuStorage.DbBackup,
-			TgConstants.MenuStorageDbCreateNew => TgMenuStorage.DbCreateNew,
-			TgConstants.MenuStorageDbDeleteExists => TgMenuStorage.DbDeleteExists,
-			TgConstants.MenuStorageTablesVersionsView => TgMenuStorage.TablesVersionsView,
-			TgConstants.MenuStorageTablesClear => TgMenuStorage.TablesClear,
-			_ => TgMenuStorage.Return
-		};
+		if (prompt.Equals(TgLocale.MenuStorageDbBackup)) return TgEnumMenuStorage.DbBackup;
+		if (prompt.Equals(TgLocale.MenuStorageDbCreateNew)) return TgEnumMenuStorage.DbCreateNew;
+		if (prompt.Equals(TgLocale.MenuStorageDbDeleteExists)) return TgEnumMenuStorage.DbDeleteExists;
+		if (prompt.Equals(TgLocale.MenuStorageTablesVersionsView)) return TgEnumMenuStorage.TablesVersionsView;
+		if (prompt.Equals(TgLocale.MenuStorageTablesClear)) return TgEnumMenuStorage.TablesClear;
+			return TgEnumMenuStorage.Return;
 	}
 
 	public void SetupStorage(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		TgMenuStorage menu;
+		TgEnumMenuStorage menu;
 		do
 		{
 			ShowTableStorageSettings(tgDownloadSettings);
 			menu = SetMenuStorage();
 			switch (menu)
 			{
-				case TgMenuStorage.DbBackup:
+				case TgEnumMenuStorage.DbBackup:
 					TgStorageBackupDb();
 					break;
-				case TgMenuStorage.DbCreateNew:
+				case TgEnumMenuStorage.DbCreateNew:
 					TgStorageCreateNewDb();
 					break;
-				case TgMenuStorage.DbDeleteExists:
+				case TgEnumMenuStorage.DbDeleteExists:
 					TgStorageDeleteExistsDb();
 					break;
-				case TgMenuStorage.TablesVersionsView:
+				case TgEnumMenuStorage.TablesVersionsView:
 					TgStorageTablesVersionsView();
 					break;
-				case TgMenuStorage.TablesClear:
+				case TgEnumMenuStorage.TablesClear:
 					TgStorageTablesClear();
 					break;
 			}
-		} while (menu is not TgMenuStorage.Return);
+		} while (menu is not TgEnumMenuStorage.Return);
 	}
 
 	private void TgStorageBackupDb()
 	{
-		if (AskQuestionReturnNegative(TgConstants.MenuStorageDbBackup)) return;
-		TgLog.WriteLine($"{TgConstants.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.FileStorage)}");
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup)) return;
+		TgLog.WriteLine($"{TgLocale.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.FileStorage)}");
 		(bool IsSuccess, string FileName) backupResult = ContextManager.BackupDb();
-		TgLog.WriteLine($"{TgConstants.MenuStorageBackupFile}: {backupResult.FileName}");
-		TgLog.WriteLine(backupResult.IsSuccess ? TgConstants.MenuStorageBackupSuccess : TgConstants.MenuStorageBackupFailed);
+		TgLog.WriteLine($"{TgLocale.MenuStorageBackupFile}: {backupResult.FileName}");
+		TgLog.WriteLine(backupResult.IsSuccess ? TgLocale.MenuStorageBackupSuccess : TgLocale.MenuStorageBackupFailed);
 		TgLog.WriteLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}
 
 	private void TgStorageCreateNewDb()
 	{
-		if (AskQuestionReturnNegative(TgConstants.MenuStorageDbCreateNew)) return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew)) return;
 		ContextManager.CreateOrConnectDb(true);
 	}
 
 	private void TgStorageDeleteExistsDb()
 	{
-		AnsiConsole.WriteLine(TgConstants.MenuStoragePerformSteps);
-		AnsiConsole.WriteLine($"- {TgConstants.MenuStorageExitProgram}");
+		AnsiConsole.WriteLine(TgLocale.MenuStoragePerformSteps);
+		AnsiConsole.WriteLine($"- {TgLocale.MenuStorageExitProgram}");
 		AnsiConsole.WriteLine($"- {TgLocale.MenuStorageDeleteExistsInfo(TgAppSettings.AppXml.FileStorage)}");
 		TgLog.WriteLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
@@ -96,10 +93,10 @@ internal partial class TgMenuHelper
 
 	private void TgStorageTablesClear()
 	{
-		if (AskQuestionReturnNegative(TgConstants.MenuStorageTablesClear)) return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear)) return;
 		ContextManager.DeleteTables();
 		ContextManager.CreateOrConnectDb(true);
-		TgLog.WriteLine(TgConstants.MenuStorageTablesClearFinished);
+		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();
 	}
 

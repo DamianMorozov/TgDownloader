@@ -8,57 +8,54 @@ internal partial class TgMenuHelper
 {
 	#region Public and private methods
 
-	private TgMenuFilter SetMenuFilters()
+	private TgEnumMenuFilter SetMenuFilters()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title($"  {TgConstants.MenuSwitchNumber}")
+				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(10)
 				.MoreChoicesText(TgLocale.MoveUpDown)
-				.AddChoices(TgConstants.MenuMainReturn,
-					TgConstants.MenuFiltersView,
-					TgConstants.MenuFiltersAdd,
-					TgConstants.MenuFiltersEdit,
-					TgConstants.MenuFiltersRemove,
-					TgConstants.MenuFiltersReset
+				.AddChoices(TgLocale.MenuMainReturn,
+					TgLocale.MenuFiltersView,
+					TgLocale.MenuFiltersAdd,
+					TgLocale.MenuFiltersEdit,
+					TgLocale.MenuFiltersRemove,
+					TgLocale.MenuFiltersReset
 				));
-		return prompt switch
-		{
-			TgConstants.MenuFiltersView => TgMenuFilter.FiltersView,
-			TgConstants.MenuFiltersAdd => TgMenuFilter.FiltersAdd,
-			TgConstants.MenuFiltersEdit => TgMenuFilter.FiltersEdit,
-			TgConstants.MenuFiltersRemove => TgMenuFilter.FiltersRemove,
-			TgConstants.MenuFiltersReset => TgMenuFilter.FiltersReset,
-			_ => TgMenuFilter.Return
-		};
+		if (prompt.Equals(TgLocale.MenuFiltersView)) return TgEnumMenuFilter.FiltersView;
+		if (prompt.Equals(TgLocale.MenuFiltersAdd)) return TgEnumMenuFilter.FiltersAdd;
+		if (prompt.Equals(TgLocale.MenuFiltersEdit)) return TgEnumMenuFilter.FiltersEdit;
+		if (prompt.Equals(TgLocale.MenuFiltersRemove)) return TgEnumMenuFilter.FiltersRemove;
+		if (prompt.Equals(TgLocale.MenuFiltersReset)) return TgEnumMenuFilter.FiltersReset;
+			return TgEnumMenuFilter.Return;
 	}
 
 	public void SetupFilters(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		TgMenuFilter menu;
+		TgEnumMenuFilter menu;
 		do
 		{
 			ShowTableFiltersSettings(tgDownloadSettings);
 			menu = SetMenuFilters();
 			switch (menu)
 			{
-				case TgMenuFilter.FiltersView:
+				case TgEnumMenuFilter.FiltersView:
 					TgFiltersView();
 					break;
-				case TgMenuFilter.FiltersReset:
+				case TgEnumMenuFilter.FiltersReset:
 					SetTgFiltersReset();
 					break;
-				case TgMenuFilter.FiltersAdd:
+				case TgEnumMenuFilter.FiltersAdd:
 					SetTgFiltersAdd();
 					break;
-				case TgMenuFilter.FiltersEdit:
+				case TgEnumMenuFilter.FiltersEdit:
 					SetTgFiltersEdit();
 					break;
-				case TgMenuFilter.FiltersRemove:
+				case TgEnumMenuFilter.FiltersRemove:
 					SetTgFiltersRemove();
 					break;
 			}
-		} while (menu is not TgMenuFilter.Return);
+		} while (menu is not TgEnumMenuFilter.Return);
 	}
 
 	private void TgFiltersView()
@@ -70,96 +67,96 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersAdd()
 	{
-		TgSqlTableFilterModel filter = ContextManager.Filters.NewItem();
+		TgSqlTableFilterModel filter = ContextManager.ContextTableFilters.NewItem();
 		string type = AnsiConsole.Prompt(new SelectionPrompt<string>()
-			.Title(TgConstants.MenuFiltersSetType)
+			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(10)
-			.AddChoices(TgConstants.MenuMainReturn, TgConstants.MenuFiltersSetSingleName, TgConstants.MenuFiltersSetSingleExtension,
-				TgConstants.MenuFiltersSetMultiName, TgConstants.MenuFiltersSetMultiExtension,
-				TgConstants.MenuFiltersSetMinSize, TgConstants.MenuFiltersSetMaxSize));
-		if (Equals(type, TgConstants.MenuMainReturn)) return;
+			.AddChoices(TgLocale.MenuMainReturn, TgLocale.MenuFiltersSetSingleName, TgLocale.MenuFiltersSetSingleExtension,
+				TgLocale.MenuFiltersSetMultiName, TgLocale.MenuFiltersSetMultiExtension,
+				TgLocale.MenuFiltersSetMinSize, TgLocale.MenuFiltersSetMaxSize));
+		if (Equals(type, TgLocale.MenuMainReturn)) return;
 
-		//filter.IsActive = AskQuestionReturnPositive(TgConstants.MenuFiltersSetIsActive, true);
+		//filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
 		filter.IsEnabled = true;
-		filter.Name = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgConstants.MenuFiltersSetName}:"));
+		filter.Name = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgLocale.MenuFiltersSetName}:"));
 		switch (type)
 		{
 			case "Single name":
-				filter.FilterType = TgFilterType.SingleName;
+				filter.FilterType = TgEnumFilterType.SingleName;
 				break;
 			case "Single extension":
-				filter.FilterType = TgFilterType.SingleExtension;
+				filter.FilterType = TgEnumFilterType.SingleExtension;
 				break;
 			case "Multi name":
-				filter.FilterType = TgFilterType.MultiName;
+				filter.FilterType = TgEnumFilterType.MultiName;
 				break;
 			case "Multi extension":
-				filter.FilterType = TgFilterType.MultiExtension;
+				filter.FilterType = TgEnumFilterType.MultiExtension;
 				break;
 			case "File minimum size":
-				filter.FilterType = TgFilterType.MinSize;
+				filter.FilterType = TgEnumFilterType.MinSize;
 				break;
 			case "File maximum size":
-				filter.FilterType = TgFilterType.MaxSize;
+				filter.FilterType = TgEnumFilterType.MaxSize;
 				break;
 		}
 		switch (filter.FilterType)
 		{
-			case TgFilterType.SingleName:
-			case TgFilterType.SingleExtension:
-			case TgFilterType.MultiName:
-			case TgFilterType.MultiExtension:
-				filter.Mask = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgConstants.MenuFiltersSetMask}:"));
+			case TgEnumFilterType.SingleName:
+			case TgEnumFilterType.SingleExtension:
+			case TgEnumFilterType.MultiName:
+			case TgEnumFilterType.MultiExtension:
+				filter.Mask = AnsiConsole.Ask<string>(TgLog.GetMarkupString($"{TgLocale.MenuFiltersSetMask}:"));
 				break;
-			case TgFilterType.MinSize:
-				SetFilterSize(filter, TgConstants.MenuFiltersSetMinSize);
+			case TgEnumFilterType.MinSize:
+				SetFilterSize(filter, TgLocale.MenuFiltersSetMinSize);
 				break;
-			case TgFilterType.MaxSize:
-				SetFilterSize(filter, TgConstants.MenuFiltersSetMaxSize);
+			case TgEnumFilterType.MaxSize:
+				SetFilterSize(filter, TgLocale.MenuFiltersSetMaxSize);
 				break;
 		}
 
-		ContextManager.Filters.AddOrUpdateItem(filter);
-		ContextManager.Filters.DeleteDefaultItem();
+		ContextManager.ContextTableFilters.AddOrUpdateItem(filter);
+		ContextManager.ContextTableFilters.DeleteDefaultItem();
 		TgFiltersView();
 	}
 
 	private void SetTgFiltersEdit()
 	{
-		List<TgSqlTableFilterModel> filters = ContextManager.Filters.GetList(false);
+		List<TgSqlTableFilterModel> filters = ContextManager.ContextTableFilters.GetList();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
-			.Title(TgConstants.MenuFiltersSetEnabled)
+			.Title(TgLocale.MenuFiltersSetEnabled)
 			.PageSize(10)
 			.AddChoices(filters));
-		filter.IsEnabled = AskQuestionReturnPositive(TgConstants.MenuFiltersSetIsEnabled, true);
-		ContextManager.Filters.AddOrUpdateItem(filter);
+		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
+		ContextManager.ContextTableFilters.AddOrUpdateItem(filter);
 		TgFiltersView();
 	}
 
 	private void SetFilterSize(TgSqlTableFilterModel filter, string question)
 	{
-		filter.SizeType = AnsiConsole.Prompt(new SelectionPrompt<TgFileSizeType>()
-			.Title(TgConstants.MenuFiltersSetSizeType)
+		filter.SizeType = AnsiConsole.Prompt(new SelectionPrompt<TgEnumFileSizeType>()
+			.Title(TgLocale.MenuFiltersSetSizeType)
 			.PageSize(5)
-			.AddChoices(TgFileSizeType.Bytes, TgFileSizeType.KBytes, TgFileSizeType.MBytes, TgFileSizeType.GBytes, TgFileSizeType.TBytes));
+			.AddChoices(TgEnumFileSizeType.Bytes, TgEnumFileSizeType.KBytes, TgEnumFileSizeType.MBytes, TgEnumFileSizeType.GBytes, TgEnumFileSizeType.TBytes));
 		filter.Size = AnsiConsole.Ask<uint>(TgLog.GetMarkupString($"{question}:"));
 	}
 
 	private void SetTgFiltersRemove()
 	{
-		List<TgSqlTableFilterModel> filters = ContextManager.Filters.GetList(false);
+		List<TgSqlTableFilterModel> filters = ContextManager.ContextTableFilters.GetList();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
-			.Title(TgConstants.MenuFiltersSetType)
+			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(10)
 			.AddChoices(filters));
-		ContextManager.Filters.DeleteItem(filter);
+		ContextManager.ContextTableFilters.DeleteItem(filter);
 		TgFiltersView();
 	}
 
 	private void SetTgFiltersReset()
 	{
-		if (AskQuestionReturnNegative(TgConstants.MenuFiltersReset)) return;
-		ContextManager.Filters.DeleteAllItems();
+		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset)) return;
+		ContextManager.ContextTableFilters.DeleteAllItems();
 		TgFiltersView();
 	}
 

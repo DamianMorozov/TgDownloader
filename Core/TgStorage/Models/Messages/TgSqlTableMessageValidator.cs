@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Messages;
 
-[DebuggerDisplay("{nameof(SqlTableMessageValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableMessageValidator : TgSqlTableValidatorBase<TgSqlTableMessageModel>
 {
     #region Public and private fields, properties, constructor

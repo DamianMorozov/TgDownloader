@@ -13,7 +13,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableAppModel> items = TgStorageTestsUtils.DataCore.ContextManager.Apps.GetList(true);
+			List<TgSqlTableAppModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableApps.GetList(TgSqlTableTopRecords.Top200);
 			foreach (TgSqlTableAppModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -26,7 +26,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DataCore.ContextManager.Documents.GetList(true);
+			List<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableDocuments.GetList(TgSqlTableTopRecords.Top200);
 			foreach (TgSqlTableDocumentModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -39,7 +39,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableFilterModel> items = TgStorageTestsUtils.DataCore.ContextManager.Filters.GetList(true);
+			List<TgSqlTableFilterModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableFilters.GetList(TgSqlTableTopRecords.Top200);
 			foreach (TgSqlTableFilterModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -52,7 +52,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableProxyModel> items = TgStorageTestsUtils.DataCore.ContextManager.Proxies.GetList(true);
+			List<TgSqlTableProxyModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableProxies.GetList(TgSqlTableTopRecords.Top200);
 			foreach (TgSqlTableProxyModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -65,7 +65,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableSourceModel> items = TgStorageTestsUtils.DataCore.ContextManager.Sources.GetList(true);
+			List<TgSqlTableSourceModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableSources.GetList(TgSqlTableTopRecords.Top1000);
 			foreach (TgSqlTableSourceModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -78,7 +78,7 @@ internal class TgStorageHelperGetListTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableVersionModel> items = TgStorageTestsUtils.DataCore.ContextManager.Versions.GetList(true);
+			List<TgSqlTableVersionModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetList(TgSqlTableTopRecords.Top200);
 			foreach (TgSqlTableVersionModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -95,10 +95,10 @@ internal class TgStorageHelperGetListTests
 			TgStorageTestsUtils.DataCore.ContextManager.FillTableVersions();
 			TgSqlTableVersionModel versionLast =
 				!TgStorageTestsUtils.DataCore.ContextManager.IsTableExists(TgSqlConstants.TableVersions)
-				? TgStorageTestsUtils.DataCore.ContextManager.Versions.GetNewItem() 
-				: TgStorageTestsUtils.DataCore.ContextManager.Versions.GetItemLast();
+				? TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetNewItem() 
+				: TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetItemLast();
 			TestContext.WriteLine(versionLast);
-			Assert.That(Equals(TgStorageTestsUtils.DataCore.ContextManager.Versions.VersionLast, versionLast.Version));
+			Assert.That(Equals(TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.VersionLast, versionLast.Version));
 		});
 	}
 

@@ -2,9 +2,8 @@
 
 global using NUnit.Framework;
 global using TgAssertCoreTests.Helpers;
-global using TgCore.Enums;
-global using TgStorage.Core;
-global using TgStorage.Helpers;
+global using TgCore.Common;
+global using TgStorage.Common;
 global using TgStorage.Models.Apps;
 global using TgStorage.Models.Documents;
 global using TgStorage.Models.Filters;

@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Proxies;
 
-[DebuggerDisplay("{nameof(SqlTableProxyValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableProxyValidator : TgSqlTableValidatorBase<TgSqlTableProxyModel>
 {
     #region Public and private fields, properties, constructor

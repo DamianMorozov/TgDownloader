@@ -5,7 +5,7 @@ namespace TgCore.Models;
 
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
-[DebuggerDisplay("{nameof(AppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}")]
+[DebuggerDisplay("{ToString()}")]
 public class AppXmlModel : ITgSerializable
 {
 	#region Public and private fields, properties, constructor
@@ -42,6 +42,32 @@ public class AppXmlModel : ITgSerializable
 	#endregion
 
 	#region Public and private methods
+
+	/// <summary>
+	/// Constructor.
+	/// </summary>
+	/// <param name="info"></param>
+	/// <param name="context"></param>
+	protected AppXmlModel(SerializationInfo info, StreamingContext context)
+	{
+		Version = info.GetString(nameof(Version)) ?? this.GetPropertyDefaultValue(nameof(Version));
+		FileSession = info.GetString(nameof(FileSession)) ?? this.GetPropertyDefaultValue(nameof(FileSession));
+		FileStorage = info.GetString(nameof(FileStorage)) ?? this.GetPropertyDefaultValue(nameof(FileStorage));
+		IsUseProxy = info.GetBoolean(nameof(IsUseProxy));
+	}
+
+	/// <summary>
+	/// Get object data for serialization info.
+	/// </summary>
+	/// <param name="info"></param>
+	/// <param name="context"></param>
+	public void GetObjectData(SerializationInfo info, StreamingContext context)
+	{
+		info.AddValue(nameof(Version), Version);
+		info.AddValue(nameof(FileSession), FileSession);
+		info.AddValue(nameof(FileStorage), FileStorage);
+		info.AddValue(nameof(IsUseProxy), IsUseProxy);
+	}
 
 	public void SetVersion(Assembly assembly)
 	{
@@ -80,35 +106,8 @@ public class AppXmlModel : ITgSerializable
 		}
 	}
 
-	#endregion
-
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	protected AppXmlModel(SerializationInfo info, StreamingContext context)
-	{
-		Version = info.GetString(nameof(Version)) ?? this.GetPropertyDefaultValue(nameof(Version));
-		FileSession = info.GetString(nameof(FileSession)) ?? this.GetPropertyDefaultValue(nameof(FileSession));
-		FileStorage = info.GetString(nameof(FileStorage)) ?? this.GetPropertyDefaultValue(nameof(FileStorage));
-		IsUseProxy = info.GetBoolean(nameof(IsUseProxy));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Version), Version);
-		info.AddValue(nameof(FileSession), FileSession);
-		info.AddValue(nameof(FileStorage), FileStorage);
-		info.AddValue(nameof(IsUseProxy), IsUseProxy);
-	}
+	public override string ToString() =>
+		$"{nameof(AppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
 
 	#endregion
 }

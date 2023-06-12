@@ -3,6 +3,10 @@
 
 namespace TgStorage.Helpers;
 
+/// <summary>
+/// SQL data storage context helper.
+/// </summary>
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlContextManagerHelper : ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
@@ -16,16 +20,17 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
 	#region Public and private fields, properties, constructor
 
-	public TgSqlAppHelper Apps => TgSqlAppHelper.Instance;
-	public TgSqlDocumentHelper Documents => TgSqlDocumentHelper.Instance;
-	public TgSqlFilterHelper Filters => TgSqlFilterHelper.Instance;
-	public TgSqlMessageHelper Messages => TgSqlMessageHelper.Instance;
-	public TgSqlProxyHelper Proxies => TgSqlProxyHelper.Instance;
-	public TgSqlSourceHelper Sources => TgSqlSourceHelper.Instance;
-	public TgSqlVersionHelper Versions => TgSqlVersionHelper.Instance;
+	public TgSqlContextCacheHelper ContextCache => TgSqlContextCacheHelper.Instance;
+	public TgSqlTableAppController ContextTableApps => TgSqlTableAppController.Instance;
+	public TgSqlTableDocumentController ContextTableDocuments => TgSqlTableDocumentController.Instance;
+	public TgSqlTableFilterController ContextTableFilters => TgSqlTableFilterController.Instance;
+	public TgSqlTableMessageController ContextTableMessages => TgSqlTableMessageController.Instance;
+	public TgSqlTableProxyController ContextTableProxies => TgSqlTableProxyController.Instance;
+	public TgSqlTableSourceController ContextTableSources => TgSqlTableSourceController.Instance;
+	public TgSqlTableVersionController ContextTableVersions => TgSqlTableVersionController.Instance;
+
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	public TgLogHelper TgLog => TgLogHelper.Instance;
-	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	public bool IsReady => TgAppSettings.AppXml.IsExistsFileStorage &&
 			IsTableExists(TgSqlConstants.TableApps) && IsTableExists(TgSqlConstants.TableDocuments) && 
 		IsTableExists(TgSqlConstants.TableFilters) && IsTableExists(TgSqlConstants.TableMessages) &&
@@ -69,7 +74,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
 	public void VersionsView()
 	{
-		List<TgSqlTableVersionModel> versions = Versions.GetList(false);
+		List<TgSqlTableVersionModel> versions = ContextTableVersions.GetList();
 		foreach (TgSqlTableVersionModel version in versions)
 		{
 			TgLog.WriteLine($" {version.Version:00} | {version.Description}");
@@ -78,7 +83,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
 	public void FiltersView()
 	{
-		List<TgSqlTableFilterModel> filters = Filters.GetList(false);
+		List<TgSqlTableFilterModel> filters = ContextTableFilters.GetList();
 		foreach (TgSqlTableFilterModel filter in filters)
 		{
 			TgLog.WriteLine(filter.ToString());
@@ -104,26 +109,26 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableApps()
 	{
 		bool result = true;
-		TgSqlTableAppModel app = Apps.GetNewItem();
-		if (!Apps.AddOrUpdateItem(app, Proxies.GetNewItem().Uid)) result = false;
-		if (!Apps.DeleteItem(app)) result = false;
+		TgSqlTableAppModel app = ContextTableApps.GetNewItem();
+		if (!ContextTableApps.AddOrUpdateItem(app, ContextTableProxies.GetNewItem().Uid)) result = false;
+		if (!ContextTableApps.DeleteItem(app)) result = false;
 		return result;
 	}
 
 	public bool CheckTableDocuments()
 	{
 		bool result = true;
-		TgSqlTableDocumentModel document = Documents.GetNewItem();
-		if (!Documents.AddOrUpdateItem(document)) result = false;
-		if (!Documents.DeleteItem(document)) result = false;
+		TgSqlTableDocumentModel document = ContextTableDocuments.GetNewItem();
+		if (!ContextTableDocuments.AddOrUpdateItem(document)) result = false;
+		if (!ContextTableDocuments.DeleteItem(document)) result = false;
 		return result;
 	}
 
 	public bool CheckTableFilters()
 	{
 		bool result = true;
-		TgSqlTableFilterModel filter = Filters.GetNewItem();
-		if (!Filters.AddOrUpdateItem(filter)) result = false;
+		TgSqlTableFilterModel filter = ContextTableFilters.GetNewItem();
+		if (!ContextTableFilters.AddOrUpdateItem(filter)) result = false;
 		//Filters.DeleteItem(filter);
 		return result;
 	}
@@ -131,17 +136,17 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableMessages()
 	{
 		bool result = true;
-		TgSqlTableMessageModel message = Messages.GetNewItem();
-		if (!Messages.AddOrUpdateItem(message)) result = false;
-		if (!Messages.DeleteItem(message)) result = false;
+		TgSqlTableMessageModel message = ContextTableMessages.GetNewItem();
+		if (!ContextTableMessages.AddOrUpdateItem(message)) result = false;
+		if (!ContextTableMessages.DeleteItem(message)) result = false;
 		return result;
 	}
 
 	public bool CheckTableProxies()
 	{
 		bool result = true;
-		TgSqlTableProxyModel proxy = Proxies.GetNewItem();
-		if (!Proxies.AddOrUpdateItem(proxy)) result = false;
+		TgSqlTableProxyModel proxy = ContextTableProxies.GetNewItem();
+		if (!ContextTableProxies.AddOrUpdateItem(proxy)) result = false;
 		//Proxies.DeleteItem(proxy);
 		return result;
 	}
@@ -149,18 +154,18 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableSources()
 	{
 		bool result = true;
-		TgSqlTableSourceModel source = Sources.GetNewItem();
-		if (!Sources.AddOrUpdateItem(source)) result = false;
-		if (!Sources.DeleteItem(source)) result = false;
+		TgSqlTableSourceModel source = ContextTableSources.GetNewItem();
+		if (!ContextTableSources.AddOrUpdateItem(source)) result = false;
+		if (!ContextTableSources.DeleteItem(source)) result = false;
 		return result;
 	}
 
 	public bool CheckTableVersions()
 	{
 		bool result = true;
-		TgSqlTableVersionModel version = Versions.GetNewItem();
-		if (!Versions.AddOrUpdateItem(version)) result = false;
-		if (!Versions.DeleteItem(version)) result = false;
+		TgSqlTableVersionModel version = ContextTableVersions.GetNewItem();
+		if (!ContextTableVersions.AddOrUpdateItem(version)) result = false;
+		if (!ContextTableVersions.DeleteItem(version)) result = false;
 		return result;
 	}
 
@@ -169,84 +174,84 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 		bool isLast = false;
 		while (!isLast)
 		{
-			TgSqlTableVersionModel versionLast = !IsTableExists(TgSqlConstants.TableVersions) ? new() : Versions.GetItemLast();
+			TgSqlTableVersionModel versionLast = !IsTableExists(TgSqlConstants.TableVersions) ? new() : ContextTableVersions.GetItemLast();
 			if (Equals(versionLast.Version, short.MaxValue)) versionLast.Version = 0;
 			switch (versionLast.Version)
 			{
 				case 0:
 					TgSqlTableVersionModel version1 = new() { Version = 1, Description = "Added versions table" };
-					Versions.AddItem(version1);
+					ContextTableVersions.AddItem(version1);
 					break;
 				case 1:
 					TgSqlTableVersionModel version2 = new() { Version = 2, Description = "Added apps table" };
-					Versions.AddItem(version2);
+					ContextTableVersions.AddItem(version2);
 					break;
 				case 2:
 					TgSqlTableVersionModel version3 = new() { Version = 3, Description = "Added documents table" };
-					Versions.AddItem(version3);
+					ContextTableVersions.AddItem(version3);
 					break;
 				case 3:
 					TgSqlTableVersionModel version4 = new() { Version = 4, Description = "Added filters table" };
-					Versions.AddItem(version4);
+					ContextTableVersions.AddItem(version4);
 					break;
 				case 4:
 					TgSqlTableVersionModel version5 = new() { Version = 5, Description = "Added messages table" };
-					Versions.AddItem(version5);
+					ContextTableVersions.AddItem(version5);
 					break;
 				case 5:
 					TgSqlTableVersionModel version6 = new() { Version = 6, Description = "Added proxies table" };
-					Versions.AddItem(version6);
+					ContextTableVersions.AddItem(version6);
 					break;
 				case 6:
 					TgSqlTableVersionModel version7 = new() { Version = 7, Description = "Added sources table" };
-					Versions.AddItem(version7);
+					ContextTableVersions.AddItem(version7);
 					break;
 				case 7:
 					TgSqlTableVersionModel version8 = new() { Version = 8, Description = "Added source settings table" };
-					Versions.AddItem(version8);
+					ContextTableVersions.AddItem(version8);
 					break;
 				case 8:
 					TgSqlTableVersionModel version9 = new() { Version = 9, Description = "Upgrade versions table" };
-					Versions.AddItem(version9);
+					ContextTableVersions.AddItem(version9);
 					break;
 				case 9:
 					TgSqlTableVersionModel version10 = new() { Version = 10, Description = "Upgrade apps table" };
-					Versions.AddItem(version10);
+					ContextTableVersions.AddItem(version10);
 					break;
 				case 10:
 					TgSqlTableVersionModel version11 = new() { Version = 11, Description = "Upgrade storage on XPO framework" };
-					Versions.AddItem(version11);
+					ContextTableVersions.AddItem(version11);
 					break;
 				case 11:
 					TgSqlTableVersionModel version12 = new() { Version = 12, Description = "Upgrade apps table" };
-					Versions.AddItem(version12);
+					ContextTableVersions.AddItem(version12);
 					break;
 				case 12:
 					TgSqlTableVersionModel version13 = new() { Version = 13, Description = "Upgrade documents table" };
-					Versions.AddItem(version13);
+					ContextTableVersions.AddItem(version13);
 					break;
 				case 13:
 					TgSqlTableVersionModel version14 = new() { Version = 14, Description = "Upgrade filters table" };
-					Versions.AddItem(version14);
+					ContextTableVersions.AddItem(version14);
 					break;
 				case 14:
 					TgSqlTableVersionModel version15 = new() { Version = 15, Description = "Upgrade messages table" };
-					Versions.AddItem(version15);
+					ContextTableVersions.AddItem(version15);
 					break;
 				case 15:
 					TgSqlTableVersionModel version16 = new() { Version = 16, Description = "Upgrade proxies table" };
-					Versions.AddItem(version16);
+					ContextTableVersions.AddItem(version16);
 					break;
 				case 16:
 					TgSqlTableVersionModel version17 = new() { Version = 17, Description = "Upgrade sources table" };
-					Versions.AddItem(version17);
+					ContextTableVersions.AddItem(version17);
 					break;
 				case 17:
 					TgSqlTableVersionModel version18 = new() { Version = 18, Description = "Upgrade sources table" };
-					Versions.AddItem(version18);
+					ContextTableVersions.AddItem(version18);
 					break;
 			}
-			if (versionLast.Version >= Versions.VersionLast)
+			if (versionLast.Version >= ContextTableVersions.VersionLast)
 				isLast = true;
 		}
 	}

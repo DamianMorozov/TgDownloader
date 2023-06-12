@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Apps;
 
-[DebuggerDisplay("{nameof(SqlTableAppValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableAppValidator : TgSqlTableValidatorBase<TgSqlTableAppModel>
 {
     #region Public and private fields, properties, constructor

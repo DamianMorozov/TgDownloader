@@ -3,7 +3,7 @@
 
 namespace TgStorage.Models.Documents;
 
-[DebuggerDisplay("{nameof(SqlTableDocumentValidator)}")]
+[DebuggerDisplay("{ToString()}")]
 public sealed class TgSqlTableDocumentValidator : TgSqlTableValidatorBase<TgSqlTableDocumentModel>
 {
     #region Public and private fields, properties, constructor

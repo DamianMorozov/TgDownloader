@@ -8,83 +8,82 @@ internal partial class TgMenuHelper
 {
 	#region Public and private methods
 
-	private TgMenuDownload SetMenuDownload()
+	private TgEnumMenuDownload SetMenuDownload()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
-				.Title($"  {TgConstants.MenuSwitchNumber}")
+				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(12)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
-					TgConstants.MenuMainReturn,
-					TgConstants.MenuDownloadSetSource,
-					TgConstants.MenuDownloadSetFolder,
-					TgConstants.MenuDownloadSetSourceFirstIdAuto,
-					TgConstants.MenuDownloadSetSourceFirstIdManual,
-					TgConstants.MenuDownloadSetIsRewriteFiles,
-					TgConstants.MenuDownloadSetIsRewriteMessages,
-					TgConstants.MenuDownloadSetIsAddMessageId,
-					TgConstants.MenuDownloadSetIsAutoUpdate,
-					TgConstants.MenuSaveSettings,
-					TgConstants.MenuDownloadManual
+					TgLocale.MenuMainReturn,
+					TgLocale.MenuDownloadSetSource,
+					TgLocale.MenuDownloadSetFolder,
+					TgLocale.MenuDownloadSetSourceFirstIdAuto,
+					TgLocale.MenuDownloadSetSourceFirstIdManual,
+					TgLocale.MenuDownloadSetIsRewriteFiles,
+					TgLocale.MenuDownloadSetIsRewriteMessages,
+					TgLocale.MenuDownloadSetIsAddMessageId,
+					TgLocale.MenuDownloadSetIsAutoUpdate,
+					TgLocale.MenuSaveSettings,
+					TgLocale.MenuManualDownload
 				));
-		return prompt switch
-		{
-			TgConstants.MenuDownloadSetSource => TgMenuDownload.SetSource,
-			TgConstants.MenuDownloadSetFolder => TgMenuDownload.SetDestDirectory,
-			TgConstants.MenuDownloadSetSourceFirstIdAuto => TgMenuDownload.SetSourceFirstIdAuto,
-			TgConstants.MenuDownloadSetSourceFirstIdManual => TgMenuDownload.SetSourceFirstIdManual,
-			TgConstants.MenuDownloadSetIsRewriteFiles => TgMenuDownload.SetIsRewriteFiles,
-			TgConstants.MenuDownloadSetIsRewriteMessages => TgMenuDownload.SetIsRewriteMessages,
-			TgConstants.MenuDownloadSetIsAddMessageId => TgMenuDownload.SetIsAddMessageId,
-			TgConstants.MenuDownloadSetIsAutoUpdate => TgMenuDownload.SetIsAutoUpdate,
-			TgConstants.MenuSaveSettings => TgMenuDownload.SettingsSave,
-			TgConstants.MenuDownloadManual => TgMenuDownload.DownloadManual,
-			_ => TgMenuDownload.Return
-		};
+		if (prompt.Equals(TgLocale.MenuDownloadSetSource)) return TgEnumMenuDownload.SetSource;
+		if (prompt.Equals(TgLocale.MenuDownloadSetFolder)) return TgEnumMenuDownload.SetDestDirectory;
+		if (prompt.Equals(TgLocale.MenuDownloadSetSourceFirstIdAuto)) return TgEnumMenuDownload.SetSourceFirstIdAuto;
+		if (prompt.Equals(TgLocale.MenuDownloadSetSourceFirstIdManual)) return TgEnumMenuDownload.SetSourceFirstIdManual;
+		if (prompt.Equals(TgLocale.MenuDownloadSetIsRewriteFiles)) return TgEnumMenuDownload.SetIsRewriteFiles;
+		if (prompt.Equals(TgLocale.MenuDownloadSetIsRewriteMessages)) return TgEnumMenuDownload.SetIsRewriteMessages;
+		if (prompt.Equals(TgLocale.MenuDownloadSetIsAddMessageId)) return TgEnumMenuDownload.SetIsAddMessageId;
+		if (prompt.Equals(TgLocale.MenuDownloadSetIsAutoUpdate)) return TgEnumMenuDownload.SetIsAutoUpdate;
+		if (prompt.Equals(TgLocale.MenuSaveSettings)) return TgEnumMenuDownload.SettingsSave;
+		if (prompt.Equals(TgLocale.MenuManualDownload)) return TgEnumMenuDownload.ManualDownload;
+		return TgEnumMenuDownload.Return;
 	}
 
 	public void SetupDownload(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		TgMenuDownload menu;
+		TgEnumMenuDownload menu;
 		do
 		{
 			ShowTableDownload(tgDownloadSettings);
 			menu = SetMenuDownload();
 			switch (menu)
 			{
-				case TgMenuDownload.SetSource:
+				case TgEnumMenuDownload.SetSource:
 					SetupDownloadSource(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetSourceFirstIdAuto:
+				case TgEnumMenuDownload.SetSourceFirstIdAuto:
 					RunAction(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, true, false);
 					break;
-				case TgMenuDownload.SetSourceFirstIdManual:
+				case TgEnumMenuDownload.SetSourceFirstIdManual:
 					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetDestDirectory:
+				case TgEnumMenuDownload.SetDestDirectory:
 					SetupDownloadDestDirectory(tgDownloadSettings);
+					if (!tgDownloadSettings.IsAutoUpdate)
+						SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetIsRewriteFiles:
+				case TgEnumMenuDownload.SetIsRewriteFiles:
 					SetTgDownloadIsRewriteFiles(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetIsRewriteMessages:
+				case TgEnumMenuDownload.SetIsRewriteMessages:
 					SetTgDownloadIsRewriteMessages(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetIsAddMessageId:
+				case TgEnumMenuDownload.SetIsAddMessageId:
 					SetTgDownloadIsJoinFileNameWithMessageId(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SetIsAutoUpdate:
+				case TgEnumMenuDownload.SetIsAutoUpdate:
 					SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
-				case TgMenuDownload.SettingsSave:
+				case TgEnumMenuDownload.SettingsSave:
 					RunAction(tgDownloadSettings, SaveSettings, true, false);
 					break;
-				case TgMenuDownload.DownloadManual:
+				case TgEnumMenuDownload.ManualDownload:
 					RunAction(tgDownloadSettings, ManualDownload, false, false);
 					break;
 			}
-		} while (menu is not TgMenuDownload.Return);
+		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
 	private void SetupDownloadSource(TgDownloadSettingsModel tgDownloadSettings, long? id = null)
@@ -94,7 +93,7 @@ internal partial class TgMenuHelper
 		bool isCheck = false;
 		do
 		{
-			string source = id is { } lid ? lid.ToString() : AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgConstants.MenuDownloadSetSource}:"));
+			string source = id is { } lid ? lid.ToString() : AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetSource}:"));
 			if (!string.IsNullOrEmpty(source))
 			{
 				if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
@@ -117,12 +116,12 @@ internal partial class TgMenuHelper
 		LoadTgClientSettings(tgDownloadSettings, false, false);
 	}
 
-	private void SetupDownloadSourceFirstIdAuto(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
+	private void SetupDownloadSourceFirstIdAuto(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		Channel? channel = TgClient.PrepareChannelDownloadMessages(tgDownloadSettings, true);
 		if (channel is not null)
 		{
-			TgClient.SetChannelMessageIdFirst(tgDownloadSettings, channel, refreshStatus);
+			TgClient.SetChannelMessageIdFirstWithLock(tgDownloadSettings, channel);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 			return;
 		}
@@ -130,7 +129,7 @@ internal partial class TgMenuHelper
 		ChatBase? chatBase = TgClient.PrepareChatBaseDownloadMessages(tgDownloadSettings, true);
 		if (chatBase is not null)
 		{
-			TgClient.SetChannelMessageIdFirst(tgDownloadSettings, chatBase, refreshStatus);
+			TgClient.SetChannelMessageIdFirstWithLock(tgDownloadSettings, chatBase);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 		}
 	}
@@ -167,40 +166,40 @@ internal partial class TgMenuHelper
 		} while (!Directory.Exists(tgDownloadSettings.DestDirectory));
 	}
 
-	private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsModel tgDownloadSettings)
-	{
+	private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsModel tgDownloadSettings) => 
 		tgDownloadSettings.IsRewriteFiles = AskQuestionReturnPositive(TgLocale.TgSettingsIsRewriteFiles, true);
-	}
 
-	private void SetTgDownloadIsRewriteMessages(TgDownloadSettingsModel tgDownloadSettings)
-	{
-		tgDownloadSettings.IsRewriteMessages = AskQuestionReturnPositive(TgLocale.TgSettingsIsRewriteMessages, true); ;
-	}
+	private void SetTgDownloadIsRewriteMessages(TgDownloadSettingsModel tgDownloadSettings) => 
+		tgDownloadSettings.IsRewriteMessages = AskQuestionReturnPositive(TgLocale.TgSettingsIsRewriteMessages, true);
 
-	private void SetTgDownloadIsJoinFileNameWithMessageId(TgDownloadSettingsModel tgDownloadSettings)
-	{
-		tgDownloadSettings.IsJoinFileNameWithMessageId = AskQuestionReturnPositive(TgLocale.TgSettingsIsJoinFileNameWithMessageId, true); ; ;
-	}
+	private void SetTgDownloadIsJoinFileNameWithMessageId(TgDownloadSettingsModel tgDownloadSettings) => 
+		tgDownloadSettings.IsJoinFileNameWithMessageId = AskQuestionReturnPositive(TgLocale.TgSettingsIsJoinFileNameWithMessageId, true);
 
-	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings)
-	{
-		tgDownloadSettings.IsAutoUpdate = AskQuestionReturnPositive(TgConstants.MenuDownloadSetIsAutoUpdate, true); ; ; ;
-	}
+	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings) => 
+		tgDownloadSettings.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
-	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool>? refreshStatus)
+	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		if (!tgDownloadSettings.IsReady) return;
 		// Update source.
-		ContextManager.Sources.AddOrUpdateItem(new() { Id = tgDownloadSettings.SourceId, UserName = tgDownloadSettings.SourceUserName,
-Title = tgDownloadSettings.SourceTitle, About = tgDownloadSettings.SourceAbout, Count = tgDownloadSettings.SourceLastId,
-Directory = tgDownloadSettings.DestDirectory, FirstId = tgDownloadSettings.SourceFirstId, IsAutoUpdate = tgDownloadSettings.IsAutoUpdate });
+		ContextManager.ContextTableSources.AddOrUpdateItem(new()
+		{
+			Id = tgDownloadSettings.SourceId,
+			UserName = tgDownloadSettings.SourceUserName,
+			Title = tgDownloadSettings.SourceTitle,
+			About = tgDownloadSettings.SourceAbout,
+			Count = tgDownloadSettings.SourceLastId,
+			Directory = tgDownloadSettings.DestDirectory,
+			FirstId = tgDownloadSettings.SourceFirstId,
+			IsAutoUpdate = tgDownloadSettings.IsAutoUpdate
+		});
 		// Refresh.
-		refreshStatus?.Invoke(TgLocale.SettingsSource, false);
+		TgClient.UpdateStatus(TgLocale.SettingsSource);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipFirstId, bool isSkipDestDirectory)
 	{
-		TgSqlTableSourceModel source = ContextManager.Sources.GetItem(tgDownloadSettings.SourceId);
+		TgSqlTableSourceModel source = ContextManager.ContextTableSources.GetItem(tgDownloadSettings.SourceId);
 		if (!isSkipFirstId)
 			tgDownloadSettings.SourceFirstId = source.FirstId;
 		if (!isSkipDestDirectory)
@@ -208,25 +207,19 @@ Directory = tgDownloadSettings.DestDirectory, FirstId = tgDownloadSettings.Sourc
 		tgDownloadSettings.IsAutoUpdate = source.IsAutoUpdate;
 	}
 
-	private void UpdateSource(ChatBase chat, string about, int count)
+	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		if (chat is Channel channel)
-			ContextManager.Sources.AddOrUpdateItem(new() { Id = channel.id, UserName = channel.username, 
-				Title = channel.title, About = about, Count = count });
-	}
-
-	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool> refreshStatus)
-	{
-		UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
+		UpdateSourceWithSettings(tgDownloadSettings);
 		ShowTableDownload(tgDownloadSettings);
-		TgClient.DownloadAllData(tgDownloadSettings, refreshStatus, StoreMessage, StoreDocument, FindExistsMessage);
+		TgClient.DownloadAllData(tgDownloadSettings, StoreMessage, StoreDocument, 
+			ContextManager.ContextTableMessages.FindExistsMessage);
 		// Update last id.
-		UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
+		UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
-	private void SaveSettings(TgDownloadSettingsModel tgDownloadSettings, Action<string, bool>? refreshStatus = null)
+	private void SaveSettings(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		UpdateSourceWithSettings(tgDownloadSettings, refreshStatus);
+		UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
 	#endregion

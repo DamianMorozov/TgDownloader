@@ -63,6 +63,11 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	[Indexed]
 	public bool IsAutoUpdate { get => _isAutoUpdate; set => SetPropertyValue(nameof(_isAutoUpdate), ref _isAutoUpdate, value); }
 
+	public bool IsCountComplete => FirstId == Count;
+
+	public int Progress => FirstId * 100 / Count;
+	public string ProgressString => $"{Progress:###.##} %";
+
 	/// <summary>
 	/// Default constructor.
 	/// </summary>
@@ -147,7 +152,7 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 		$"{(FirstId == Count ? "✓" : "x")} | " +
 		$"{UserName} | " +
 		$"{TgDataFormatUtils.TrimStringEnd(Title)} | " +
-		$"{FirstId} {TgConstants.From} {Count} {TgConstants.Messages}";
+		$"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
 	#endregion
 }

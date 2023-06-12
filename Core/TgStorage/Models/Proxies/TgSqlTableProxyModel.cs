@@ -9,11 +9,11 @@ public sealed class TgSqlTableProxyModel : TgSqlTableBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgProxyType _type;
-    [DefaultValue(TgProxyType.None)]
+    private TgEnumProxyType _type;
+    [DefaultValue(TgEnumProxyType.None)]
 	[Persistent(TgSqlConstants.ColumnType)]
 	[Indexed]
-	public TgProxyType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
+	public TgEnumProxyType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
 
     private string _hostName;
     [DefaultValue("")]
@@ -54,7 +54,7 @@ public sealed class TgSqlTableProxyModel : TgSqlTableBase
 	/// </summary>
 	public TgSqlTableProxyModel() : base()
 	{
-        _type = this.GetPropertyDefaultValueAsGeneric<TgProxyType>(nameof(Type));
+        _type = this.GetPropertyDefaultValueAsGeneric<TgEnumProxyType>(nameof(Type));
         _hostName = this.GetPropertyDefaultValue(nameof(HostName));
         _port = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(Port));
         _userName = this.GetPropertyDefaultValue(nameof(UserName));
@@ -68,7 +68,7 @@ public sealed class TgSqlTableProxyModel : TgSqlTableBase
 	/// <param name="session"></param>
 	public TgSqlTableProxyModel(Session session) : base(session)
 	{
-		_type = this.GetPropertyDefaultValueAsGeneric<TgProxyType>(nameof(Type));
+		_type = this.GetPropertyDefaultValueAsGeneric<TgEnumProxyType>(nameof(Type));
 		_hostName = this.GetPropertyDefaultValue(nameof(HostName));
 		_port = this.GetPropertyDefaultValueAsGeneric<ushort>(nameof(Port));
 		_userName = this.GetPropertyDefaultValue(nameof(UserName));
@@ -87,8 +87,8 @@ public sealed class TgSqlTableProxyModel : TgSqlTableBase
 	/// <param name="context"></param>
 	public TgSqlTableProxyModel(SerializationInfo info, StreamingContext context) : base(info, context)
     {
-        object? type = info.GetValue(nameof(Type), typeof(TgProxyType));
-		_type = type is TgProxyType proxyType ? proxyType : TgProxyType.None;
+        object? type = info.GetValue(nameof(Type), typeof(TgEnumProxyType));
+		_type = type is TgEnumProxyType proxyType ? proxyType : TgEnumProxyType.None;
 		_hostName = info.GetString(nameof(HostName)) ?? string.Empty;
 		_port = info.GetUInt16(nameof(Port));
 		_userName = info.GetString(nameof(UserName)) ?? string.Empty;

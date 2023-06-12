@@ -1,0 +1,64 @@
+﻿<common:TgBasePage
+	x:Class="TgDownloaderWinDesktop.Views.Pages.TgDashboardPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:common="clr-namespace:TgDownloaderWinDesktop.Common"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
+	Title="TgDashboardPage"
+	d:Background="{DynamicResource ApplicationBackgroundBrush}"
+	d:DataContext="{d:DesignInstance local:TgDashboardPage,
+	                                 IsDesignTimeCreatable=False}"
+	d:DesignHeight="600"
+	d:DesignWidth="900"
+	x:TypeArguments="viewModels:TgDashboardViewModel"
+	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+	mc:Ignorable="d">
+
+	<Grid VerticalAlignment="Top">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*" />
+			<ColumnDefinition Width="7*" />
+		</Grid.ColumnDefinitions>
+		<Label
+			Grid.Row="0"
+			Margin="2"
+			HorizontalAlignment="Center"
+			Content="{Binding .ViewModel.Locale.SettingName}" />
+		<Label
+			Grid.Row="0"
+			Grid.Column="1"
+			Margin="2"
+			HorizontalAlignment="Center"
+			Content="{Binding .ViewModel.Locale.SettingValue}" />
+		<TextBlock
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="2"
+			Text="{Binding .ViewModel.Locale.FileSession}" />
+		<Label
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="2"
+			Content="{Binding .ViewModel.AppSettings.AppXml.FileSession}" />
+		<Label
+			Grid.Row="2"
+			Grid.Column="0"
+			Margin="2"
+			Content="{Binding .ViewModel.Locale.FileStorage}" />
+		<TextBlock
+			Grid.Row="2"
+			Grid.Column="1"
+			Margin="2"
+			VerticalAlignment="Center"
+			Text="{Binding .ViewModel.AppSettings.AppXml.FileStorage}" />
+	</Grid>
+</common:TgBasePage>
