@@ -7,7 +7,9 @@
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
-## <p align="center"><img src="Assets/Main_menu.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
+
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 
 ## Обзор
 Скачайте файлы каналов или групп Telegram, в которых вы состоите.
