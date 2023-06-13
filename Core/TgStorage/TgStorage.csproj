@@ -3,13 +3,13 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.2.230.0</Version>
+    <Version>0.2.240.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.Xpo" Version="22.2.6" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.7" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
   </ItemGroup>
   <ItemGroup>

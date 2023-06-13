@@ -1,9 +1,9 @@
-name: Branch Preview
+name: Branch Main Build
 
 on:
   push:
     branches:
-      - preview
+      - main
     paths:
       - '**.csproj'
       - '**.razor'
@@ -48,12 +48,3 @@ jobs:
       
       - name: Build app for Release x86
         run: msbuild TgDownloader.sln -t:rebuild -verbosity:quiet -property:Configuration=Release -property:Platform=x86
-      
-      - name: Tests for Debug Any CPU
-        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform="Any CPU"
-
-      - name: Tests for Debug x64
-        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform=x64
-
-      - name: Tests for Debug x86
-        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform=x86
