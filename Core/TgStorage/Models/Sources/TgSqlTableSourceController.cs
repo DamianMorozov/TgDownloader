@@ -23,7 +23,7 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
 
     #region Public and private methods
 
-    public override TgSqlTableSourceModel NewItem() => new();
+    public override TgSqlTableSourceModel NewItem() => new() { Id = 1, Count = 1 };
 
     public override TgSqlTableSourceModel NewItem(Session session) => new(session);
 

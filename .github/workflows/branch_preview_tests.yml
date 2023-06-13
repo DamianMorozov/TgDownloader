@@ -1,0 +1,35 @@
+name: Branch Preview Tests
+
+on:
+  push:
+    branches:
+      - preview
+    paths:
+      - '**.csproj'
+      - '**.razor'
+      - '**.cs'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout to the repository
+        uses: actions/checkout@v3
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+  
+      - name: Setup Nuget Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      
+      - name: Install dependencies
+        run: nuget restore TgDownloader.sln
+
+      - name: Tests for Debug Any CPU
+        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform="Any CPU"
