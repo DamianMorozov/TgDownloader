@@ -12,8 +12,8 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgDashboardPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="600"
-	d:DesignWidth="900"
+	d:DesignHeight="700"
+	d:DesignWidth="1200"
 	x:TypeArguments="viewModels:TgDashboardViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -21,44 +21,149 @@
 	<Grid VerticalAlignment="Top">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="1*" />
-			<ColumnDefinition Width="7*" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<Label
+		<ui:ProgressRing
+			Name="ProgressRingReload"
 			Grid.Row="0"
-			Margin="2"
-			HorizontalAlignment="Center"
-			Content="{Binding .ViewModel.Locale.SettingName}" />
-		<Label
-			Grid.Row="0"
-			Grid.Column="1"
-			Margin="2"
-			HorizontalAlignment="Center"
-			Content="{Binding .ViewModel.Locale.SettingValue}" />
-		<TextBlock
-			Grid.Row="1"
 			Grid.Column="0"
-			Margin="2"
-			Text="{Binding .ViewModel.Locale.FileSession}" />
-		<Label
-			Grid.Row="1"
-			Grid.Column="1"
-			Margin="2"
-			Content="{Binding .ViewModel.AppSettings.AppXml.FileSession}" />
-		<Label
-			Grid.Row="2"
-			Grid.Column="0"
-			Margin="2"
-			Content="{Binding .ViewModel.Locale.FileStorage}" />
-		<TextBlock
-			Grid.Row="2"
-			Grid.Column="1"
-			Margin="2"
+			Width="30"
+			Height="30"
+			Margin="5"
+			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			Text="{Binding .ViewModel.AppSettings.AppXml.FileStorage}" />
+			IsIndeterminate="{Binding .ViewModel.IsReload, Mode=OneWay}"
+			Visibility="Visible" />
+		<ui:Button
+			Grid.Row="0"
+			Grid.Column="1"
+			Margin="5"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center"
+			Appearance="Primary"
+			Click="ButtonSettingsReload_OnClick"
+			Content="Reload all from XML"
+			Icon="ArrowSync12" />
+		<ui:Button
+			Grid.Row="0"
+			Grid.Column="2"
+			Margin="5"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center"
+			Appearance="Primary"
+			Click="ButtonSettingsDefault_OnClick"
+			Content="Reset to default"
+			Icon="ArrowReset24" />
+		<ui:Button
+			Grid.Row="0"
+			Grid.Column="3"
+			Margin="5"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center"
+			Appearance="Primary"
+			Click="ButtonSettingsSave_OnClick"
+			Content="Save at XML"
+			Icon="SaveEdit24" />
+		<Border
+			Grid.Row="1"
+			Grid.Column="0"
+			Grid.ColumnSpan="4"
+			Margin="5"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="10"
+			UseLayoutRounding="True">
+			<Grid Margin="5" Background="Transparent">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="0.5*" />
+					<ColumnDefinition Width="5*" />
+				</Grid.ColumnDefinitions>
+				<!--  Headers  -->
+				<Label
+					Grid.Row="0"
+					Grid.Column="0"
+					Margin="5"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.Locale.SettingName}"
+					FontWeight="Bold" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="1"
+					Margin="5"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.Locale.SettingCheck}"
+					FontWeight="Bold" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="2"
+					Margin="5"
+					HorizontalContentAlignment="Left"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.Locale.SettingValue}"
+					FontWeight="Bold" />
+				<!--  FileSession  -->
+				<Label
+					Grid.Row="1"
+					Grid.Column="0"
+					Margin="5"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.Locale.FileSession}"
+					FontWeight="Bold" />
+				<CheckBox
+					Grid.Row="1"
+					Grid.Column="1"
+					Margin="5"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					IsChecked="{Binding ViewModel.AppSettings.AppXml.IsExistsFileSession, Mode=OneWay}"
+					IsEnabled="False" />
+				<TextBox
+					Grid.Row="1"
+					Grid.Column="2"
+					Margin="5"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Text="{Binding ViewModel.AppSettings.AppXml.FileSession, Mode=TwoWay}" />
+				<!--  FileStorage  -->
+				<Label
+					Grid.Row="2"
+					Grid.Column="0"
+					Margin="5"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.Locale.FileStorage}"
+					FontWeight="Bold" />
+				<CheckBox
+					Grid.Row="2"
+					Grid.Column="1"
+					Margin="5"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					IsChecked="{Binding ViewModel.AppSettings.AppXml.IsExistsFileStorage, Mode=OneWay}"
+					IsEnabled="False" />
+				<TextBox
+					Grid.Row="2"
+					Grid.Column="2"
+					Margin="5"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Text="{Binding ViewModel.AppSettings.AppXml.FileStorage, Mode=TwoWay}" />
+			</Grid>
+		</Border>
 	</Grid>
 </common:TgBasePage>

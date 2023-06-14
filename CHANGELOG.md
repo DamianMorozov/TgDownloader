@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.250] - 2023-06-15
+### Fixed
+- Fixed errors in tests
+### Added in TgDownloaderWinDesktop
+- Edit app settings
+
 ## [0.2.230] - 2023-06-13
 ### Fixed in TgDownloaderConsole
 - Restore ApiId when session was deleted

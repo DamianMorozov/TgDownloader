@@ -7,8 +7,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
-	Width="1100"
-	Height="650"
+	Width="1200"
+	Height="700"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:MainWindow,
 	                                 IsDesignTimeCreatable=True}"
@@ -71,16 +71,21 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-					<!--<ui:Breadcrumb
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<ui:Breadcrumb
 						Grid.Row="0"
-						Margin="0,0,0,12"
+						Grid.Column="0"
+						Margin="5"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Top"
 						FontSize="24"
-						Navigation="{Binding ElementName=RootNavigation, Mode=OneWay}" />-->
+						Navigation="{Binding ElementName=RootNavigation, Mode=OneWay}" />
 					<Frame
 						x:Name="RootFrame"
 						Grid.Row="1"
+						Grid.Column="0"
 						Margin="0" />
 				</Grid>
 			</Border>

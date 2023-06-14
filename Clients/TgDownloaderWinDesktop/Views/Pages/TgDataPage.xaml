@@ -13,8 +13,8 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgDataPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="600"
-	d:DesignWidth="900"
+	d:DesignHeight="700"
+	d:DesignWidth="1200"
 	x:TypeArguments="viewModels:TgDataViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -29,7 +29,7 @@
 					<ui:Button
 						Width="80"
 						Height="80"
-						Margin="2"
+						Margin="5"
 						Padding="0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"

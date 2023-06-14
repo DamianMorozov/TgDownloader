@@ -41,7 +41,7 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 	protected TgAppSettingsHelper(SerializationInfo info, StreamingContext context)
 	{
 		object? app = info.GetValue(nameof(AppXml), typeof(AppXmlModel));
-		AppXml = app is AppXmlModel appXml ? appXml : new();
+		AppXml = app as AppXmlModel ?? new();
 	}
 
 	/// <summary>
@@ -63,12 +63,24 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 			AppXml = TgDataFormatUtils.DeserializeFromXml<AppXmlModel>(xml);
 	}
 
+	public void DefaultXmlSettings(Encoding? encoding = null)
+	{
+		AppXml.FileSession = TgFileUtils.Session;
+			AppXml.FileStorage = TgFileUtils.Storage;
+		StoreXmlSettingsUnsafe();
+	}
+
 	public void StoreXmlSettings(Encoding? encoding = null)
 	{
 		if (string.IsNullOrEmpty(AppXml.FileSession) || !AppXml.IsExistsFileSession)
 			AppXml.FileSession = TgFileUtils.Session;
 		if (string.IsNullOrEmpty(AppXml.FileStorage) || !AppXml.IsExistsFileStorage)
 			AppXml.FileStorage = TgFileUtils.Storage;
+		StoreXmlSettingsUnsafe();
+	}
+
+	public void StoreXmlSettingsUnsafe(Encoding? encoding = null)
+	{
 		string xml = TgDataFormatUtils.SerializeAsXmlDocument(AppXml, true).InnerXml;
 		xml = TgDataFormatUtils.GetPrettyXml(xml);
 		using FileStream fileStream = new(TgFileUtils.AppXmlSettings, FileMode.Create);

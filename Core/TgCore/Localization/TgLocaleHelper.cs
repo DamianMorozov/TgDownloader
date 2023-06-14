@@ -166,6 +166,7 @@ public sealed class TgLocaleHelper : ITgHelper
 	public string SettingIsDisabled => "Setting is disabled";
 	public string SettingIsEnabled => "Setting is enabled";
 	public string SettingName => "Setting";
+	public string SettingCheck => "Check";
 	public string SettingValue => "Value";
 	public string SettingsIsNeedSetup => "Something is need setup";
 	public string SettingsIsOk => "Everything is ok";

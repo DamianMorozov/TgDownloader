@@ -9,8 +9,6 @@ public sealed partial class TgViewSourcesViewModel : TgBaseViewModel
 	#region Public and private fields, properties, constructor
 
 	public ObservableCollection<TgSqlTableSourceModel> Sources { get; set; }
-	public bool IsReload { get; set; }
-
 
 	public TgViewSourcesViewModel()
 	{

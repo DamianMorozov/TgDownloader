@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System;
 using Wpf.Ui.Mvvm.Interfaces;
 
 namespace TgDownloaderWinDesktop.Views.Pages;
@@ -33,6 +34,12 @@ public partial class TgViewSourcesPage : INotifyPropertyChanged
 	{
 		if (sender is not Button button) return;
 		if (button.Tag is not long sourceId) return;
+		_ = Task.Run(async () =>
+		{
+			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			ViewModel.IsReload = true;
+		}).ConfigureAwait(true);
+
 		TgSqlTableSourceModel source = ViewModel.Sources.First(item => item.Id.Equals(sourceId));
 		int index = ViewModel.Sources.IndexOf(source);
 		ViewModel.Sources[index] = ViewModel.ContextManager.ContextTableSources.GetItem(sourceId);
@@ -41,18 +48,32 @@ public partial class TgViewSourcesPage : INotifyPropertyChanged
 		//	ViewModel.TgClient.DownloadAllData(tgDownloadSettings, StoreMessage, StoreDocument,
 		//		ViewModel.ContextManager.ContextTableMessages.FindExistsMessage);
 		//ViewModel.TgClient.UpdateStatus(ViewModel.Locale.SettingsSource);
+		
+		_ = Task.Run(async () =>
+		{
+			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			ViewModel.IsReload = false;
+		}).ConfigureAwait(true);
 		}
 
-		private void ButtonSourceReloadAll_OnClick(object sender, RoutedEventArgs e)
+	private void ButtonSourceReloadAll_OnClick(object sender, RoutedEventArgs e)
 	{
+		_ = Task.Run(async () =>
+					{
+						await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		ViewModel.IsReload = true;
-		//ProgressRingReload.IsIndeterminate = true;
+					}).ConfigureAwait(true);
+		
 		for (int index = 0; index < ViewModel.Sources.Count; index++)
 		{
 			ViewModel.Sources[index] = ViewModel.ContextManager.ContextTableSources.GetItem(ViewModel.Sources[index].Id);
 		}
-		ViewModel.IsReload = false;
-			//ProgressRingReload.IsIndeterminate = false;
+
+		_ = Task.Run(async () =>
+		{
+			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			ViewModel.IsReload = false;
+		}).ConfigureAwait(true);
 	}
 
 	private void StoreMessage(int arg1, long arg2, DateTime arg3, TgEnumMessageType arg4, long arg5, string arg6)

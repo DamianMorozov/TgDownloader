@@ -173,7 +173,7 @@ public class TgClientHelper : ITgHelper
 			tgDownloadSettings.SourceId = ReduceChatId(tgDownloadSettings.SourceId);
 			foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
 			{
-				if (chat.Value is ChatBase chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceId))
+				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceId))
 					return chatBase;
 			}
 		}
@@ -181,7 +181,7 @@ public class TgClientHelper : ITgHelper
 		{
 			foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
 			{
-				if (chat.Value is ChatBase chatBase)
+				if (chat.Value is { } chatBase)
 					return chatBase;
 			}
 		}
@@ -195,11 +195,24 @@ public class TgClientHelper : ITgHelper
 		if (messagesChats is not null)
 			foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
 			{
-				if (chat.Value is ChatBase chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceId))
+				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceId))
 					return chatBase;
 			}
 
 		return null;
+	}
+
+	public Bots_BotInfo? GetBotInfo(TgDownloadSettingsModel tgDownloadSettings)
+	{
+		if (tgDownloadSettings.SourceId is 0)
+			tgDownloadSettings.SourceId = GetPeerId(tgDownloadSettings.SourceUserName);
+		if (!tgDownloadSettings.IsReadySourceId)
+				tgDownloadSettings.SourceId = ReduceChatId(tgDownloadSettings.SourceId);
+		if (!tgDownloadSettings.IsReadySourceId) return null;
+			Bots_BotInfo? botInfo = Me is null ? null : Client.Bots_GetBotInfo("en", 
+new InputUser(tgDownloadSettings.SourceId, 0))
+			.ConfigureAwait(true).GetAwaiter().GetResult();
+		return botInfo;
 	}
 
 	public string GetChatUpdatedName(long id) => DicChatsUpdated.TryGetValue(ReduceChatId(id), out ChatBase? chat) ? chat.ToString() : string.Empty;

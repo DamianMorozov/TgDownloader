@@ -11,8 +11,8 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgSectionSourcesPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="600"
-	d:DesignWidth="900"
+	d:DesignHeight="700"
+	d:DesignWidth="1200"
 	x:TypeArguments="viewModels:TgSectionSourcesViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">

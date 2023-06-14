@@ -21,6 +21,7 @@ public partial class TgBaseViewModel : ObservableObject, INavigationAware
 	public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
 	internal TgClientHelper TgClient => TgClientHelper.Instance;
 	public EnumToBooleanConverter EnumToBooleanConverter { get; set; }
+	public bool IsReload { get; set; }
 
 	public TgBaseViewModel()
 	{

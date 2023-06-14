@@ -6,7 +6,7 @@ namespace TgCore.Models;
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{ToString()}")]
-public class AppXmlModel : ITgSerializable
+public class AppXmlModel : ITgSerializable, INotifyPropertyChanged
 {
 	#region Public and private fields, properties, constructor
 
@@ -110,4 +110,19 @@ public class AppXmlModel : ITgSerializable
 		$"{nameof(AppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
 
 	#endregion
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
+	}
 }
