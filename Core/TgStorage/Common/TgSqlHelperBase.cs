@@ -12,8 +12,10 @@ public class TgSqlHelperBase<T> where T : TgSqlTableBase, new()
     #region Public and private methods
 
     public virtual string TableName => throw new NotImplementedException("Use override method!");
+    
+    protected readonly object Locker = new();
 
-    public virtual T NewItem() => throw new NotImplementedException("Use override method!");
+	public virtual T NewItem() => throw new NotImplementedException("Use override method!");
 
     public virtual T NewItem(Session session) => throw new NotImplementedException("Use override method!");
 

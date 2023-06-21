@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Diagnostics;
+
 namespace TgDownloader.Helpers;
 
 public class TgClientHelper : ITgHelper
@@ -23,6 +25,7 @@ public class TgClientHelper : ITgHelper
 	public Client? Client { get; set; }
 	public bool IsClientReady => Client is { Disconnected: false };
 	public ExceptionModel ClientException { get; private set; }
+	public string TgQuery { get; set; }
 	public ExceptionModel ProxyException { get; private set; }
 	public bool IsReady
 	{
@@ -49,6 +52,7 @@ public class TgClientHelper : ITgHelper
 	public List<ChatBase> ListSmallGroups { get; }
 	public Action<string> UpdateStatus { get; set; }
 	public Action<string> UpdateStatusWithProgress { get; set; }
+	public Action<long, int, string> UpdateStatusWithId { get; set; }
 	public bool IsUpdateStatus { get; set; }
 	private object ChannelUpdateLocker { get; }
 
@@ -65,11 +69,13 @@ public class TgClientHelper : ITgHelper
 		ProxyException = new();
 		UpdateStatus = (_) => { };
 		UpdateStatusWithProgress = (_) => { };
+		UpdateStatusWithId = (_, _, _) => { };
 		ChannelUpdateLocker = new();
+		TgQuery = string.Empty;
 
 		// TgLog to VS Output debugging pane in addition.
-		//WTelegram.Helpers.Log += (_, str) => Debug.WriteLine(str);
-		// Disable logging.
+		//WTelegram.Helpers.Log += (i, str) => Debug.WriteLine($"{i} | {str}");
+		// Disable logging in Console.
 		WTelegram.Helpers.Log = (_, _) => { };
 	}
 
@@ -77,16 +83,28 @@ public class TgClientHelper : ITgHelper
 
 	#region Public and private methods
 
-	public void Connect(Func<string, string?>? config, TgSqlTableProxyModel proxy)
+	public void ConnectSession(Func<string, string?>? config, TgSqlTableProxyModel proxy, Action? afterConnect = null)
 	{
 		if (IsReady) return;
-		UnLoginUser();
+		Disconnect();
 
 		Client = new(config);
 		ConnectThroughProxy(proxy);
 		Client.OnUpdate += Client_OnUpdateAsync;
 
-		LoginUser(true);
+		LoginUser(true, afterConnect);
+	}
+
+	public void ConnectSessionDesktop(Func<string, string?>? config, TgSqlTableProxyModel proxy, Action? afterConnect = null)
+	{
+		if (IsReady) return;
+		Disconnect();
+
+		Client = new(config);
+		ConnectThroughProxy(proxy);
+		Client.OnUpdate += Client_OnUpdateAsync;
+
+		LoginUserDesktop(true, afterConnect);
 	}
 
 	public void ConnectThroughProxy(TgSqlTableProxyModel proxy)
@@ -207,11 +225,11 @@ public class TgClientHelper : ITgHelper
 		if (tgDownloadSettings.SourceId is 0)
 			tgDownloadSettings.SourceId = GetPeerId(tgDownloadSettings.SourceUserName);
 		if (!tgDownloadSettings.IsReadySourceId)
-				tgDownloadSettings.SourceId = ReduceChatId(tgDownloadSettings.SourceId);
+			tgDownloadSettings.SourceId = ReduceChatId(tgDownloadSettings.SourceId);
 		if (!tgDownloadSettings.IsReadySourceId) return null;
-			Bots_BotInfo? botInfo = Me is null ? null : Client.Bots_GetBotInfo("en", 
+		Bots_BotInfo? botInfo = Me is null ? null : Client.Bots_GetBotInfo("en",
 new InputUser(tgDownloadSettings.SourceId, 0))
-			.ConfigureAwait(true).GetAwaiter().GetResult();
+		.ConfigureAwait(true).GetAwaiter().GetResult();
 		return botInfo;
 	}
 
@@ -329,109 +347,109 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	// https://corefork.telegram.org/type/Update
 	private void SwitchUpdateType(Update update, Channel? channel = null)
 	{
-			string channelLabel = channel is null ? string.Empty : 
-				string.IsNullOrEmpty(channel.MainUsername) ? channel.ID.ToString() : $"{channel.ID} | {channel.MainUsername}";
-			if (!string.IsNullOrEmpty(channelLabel))
-				channelLabel = $" for channel [{channelLabel}]";
-			switch (update)
-			{
-				case UpdateNewChannelMessage updateNewChannelMessage:
-					if (channel is not null && updateNewChannelMessage.message.Peer.ID.Equals(channel.ID))
-					{
-						//UpdateSource(channel, updateNewChannelMessage.message.ID);
-						UpdateStatus($" {TgLog.GetDtStamp()} | New channel message [{updateNewChannelMessage.message.ID}]{channelLabel}");
-					}
-					break;
-				case UpdateNewMessage updateNewMessage:
-					UpdateStatus($" {TgLog.GetDtStamp()} | New message [{updateNewMessage.message.ID}]{channelLabel}");
-					break;
-				case UpdateMessageID updateMessageId:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Message ID [{updateMessageId.id}]{channelLabel}");
-					break;
-				case UpdateDeleteChannelMessages deleteChannelMessages:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Delete channel messages [{string.Join(", ", deleteChannelMessages.messages)}]{channelLabel}");
-					break;
-				case UpdateDeleteMessages updateDeleteMessages:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
-					break;
-				case UpdateChatUserTyping updateChatUserTyping:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Chat user typing [{updateChatUserTyping.from_id}]{channelLabel}");
-					break;
-				case UpdateChatParticipants { participants: ChatParticipants chatParticipants }:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
-					break;
-				case UpdateUserStatus updateUserStatus:
-					UpdateStatus($" {TgLog.GetDtStamp()} | User status [{updateUserStatus.user_id} | {updateUserStatus.status}]{channelLabel}");
-					break;
-				case UpdateUserName updateUserName:
-					UpdateStatus($" {TgLog.GetDtStamp()} | User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
-					break;
-				case UpdateNewEncryptedMessage updateNewEncryptedMessage:
-					UpdateStatus($" {TgLog.GetDtStamp()} | New encrypted message [{updateNewEncryptedMessage.message.ChatId}]{channelLabel}");
-					break;
-				case UpdateEncryptedChatTyping updateEncryptedChatTyping:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted chat typing [{updateEncryptedChatTyping.chat_id}]{channelLabel}");
-					break;
-				case UpdateEncryption updateEncryption:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Encryption [{updateEncryption.chat.ID}]{channelLabel}");
-					break;
-				case UpdateEncryptedMessagesRead updateEncryptedMessagesRead:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted message read [{updateEncryptedMessagesRead.chat_id}]{channelLabel}");
-					break;
-				case UpdateChatParticipantAdd updateChatParticipantAdd:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant add [{updateChatParticipantAdd.user_id}]{channelLabel}");
-					break;
-				case UpdateChatParticipantDelete updateChatParticipantDelete:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant delete [{updateChatParticipantDelete.user_id}]{channelLabel}");
-					break;
-				case UpdateDcOptions updateDcOptions:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
-					break;
-				case UpdateNotifySettings updateNotifySettings:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Notify settings [{updateNotifySettings.notify_settings}]{channelLabel}");
-					break;
-				case UpdateServiceNotification updateServiceNotification:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Service notification [{updateServiceNotification.message}]{channelLabel}");
-					break;
-				case UpdatePrivacy updatePrivacy:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Privacy [{updatePrivacy.key}]{channelLabel}");
-					break;
-				case UpdateUserPhone updateUserPhone:
-					UpdateStatus($" {TgLog.GetDtStamp()} | User phone [{updateUserPhone.phone}]{channelLabel}");
-					break;
-				case UpdateReadHistoryInbox updateReadHistoryInbox:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Read history inbox [{updateReadHistoryInbox.flags}]{channelLabel}");
-					break;
-				case UpdateReadHistoryOutbox updateReadHistoryOutbox:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Read history outbox [{updateReadHistoryOutbox.peer}]{channelLabel}");
-					break;
-				case UpdateWebPage updateWebPage:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Web page [{updateWebPage.webpage.ID}]{channelLabel}");
-					break;
-				case UpdateReadMessagesContents updateReadMessagesContents:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
-					break;
+		string channelLabel = channel is null ? string.Empty :
+			string.IsNullOrEmpty(channel.MainUsername) ? channel.ID.ToString() : $"{channel.ID} | {channel.MainUsername}";
+		if (!string.IsNullOrEmpty(channelLabel))
+			channelLabel = $" for channel [{channelLabel}]";
+		switch (update)
+		{
+			case UpdateNewChannelMessage updateNewChannelMessage:
+				if (channel is not null && updateNewChannelMessage.message.Peer.ID.Equals(channel.ID))
+				{
+					//UpdateSource(channel, updateNewChannelMessage.message.ID);
+					UpdateStatus($" {TgLog.GetDtStamp()} | New channel message [{updateNewChannelMessage.message.ID}]{channelLabel}");
+				}
+				break;
+			case UpdateNewMessage updateNewMessage:
+				UpdateStatus($" {TgLog.GetDtStamp()} | New message [{updateNewMessage.message.ID}]{channelLabel}");
+				break;
+			case UpdateMessageID updateMessageId:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Message ID [{updateMessageId.id}]{channelLabel}");
+				break;
+			case UpdateDeleteChannelMessages deleteChannelMessages:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Delete channel messages [{string.Join(", ", deleteChannelMessages.messages)}]{channelLabel}");
+				break;
+			case UpdateDeleteMessages updateDeleteMessages:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
+				break;
+			case UpdateChatUserTyping updateChatUserTyping:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Chat user typing [{updateChatUserTyping.from_id}]{channelLabel}");
+				break;
+			case UpdateChatParticipants { participants: ChatParticipants chatParticipants }:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
+				break;
+			case UpdateUserStatus updateUserStatus:
+				UpdateStatus($" {TgLog.GetDtStamp()} | User status [{updateUserStatus.user_id} | {updateUserStatus.status}]{channelLabel}");
+				break;
+			case UpdateUserName updateUserName:
+				UpdateStatus($" {TgLog.GetDtStamp()} | User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
+				break;
+			case UpdateNewEncryptedMessage updateNewEncryptedMessage:
+				UpdateStatus($" {TgLog.GetDtStamp()} | New encrypted message [{updateNewEncryptedMessage.message.ChatId}]{channelLabel}");
+				break;
+			case UpdateEncryptedChatTyping updateEncryptedChatTyping:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted chat typing [{updateEncryptedChatTyping.chat_id}]{channelLabel}");
+				break;
+			case UpdateEncryption updateEncryption:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Encryption [{updateEncryption.chat.ID}]{channelLabel}");
+				break;
+			case UpdateEncryptedMessagesRead updateEncryptedMessagesRead:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted message read [{updateEncryptedMessagesRead.chat_id}]{channelLabel}");
+				break;
+			case UpdateChatParticipantAdd updateChatParticipantAdd:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant add [{updateChatParticipantAdd.user_id}]{channelLabel}");
+				break;
+			case UpdateChatParticipantDelete updateChatParticipantDelete:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant delete [{updateChatParticipantDelete.user_id}]{channelLabel}");
+				break;
+			case UpdateDcOptions updateDcOptions:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
+				break;
+			case UpdateNotifySettings updateNotifySettings:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Notify settings [{updateNotifySettings.notify_settings}]{channelLabel}");
+				break;
+			case UpdateServiceNotification updateServiceNotification:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Service notification [{updateServiceNotification.message}]{channelLabel}");
+				break;
+			case UpdatePrivacy updatePrivacy:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Privacy [{updatePrivacy.key}]{channelLabel}");
+				break;
+			case UpdateUserPhone updateUserPhone:
+				UpdateStatus($" {TgLog.GetDtStamp()} | User phone [{updateUserPhone.phone}]{channelLabel}");
+				break;
+			case UpdateReadHistoryInbox updateReadHistoryInbox:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Read history inbox [{updateReadHistoryInbox.flags}]{channelLabel}");
+				break;
+			case UpdateReadHistoryOutbox updateReadHistoryOutbox:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Read history outbox [{updateReadHistoryOutbox.peer}]{channelLabel}");
+				break;
+			case UpdateWebPage updateWebPage:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Web page [{updateWebPage.webpage.ID}]{channelLabel}");
+				break;
+			case UpdateReadMessagesContents updateReadMessagesContents:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
+				break;
 
 			case UpdateEditMessage updateEditMessage:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Edit message [{updateEditMessage.message.ID}]{channelLabel}");
-					break;
-				case UpdateUserTyping updateUserTyping:
-					UpdateStatus($" {TgLog.GetDtStamp()} | User typing [{updateUserTyping.user_id}]{channelLabel}");
-					break;
-				case UpdateChannel updateChannel:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Channel [{updateChannel.channel_id}]");
-					break;
-				case UpdateChannelReadMessagesContents updateChannelReadMessages:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
-					break;
-				case UpdateChannelUserTyping updateChannelUserTyping:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Channel user typing [{updateChannelUserTyping.from_id}]{channelLabel}");
-					break;
-				case UpdateMessagePoll updateMessagePoll:
-					UpdateStatus($" {TgLog.GetDtStamp()} | Message poll [{updateMessagePoll.poll_id}]{channelLabel}");
-					break;
-			}
+				UpdateStatus($" {TgLog.GetDtStamp()} | Edit message [{updateEditMessage.message.ID}]{channelLabel}");
+				break;
+			case UpdateUserTyping updateUserTyping:
+				UpdateStatus($" {TgLog.GetDtStamp()} | User typing [{updateUserTyping.user_id}]{channelLabel}");
+				break;
+			case UpdateChannel updateChannel:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Channel [{updateChannel.channel_id}]");
+				break;
+			case UpdateChannelReadMessagesContents updateChannelReadMessages:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
+				break;
+			case UpdateChannelUserTyping updateChannelUserTyping:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Channel user typing [{updateChannelUserTyping.from_id}]{channelLabel}");
+				break;
+			case UpdateMessagePoll updateMessagePoll:
+				UpdateStatus($" {TgLog.GetDtStamp()} | Message poll [{updateMessagePoll.poll_id}]{channelLabel}");
+				break;
 		}
+	}
 
 	private void Client_DisplayMessage(MessageBase messageBase, bool edit = false)
 	{
@@ -603,7 +621,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	public int GetChannelMessageIdWithoutLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
 		TgEnumPosition position) => GetChannelMessageIdCore(tgDownloadSettings, chatBase, position);
 
-	private int GetChannelMessageIdCore(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase, 
+	private int GetChannelMessageIdCore(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
 		TgEnumPosition position)
 	{
 		if (Client is null) return 0;
@@ -649,13 +667,13 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	public int GetChannelMessageIdLastWithoutLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase) =>
 		GetChannelMessageIdWithoutLock(tgDownloadSettings, chatBase, TgEnumPosition.Last);
 
-	private int GetChannelMessageIdLastCore(ChatFullBase chatFullBase) => 
+	private int GetChannelMessageIdLastCore(ChatFullBase chatFullBase) =>
 		chatFullBase is ChannelFull channelFull ? channelFull.read_inbox_max_id : 0;
 
-	public void SetChannelMessageIdFirstWithLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) => 
+	public void SetChannelMessageIdFirstWithLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) =>
 		GetChannelMessageIdWithLock(tgDownloadSettings, chatBase, TgEnumPosition.First);
 
-	public void SetChannelMessageIdFirstWithoutLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) => 
+	public void SetChannelMessageIdFirstWithoutLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) =>
 		GetChannelMessageIdWithoutLock(tgDownloadSettings, chatBase, TgEnumPosition.First);
 
 	private int SetChannelMessageIdFirstCore(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase, ChatFullBase chatFullBase)
@@ -814,7 +832,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		});
 	}
 
-	public void DownloadAllData(TgDownloadSettingsModel tgDownloadSettings, 
+	public void DownloadAllData(TgDownloadSettingsModel tgDownloadSettings,
 		Action<int, long, DateTime, TgEnumMessageType, long, string> storeMessage,
 		Action<long, long, long, string, long, long> storeDocument, Func<long, long, bool> findExistsMessage)
 	{
@@ -851,6 +869,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 							else
 							{
 								UpdateStatusWithProgress("Message is not exists!");
+								UpdateStatusWithId(tgDownloadSettings.SourceId, message.ID, "Message is not exists!");
 							}
 						}
 					}
@@ -881,6 +900,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		if (messageBase is not TL.Message message)
 		{
 			UpdateStatusWithProgress("Empty message");
+			UpdateStatusWithId(tgDownloadSettings.SourceId, messageBase.ID, "Empty message");
 			return;
 		}
 
@@ -913,6 +933,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				}
 			}
 			UpdateStatusWithProgress("Read the message");
+			UpdateStatusWithId(tgDownloadSettings.SourceId, message.ID, "Read the message");
 		});
 	}
 
@@ -1028,7 +1049,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 	}
 
-	private void DeleteExistsFiles(TgDownloadSettingsModel tgDownloadSettings, 
+	private void DeleteExistsFiles(TgDownloadSettingsModel tgDownloadSettings,
 		  (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files)
 	{
 		TryCatchAction(() =>
@@ -1048,7 +1069,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		});
 	}
 
-	private void DownloadDataCore(TgDownloadSettingsModel tgDownloadSettings, 
+	private void DownloadDataCore(TgDownloadSettingsModel tgDownloadSettings,
 		MessageBase messageBase, Document? document, Photo? photo,
 		Action<int, long, DateTime, TgEnumMessageType, long, string> storeMessage,
 		Action<long, long, long, string, long, long> storeDocument,
@@ -1152,38 +1173,72 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	//        _ => string.Empty
 	//    };
 
-	public void LoginUser(bool isProxyUpdate)
+	public void LoginUser(bool isProxyUpdate, Action? afterConnect = null)
 	{
 		ClientException = new();
+		if (Client is null) return;
+
 		try
 		{
-			Me = Client?.LoginUserIfNeeded().ConfigureAwait(true).GetAwaiter().GetResult();
+			Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
+			TgQuery = string.Empty;
 		}
 		catch (Exception ex)
 		{
 			ClientException.Set(ex);
 			Me = null;
 		}
-
-		if (isProxyUpdate && IsReady)
+		finally
 		{
-			TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
-			app.ProxyUid = ContextManager.ContextTableApps.GetCurrentProxy().Uid;
-			ContextManager.ContextTableApps.AddOrUpdateItem(app);
-			//CollectAllChats();
-		}
+			if (isProxyUpdate && IsReady)
+			{
+				TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
+				app.ProxyUid = ContextManager.ContextTableApps.GetCurrentProxy().Uid;
+				ContextManager.ContextTableApps.AddOrUpdateItem(app);
+			}
+
+			afterConnect?.Invoke();
+		};
 	}
 
-	public void UnLoginUser()
+	public void LoginUserDesktop(bool isProxyUpdate, Action? afterConnect = null)
 	{
-		if (Client is not null)
-		{
-			Client.OnUpdate -= Client_OnUpdateAsync;
-			Client.Dispose();
-			Client = null;
-			ClientException = new();
-			Me = null;
-		}
+		ClientException = new();
+		if (Client is null) return;
+
+		_ = Task.Run(async () =>
+						{
+							await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+							try
+							{
+								Me = await Client.LoginUserIfNeeded().ConfigureAwait(true);
+								TgQuery = string.Empty;
+							}
+							catch (Exception ex)
+							{
+								ClientException.Set(ex);
+								Me = null;
+							}
+							finally
+							{
+								if (isProxyUpdate && IsReady)
+								{
+									TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
+									app.ProxyUid = ContextManager.ContextTableApps.GetCurrentProxy().Uid;
+									ContextManager.ContextTableApps.AddOrUpdateItem(app);
+								}
+								afterConnect?.Invoke();
+							}
+						}).ConfigureAwait(true);
+	}
+
+	public void Disconnect()
+	{
+		if (Client is null) return;
+		Client.OnUpdate -= Client_OnUpdateAsync;
+		Client.Dispose();
+		ClientException = new();
+		Me = null;
 	}
 
 	#endregion

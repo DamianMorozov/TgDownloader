@@ -7,12 +7,12 @@
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding .ViewModel.Locale.MenuMainAdvanced}"
+	Title="{Binding .ViewModel.TgLocale.MenuMainAdvanced}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgAdvancedPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
 	x:TypeArguments="viewModels:TgAdvancedViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -30,25 +30,25 @@
 			Margin="0"
 			Background="Transparent"
 			Command="{Binding ViewModel.MenuScanChatsCommand}"
-			Content="{Binding ViewModel.Locale.MenuScanChats}" />
+			Content="{Binding ViewModel.TgLocale.MenuScanChats}" />
 		<Button
 			Grid.Row="1"
 			Margin="0"
 			Background="Transparent"
 			Command="{Binding ViewModel.MenuScanDialogsCommand}"
-			Content="{Binding ViewModel.Locale.MenuScanDialogs}" />
+			Content="{Binding ViewModel.TgLocale.MenuScanDialogs}" />
 		<Button
 			Grid.Row="2"
 			Margin="0"
 			Background="Transparent"
 			Command="{Binding ViewModel.MenuViewSourcesCommand}"
-			Content="{Binding ViewModel.Locale.MenuViewSources}" />
+			Content="{Binding ViewModel.TgLocale.MenuViewSources}" />
 		<Button
 			Grid.Row="3"
 			Margin="0"
 			Background="Transparent"
 			Command="{Binding ViewModel.MenuDownloadAutoCommand}"
-			Content="{Binding ViewModel.Locale.MenuDownloadAuto}" />
+			Content="{Binding ViewModel.TgLocale.MenuDownloadAuto}" />
 		<!--<Frame Grid.Row="4">
 			<Frame.GestureRecognizers>
 				<TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:TgSectionSourcesViewModel}}, Path=MenuViewSourcesCommand}" CommandParameter="{Binding .}" />

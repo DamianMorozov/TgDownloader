@@ -8,12 +8,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding ViewModel.Locale.MenuMainFilters}"
+	Title="{Binding ViewModel.TgLocale.MenuMainFilters}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgItemSourcePage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
 	x:TypeArguments="viewModels:TgItemSourceViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">

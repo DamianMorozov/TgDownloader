@@ -17,7 +17,6 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
     #region Public and private fields, properties, constructor
 
     public override string TableName => TgSqlConstants.TableSources;
-    private readonly object _locker = new();
 
     #endregion
 
@@ -93,7 +92,7 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
 
     public override bool AddOrUpdateItem(TgSqlTableSourceModel item)
     {
-	    lock (_locker)
+	    lock (Locker)
 	    {
 		    // Try find item.
 	        TgSqlTableSourceModel itemDest = GetItem(item.Id);
@@ -111,5 +110,5 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
         return base.DeleteItem(itemDb);
     }
 
-    #endregion
+	#endregion
 }

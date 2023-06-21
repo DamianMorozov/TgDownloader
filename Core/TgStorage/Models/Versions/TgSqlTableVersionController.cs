@@ -78,14 +78,17 @@ public sealed class TgSqlTableVersionController : TgSqlHelperBase<TgSqlTableVers
     }
 
     public override bool AddOrUpdateItem(TgSqlTableVersionModel item)
-    {
-        // Try find item.
-        TgSqlTableVersionModel itemDest = GetItem(item.Version);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	{
+		lock (Locker)
+		{
+			// Try find item.
+			TgSqlTableVersionModel itemDest = GetItem(item.Version);
+	        // Add item.
+	        if (!itemDest.IsExists)
+	            return AddItem(item);
+	        // Update item.
+	        return UpdateItem(item, itemDest);
+		}
     }
 
     public override bool DeleteItem(TgSqlTableVersionModel item)

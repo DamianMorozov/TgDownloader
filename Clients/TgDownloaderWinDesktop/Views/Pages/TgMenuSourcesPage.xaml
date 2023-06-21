@@ -1,0 +1,261 @@
+﻿<common:TgBasePage
+	x:Class="TgDownloaderWinDesktop.Views.Pages.TgMenuSourcesPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:common="clr-namespace:TgDownloaderWinDesktop.Common"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sources="clr-namespace:TgStorage.Models.Sources;assembly=TgStorage"
+	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
+	Title="{Binding .ViewModel.TgLocale.TableSources, Mode=OneWay}"
+	d:Background="{DynamicResource ApplicationBackgroundBrush}"
+	d:DataContext="{d:DesignInstance local:TgMenuSourcesPage,
+	                                 IsDesignTimeCreatable=False}"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
+	x:TypeArguments="viewModels:TgMenuSourcesViewModel"
+	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+	Loaded="TgMenuSourcesPage_OnLoaded"
+	Tag="Sources"
+	mc:Ignorable="d">
+
+	<Grid VerticalAlignment="Top">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<CheckBox
+			Grid.Row="0"
+			Grid.Column="0"
+			Margin="2,2,2,2"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			IsChecked="{Binding ViewModel.IsClientReady, Mode=OneWay}"
+			IsEnabled="False" />
+		<Label
+			Grid.Row="0"
+			Grid.Column="1"
+			Margin="2,2,2,2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding ViewModel.TgLocale.MenuClientIsReady}"
+			FontWeight="Bold" />
+		<ui:ProgressRing
+			Name="ProgressRingReload"
+			Grid.Row="0"
+			Grid.Column="2"
+			Width="30"
+			Height="30"
+			Margin="2,2,2,2"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			IsIndeterminate="{Binding .ViewModel.IsLoad, Mode=OneWay}"
+			Visibility="Visible" />
+		<ui:Button
+			Grid.Row="0"
+			Grid.Column="3"
+			Margin="2,2,2,2"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center"
+			Appearance="Primary"
+			Click="ButtonSourceReloadAll_OnClick"
+			Content="Reload all from Storage"
+			Icon="ArrowSync12" />
+		<Label
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="2,2,2,2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding ViewModel.TgLocale.MenuClientProgressStatus}"
+			FontWeight="Bold" />
+		<TextBox
+			Grid.Row="1"
+			Grid.Column="1"
+			Grid.ColumnSpan="3"
+			Margin="2,2,2,2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Center"
+			HorizontalContentAlignment="Left"
+			IsEnabled="False"
+			IsReadOnly="True"
+			Text="{Binding ViewModel.TgClientQuery, Mode=OneWay}" />
+		<DataGrid
+			Grid.Row="2"
+			Grid.Column="0"
+			Grid.ColumnSpan="4"
+			Margin="2,2,2,2"
+			AutoGenerateColumns="False"
+			Background="Transparent"
+			ItemsSource="{Binding ViewModel.Sources, Mode=OneWay}">
+			<DataGrid.Columns>
+				<!--  Load  -->
+				<DataGridTemplateColumn Width="0.75*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Reload"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ui:Button
+								Margin="2,2,2,2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Appearance="Primary"
+								Click="ButtonSourceLoad_OnClick"
+								Icon="ArrowSync12"
+								Tag="{Binding Id, Mode=OneWay}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  User name & Progress  -->
+				<DataGridTemplateColumn Width="2*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="UserName"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel
+								Margin="2,2,2,2"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Center">
+								<TextBox
+									Margin="2,2,2,2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									IsReadOnly="True"
+									Text="{Binding UserName, Mode=OneWay}"
+									ToolTip="{Binding ProgressString, Mode=OneWay}" />
+								<ProgressBar
+									Margin="2,2,2,2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									Maximum="100"
+									Minimum="0"
+									ToolTip="{Binding ProgressString, Mode=OneWay}"
+									Value="{Binding Progress, Mode=OneWay}" />
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  ID  -->
+				<DataGridTemplateColumn Width="1.3*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="ID"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBox
+								Margin="2,2,2,2"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Center"
+								HorizontalContentAlignment="Center"
+								IsReadOnly="True"
+								Text="{Binding Id, Mode=OneWay}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  Auto-update  -->
+				<DataGridTemplateColumn Width=".5*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Up"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox
+								Margin="2,2,2,2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								IsChecked="{Binding IsAutoUpdate, Mode=OneWay}"
+								IsEnabled="False" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  Title  -->
+				<DataGridTemplateColumn Width="3*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Title"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBox
+								Margin="2,2,2,2"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsReadOnly="True"
+								Text="{Binding Title, Mode=OneWay}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  Directory  -->
+				<DataGridTemplateColumn Width="6*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2,2,2,2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Dir"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Grid Margin="2,2,2,2">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="0.6*" />
+									<ColumnDefinition Width="7*" />
+								</Grid.ColumnDefinitions>
+								<CheckBox
+									Grid.Column="0"
+									Margin="2,2,2,2"
+									HorizontalAlignment="Center"
+									IsChecked="{Binding IsDirectoryExists, Mode=OneWay}"
+									IsEnabled="False" />
+								<TextBox
+									Grid.Column="1"
+									Margin="2,2,2,2"
+									HorizontalAlignment="Stretch"
+									HorizontalContentAlignment="Left"
+									Text="{Binding Directory, Mode=TwoWay}" />
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</common:TgBasePage>

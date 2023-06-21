@@ -211,7 +211,9 @@ internal partial class TgMenuHelper
 	{
 		UpdateSourceWithSettings(tgDownloadSettings);
 		ShowTableDownload(tgDownloadSettings);
-		TgClient.DownloadAllData(tgDownloadSettings, StoreMessage, StoreDocument, 
+		TgClient.DownloadAllData(tgDownloadSettings, 
+			ContextManager.ContextTableMessages.StoreMessage, 
+			ContextManager.ContextTableDocuments.StoreDocument, 
 			ContextManager.ContextTableMessages.FindExistsMessage);
 		// Update last id.
 		UpdateSourceWithSettings(tgDownloadSettings);

@@ -1,5 +1,5 @@
 ﻿<common:TgBasePage
-	x:Class="TgDownloaderWinDesktop.Views.Pages.TgDashboardPage"
+	x:Class="TgDownloaderWinDesktop.Views.Pages.TgMenuDashboardPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:common="clr-namespace:TgDownloaderWinDesktop.Common"
@@ -8,20 +8,21 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="TgDashboardPage"
+	Title="{Binding .ViewModel.TgLocale.AppTitleMaui, Mode=OneWay}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
-	d:DataContext="{d:DesignInstance local:TgDashboardPage,
+	d:DataContext="{d:DesignInstance local:TgMenuDashboardPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
-	x:TypeArguments="viewModels:TgDashboardViewModel"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
+	x:TypeArguments="viewModels:TgMenuDashboardViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+	Tag="Home"
 	mc:Ignorable="d">
 
 	<Grid VerticalAlignment="Top">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -29,17 +30,6 @@
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<ui:ProgressRing
-			Name="ProgressRingReload"
-			Grid.Row="0"
-			Grid.Column="0"
-			Width="30"
-			Height="30"
-			Margin="5"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			IsIndeterminate="{Binding .ViewModel.IsReload, Mode=OneWay}"
-			Visibility="Visible" />
 		<ui:Button
 			Grid.Row="0"
 			Grid.Column="1"
@@ -47,9 +37,9 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
 			Appearance="Primary"
-			Click="ButtonSettingsReload_OnClick"
-			Content="Reload all from XML"
-			Icon="ArrowSync12" />
+			Click="ButtonSettingsDefault_OnClick"
+			Content="{Binding ViewModel.TgLocale.HomeResetToDefault}"
+			Icon="ArrowReset24" />
 		<ui:Button
 			Grid.Row="0"
 			Grid.Column="2"
@@ -57,18 +47,8 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
 			Appearance="Primary"
-			Click="ButtonSettingsDefault_OnClick"
-			Content="Reset to default"
-			Icon="ArrowReset24" />
-		<ui:Button
-			Grid.Row="0"
-			Grid.Column="3"
-			Margin="5"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Center"
-			Appearance="Primary"
 			Click="ButtonSettingsSave_OnClick"
-			Content="Save at XML"
+			Content="{Binding ViewModel.TgLocale.HomeSaveToXml}"
 			Icon="SaveEdit24" />
 		<Border
 			Grid.Row="1"
@@ -84,10 +64,14 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="0.5*" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="5*" />
 				</Grid.ColumnDefinitions>
 				<!--  Headers  -->
@@ -97,72 +81,96 @@
 					Margin="5"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.Locale.SettingName}"
-					FontWeight="Bold" />
-				<Label
-					Grid.Row="0"
-					Grid.Column="1"
-					Margin="5"
-					HorizontalContentAlignment="Center"
-					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.Locale.SettingCheck}"
+					Content="{Binding ViewModel.TgLocale.SettingName}"
 					FontWeight="Bold" />
 				<Label
 					Grid.Row="0"
 					Grid.Column="2"
 					Margin="5"
-					HorizontalContentAlignment="Left"
+					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.Locale.SettingValue}"
+					Content="{Binding ViewModel.TgLocale.SettingCheck}"
 					FontWeight="Bold" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="4"
+					Margin="5"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.TgLocale.SettingValue}"
+					FontWeight="Bold" />
+				<Separator
+					Grid.Row="1"
+					Grid.Column="0"
+					Grid.ColumnSpan="5"
+					Height="1"
+					Background="DimGray" />
+				<GridSplitter
+					Grid.Row="0"
+					Grid.RowSpan="5"
+					Grid.Column="1"
+					Width="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="DimGray" />
+				<GridSplitter
+					Grid.Row="0"
+					Grid.RowSpan="5"
+					Grid.Column="3"
+					Width="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="DimGray" />
 				<!--  FileSession  -->
 				<Label
-					Grid.Row="1"
+					Grid.Row="2"
 					Grid.Column="0"
 					Margin="5"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.Locale.FileSession}"
+					Content="{Binding ViewModel.TgLocale.FileSession}"
 					FontWeight="Bold" />
 				<CheckBox
-					Grid.Row="1"
-					Grid.Column="1"
+					Grid.Row="2"
+					Grid.Column="2"
 					Margin="5"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
-					IsChecked="{Binding ViewModel.AppSettings.AppXml.IsExistsFileSession, Mode=OneWay}"
+					IsChecked="{Binding ViewModel.TgAppSettings.AppXml.IsExistsFileSession, Mode=OneWay}"
 					IsEnabled="False" />
 				<TextBox
-					Grid.Row="1"
-					Grid.Column="2"
+					Grid.Row="2"
+					Grid.Column="4"
 					Margin="5"
-					HorizontalAlignment="Left"
+					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
-					Text="{Binding ViewModel.AppSettings.AppXml.FileSession, Mode=TwoWay}" />
+					HorizontalContentAlignment="Left"
+					Text="{Binding ViewModel.TgAppSettings.AppXml.FileSession, Mode=TwoWay}" />
 				<!--  FileStorage  -->
 				<Label
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.Column="0"
 					Margin="5"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.Locale.FileStorage}"
+					Content="{Binding ViewModel.TgLocale.FileStorage}"
 					FontWeight="Bold" />
 				<CheckBox
-					Grid.Row="2"
-					Grid.Column="1"
+					Grid.Row="3"
+					Grid.Column="2"
 					Margin="5"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
-					IsChecked="{Binding ViewModel.AppSettings.AppXml.IsExistsFileStorage, Mode=OneWay}"
+					IsChecked="{Binding ViewModel.TgAppSettings.AppXml.IsExistsFileStorage, Mode=OneWay}"
 					IsEnabled="False" />
 				<TextBox
-					Grid.Row="2"
-					Grid.Column="2"
+					Grid.Row="3"
+					Grid.Column="4"
 					Margin="5"
-					HorizontalAlignment="Left"
+					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
-					Text="{Binding ViewModel.AppSettings.AppXml.FileStorage, Mode=TwoWay}" />
+					HorizontalContentAlignment="Left"
+					Text="{Binding ViewModel.TgAppSettings.AppXml.FileStorage, Mode=TwoWay}" />
 			</Grid>
 		</Border>
 	</Grid>

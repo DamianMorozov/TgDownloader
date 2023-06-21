@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using System.Text;
+
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -124,42 +126,67 @@ internal partial class TgMenuHelper
 		//SetupClientProxyCore();
 	}
 
-	private string? GetConfig(string what)
+	private string? GetConsoleConfig(string what)
 	{
 		TgSqlTableAppModel appNew = ContextManager.ContextTableApps.NewItem();
 		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
-		string? result = what switch
-		{
-			"api_hash" => !Equals(app.ApiHash, appNew.ApiHash) ? TgDataFormatUtils.ParseGuidToString(app.ApiHash)
-				: TgDataFormatUtils.ParseGuidToString(app.ApiHash = TgDataFormatUtils.ParseStringToGuid(AnsiConsole.Ask<string>(
-						TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:")))),
-			"api_id" => !Equals(app.ApiId, appNew.ApiId) ? app.ApiId.ToString()
-				: (app.ApiId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:"))).ToString(),
-			"phone_number" => !Equals(app.PhoneNumber, appNew.PhoneNumber) ? app.PhoneNumber
-				: app.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:")),
-			"verification_code" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupCode}:")),
-			"notifications" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:")),
-			"first_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:")),
-			"last_name" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:")),
-			"session_pathname" => TgAppSettings.AppXml.FileSession,
-			"password" => AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:")),
-			_ => null
-		};
 		switch (what)
 		{
 			case "api_hash":
-			case "api_id":
-			case "phone_number":
+				string apiHash = !Equals(app.ApiHash, appNew.ApiHash)
+					? TgDataFormatUtils.ParseGuidToString(app.ApiHash)
+					: TgDataFormatUtils.ParseGuidToString(app.ApiHash = TgDataFormatUtils.ParseStringToGuid(
+						AnsiConsole.Ask<string>(
+							TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:"))));
+				app.ApiHash = TgDataFormatUtils.ParseStringToGuid(apiHash);
 				ContextManager.ContextTableApps.AddOrUpdateItem(app);
-				break;
-		}
-		return result;
+				return apiHash;
+			case "api_id": 
+				string apiId = !Equals(app.ApiId, appNew.ApiId)
+					? app.ApiId.ToString()
+					: (app.ApiId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:")))
+					.ToString();
+				app.ApiId = int.Parse(apiId);
+				ContextManager.ContextTableApps.AddOrUpdateItem(app);
+				return apiId;
+			case "phone_number":
+				string phoneNumber = !Equals(app.PhoneNumber, appNew.PhoneNumber)
+					? app.PhoneNumber
+					: app.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:"));
+				app.PhoneNumber = phoneNumber;
+				ContextManager.ContextTableApps.AddOrUpdateItem(app);
+				return phoneNumber;
+			case "verification_code":
+				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgVerificationCode}:"));
+			case "notifications":
+				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupNotifications}:"));
+			case "first_name":
+				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupFirstName}:"));
+			case "last_name":
+				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:"));
+			case "session_pathname":
+				string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.FileSession);
+				return Encoding.UTF8.GetBytes(sessionPath).ToString();
+			case "password":
+				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:"));
+			case "session_key":
+			case "server_address":
+			case "device_model":
+			case "system_version":
+			case "app_version":
+			case "system_lang_code":
+			case "lang_pack":
+			case "lang_code":
+			default:
+				return null;
+		};
 	}
 
 	public void ClientConnectExists()
 	{
-		if (!ContextManager.ContextTableApps.GetValidXpLite(ContextManager.ContextTableApps.GetCurrentItem()).IsValid) return;
-		TgClient.Connect(GetConfig, ContextManager.ContextTableApps.GetCurrentProxy());
+		if (!ContextManager.ContextTableApps.GetValidXpLite(ContextManager.ContextTableApps.GetCurrentItem()).IsValid) 
+			return;
+		TgClient.ConnectSession(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy());
 	}
 
 	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
@@ -178,7 +205,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.Connect(GetConfig, ContextManager.ContextTableApps.GetCurrentProxy()); 
+		TgClient.ConnectSession(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy()); 
 		if (TgClient.ClientException.IsExists || TgClient.ProxyException.IsExists)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else
@@ -191,7 +218,7 @@ internal partial class TgMenuHelper
 		ShowTableClient(tgDownloadSettings);
 		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
 		ContextManager.ContextTableApps.DeleteItem(app);
-		TgClient.UnLoginUser();
+		TgClient.Disconnect();
 	}
 
 	#endregion

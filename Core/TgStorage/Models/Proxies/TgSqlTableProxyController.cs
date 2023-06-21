@@ -79,14 +79,17 @@ public sealed class TgSqlTableProxyController : TgSqlHelperBase<TgSqlTableProxyM
     }
 
     public override bool AddOrUpdateItem(TgSqlTableProxyModel item)
-    {
-        // Try find item.
-        TgSqlTableProxyModel itemDest = GetItem(item.Type, item.HostName, item.Port);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	{
+		lock (Locker)
+		{
+			// Try find item.
+			TgSqlTableProxyModel itemDest = GetItem(item.Type, item.HostName, item.Port);
+	        // Add item.
+	        if (!itemDest.IsExists)
+	            return AddItem(item);
+	        // Update item.
+	        return UpdateItem(item, itemDest);
+		}
     }
 
     public override bool DeleteItem(TgSqlTableProxyModel item)

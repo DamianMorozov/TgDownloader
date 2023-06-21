@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.250.0</Version>
+    <Version>0.2.270.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="applicationIcon.ico" />
@@ -21,6 +21,7 @@
     <PackageReference Include="WPF-UI" Version="2.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+    <PackageReference Include="WTelegramClient" Version="3.5.1" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\applicationIcon-1024.png" />
@@ -34,6 +35,27 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\CHANGELOG.md" Link="CHANGELOG.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\GUIDES.md" Link="GUIDES.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\LICENSE.md" Link="LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\README-RUS.md" Link="README-RUS.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\README.md" Link="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="FodyWeavers.xsd" />
   </ItemGroup>
   <ItemGroup>

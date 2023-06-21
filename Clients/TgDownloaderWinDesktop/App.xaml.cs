@@ -34,12 +34,16 @@ public partial class App
 			services.AddScoped<INavigationWindow, Views.Windows.MainWindow>();
 			services.AddScoped<MainWindowViewModel>();
 			// Views and ViewModels
-			services.AddTransient<TgDashboardPage>();
-			services.AddTransient<TgDashboardViewModel>();
+			services.AddTransient<TgMenuDashboardPage>();
+			services.AddTransient<TgMenuDashboardViewModel>();
 			services.AddTransient<TgSettingsPage>();
 			services.AddTransient<TgSettingsViewModel>();
-			services.AddTransient<TgViewSourcesPage>();
-			services.AddTransient<TgViewSourcesViewModel>();
+			services.AddTransient<TgMenuSourcesPage>();
+			services.AddTransient<TgMenuSourcesViewModel>();
+			services.AddTransient<TgMenuClientPage>();
+			services.AddTransient<TgMenuClientViewModel>();
+			services.AddTransient<TgMenuProxiesPage>();
+			services.AddTransient<TgMenuProxiesViewModel>();
 			// Configuration
 			services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
 		}).Build();

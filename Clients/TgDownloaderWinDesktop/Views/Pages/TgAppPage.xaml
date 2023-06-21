@@ -7,18 +7,18 @@
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding ViewModel.Locale.MenuMainAdvanced}"
+	Title="{Binding ViewModel.TgLocale.MenuMainAdvanced}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgAppPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
 	x:TypeArguments="viewModels:TgAppViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
 
 	<Grid>
-		<Label Content="{Binding ViewModel.Locale.InDevelopment}" FontSize="50" />
+		<Label Content="{Binding ViewModel.TgLocale.InDevelopment}" FontSize="50" />
 		<Grid.RowDefinitions>
 			<RowDefinition Height="1*" />
 			<RowDefinition Height="1*" />

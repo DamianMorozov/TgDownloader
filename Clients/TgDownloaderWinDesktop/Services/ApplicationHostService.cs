@@ -47,7 +47,7 @@ public sealed class ApplicationHostService : IHostedService
 			INavigationWindow navigationWindow = 
 				(_serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow)!;
 			navigationWindow.ShowWindow();
-			navigationWindow.Navigate(typeof(TgDashboardPage));
+			navigationWindow.Navigate(typeof(TgMenuDashboardPage));
 		}
 
 		await Task.CompletedTask.ConfigureAwait(true);

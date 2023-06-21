@@ -79,14 +79,17 @@ public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilte
     }
 
     public override bool AddOrUpdateItem(TgSqlTableFilterModel item)
-    {
-        // Try find item.
-        TgSqlTableFilterModel itemDest = GetItem(item.FilterType, item.Name);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	{
+		lock (Locker)
+		{
+			// Try find item.
+			TgSqlTableFilterModel itemDest = GetItem(item.FilterType, item.Name);
+	        // Add item.
+	        if (!itemDest.IsExists)
+	            return AddItem(item);
+	        // Update item.
+	        return UpdateItem(item, itemDest);
+		}
     }
 
     public override bool DeleteItem(TgSqlTableFilterModel item)

@@ -8,17 +8,18 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding ViewModel.Locale.MenuMainFilters}"
+	Title="{Binding ViewModel.TgLocale.MenuMainFilters}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgFiltersPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
 	x:TypeArguments="viewModels:TgFiltersViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+	Tag="Filters"
 	mc:Ignorable="d">
 
 	<Grid>
-		<Label Content="{Binding ViewModel.Locale.InDevelopment}" FontSize="50" />
+		<Label Content="{Binding ViewModel.TgLocale.InDevelopment}" FontSize="50" />
 	</Grid>
 </common:TgBasePage>

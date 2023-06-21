@@ -76,17 +76,32 @@ public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDoc
     }
 
     public override bool AddOrUpdateItem(TgSqlTableDocumentModel item)
-    {
-        // Try find item.
-        TgSqlTableDocumentModel itemDest = GetItem(item.SourceId, item.Id, item.MessageId);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	{
+		lock (Locker)
+		{
+			// Try find item.
+			TgSqlTableDocumentModel itemDest = GetItem(item.SourceId, item.Id, item.MessageId);
+	        // Add item.
+	        if (!itemDest.IsExists)
+	            return AddItem(item);
+	        // Update item.
+	        return UpdateItem(item, itemDest);
+		}
     }
 
-    public override bool DeleteItem(TgSqlTableDocumentModel item)
+	public void StoreDocument(long id, long sourceId, long messageId, string fileName, long fileSize, long accessHash) =>
+		AddOrUpdateItem(new()
+		{
+			Id = id,
+			SourceId = sourceId,
+			MessageId = messageId,
+			FileName = fileName,
+			FileSize = fileSize,
+			AccessHash = accessHash
+		});
+
+
+	public override bool DeleteItem(TgSqlTableDocumentModel item)
     {
         TgSqlTableDocumentModel itemDb = GetItem(item.SourceId, item.Id, item.MessageId);
         return base.DeleteItem(itemDb);

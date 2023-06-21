@@ -17,11 +17,11 @@ public class TgDataHelper
     #region Public and private fields, properties, constructor
 
     public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-    public TgAppSettingsHelper AppSettings => TgAppSettingsHelper.Instance;
+    public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
     public TgDataHelper()
     {
-		AppSettings.LoadXmlSettings();
+		TgAppSettings.LoadXmlSettings();
 		ContextManager.CreateOrConnectDb(false);
 	}
 

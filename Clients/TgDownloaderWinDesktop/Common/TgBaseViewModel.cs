@@ -1,11 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgCore.Helpers;
-using TgCore.Utils;
-using TgDownloader.Helpers;
-using TgStorage.Models.Apps;
-
 namespace TgDownloaderWinDesktop.Common;
 
 /// <summary>
@@ -16,12 +11,15 @@ public partial class TgBaseViewModel : ObservableObject, INavigationAware
 {
 	#region Public and private fields, properties, constructor
 
-	public TgLocaleHelper Locale => TgLocaleHelper.Instance;
+	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	public TgSqlContextCacheHelper ContextCache => TgSqlContextCacheHelper.Instance;
 	public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-	internal TgClientHelper TgClient => TgClientHelper.Instance;
+	public TgClientHelper TgClient { get; set; } = TgClientHelper.Instance;
 	public EnumToBooleanConverter EnumToBooleanConverter { get; set; }
-	public bool IsReload { get; set; }
+	public bool IsLoad { get; set; }
+	public string TgClientQuery { get; set; } = "";
+	public bool IsClientReady { get; set; }
+	public bool IsFileSession { get; set; }
 
 	public TgBaseViewModel()
 	{
@@ -32,35 +30,7 @@ public partial class TgBaseViewModel : ObservableObject, INavigationAware
 
 	#region Public and private methods
 
-	public override string ToString() => $"{Locale} | {ContextManager}";
-
-	private string? GetConfigFromDb(string what)
-	{
-		TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
-		string? result = what switch
-		{
-			"api_hash" => TgDataFormatUtils.ParseGuidToString(app.ApiHash),
-			"api_id" => app.ApiId.ToString(),
-			"phone_number" => app.PhoneNumber,
-			"session_pathname" => TgAppSettingsHelper.Instance.AppXml.FileSession,
-			_ => null
-		};
-		switch (what)
-		{
-			case "api_hash":
-			case "api_id":
-			case "phone_number":
-				ContextManager.ContextTableApps.AddOrUpdateItem(app);
-				break;
-		}
-		return result;
-	}
-
-	public void ClientConnectExists()
-	{
-		if (!ContextManager.ContextTableApps.GetValidXpLite(ContextManager.ContextTableApps.GetCurrentItem()).IsValid) return;
-		TgClient.Connect(GetConfigFromDb, ContextManager.ContextTableApps.GetCurrentProxy());
-	}
+	public override string ToString() => $"{TgLocale} | {ContextManager}";
 
 	public virtual void OnNavigatedTo()
 	{
@@ -88,7 +58,7 @@ public partial class TgBaseViewModel : ObservableObject, INavigationAware
 	internal async Task OnMenuClientAsync()
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		//await Shell.Current.GoToAsync(nameof(TgClientPage)).ConfigureAwait(false);
+		//await Shell.Current.GoToAsync(nameof(TgMenuClientPage)).ConfigureAwait(false);
 	}
 
 	[RelayCommand]

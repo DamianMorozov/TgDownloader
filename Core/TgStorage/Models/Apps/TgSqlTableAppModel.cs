@@ -101,5 +101,13 @@ public sealed class TgSqlTableAppModel : TgSqlTableBase
         $"{nameof(PhoneNumber)} = {PhoneNumber} | " +
         $"{nameof(ProxyUid)} = {ProxyUid}";
 
-	#endregion
+    public void Clear()
+    {
+	    ApiId = 0;
+ApiHash = Guid.Empty;
+PhoneNumber = string.Empty;
+ProxyUid = Guid.Empty;
+    }
+
+    #endregion
 }

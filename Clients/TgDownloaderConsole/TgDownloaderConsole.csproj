@@ -4,7 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.2.250.0</Version>
+		<Version>0.2.270.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
@@ -52,9 +52,6 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Include="..\..\RELEASE.md" Link="RELEASE.md">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 	<ItemGroup>

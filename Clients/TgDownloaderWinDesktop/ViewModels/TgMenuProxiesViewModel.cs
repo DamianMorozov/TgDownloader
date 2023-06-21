@@ -4,27 +4,27 @@
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class TgViewSourcesViewModel : TgBaseViewModel
+public sealed partial class TgMenuProxiesViewModel : TgBaseViewModel
 {
 	#region Public and private fields, properties, constructor
 
-	public ObservableCollection<TgSqlTableSourceModel> Sources { get; set; }
+	public ObservableCollection<TgSqlTableProxyModel> Proxies { get; set; }
 
-	public TgViewSourcesViewModel()
+	public TgMenuProxiesViewModel()
 	{
-		Sources = new();
+		Proxies = new();
 	}
 
 	#endregion
 
 	#region Public and private methods
 
-	public void ReloadSources()
+	public void Load()
 	{
-		Sources.Clear();
-		foreach (TgSqlTableSourceModel source in ContextManager.ContextTableSources.GetList())
+		Proxies.Clear();
+		foreach (TgSqlTableProxyModel proxy in ContextManager.ContextTableProxies.GetList())
 		{
-			Sources.Add(source);
+			Proxies.Add(proxy);
 		}
 	}
 

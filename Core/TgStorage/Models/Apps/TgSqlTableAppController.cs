@@ -115,14 +115,17 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
     }
 
     public override bool AddOrUpdateItem(TgSqlTableAppModel item)
-    {
-        // Try find item.
-        TgSqlTableAppModel itemDest = GetItemByApiHash(item.ApiHash);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	{
+		lock (Locker)
+		{
+			// Try find item.
+			TgSqlTableAppModel itemDest = GetItemByApiHash(item.ApiHash);
+	        // Add item.
+	        if (!itemDest.IsExists)
+	            return AddItem(item);
+	        // Update item.
+	        return UpdateItem(item, itemDest);
+		}
     }
 
     public bool AddOrUpdateItem(TgSqlTableAppModel item, Guid proxyUid)

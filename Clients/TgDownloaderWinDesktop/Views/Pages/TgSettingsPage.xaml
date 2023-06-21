@@ -13,8 +13,8 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgSettingsPage,
 	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="700"
-	d:DesignWidth="1200"
+	d:DesignHeight="800"
+	d:DesignWidth="1300"
 	x:TypeArguments="viewModels:TgSettingsViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">

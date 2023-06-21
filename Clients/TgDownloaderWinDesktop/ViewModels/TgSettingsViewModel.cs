@@ -21,7 +21,7 @@ public sealed partial class TgSettingsViewModel : TgBaseViewModel
 	private void InitializeViewModel()
 	{
 		CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
-		AppVersion = $"{Locale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
+		AppVersion = $"{TgLocale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
 		_isInitialized = true;
 	}
 

@@ -337,26 +337,6 @@ internal partial class TgMenuHelper : ITgHelper
 		FillTableRowsDownloadedSources(tgDownloadSettings, table);
 	}
 
-	public void StoreMessage(int id, long sourceId, DateTime dtCreate, TgEnumMessageType type, long size, string message)
-	{
-		ContextManager.ContextTableMessages.AddOrUpdateItem(new()
-		{
-			Id = id,
-			SourceId = sourceId,
-			DtCreated = dtCreate,
-			Type = type,
-			Size = size,
-			Message = message
-		});
-		TgSqlTableSourceModel source = ContextManager.ContextTableSources.GetItem(sourceId);
-		source.FirstId = id;
-		ContextManager.ContextTableSources.AddOrUpdateItem(source);
-	}
-
-	public void StoreDocument(long id, long sourceId, long messageId, string fileName, long fileSize, long accessHash) =>
-		ContextManager.ContextTableDocuments.AddOrUpdateItem(new() { Id = id, SourceId = sourceId, MessageId = messageId,
-			FileName = fileName, FileSize = fileSize, AccessHash = accessHash });
-
 	public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
 	{
 		string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()

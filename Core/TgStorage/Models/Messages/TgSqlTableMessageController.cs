@@ -82,13 +82,16 @@ public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMess
 
     public override bool AddOrUpdateItem(TgSqlTableMessageModel item)
     {
-        // Try find item.
-        TgSqlTableMessageModel itemDest = GetItem(item.SourceId, item.Id);
-        // Add item.
-        if (!itemDest.IsExists)
-            return AddItem(item);
-        // Update item.
-        return UpdateItem(item, itemDest);
+	    lock (Locker)
+	    {
+		    // Try find item.
+		    TgSqlTableMessageModel itemDest = GetItem(item.SourceId, item.Id);
+		    // Add item.
+		    if (!itemDest.IsExists)
+			    return AddItem(item);
+		    // Update item.
+		    return UpdateItem(item, itemDest);
+	    }
     }
 
     public override bool DeleteItem(TgSqlTableMessageModel item)
@@ -97,5 +100,21 @@ public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMess
         return base.DeleteItem(itemDb);
     }
 
-    #endregion
+    public void StoreMessage(int id, long sourceId, DateTime dtCreate, TgEnumMessageType type, long size, string message)
+    {
+	    AddOrUpdateItem(new()
+	    {
+		    Id = id,
+		    SourceId = sourceId,
+		    DtCreated = dtCreate,
+		    Type = type,
+		    Size = size,
+		    Message = message
+	    });
+	    TgSqlTableSourceModel source = TgSqlTableSourceController.Instance.GetItem(sourceId);
+	    source.FirstId = id;
+	    TgSqlTableSourceController.Instance.AddOrUpdateItem(source);
+    }
+
+	#endregion
 }

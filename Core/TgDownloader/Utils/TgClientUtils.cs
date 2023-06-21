@@ -1,16 +1,18 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgCore.Helpers;
+using TgDownloader.Helpers;
 
-namespace TgDownloaderWinDesktop.ViewModels;
+namespace TgDownloader.Utils;
 
-[DebuggerDisplay("{ToString()}")]
-public sealed partial class TgDashboardViewModel : TgBaseViewModel
+/// <summary>
+/// TgClient utils.
+/// </summary>
+public static class TgClientUtils
 {
 	#region Public and private fields, properties, constructor
 
-	public TgAppSettingsHelper AppSettings { get; private set; } = TgAppSettingsHelper.Instance;
+	public static TgClientHelper TgClient { get; set; } = TgClientHelper.Instance;
 
 	#endregion
 }

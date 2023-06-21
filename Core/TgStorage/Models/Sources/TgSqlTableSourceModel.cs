@@ -64,9 +64,10 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	public bool IsAutoUpdate { get => _isAutoUpdate; set => SetPropertyValue(nameof(_isAutoUpdate), ref _isAutoUpdate, value); }
 
 	public bool IsCountComplete => FirstId == Count;
+	public bool IsDirectoryExists => System.IO.Directory.Exists(Directory);
 
 	public int Progress => FirstId * 100 / Count;
-	public string ProgressString => $"{Progress:###.##} %";
+	public string ProgressString => $"{Progress:###.##} % | {FirstId} from {Count}";
 
 	/// <summary>
 	/// Default constructor.

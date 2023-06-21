@@ -56,16 +56,30 @@ public sealed partial class MainWindowViewModel : TgBaseViewModel
 				new NavigationItem
 				{
 					Content = "Home",
-					PageTag = nameof(TgDashboardPage),
+					PageTag = nameof(TgMenuDashboardPage),
 					Icon = SymbolRegular.Home24,
-					PageType = typeof(TgDashboardPage)
+					PageType = typeof(TgMenuDashboardPage)
+				},
+				new NavigationItem
+				{
+					Content = TgLocaleHelper.Instance.MenuMainClient,
+					PageTag = nameof(TgMenuClientPage),
+					Icon = SymbolRegular.DataBarHorizontal24,
+					PageType = typeof(TgMenuClientPage),
+				},
+				new NavigationItem
+				{
+					Content = TgLocaleHelper.Instance.MenuMainProxies,
+					PageTag = nameof(TgMenuProxiesPage),
+					Icon = SymbolRegular.DataBarHorizontal24,
+					PageType = typeof(TgMenuProxiesPage),
 				},
 				new NavigationItem
 				{
 					Content = TgLocaleHelper.Instance.TableSources,
-					PageTag = nameof(TgViewSourcesPage),
+					PageTag = nameof(TgMenuSourcesPage),
 					Icon = SymbolRegular.DataBarHorizontal24,
-					PageType = typeof(TgViewSourcesPage),
+					PageType = typeof(TgMenuSourcesPage),
 				},
 			};
 

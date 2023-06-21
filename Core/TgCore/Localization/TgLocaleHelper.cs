@@ -35,6 +35,9 @@ public sealed class TgLocaleHelper : ITgHelper
 	public string MenuAppUseProxyEnable => "Enable proxy";
 	public string Messages => "messages";
 	public string StorageVersion => "Storage version";
+	public string HomeLoadAllFromXml => "Load all from XML";
+	public string HomeResetToDefault => "Reset to default";
+	public string HomeSaveToXml => "Save to XML";
 
 	#endregion
 
@@ -48,8 +51,24 @@ public sealed class TgLocaleHelper : ITgHelper
 
 	#region Client
 
+	public string MenuClientApiHash => "API hash";
+	public string MenuClientApiId => "API ID";
+	public string MenuClientClearSettings => "Clear settings";
 	public string MenuClientConnect => "Connect the client to TG server";
 	public string MenuClientDisconnect => "Disconnect the client from TG server";
+	public string MenuClientException => "Client exception";
+	public string MenuClientFirstName => "First name";
+	public string MenuClientIsReady => "Client is ready";
+	public string MenuClientProgressStatus => "Progress status";
+	public string MenuClientLastName => "Last name";
+	public string MenuClientLoadAllFromStorage => "Load all from storage";
+	public string MenuClientNotifications => "Notifications";
+	public string MenuClientPassword => "Password";
+	public string MenuClientPhoneNumber => "Phone number";
+	public string MenuClientProxy => "Proxy";
+	public string MenuClientSaveToStorage => "Save to storage";
+	public string MenuClientTelegramQuery => "Telegram query";
+	public string MenuClientVerificationCode => "Verification code";
 
 	#endregion
 
@@ -108,6 +127,7 @@ public sealed class TgLocaleHelper : ITgHelper
 	public string MenuMainClient => "Client";
 	public string MenuMainDownload => "Download";
 	public string MenuMainExit => "Exit";
+	public string MenuMainProxies => "Proxies";
 	public string MenuMainFilters => "Filters";
 	public string MenuMainReset => "Reset";
 	public string MenuMainReturn => "Return";
@@ -202,7 +222,7 @@ public sealed class TgLocaleHelper : ITgHelper
 	public string TgSettingsSourceFirstLastId => "First/last ID";
 	public string TgSetupApiHash => "Type API hash";
 	public string TgSetupAppId => "Type APP ID";
-	public string TgSetupCode => "Type code";
+	public string TgVerificationCode => "Verification code";
 	public string TgSetupFirstName => "Type first name";
 	public string TgSetupLastName => "Type last name";
 	public string TgSetupNotifications => "Type use notifications";
