@@ -8,14 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.2.270] - 2023-06-22
-### Fixed
+## [0.2.300] - 2023-06-27
+### Fixed in TgDownloaderConsole
+- Fixed errors with file TgDownloader.session
+### Fixed in Tests
 - Fixed errors in tests
 ### Added in TgDownloaderWinDesktop
 - Edit app settings
 - View/edit client settings
+- Client
+    - Connect/Disconnect
+    - Hide password
+    - State and exception view
 - View proxies
 - View sources and download
+    - Check client ready
+    - Load from Storage
+    - Load from Telegram
+    - Clear view
+    - State and exception view
+    - Download media
 
 ## [0.2.230] - 2023-06-13
 ### Fixed in TgDownloaderConsole

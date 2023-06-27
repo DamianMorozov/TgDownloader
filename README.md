@@ -8,6 +8,8 @@
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
 
 ## <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
 
