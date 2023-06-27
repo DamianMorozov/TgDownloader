@@ -6,13 +6,18 @@ namespace TgDownloaderWinDesktop.Views.Pages;
 /// <summary>
 /// Interaction logic for TgItemSourceView.xaml
 /// </summary>
-public partial class TgItemSourcePage : INotifyPropertyChanged
+public partial class TgItemSourcePage : TgPageBase
 {
+	#region Public and private fields, properties, constructor
+
 	public TgItemSourceViewModel ViewModel { get; set; }
 
-	public TgItemSourcePage(TgItemSourceViewModel viewModel) : base(viewModel)
+	public TgItemSourcePage(TgItemSourceViewModel viewModel)
 	{
 		ViewModel = viewModel;
+		ViewModel.OnNavigatedTo();
 		InitializeComponent();
 	}
+
+	#endregion
 }

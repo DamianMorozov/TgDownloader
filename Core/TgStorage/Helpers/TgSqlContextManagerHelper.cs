@@ -20,7 +20,6 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
 	#region Public and private fields, properties, constructor
 
-	public TgSqlContextCacheHelper ContextCache => TgSqlContextCacheHelper.Instance;
 	public TgSqlTableAppController ContextTableApps => TgSqlTableAppController.Instance;
 	public TgSqlTableDocumentController ContextTableDocuments => TgSqlTableDocumentController.Instance;
 	public TgSqlTableFilterController ContextTableFilters => TgSqlTableFilterController.Instance;
@@ -61,7 +60,13 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 		// Setup XPO.
 		string connectionString = SQLiteConnectionProvider.GetConnectionString(TgAppSettings.AppXml.FileStorage);
 		XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
-		
+
+		//connectionString = XpoDefault.GetConnectionPoolString(connectionString);
+		//XPDictionary dict = new ReflectionDictionary();
+		//IDataStore store = XpoDefault.GetConnectionProvider(connectionString, AutoCreateOption.SchemaAlreadyExists);
+		//dict.GetDataStoreSchema(System.Reflection.Assembly.GetExecutingAssembly());
+		//IDataLayer dl = new ThreadSafeDataLayer(dict, store);
+
 		if (isCheckTables)
 			CheckTables();
 	}
@@ -277,7 +282,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	{
 		using UnitOfWork uow = new();
 		uow.ExecuteNonQuery($"DROP TABLE IF EXISTS {tableName};");
-		uow.CommitChanges();
+		uow.CommitChangesAsync();
 	}
 
 	/// <summary>

@@ -3,7 +3,7 @@
 
 namespace TgStorage.Common;
 
-public enum TgSqlTableTopRecords
+public enum TgSqlEnumTableTopRecords
 {
     All = 0,
     Top200 = 1,

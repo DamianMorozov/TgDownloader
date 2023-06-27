@@ -4,6 +4,7 @@
 namespace TgStorage.Models.Filters;
 
 [DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableFilterValidator : TgSqlTableValidatorBase<TgSqlTableFilterModel>
 {
 	#region Public and private fields, properties, constructor

@@ -6,15 +6,16 @@ namespace TgDownloaderWinDesktop.Views.Pages;
 /// <summary>
 /// Interaction logic for TgMenuDashboardPage.xaml
 /// </summary>
-public partial class TgMenuDashboardPage : INotifyPropertyChanged
+public partial class TgMenuDashboardPage
 {
 	#region Public and private fields, properties, constructor
 
 	public TgMenuDashboardViewModel ViewModel { get; set; }
 
-	public TgMenuDashboardPage(TgMenuDashboardViewModel viewModel) : base(viewModel)
+	public TgMenuDashboardPage(TgMenuDashboardViewModel viewModel)
 	{
 		ViewModel = viewModel;
+		ViewModel.OnNavigatedTo();
 		InitializeComponent();
 	}
 

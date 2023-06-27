@@ -4,15 +4,20 @@
 namespace TgDownloaderWinDesktop.Views.Pages;
 
 /// <summary>
-/// Interaction logic for DataView.xaml
+/// Interaction logic for TgFiltersView.xaml
 /// </summary>
-public partial class TgDataPage : INotifyPropertyChanged
+public partial class TgMenuFiltersPage
 {
-	public TgDataViewModel ViewModel { get; set; }
+	#region Public and private fields, properties, constructor
 
-	public TgDataPage(TgDataViewModel viewModel) : base(viewModel)
+	public TgFiltersViewModel ViewModel { get; set; }
+
+	public TgMenuFiltersPage(TgFiltersViewModel viewModel)
 	{
 		ViewModel = viewModel;
+		ViewModel.OnNavigatedTo();
 		InitializeComponent();
 	}
+
+	#endregion
 }

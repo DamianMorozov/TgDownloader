@@ -4,25 +4,28 @@
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class TgSettingsViewModel : TgBaseViewModel
+public sealed partial class TgSettingsViewModel : TgViewBase, INavigationAware
 {
-	private bool _isInitialized;
-
 	public string AppVersion { get; set; } = string.Empty;
 
 	public Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
 
-	public override void OnNavigatedTo()
+	public void OnNavigatedTo()
 	{
-		if (!_isInitialized)
+		if (!IsInitialized)
 			InitializeViewModel();
+	}
+
+	public void OnNavigatedFrom()
+	{
+		//
 	}
 
 	private void InitializeViewModel()
 	{
 		CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
 		AppVersion = $"{TgLocale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
-		_isInitialized = true;
+		IsInitialized = true;
 	}
 
 	private string GetAssemblyVersion()
@@ -38,19 +41,14 @@ public sealed partial class TgSettingsViewModel : TgBaseViewModel
 			case "theme_light":
 				if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Light)
 					break;
-
 				Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
 				CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
-
 				break;
-
 			default:
 				if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
 					break;
-
 				Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
 				CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
-
 				break;
 		}
 	}

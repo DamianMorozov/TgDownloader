@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.2.270.0</Version>
+    <Version>0.2.300.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
@@ -16,6 +16,7 @@
     <PackageReference Include="WTelegramClient" Version="3.5.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
   </ItemGroup>
 </Project>

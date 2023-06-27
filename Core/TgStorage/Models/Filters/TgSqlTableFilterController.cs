@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Filters;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilterModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -28,11 +30,16 @@ public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilte
     public override TgSqlTableFilterModel NewItem(Session session) =>
         new(session) { IsEnabled = true, FilterType = TgEnumFilterType.SingleName, Name = "Any", Mask = "*", SizeType = TgEnumFileSizeType.Bytes };
 
-    public TgSqlTableFilterModel GetItem(TgEnumFilterType filterType, string name) =>
-        new UnitOfWork()
-            .Query<TgSqlTableFilterModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => Equals(item.FilterType, filterType) && Equals(item.Name, name)) ?? NewItem();
+    public TgSqlTableFilterModel GetItem(TgEnumFilterType filterType, string name)
+    {
+	    lock (Locker)
+	    {
+		    return new UnitOfWork()
+			    .Query<TgSqlTableFilterModel>()
+			    .Select(item => item)
+			    .FirstOrDefault(item => Equals(item.FilterType, filterType) && Equals(item.Name, name)) ?? NewItem();
+	    }
+    }
 
     public override TgSqlTableFilterModel GetNewItem() => new UnitOfWork().Query<TgSqlTableFilterModel>().Select(item => item)
         .FirstOrDefault(item => Equals(item.IsEnabled, NewItem().IsEnabled) && Equals(item.FilterType, NewItem().FilterType) &&
@@ -52,7 +59,7 @@ public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilte
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -71,8 +78,8 @@ public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilte
         itemDest.SizeType = itemSource.SizeType;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;
@@ -98,12 +105,17 @@ public sealed class TgSqlTableFilterController : TgSqlHelperBase<TgSqlTableFilte
         return base.DeleteItem(itemDb);
     }
 
-    public List<TgSqlTableFilterModel> GetListEnabled() =>
-        new UnitOfWork()
-            .Query<TgSqlTableFilterModel>()
-            .Select(item => item)
-            .Where(item => item.IsEnabled)
-            .ToList();
+    public List<TgSqlTableFilterModel> GetListEnabled()
+    {
+	    lock (Locker)
+	    {
+		    return new UnitOfWork()
+			    .Query<TgSqlTableFilterModel>()
+			    .Select(item => item)
+			    .Where(item => item.IsEnabled)
+			    .ToList();
+	    }
+    }
 
     public bool DeleteDefaultItem()
     {

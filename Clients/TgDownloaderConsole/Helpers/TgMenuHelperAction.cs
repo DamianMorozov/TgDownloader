@@ -52,8 +52,8 @@ internal partial class TgMenuHelper
 								tgDownloadSettings.SourceFirstId)} | {message}"));
 					statusContext.Refresh();
 				}
-				TgClient.UpdateStatus = UpdateStatus;
-				TgClient.UpdateStatusWithProgress = UpdateStatusWithProgress;
+				TgClient.UpdateState = UpdateStatus;
+				TgClient.UpdateStateProgress = UpdateStatusWithProgress;
 				// Action.
 				Stopwatch sw = new();
 				sw.Start();

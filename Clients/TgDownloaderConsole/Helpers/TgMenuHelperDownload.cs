@@ -194,7 +194,7 @@ internal partial class TgMenuHelper
 			IsAutoUpdate = tgDownloadSettings.IsAutoUpdate
 		});
 		// Refresh.
-		TgClient.UpdateStatus(TgLocale.SettingsSource);
+		TgClient.UpdateState(TgLocale.SettingsSource);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipFirstId, bool isSkipDestDirectory)

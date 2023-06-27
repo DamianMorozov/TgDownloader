@@ -5,6 +5,7 @@ namespace TgStorage.Models.Apps;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableApps)]
+[DoNotNotify]
 public sealed class TgSqlTableAppModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor

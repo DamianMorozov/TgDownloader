@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Versions;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableVersionController : TgSqlHelperBase<TgSqlTableVersionModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -26,12 +28,17 @@ public sealed class TgSqlTableVersionController : TgSqlHelperBase<TgSqlTableVers
 
     public override TgSqlTableVersionModel NewItem(Session session) => new(session) { Version = short.MaxValue, Description = "New version" };
 
-    public TgSqlTableVersionModel GetItem(short version) =>
-        new UnitOfWork()
-            .Query<TgSqlTableVersionModel>()
-            .Select(item => item)
-            .OrderBy(item => item.Version)
-            .FirstOrDefault(item => Equals(item.Version, version)) ?? NewItem();
+    public TgSqlTableVersionModel GetItem(short version)
+    {
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				.Query<TgSqlTableVersionModel>()
+				.Select(item => item)
+				.OrderBy(item => item.Version)
+				.FirstOrDefault(item => Equals(item.Version, version)) ?? NewItem();
+		}
+    }
 
     public override TgSqlTableVersionModel GetItemLast() =>
         new UnitOfWork()
@@ -55,7 +62,7 @@ public sealed class TgSqlTableVersionController : TgSqlHelperBase<TgSqlTableVers
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -70,8 +77,8 @@ public sealed class TgSqlTableVersionController : TgSqlHelperBase<TgSqlTableVers
         itemDest.Description = itemSource.Description;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;

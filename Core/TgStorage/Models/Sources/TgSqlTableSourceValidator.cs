@@ -4,6 +4,7 @@
 namespace TgStorage.Models.Sources;
 
 [DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableSourceValidator : TgSqlTableValidatorBase<TgSqlTableSourceModel>
 {
     #region Public and private fields, properties, constructor

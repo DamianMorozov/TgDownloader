@@ -5,6 +5,7 @@ namespace TgStorage.Models.Messages;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableMessages)]
+[DoNotNotify]
 public sealed class TgSqlTableMessageModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor

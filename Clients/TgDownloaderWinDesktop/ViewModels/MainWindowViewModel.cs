@@ -7,10 +7,8 @@ using Wpf.Ui.Controls.Interfaces;
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class MainWindowViewModel : TgBaseViewModel
+public sealed partial class MainWindowViewModel : TgViewBase
 {
-	private bool _isInitialized = false;
-
 	public string ApplicationTitle { get; set; } = string.Empty;
 
 	public ObservableCollection<INavigationControl> NavigationItems { get; set; } = new();
@@ -21,13 +19,13 @@ public sealed partial class MainWindowViewModel : TgBaseViewModel
 
 	public MainWindowViewModel(INavigationService navigationService)
 	{
-		if (!_isInitialized)
+		if (!IsInitialized)
 			InitializeViewModel();
 	}
 
 	private void InitializeViewModel()
 	{
-		ApplicationTitle = "Tg-Downloader-WinDesktop";
+		ApplicationTitle = TgLocale.AppTitle;
 
 		//NavigationItem navigationItemAdvanced = new();
 		//NavigationItem navigationItemAutoDownload = new()
@@ -56,28 +54,28 @@ public sealed partial class MainWindowViewModel : TgBaseViewModel
 				new NavigationItem
 				{
 					Content = "Home",
-					PageTag = nameof(TgMenuDashboardPage),
+					PageTag =  "page_home",
 					Icon = SymbolRegular.Home24,
 					PageType = typeof(TgMenuDashboardPage)
 				},
 				new NavigationItem
 				{
 					Content = TgLocaleHelper.Instance.MenuMainClient,
-					PageTag = nameof(TgMenuClientPage),
+					PageTag =  "page_client",
 					Icon = SymbolRegular.DataBarHorizontal24,
 					PageType = typeof(TgMenuClientPage),
 				},
 				new NavigationItem
 				{
 					Content = TgLocaleHelper.Instance.MenuMainProxies,
-					PageTag = nameof(TgMenuProxiesPage),
+					PageTag = "page_proxies",
 					Icon = SymbolRegular.DataBarHorizontal24,
 					PageType = typeof(TgMenuProxiesPage),
 				},
 				new NavigationItem
 				{
 					Content = TgLocaleHelper.Instance.TableSources,
-					PageTag = nameof(TgMenuSourcesPage),
+					PageTag = "page_sources",
 					Icon = SymbolRegular.DataBarHorizontal24,
 					PageType = typeof(TgMenuSourcesPage),
 				},
@@ -99,15 +97,25 @@ public sealed partial class MainWindowViewModel : TgBaseViewModel
 				new()
 				{
 					Header = "Home",
-					Tag = "tray_home"
+					Tag = "page_home"
 				},
 				new()
 				{
-					Header = "Dashboard",
-					Tag = "tray_dashboard"
+					Header = "Client",
+					Tag = "page_client"
+				},
+				new()
+				{
+					Header = "Proxies",
+					Tag = "page_proxies"
+				},
+				new()
+				{
+					Header = "Sources",
+					Tag = "page_sources"
 				},
 			};
 
-		_isInitialized = true;
+		IsInitialized = true;
 	}
 }

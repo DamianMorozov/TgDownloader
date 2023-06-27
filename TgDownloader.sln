@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderConsole", "Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderWinDesktop", "Clients\TgDownloaderWinDesktop\TgDownloaderWinDesktop.csproj", "{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgLocalization", "Core\TgLocalization\TgLocalization.csproj", "{FC689594-30C9-45D2-B8DB-7079E752984B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -174,6 +176,18 @@ Global
 		{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}.Release|x64.Build.0 = Release|x64
 		{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}.Release|x86.ActiveCfg = Release|x86
 		{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}.Release|x86.Build.0 = Release|x86
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|x64.ActiveCfg = Debug|x64
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|x64.Build.0 = Debug|x64
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|x86.ActiveCfg = Debug|x86
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Debug|x86.Build.0 = Debug|x86
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|x64.ActiveCfg = Release|x64
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|x64.Build.0 = Release|x64
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|x86.ActiveCfg = Release|x86
+		{FC689594-30C9-45D2-B8DB-7079E752984B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +203,7 @@ Global
 		{17CE2A7E-AE56-43E8-AB4B-6504B3484167} = {53975472-4A48-4B67-8AF5-029EF31DEA39}
 		{5A12C18B-8DA6-4D47-93D3-9D1AA49BEF62} = {3F563803-8BCB-4477-89CF-91167A8F887C}
 		{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D} = {3F563803-8BCB-4477-89CF-91167A8F887C}
+		{FC689594-30C9-45D2-B8DB-7079E752984B} = {BC2545B1-7D32-4DBC-BA36-C49AF2536B82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5CEF6C8-2885-432D-9D8C-8EDBCEB7AA2C}

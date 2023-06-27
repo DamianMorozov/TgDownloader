@@ -8,8 +8,6 @@ global using System.Reflection;
 global using System.Text;
 global using TgCore.Common;
 global using TgCore.Helpers;
-global using TgCore.Interfaces;
-global using TgCore.Localization;
 global using TgCore.Models;
 global using TgCore.Utils;
 global using TgDownloader.Helpers;

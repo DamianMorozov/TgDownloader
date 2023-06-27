@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Documents;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDocumentModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -26,11 +28,18 @@ public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDoc
 
     public override TgSqlTableDocumentModel NewItem(Session session) => new(session);
 
-    public TgSqlTableDocumentModel GetItem(long sourceId, long id, long messageId) =>
-        new UnitOfWork()
-            .Query<TgSqlTableDocumentModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => Equals(item.SourceId, sourceId) && Equals(item.Id, id) && Equals(item.MessageId, messageId)) ?? NewItem();
+    public TgSqlTableDocumentModel GetItem(long sourceId, long id, long messageId)
+    {
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				       .Query<TgSqlTableDocumentModel>()
+				       .Select(item => item)
+				       .FirstOrDefault(item =>
+					       Equals(item.SourceId, sourceId) && Equals(item.Id, id) && Equals(item.MessageId, messageId)) ??
+			       NewItem();
+		}
+    }
 
     public override TgSqlTableDocumentModel GetNewItem() => new UnitOfWork().Query<TgSqlTableDocumentModel>().Select(item => item)
         .FirstOrDefault(item => Equals(item.Id, NewItem().Id) && Equals(item.SourceId, NewItem().SourceId) && Equals(item.MessageId, NewItem().MessageId)) ?? NewItem();
@@ -49,7 +58,7 @@ public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDoc
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -68,8 +77,8 @@ public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDoc
         itemDest.AccessHash = itemSource.AccessHash;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;
@@ -99,7 +108,6 @@ public sealed class TgSqlTableDocumentController : TgSqlHelperBase<TgSqlTableDoc
 			FileSize = fileSize,
 			AccessHash = accessHash
 		});
-
 
 	public override bool DeleteItem(TgSqlTableDocumentModel item)
     {

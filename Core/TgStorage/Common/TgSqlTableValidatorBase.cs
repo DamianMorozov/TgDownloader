@@ -7,6 +7,7 @@ namespace TgStorage.Common;
 /// SQL validator base.
 /// </summary>
 /// <typeparam name="T"></typeparam>
+[DoNotNotify]
 public class TgSqlTableValidatorBase<T> : AbstractValidator<T> where T : TgSqlTableBase
 {
     #region Public and private fields, properties, constructor

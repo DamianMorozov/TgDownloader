@@ -4,20 +4,20 @@
 namespace TgCore.Models;
 
 [DebuggerDisplay("{ToString()}")]
-public class AppXmlSettingModel
+public class TgAppXmlSettingModel
 {
 	#region Public and private fields, properties, constructor
 
 	public string Name { get; set; }
 	public string Value { get; set; }
 
-	public AppXmlSettingModel()
+	public TgAppXmlSettingModel()
 	{
 		Name = string.Empty;
 		Value = string.Empty;
 	}
 
-	public AppXmlSettingModel(string name, string value)
+	public TgAppXmlSettingModel(string name, string value)
 	{
 		Name = name;
 		Value = value;

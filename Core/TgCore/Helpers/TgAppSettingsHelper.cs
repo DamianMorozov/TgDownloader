@@ -18,7 +18,7 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 	#region Public and private fields, properties, constructor
 
 	[XmlIgnore]
-	public AppXmlModel AppXml { get; set; }
+	public TgAppXmlModel AppXml { get; set; }
 	public bool IsReady => AppXml.IsReady;
 
 	public TgAppSettingsHelper()
@@ -40,8 +40,8 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 	/// <param name="context"></param>
 	protected TgAppSettingsHelper(SerializationInfo info, StreamingContext context)
 	{
-		object? app = info.GetValue(nameof(AppXml), typeof(AppXmlModel));
-		AppXml = app as AppXmlModel ?? new();
+		object? app = info.GetValue(nameof(AppXml), typeof(TgAppXmlModel));
+		AppXml = app as TgAppXmlModel ?? new();
 	}
 
 	/// <summary>
@@ -60,7 +60,7 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 		using StreamReader streamReader = new(TgFileUtils.AppXmlSettings, encoding ?? Encoding.Unicode);
 		string xml = streamReader.ReadToEnd();
 		if (!string.IsNullOrEmpty(xml))
-			AppXml = TgDataFormatUtils.DeserializeFromXml<AppXmlModel>(xml);
+			AppXml = TgDataFormatUtils.DeserializeFromXml<TgAppXmlModel>(xml);
 	}
 
 	public void DefaultXmlSettings(Encoding? encoding = null)

@@ -7,6 +7,7 @@ namespace TgStorage.Common;
 /// SQL table helper base.
 /// </summary>
 /// <typeparam name="T"></typeparam>
+[DoNotNotify]
 public class TgSqlHelperBase<T> where T : TgSqlTableBase, new()
 {
     #region Public and private methods
@@ -31,16 +32,15 @@ public class TgSqlHelperBase<T> where T : TgSqlTableBase, new()
 
     public virtual T GetCurrentItem() => throw new NotImplementedException("Use override method!");
 
-    public virtual List<T> GetList(TgSqlTableTopRecords topRecords = TgSqlTableTopRecords.All) => topRecords switch
+    public virtual List<T> GetList(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) => topRecords switch
     {
-        TgSqlTableTopRecords.Top200 => new UnitOfWork().Query<T>().Select(item => item).Take(200).ToList(),
-        TgSqlTableTopRecords.Top1000 => new UnitOfWork().Query<T>().Select(item => item).Take(1_000).ToList(),
-        TgSqlTableTopRecords.Top10000 => new UnitOfWork().Query<T>().Select(item => item).Take(10_000).ToList(),
-        TgSqlTableTopRecords.Top100000 => new UnitOfWork().Query<T>().Select(item => item).Take(100_000).ToList(),
-        TgSqlTableTopRecords.Top1000000 => new UnitOfWork().Query<T>().Select(item => item).Take(1_000_000).ToList(),
+        TgSqlEnumTableTopRecords.Top200 => new UnitOfWork().Query<T>().Select(item => item).Take(200).ToList(),
+        TgSqlEnumTableTopRecords.Top1000 => new UnitOfWork().Query<T>().Select(item => item).Take(1_000).ToList(),
+        TgSqlEnumTableTopRecords.Top10000 => new UnitOfWork().Query<T>().Select(item => item).Take(10_000).ToList(),
+        TgSqlEnumTableTopRecords.Top100000 => new UnitOfWork().Query<T>().Select(item => item).Take(100_000).ToList(),
+        TgSqlEnumTableTopRecords.Top1000000 => new UnitOfWork().Query<T>().Select(item => item).Take(1_000_000).ToList(),
         _ => new UnitOfWork().Query<T>().Select(item => item).ToList(),
     };
-
 
     public virtual bool AddItem(T item) => throw new NotImplementedException("Use override method!");
 
@@ -55,7 +55,7 @@ public class TgSqlHelperBase<T> where T : TgSqlTableBase, new()
         T itemDb = GetItem(item.Uid);
         if (itemDb.IsNotExists) return false;
         itemDb.Session.Delete(itemDb);
-        itemDb.Session.CommitTransaction();
+        itemDb.Session.CommitTransactionAsync();
         return true;
     }
 

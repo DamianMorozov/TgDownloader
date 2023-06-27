@@ -5,6 +5,7 @@ namespace TgStorage.Models.Documents;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableDocuments)]
+[DoNotNotify]
 public sealed class TgSqlTableDocumentModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor

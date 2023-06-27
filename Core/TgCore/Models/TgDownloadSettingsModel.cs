@@ -3,7 +3,7 @@
 
 namespace TgCore.Models;
 
-public class TgDownloadSettingsModel : ITgSerializable
+public class TgDownloadSettingsModel : ObservableObject, ITgSerializable
 {
 	#region Public and private fields, properties, constructor
 

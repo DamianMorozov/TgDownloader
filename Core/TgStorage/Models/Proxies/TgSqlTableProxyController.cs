@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Proxies;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableProxyController : TgSqlHelperBase<TgSqlTableProxyModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -28,11 +30,18 @@ public sealed class TgSqlTableProxyController : TgSqlHelperBase<TgSqlTableProxyM
     public override TgSqlTableProxyModel NewItem(Session session) => new(session)
     { Type = TgEnumProxyType.None, HostName = "No proxy", Port = 404, UserName = "No user", Password = "No password", Secret = string.Empty };
 
-    public TgSqlTableProxyModel GetItem(TgEnumProxyType proxyType, string hostName, ushort port) =>
-        new UnitOfWork()
-            .Query<TgSqlTableProxyModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => Equals(item.Type, proxyType) && Equals(item.HostName, hostName) && Equals(item.Port, port)) ?? NewItem();
+    public TgSqlTableProxyModel GetItem(TgEnumProxyType proxyType, string hostName, ushort port)
+    {
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				       .Query<TgSqlTableProxyModel>()
+				       .Select(item => item)
+				       .FirstOrDefault(item =>
+					       Equals(item.Type, proxyType) && Equals(item.HostName, hostName) && Equals(item.Port, port)) ??
+			       NewItem();
+		}
+    }
 
     public override TgSqlTableProxyModel GetNewItem() => new UnitOfWork().Query<TgSqlTableProxyModel>().Select(item => item)
         .FirstOrDefault(item => Equals(item.Type, NewItem().Type) && Equals(item.HostName, NewItem().HostName) &&
@@ -52,7 +61,7 @@ public sealed class TgSqlTableProxyController : TgSqlHelperBase<TgSqlTableProxyM
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -71,8 +80,8 @@ public sealed class TgSqlTableProxyController : TgSqlHelperBase<TgSqlTableProxyM
         itemDest.Secret = itemSource.Secret;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;

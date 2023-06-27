@@ -5,6 +5,7 @@ namespace TgStorage.Models.Versions;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableVersions)]
+[DoNotNotify]
 public sealed class TgSqlTableVersionModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor

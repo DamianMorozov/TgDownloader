@@ -81,16 +81,16 @@ internal partial class TgMenuHelper
 	}
 
 	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSource(tgDownloadSettings, TgEnumSourceType.Chat);
+		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Chat);
 
 	private void ScanSourcesChatsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSource(tgDownloadSettings, TgEnumSourceType.Chat);
+		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Chat);
 
 	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSource(tgDownloadSettings, TgEnumSourceType.Dialog);
+		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
 
 	private void ScanSourcesDialogsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSource(tgDownloadSettings, TgEnumSourceType.Dialog);
+		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
 
 	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
 	{
@@ -113,7 +113,7 @@ internal partial class TgMenuHelper
 			SetupDownloadSource(tgDownloadSettings, source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
 			// StatusContext.
-			TgClient.UpdateStatus(
+			TgClient.UpdateState(
 				source.Count <= 0
 					? $"The source {sourceId} hasn't any messages!"
 					: $"The source {sourceId} has {source.Count} messages.");
@@ -128,7 +128,7 @@ internal partial class TgMenuHelper
 	private void AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
-		TgClient.UpdateStatus("Auto view updates is started");
+		TgClient.UpdateState("Auto view updates is started");
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 		TgClient.IsUpdateStatus = false;

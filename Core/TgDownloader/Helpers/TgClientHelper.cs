@@ -1,7 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace TgDownloader.Helpers;
 
@@ -24,9 +24,9 @@ public class TgClientHelper : ITgHelper
 	private TgLogHelper TgLog => TgLogHelper.Instance;
 	public Client? Client { get; set; }
 	public bool IsClientReady => Client is { Disconnected: false };
-	public ExceptionModel ClientException { get; private set; }
+	public TgExceptionModel ClientException { get; private set; }
 	public string TgQuery { get; set; }
-	public ExceptionModel ProxyException { get; private set; }
+	public TgExceptionModel ProxyException { get; private set; }
 	public bool IsReady
 	{
 		get
@@ -50,11 +50,15 @@ public class TgClientHelper : ITgHelper
 	public List<Channel> ListGroups { get; }
 	public List<ChatBase> ListChats { get; }
 	public List<ChatBase> ListSmallGroups { get; }
-	public Action<string> UpdateStatus { get; set; }
-	public Action<string> UpdateStatusWithProgress { get; set; }
-	public Action<long, int, string> UpdateStatusWithId { get; set; }
+	public Action<string> UpdateException { get; set; }
+	public Action<string> UpdateState { get; set; }
+	public Action<string> UpdateStateProgress { get; set; }
+	public Action<long, int, string> UpdateStateSource { get; set; }
 	public bool IsUpdateStatus { get; set; }
 	private object ChannelUpdateLocker { get; }
+	public TgEnumAppType AppType { get; set; }
+	private List<TgSqlTableFilterModel> Filters { get; set; }
+	private object Locker { get; }
 
 	public TgClientHelper()
 	{
@@ -67,11 +71,15 @@ public class TgClientHelper : ITgHelper
 		ListSmallGroups = new();
 		ClientException = new();
 		ProxyException = new();
-		UpdateStatus = (_) => { };
-		UpdateStatusWithProgress = (_) => { };
-		UpdateStatusWithId = (_, _, _) => { };
+		UpdateException = _ => { };
+		UpdateState = _ => { };
+		UpdateStateProgress = _ => { };
+		UpdateStateSource = (_, _, _) => { };
 		ChannelUpdateLocker = new();
 		TgQuery = string.Empty;
+		AppType = TgEnumAppType.Default;
+		Filters = new();
+		Locker = new();
 
 		// TgLog to VS Output debugging pane in addition.
 		//WTelegram.Helpers.Log += (i, str) => Debug.WriteLine($"{i} | {str}");
@@ -83,16 +91,17 @@ public class TgClientHelper : ITgHelper
 
 	#region Public and private methods
 
-	public void ConnectSession(Func<string, string?>? config, TgSqlTableProxyModel proxy, Action? afterConnect = null)
+	public void ConnectSessionConsole(Func<string, string?>? config, TgSqlTableProxyModel proxy, Action? afterConnect = null)
 	{
 		if (IsReady) return;
 		Disconnect();
 
+		AppType = TgEnumAppType.Console;
 		Client = new(config);
 		ConnectThroughProxy(proxy);
 		Client.OnUpdate += Client_OnUpdateAsync;
 
-		LoginUser(true, afterConnect);
+		LoginUserConsole(true, afterConnect);
 	}
 
 	public void ConnectSessionDesktop(Func<string, string?>? config, TgSqlTableProxyModel proxy, Action? afterConnect = null)
@@ -100,6 +109,7 @@ public class TgClientHelper : ITgHelper
 		if (IsReady) return;
 		Disconnect();
 
+		AppType = TgEnumAppType.Desktop;
 		Client = new(config);
 		ConnectThroughProxy(proxy);
 		Client.OnUpdate += Client_OnUpdateAsync;
@@ -138,13 +148,13 @@ public class TgClientHelper : ITgHelper
 		}
 		catch (Exception ex)
 		{
-			ProxyException.Set(ex);
+			SetProxyException(ex);
 		}
 	}
 
 	public long ReduceChatId(long chatId) => !$"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"{chatId}"[4..]);
 
-	public long FixChatId(long chatId) => $"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"-100{chatId}");
+	//public long FixChatId(long chatId) => $"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"-100{chatId}");
 
 	public string GetUserUpdatedName(long id) => DicUsersUpdated.TryGetValue(ReduceChatId(id), out User? user) ? user.username : string.Empty;
 
@@ -171,16 +181,18 @@ public class TgClientHelper : ITgHelper
 		if (tgDownloadSettings.SourceId is 0)
 			tgDownloadSettings.SourceId = GetPeerId(tgDownloadSettings.SourceUserName);
 
-		Messages_Chats? messagesChats = Me is null ? null : Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceId, Me.access_hash))
-			.ConfigureAwait(true).GetAwaiter().GetResult();
-
+		Messages_Chats? messagesChats = null;
+		if (Me is not null)
+			messagesChats = GetTaskResult<Messages_Chats?>(() => 
+		Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceId, Me.access_hash)));
 		if (messagesChats is not null)
+		{
 			foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
 			{
 				if (chat.Value is Channel channel && Equals(channel.ID, tgDownloadSettings.SourceId))
 					return channel;
 			}
-
+		}
 		return null;
 	}
 
@@ -207,8 +219,9 @@ public class TgClientHelper : ITgHelper
 		if (tgDownloadSettings.SourceId is 0)
 			tgDownloadSettings.SourceId = GetPeerId(tgDownloadSettings.SourceUserName);
 
-		Messages_Chats? messagesChats = Me is null ? null : Client.Channels_GetGroupsForDiscussion()
-			.ConfigureAwait(true).GetAwaiter().GetResult();
+		Messages_Chats? messagesChats = null;
+		if (Me is not null)
+			messagesChats = GetTaskResult(() => Client.Channels_GetGroupsForDiscussion());
 
 		if (messagesChats is not null)
 			foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
@@ -227,9 +240,10 @@ public class TgClientHelper : ITgHelper
 		if (!tgDownloadSettings.IsReadySourceId)
 			tgDownloadSettings.SourceId = ReduceChatId(tgDownloadSettings.SourceId);
 		if (!tgDownloadSettings.IsReadySourceId) return null;
-		Bots_BotInfo? botInfo = Me is null ? null : Client.Bots_GetBotInfo("en",
-new InputUser(tgDownloadSettings.SourceId, 0))
-		.ConfigureAwait(true).GetAwaiter().GetResult();
+		Bots_BotInfo? botInfo = null;
+			if (Me is not null)
+				botInfo = GetTaskResult(() => 
+					Client.Bots_GetBotInfo("en", new InputUser(tgDownloadSettings.SourceId, 0)));
 		return botInfo;
 	}
 
@@ -238,14 +252,13 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	public string GetPeerUpdatedName(Peer peer) => peer is PeerUser user ? GetUserUpdatedName(user.user_id)
 		: peer is PeerChat or PeerChannel ? GetChatUpdatedName(peer.ID) : $"Peer {peer.ID}";
 
-	public Dictionary<long, ChatBase> CollectAllChats()
+	public Dictionary<long, ChatBase> CollectAllChatsConsole()
 	{
 		switch (IsReady)
 		{
-			case true when Client is { }:
+			case true when Client is not null:
 				{
-					Messages_Chats messages = Client.Messages_GetAllChats()
-					.ConfigureAwait(true).GetAwaiter().GetResult();
+					Messages_Chats messages = GetTaskResult(() => Client.Messages_GetAllChats());
 					DicChatsAll = messages.chats;
 					FillListChats(DicChatsAll);
 					return DicChatsAll;
@@ -254,14 +267,27 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		return new();
 	}
 
+public void CollectAllChatsDesktopAsync(Action<Action<TgMvvmSourceModel>> afterCollect, 
+	Action<TgMvvmSourceModel> afterScan)
+	{
+		switch (IsReady)
+		{
+			case true when Client is not null:
+				Messages_Chats messages = GetTaskResult(Client.Messages_GetAllChats);
+				DicChatsAll = messages.chats;
+				FillListChats(DicChatsAll);
+				break;
+		}
+		afterCollect(afterScan);
+	}
+
 	public Dictionary<long, ChatBase> CollectAllDialogs()
 	{
 		switch (IsReady)
 		{
 			case true when Client is { }:
 				{
-					Messages_Dialogs messages = Client.Messages_GetAllDialogs()
-						.ConfigureAwait(true).GetAwaiter().GetResult();
+					Messages_Dialogs messages = GetTaskResult(() => Client.Messages_GetAllDialogs());
 					DicChatsAll = messages.chats;
 					FillListChats(DicChatsAll);
 					return messages.chats;
@@ -328,9 +354,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 						}
 						catch (Exception ex)
 						{
-							string message = ex.InnerException is not null ? $"{ex.Message} | {ex.InnerException.Message}" : ex.Message;
-							// It should be saved and asked to be sent to the developer.
-							UpdateStatus(message);
+							SetClientException(ex);
 						}
 					}
 				}
@@ -338,9 +362,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		catch (Exception ex)
 		{
-			string message = ex.InnerException is not null ? $"{ex.Message} | {ex.InnerException.Message}" : ex.Message;
-			// It should be saved and asked to be sent to the developer.
-			UpdateStatus(message);
+			SetClientException(ex);
 		}
 	}
 
@@ -357,129 +379,129 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				if (channel is not null && updateNewChannelMessage.message.Peer.ID.Equals(channel.ID))
 				{
 					//UpdateSource(channel, updateNewChannelMessage.message.ID);
-					UpdateStatus($" {TgLog.GetDtStamp()} | New channel message [{updateNewChannelMessage.message.ID}]{channelLabel}");
+					UpdateState($" {TgLog.GetDtStamp()} | New channel message [{updateNewChannelMessage.message.ID}]{channelLabel}");
 				}
 				break;
 			case UpdateNewMessage updateNewMessage:
-				UpdateStatus($" {TgLog.GetDtStamp()} | New message [{updateNewMessage.message.ID}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | New message [{updateNewMessage.message.ID}]{channelLabel}");
 				break;
 			case UpdateMessageID updateMessageId:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Message ID [{updateMessageId.id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Message ID [{updateMessageId.id}]{channelLabel}");
 				break;
 			case UpdateDeleteChannelMessages deleteChannelMessages:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Delete channel messages [{string.Join(", ", deleteChannelMessages.messages)}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Delete channel messages [{string.Join(", ", deleteChannelMessages.messages)}]{channelLabel}");
 				break;
 			case UpdateDeleteMessages updateDeleteMessages:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
 				break;
 			case UpdateChatUserTyping updateChatUserTyping:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Chat user typing [{updateChatUserTyping.from_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Chat user typing [{updateChatUserTyping.from_id}]{channelLabel}");
 				break;
 			case UpdateChatParticipants { participants: ChatParticipants chatParticipants }:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
 				break;
 			case UpdateUserStatus updateUserStatus:
-				UpdateStatus($" {TgLog.GetDtStamp()} | User status [{updateUserStatus.user_id} | {updateUserStatus.status}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | User status [{updateUserStatus.user_id} | {updateUserStatus.status}]{channelLabel}");
 				break;
 			case UpdateUserName updateUserName:
-				UpdateStatus($" {TgLog.GetDtStamp()} | User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
 				break;
 			case UpdateNewEncryptedMessage updateNewEncryptedMessage:
-				UpdateStatus($" {TgLog.GetDtStamp()} | New encrypted message [{updateNewEncryptedMessage.message.ChatId}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | New encrypted message [{updateNewEncryptedMessage.message.ChatId}]{channelLabel}");
 				break;
 			case UpdateEncryptedChatTyping updateEncryptedChatTyping:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted chat typing [{updateEncryptedChatTyping.chat_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Encrypted chat typing [{updateEncryptedChatTyping.chat_id}]{channelLabel}");
 				break;
 			case UpdateEncryption updateEncryption:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Encryption [{updateEncryption.chat.ID}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Encryption [{updateEncryption.chat.ID}]{channelLabel}");
 				break;
 			case UpdateEncryptedMessagesRead updateEncryptedMessagesRead:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Encrypted message read [{updateEncryptedMessagesRead.chat_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Encrypted message read [{updateEncryptedMessagesRead.chat_id}]{channelLabel}");
 				break;
 			case UpdateChatParticipantAdd updateChatParticipantAdd:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant add [{updateChatParticipantAdd.user_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Chat participant add [{updateChatParticipantAdd.user_id}]{channelLabel}");
 				break;
 			case UpdateChatParticipantDelete updateChatParticipantDelete:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Chat participant delete [{updateChatParticipantDelete.user_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Chat participant delete [{updateChatParticipantDelete.user_id}]{channelLabel}");
 				break;
 			case UpdateDcOptions updateDcOptions:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
 				break;
 			case UpdateNotifySettings updateNotifySettings:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Notify settings [{updateNotifySettings.notify_settings}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Notify settings [{updateNotifySettings.notify_settings}]{channelLabel}");
 				break;
 			case UpdateServiceNotification updateServiceNotification:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Service notification [{updateServiceNotification.message}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Service notification [{updateServiceNotification.message}]{channelLabel}");
 				break;
 			case UpdatePrivacy updatePrivacy:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Privacy [{updatePrivacy.key}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Privacy [{updatePrivacy.key}]{channelLabel}");
 				break;
 			case UpdateUserPhone updateUserPhone:
-				UpdateStatus($" {TgLog.GetDtStamp()} | User phone [{updateUserPhone.phone}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | User phone [{updateUserPhone.phone}]{channelLabel}");
 				break;
 			case UpdateReadHistoryInbox updateReadHistoryInbox:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Read history inbox [{updateReadHistoryInbox.flags}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Read history inbox [{updateReadHistoryInbox.flags}]{channelLabel}");
 				break;
 			case UpdateReadHistoryOutbox updateReadHistoryOutbox:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Read history outbox [{updateReadHistoryOutbox.peer}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Read history outbox [{updateReadHistoryOutbox.peer}]{channelLabel}");
 				break;
 			case UpdateWebPage updateWebPage:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Web page [{updateWebPage.webpage.ID}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Web page [{updateWebPage.webpage.ID}]{channelLabel}");
 				break;
 			case UpdateReadMessagesContents updateReadMessagesContents:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
 				break;
 
 			case UpdateEditMessage updateEditMessage:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Edit message [{updateEditMessage.message.ID}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Edit message [{updateEditMessage.message.ID}]{channelLabel}");
 				break;
 			case UpdateUserTyping updateUserTyping:
-				UpdateStatus($" {TgLog.GetDtStamp()} | User typing [{updateUserTyping.user_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | User typing [{updateUserTyping.user_id}]{channelLabel}");
 				break;
 			case UpdateChannel updateChannel:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Channel [{updateChannel.channel_id}]");
+				UpdateState($" {TgLog.GetDtStamp()} | Channel [{updateChannel.channel_id}]");
 				break;
 			case UpdateChannelReadMessagesContents updateChannelReadMessages:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
 				break;
 			case UpdateChannelUserTyping updateChannelUserTyping:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Channel user typing [{updateChannelUserTyping.from_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Channel user typing [{updateChannelUserTyping.from_id}]{channelLabel}");
 				break;
 			case UpdateMessagePoll updateMessagePoll:
-				UpdateStatus($" {TgLog.GetDtStamp()} | Message poll [{updateMessagePoll.poll_id}]{channelLabel}");
+				UpdateState($" {TgLog.GetDtStamp()} | Message poll [{updateMessagePoll.poll_id}]{channelLabel}");
 				break;
 		}
 	}
 
-	private void Client_DisplayMessage(MessageBase messageBase, bool edit = false)
-	{
-		if (edit) Console.Write("(Edit): ");
-		switch (messageBase)
-		{
-			case TL.Message message:
-				TgLog.MarkupLine($"{GetPeerUpdatedName(message.from_id)} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
-				break;
-			case MessageService messageService:
-				TgLog.MarkupLine($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
-				break;
-		}
-	}
+	//private void Client_DisplayMessage(MessageBase messageBase, bool edit = false)
+	//{
+	//	if (edit) Console.Write("(Edit): ");
+	//	switch (messageBase)
+	//	{
+	//		case TL.Message message:
+	//			TgLog.MarkupLine($"{GetPeerUpdatedName(message.from_id)} in {GetPeerUpdatedName(message.peer_id)}> {message.message}");
+	//			break;
+	//		case MessageService messageService:
+	//			TgLog.MarkupLine($"{GetPeerUpdatedName(messageService.from_id)} in {GetPeerUpdatedName(messageService.peer_id)} [{messageService.action.GetType().Name[13..]}]");
+	//			break;
+	//	}
+	//}
 
-	public async Task PrintSendAsync(Messages_Chats messagesChats)
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		Console.Write("Type a chat ID to send a message: ");
-		string? input = Console.ReadLine();
-		if (!string.IsNullOrEmpty(input))
-		{
-			long chatId = long.Parse(input);
-			ChatBase target = messagesChats.chats[chatId];
-			TgLog.MarkupLine($"Type the message into the chat: {target.Title} | {chatId}");
-			input = Console.ReadLine();
-			if (Client is { })
-				await Client.SendMessageAsync(target, input);
-		}
-	}
+	//public async Task PrintSendAsync(Messages_Chats messagesChats)
+	//{
+	//	await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+	//	Console.Write("Type a chat ID to send a message: ");
+	//	string? input = Console.ReadLine();
+	//	if (!string.IsNullOrEmpty(input))
+	//	{
+	//		long chatId = long.Parse(input);
+	//		ChatBase target = messagesChats.chats[chatId];
+	//		TgLog.MarkupLine($"Type the message into the chat: {target.Title} | {chatId}");
+	//		input = Console.ReadLine();
+	//		if (Client is { })
+	//			await Client.SendMessageAsync(target, input);
+	//	}
+	//}
 
 	public List<ChatBase> SortListChats(List<ChatBase> chats)
 	{
@@ -531,26 +553,29 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 	}
 
+
 	private Messages_ChatFull? PrintChatsInfoChannel(Channel channel, bool isFull, bool isSilent, bool isSave)
 	{
 		Messages_ChatFull? chatFull = null;
 		try
 		{
-			chatFull = Client.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+			chatFull = GetTaskResult(() => Client.Channels_GetFullChannel(channel));
 			if (isSave)
 				ContextManager.ContextTableSources.AddOrUpdateItem(new() { Id = channel.id, UserName = channel.username, Title = channel.title });
 			if (!isSilent)
 			{
-				if (chatFull.full_chat is ChannelFull channelFull)
-					TgLog.MarkupLine(GetChannelFullInfo(channelFull, channel, isFull));
-				else
-					TgLog.MarkupLine(GetChatFullBaseInfo(chatFull.full_chat, channel, isFull));
+				if (chatFull is not null)
+				{
+					if (chatFull.full_chat is ChannelFull channelFull)
+						TgLog.MarkupLine(GetChannelFullInfo(channelFull, channel, isFull));
+					else
+						TgLog.MarkupLine(GetChatFullBaseInfo(chatFull.full_chat, channel, isFull));
+				}
 			}
 		}
 		catch (Exception ex)
 		{
-			//if (Equals(ex.Message, "CHANNEL_INVALID"))
-			TgLog.MarkupLine($"{channel.id} exception: {ex.Message}");
+			SetClientException(ex);
 		}
 		return chatFull;
 	}
@@ -561,7 +586,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		if (Client is null) return chatFull;
 		try
 		{
-			chatFull = Client.GetFullChat(chatBase).ConfigureAwait(true).GetAwaiter().GetResult();
+			chatFull = GetTaskResult(() => Client.GetFullChat(chatBase));
 			if (!isSilent)
 			{
 				if (chatFull.full_chat is ChannelFull channelFull)
@@ -572,8 +597,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		catch (Exception ex)
 		{
-			//if (Equals(ex.Message, "CHANNEL_INVALID"))
-			TgLog.MarkupLine($"{chatBase.ID} exception: {ex.Message}");
+			SetClientException(ex);
 		}
 		return chatFull;
 	}
@@ -599,10 +623,98 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	public bool IsChannelAccess(ChatBase chatBase)
 	{
 		if (chatBase.ID is 0 || chatBase is not Channel channel) return false;
-		return Client.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+		return GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
 	}
 
-	public int GetChannelMessageIdWithLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase, TgEnumPosition position)
+	public T GetTaskResult<T>(Func<Task<T>> taskFunc)
+	{
+		switch (AppType)
+		{
+			case TgEnumAppType.Desktop:
+				Task<T> task = Task.Run(async () =>
+				{
+					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+					return await taskFunc().ConfigureAwait(false);
+				});
+				task.ConfigureAwait(false);
+				return task.GetAwaiter().GetResult();
+			case TgEnumAppType.Console:
+				return taskFunc().ConfigureAwait(true).GetAwaiter().GetResult();
+			default:
+				throw new ArgumentException(nameof(AppType));
+		}
+	}
+
+	public void ExecTask(Func<Task> taskFunc, bool isWait)
+	{
+		switch (AppType)
+		{
+			case TgEnumAppType.Desktop:
+				Task task = Task.Run(async () =>
+				{
+					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+					await taskFunc().ConfigureAwait(false);
+				});
+				task.ConfigureAwait(false);
+				if (isWait)
+					task.GetAwaiter().GetResult();
+				break;
+			case TgEnumAppType.Console:
+				taskFunc().ConfigureAwait(true);
+				//if (isWait)
+				//	taskFunc.GetAwaiter().GetResult();
+				break;
+			default:
+				throw new ArgumentException(nameof(AppType));
+		}
+	}
+
+	//public void ExecTask(Task taskFunc, bool isWait)
+	//{
+	//	switch (AppType)
+	//	{
+	//		case TgEnumAppType.Desktop:
+	//			Task task = Task.Run(async () =>
+	//			{
+	//				await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+	//				await taskFunc().ConfigureAwait(false);
+	//			});
+	//			task.ConfigureAwait(false);
+	//			if (isWait)
+	//				task.GetAwaiter().GetResult();
+	//			break;
+	//		case TgEnumAppType.Console:
+	//			taskFunc().ConfigureAwait(true);
+	//			if (isWait)
+	//				taskFunc.GetAwaiter().GetResult();
+	//			break;
+	//		default:
+	//			throw new ArgumentException(nameof(AppType));
+	//	}
+	//}
+
+	public void ExecAction(Action action)
+	{
+		switch (AppType)
+		{
+			case TgEnumAppType.Desktop:
+				Task task = Task.Run(async () =>
+				{
+					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+					action();
+				});
+				task.ConfigureAwait(false);
+				break;
+			case TgEnumAppType.Console:
+				action();
+				break;
+			default:
+				throw new ArgumentException(nameof(AppType));
+		}
+	}
+
+		public int GetChannelMessageIdWithLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
+		TgEnumPosition position)
 	{
 		lock (ChannelUpdateLocker)
 		{
@@ -619,7 +731,8 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	}
 
 	public int GetChannelMessageIdWithoutLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
-		TgEnumPosition position) => GetChannelMessageIdCore(tgDownloadSettings, chatBase, position);
+		TgEnumPosition position) => 
+		GetChannelMessageIdCore(tgDownloadSettings, chatBase, position);
 
 	private int GetChannelMessageIdCore(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
 		TgEnumPosition position)
@@ -629,9 +742,9 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 
 		if (chatBase is Channel channel)
 		{
-			Messages_ChatFull fullChannel = Client.Channels_GetFullChannel(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+			Messages_ChatFull fullChannel = GetTaskResult(() => Client.Channels_GetFullChannel(channel));
 			if (fullChannel.full_chat is not ChannelFull channelFull) return 0;
-			bool isAccessToMessages = Client.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+			bool isAccessToMessages = GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
 			if (isAccessToMessages)
 			{
 				switch (position)
@@ -647,7 +760,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		else
 		{
-			Messages_ChatFull fullChannel = Client.GetFullChat(chatBase).ConfigureAwait(true).GetAwaiter().GetResult();
+			Messages_ChatFull fullChannel = GetTaskResult(() => Client.GetFullChat(chatBase));
 			switch (position)
 			{
 				case TgEnumPosition.First:
@@ -676,7 +789,8 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	public void SetChannelMessageIdFirstWithoutLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) =>
 		GetChannelMessageIdWithoutLock(tgDownloadSettings, chatBase, TgEnumPosition.First);
 
-	private int SetChannelMessageIdFirstCore(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase, ChatFullBase chatFullBase)
+	private int SetChannelMessageIdFirstCore(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase,
+		ChatFullBase chatFullBase)
 	{
 		int max = chatFullBase is ChannelFull channelFull ? channelFull.read_inbox_max_id : 0;
 		int result = max;
@@ -692,9 +806,9 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				inputMessages[i] = offset + i + 1;
 			}
 			tgDownloadSettings.SourceFirstId = offset;
-			UpdateStatus($"Read from {offset} to {offset + partition} messages.");
-			Messages_MessagesBase? messages = Client.Channels_GetMessages(chatBase as Channel, inputMessages).
-				ConfigureAwait(true).GetAwaiter().GetResult();
+			UpdateState($"Read from {offset} to {offset + partition} messages.");
+			Messages_MessagesBase? messages = GetTaskResult(() => 
+				Client.Channels_GetMessages(chatBase as Channel, inputMessages));
 			for (int i = messages.Offset; i < messages.Count; i++)
 			{
 				// Skip first message.
@@ -721,7 +835,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		if (result >= max)
 			result = 1;
 		tgDownloadSettings.SourceFirstId = result;
-		UpdateStatus($"Get the first ID message '{result}' is complete.");
+		UpdateState($"Get the first ID message '{result}' is complete.");
 		return result;
 	}
 
@@ -769,21 +883,21 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 			Count = count
 		});
 
-	public void ScanSource(TgDownloadSettingsModel tgDownloadSettings, TgEnumSourceType sourceType)
+	public void ScanSourceConsole(TgDownloadSettingsModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		TryCatchAction(() =>
 		{
-			LoginUser(false);
+			LoginUserConsole(false);
 			switch (sourceType)
 			{
 				case TgEnumSourceType.Default:
 					return;
 				case TgEnumSourceType.Chat:
-					UpdateStatusWithProgress(TgLocale.CollectChats);
-					CollectAllChats();
+					UpdateStateProgress(TgLocale.CollectChats);
+					CollectAllChatsConsole();
 					break;
 				case TgEnumSourceType.Dialog:
-					UpdateStatusWithProgress(TgLocale.CollectDialogs);
+					UpdateStateProgress(TgLocale.CollectDialogs);
 					CollectAllDialogs();
 					break;
 			}
@@ -800,18 +914,18 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 						int messagesCount = GetChannelMessageIdLastWithoutLock(tgDownloadSettings, channel);
 						if (channel.IsChannel)
 						{
-							Messages_ChatFull? chatFull = Client.Channels_GetFullChannel(channel)
-								.ConfigureAwait(true).GetAwaiter().GetResult();
+							Messages_ChatFull? chatFull = GetTaskResult(() => 
+								Client.Channels_GetFullChannel(channel));
 							if (chatFull?.full_chat is ChannelFull channelFull)
 							{
 								UpdateSource(channel, channelFull.about, messagesCount);
-								UpdateStatusWithProgress($"{channel} | {messagesCount} | {TgDataFormatUtils.TrimStringEnd(channelFull.about)}");
+								UpdateStateProgress($"{channel} | {messagesCount} | {TgDataFormatUtils.TrimStringEnd(channelFull.about)}");
 							}
 						}
 						else
 						{
 							UpdateSource(channel, messagesCount);
-							UpdateStatusWithProgress($"{channel} | {messagesCount}");
+							UpdateStateProgress($"{channel} | {messagesCount}");
 						}
 					}
 				});
@@ -825,11 +939,84 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 					{
 						int messagesCount = GetChannelMessageIdLastWithoutLock(tgDownloadSettings, group);
 						UpdateSource(group, messagesCount);
-						UpdateStatusWithProgress($"{group} | {messagesCount}");
+						UpdateStateProgress($"{group} | {messagesCount}");
 					}
 				});
 			}
 		});
+	}
+
+	public void ScanSourceDesktop(TgEnumSourceType sourceType, Action<TgMvvmSourceModel> afterScan)
+	{
+		TryCatchActionDesktop(() =>
+		{
+			//LoginUserDesktop(false);
+			switch (sourceType)
+			{
+				case TgEnumSourceType.Chat:
+					UpdateStateProgress(TgLocale.CollectChats);
+					CollectAllChatsDesktopAsync(AfterCollectSources, afterScan);
+					break;
+				case TgEnumSourceType.Dialog:
+					UpdateStateProgress(TgLocale.CollectDialogs);
+					CollectAllDialogs();
+					break;
+			}
+			;
+		});
+	}
+
+	private void AfterCollectSources(Action<TgMvvmSourceModel> afterScan)
+	{
+		// ListChannels.
+		int i = 0;
+		int count = ListChannels.Count;
+		foreach (Channel channel in ListChannels)
+		{
+			TryCatchActionDesktop(() =>
+			{
+				TgSqlTableSourceModel source = new() { Id = channel.ID };
+				if (channel.IsActive)
+				{
+					int messagesCount = GetChannelMessageIdLastWithoutLock(new(), channel);
+					source.Count = messagesCount;
+					if (channel.IsChannel)
+					{
+						Messages_ChatFull chatFull = GetTaskResult(() => Client.Channels_GetFullChannel(channel));
+						if (chatFull.full_chat is ChannelFull channelFull)
+						{
+							source.About = channelFull.about;
+							source.UserName = channel.username;
+								source.Title = channel.title;
+						}
+					}
+					afterScan(new(source));
+				}
+			});
+				i++;
+				UpdateState( $"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
+				UpdateStateSource(channel.ID, 0, $"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
+		}
+
+		// ListGroups.
+		i = 0;
+		count = ListGroups.Count;
+		foreach (Channel group in ListGroups)
+		{
+			TryCatchActionDesktop(() =>
+			{
+				TgSqlTableSourceModel source = new() { Id = group.ID };
+				if (group.IsActive)
+				{
+					int messagesCount = GetChannelMessageIdLastWithoutLock(new(), group);
+					source.Count = messagesCount;
+				}
+				afterScan(new(source));
+			});
+				i++;
+				UpdateState($"Read group '{group.ID}' | {group.IsActive} | {i} from {count}");
+				UpdateStateSource(group.ID, 0, $"Read channel '{group.ID}' | {group.IsActive} | {i} from {count}");
+		}
 	}
 
 	public void DownloadAllData(TgDownloadSettingsModel tgDownloadSettings,
@@ -842,7 +1029,13 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 			chatBase = PrepareChatBaseDownloadMessages(tgDownloadSettings, true);
 		TryCatchAction(() =>
 		{
-			LoginUser(false);
+			// Set filters.
+			Filters = ContextManager.ContextTableFilters.GetListEnabled();
+
+			if (AppType.Equals(TgEnumAppType.Console))
+				LoginUserConsole(false);
+			else if (AppType.Equals(TgEnumAppType.Desktop))
+				LoginUserDesktop(false);
 			//int backupId = tgDownloadSettings.SourceFirstId;
 			CreateDestDirectoryIfNotExists(tgDownloadSettings);
 			while (tgDownloadSettings.SourceFirstId <= tgDownloadSettings.SourceLastId)
@@ -851,14 +1044,16 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				{
 					bool isAccessToMessages = false;
 					if (channel is not null)
-						isAccessToMessages = Client.Channels_ReadMessageContents(channel).ConfigureAwait(true).GetAwaiter().GetResult();
+						isAccessToMessages = GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
 					else if (chatBase is not null)
 						isAccessToMessages = true;
-					if (isAccessToMessages)
+					if (isAccessToMessages && Client is not null)
 					{
 						Messages_MessagesBase messages = channel is not null
-							? Client.Channels_GetMessages(channel, tgDownloadSettings.SourceFirstId).ConfigureAwait(true).GetAwaiter().GetResult()
-							: Client.GetMessages(chatBase, tgDownloadSettings.SourceFirstId).ConfigureAwait(true).GetAwaiter().GetResult();
+							? GetTaskResult(() => 
+								Client.Channels_GetMessages(channel, tgDownloadSettings.SourceFirstId))
+							: GetTaskResult(() => 
+								Client.GetMessages(chatBase, tgDownloadSettings.SourceFirstId));
 						foreach (MessageBase message in messages.Messages)
 						{
 							// Check message exists.
@@ -868,8 +1063,10 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 							}
 							else
 							{
-								UpdateStatusWithProgress("Message is not exists!");
-								UpdateStatusWithId(tgDownloadSettings.SourceId, message.ID, "Message is not exists!");
+								UpdateStateProgress("Message is not exists!");
+								UpdateState($"Message {message.ID} is not exists in {tgDownloadSettings.SourceId}!");
+								UpdateStateSource(tgDownloadSettings.SourceId, message.ID, 
+									$"Message {message.ID} is not exists in {tgDownloadSettings.SourceId}!");
 							}
 						}
 					}
@@ -888,8 +1085,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		catch (Exception ex)
 		{
-			UpdateStatusWithProgress(TgLocale.DirectoryCreateIsException(ex));
-			TgLog.MarkupWarning(TgLocale.DirectoryCreateIsException(ex));
+			SetClientException(ex);
 		}
 	}
 
@@ -899,52 +1095,54 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	{
 		if (messageBase is not TL.Message message)
 		{
-			UpdateStatusWithProgress("Empty message");
-			UpdateStatusWithId(tgDownloadSettings.SourceId, messageBase.ID, "Empty message");
+			UpdateStateProgress("Empty message");
+			UpdateStateSource(tgDownloadSettings.SourceId, messageBase.ID, "Empty message");
 			return;
 		}
 
 		TryCatchAction(() =>
 		{
-			// Get filters.
-			List<TgSqlTableFilterModel> filters = ContextManager.ContextTableFilters.GetListEnabled();
-			// Store message.
-			bool isExistsMessage = findExistsMessage(tgDownloadSettings.SourceFirstId, tgDownloadSettings.SourceId);
-			if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
-				storeMessage(message.ID, tgDownloadSettings.SourceId, message.Date, TgEnumMessageType.Message, 0, message.message);
-			// Parse documents and photos.
-			if ((message.flags & TL.Message.Flags.has_media) is not 0)
+			lock (Locker)
 			{
-				if (message.media is MessageMediaDocument mediaDocument)
+				// Store message.
+				bool isExistsMessage = findExistsMessage(tgDownloadSettings.SourceFirstId, tgDownloadSettings.SourceId);
+				if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
+					storeMessage(message.ID, tgDownloadSettings.SourceId, message.Date, TgEnumMessageType.Message, 0, message.message);
+				// Parse documents and photos.
+				if ((message.flags & TL.Message.Flags.has_media) is not 0)
 				{
-					if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0)
+					if (message.media is MessageMediaDocument mediaDocument)
 					{
-						if (mediaDocument.document is Document document)
+						if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0)
 						{
-							DownloadDataCore(tgDownloadSettings, messageBase, document, null,
-								storeMessage, storeDocument, findExistsMessage, filters);
+							if (mediaDocument.document is Document document)
+							{
+								DownloadDataCore(tgDownloadSettings, messageBase, document, null,
+									storeMessage, storeDocument, findExistsMessage);
+							}
 						}
 					}
+					else if (message.media is MessageMediaPhoto { photo: Photo photo })
+					{
+						DownloadDataCore(tgDownloadSettings, messageBase, null, photo,
+							storeMessage, storeDocument, findExistsMessage);
+					}
 				}
-				else if (message.media is MessageMediaPhoto { photo: Photo photo })
-				{
-					DownloadDataCore(tgDownloadSettings, messageBase, null, photo,
-						storeMessage, storeDocument, findExistsMessage, filters);
-				}
+				UpdateStateProgress("Read the message");
+				UpdateStateSource(tgDownloadSettings.SourceId, message.ID, "Read the message");
 			}
-			UpdateStatusWithProgress("Read the message");
-			UpdateStatusWithId(tgDownloadSettings.SourceId, message.ID, "Read the message");
 		});
 	}
 
-	private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(Document? document, Photo? photo, List<TgSqlTableFilterModel> filters)
+	private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] 
+		GetFiles(Document? document, Photo? photo)
 	{
 		string extensionName = string.Empty;
 		if (document is { })
 		{
 			if (!string.IsNullOrEmpty(document.Filename) && (Path.GetExtension(document.Filename).TrimStart('.') is { } str))
 				extensionName = str;
-			if (!string.IsNullOrEmpty(document.Filename) && CheckFileAtFilter(filters, document.Filename, extensionName, document.size))
+			if (!string.IsNullOrEmpty(document.Filename) && CheckFileAtFilter(document.Filename, extensionName, document.size))
 				return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { (document.Filename, document.size,
 					document.date, string.Empty, string.Empty) };
 			if (document.attributes.Length > 0)
@@ -952,20 +1150,20 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				if (document.attributes.Any(x => x is DocumentAttributeVideo))
 				{
 					extensionName = "mp4";
-					if (CheckFileAtFilter(filters, string.Empty, extensionName, document.size))
+					if (CheckFileAtFilter(string.Empty, extensionName, document.size))
 						return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
 							document.date, string.Empty, string.Empty) };
 				}
 				if (document.attributes.Any(x => x is DocumentAttributeAudio))
 				{
 					extensionName = "mp3";
-					if (CheckFileAtFilter(filters, string.Empty, extensionName, document.size))
+					if (CheckFileAtFilter(string.Empty, extensionName, document.size))
 						return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
 							document.date, string.Empty, string.Empty) };
 				}
 			}
 			if (string.IsNullOrEmpty(document.Filename))
-				if (CheckFileAtFilter(filters, string.Empty, extensionName, document.size))
+				if (CheckFileAtFilter(string.Empty, extensionName, document.size))
 					return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
 						document.date, string.Empty, string.Empty) };
 		}
@@ -974,7 +1172,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		{
 			extensionName = "jpg";
 			//return photo.sizes.Select(x => ($"{photo.ID} {x.Width}x{x.Height}.{GetPhotoExt(x.Type)}", Convert.ToInt64(x.FileSize), photo.date, string.Empty, string.Empty)).ToArray();
-			if (CheckFileAtFilter(filters, string.Empty, extensionName, photo.sizes.Last().FileSize))
+			if (CheckFileAtFilter(string.Empty, extensionName, photo.sizes.Last().FileSize))
 				return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{photo.ID}.{extensionName}", photo.sizes.Last().FileSize,
 					photo.date, string.Empty, string.Empty) };
 		}
@@ -982,10 +1180,9 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		return Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>();
 	}
 
-	public bool CheckFileAtFilter(List<TgSqlTableFilterModel> filters, string fileName, string extensionName,
-		long size)
+	public bool CheckFileAtFilter(string fileName, string extensionName, long size)
 	{
-		foreach (TgSqlTableFilterModel filter in filters)
+		foreach (TgSqlTableFilterModel filter in Filters)
 		{
 			if (!filter.IsEnabled) continue;
 			switch (filter.FilterType)
@@ -1073,9 +1270,9 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		MessageBase messageBase, Document? document, Photo? photo,
 		Action<int, long, DateTime, TgEnumMessageType, long, string> storeMessage,
 		Action<long, long, long, string, long, long> storeDocument,
-		Func<long, long, bool> findExistsMessage, List<TgSqlTableFilterModel> filters)
+		Func<long, long, bool> findExistsMessage)
 	{
-		(string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files = GetFiles(document, photo, filters);
+		(string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files = GetFiles(document, photo);
 		if (Equals(files, Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>())) return;
 		SetFilesLocalNames(tgDownloadSettings, messageBase, ref files);
 		long accessHash = document?.access_hash ?? photo?.access_hash ?? 0;
@@ -1109,7 +1306,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 				{
 					if (document is { })
 					{
-						Client.DownloadFileAsync(document, localFileStream).ConfigureAwait(true).GetAwaiter().GetResult();
+						GetTaskResult(() => Client.DownloadFileAsync(document, localFileStream));
 						storeDocument(document.ID, tgDownloadSettings.SourceId, messageBase.ID, fileName, files[i].Size, accessHash);
 					}
 					else if (photo is { })
@@ -1117,8 +1314,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 						//WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
 						//    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, 
 						//        size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
-						Client.DownloadFileAsync(photo, localFileStream)
-							.ConfigureAwait(true).GetAwaiter().GetResult();
+						GetTaskResult(() => Client.DownloadFileAsync(photo, localFileStream));
 					}
 				}
 				localFileStream.Close();
@@ -1158,8 +1354,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	//	return GetAccessHash(contactsResolved.peer.ID);
 	//}
 
-	private long GetPeerId(string userName) =>
-		Client.Contacts_ResolveUsername(userName).ConfigureAwait(true).GetAwaiter().GetResult().peer.ID;
+	private long GetPeerId(string userName) => GetTaskResult(() => Client.Contacts_ResolveUsername(userName)).peer.ID;
 
 	// AUTH_KEY_DUPLICATED  | rpcException.Code, 406
 	// "Could not read payload length : Connection shut down"
@@ -1173,7 +1368,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 	//        _ => string.Empty
 	//    };
 
-	public void LoginUser(bool isProxyUpdate, Action? afterConnect = null)
+	public void LoginUserConsole(bool isProxyUpdate, Action? afterConnect = null)
 	{
 		ClientException = new();
 		if (Client is null) return;
@@ -1185,7 +1380,34 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		catch (Exception ex)
 		{
-			ClientException.Set(ex);
+			SetClientException(ex);
+			Me = null;
+		}
+		finally
+		{
+			if (isProxyUpdate && IsReady)
+			{
+				TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
+				app.ProxyUid = ContextManager.ContextTableApps.GetCurrentProxy().Uid;
+				ContextManager.ContextTableApps.AddOrUpdateItem(app);
+			}
+			afterConnect?.Invoke();
+		};
+	}
+
+	public void LoginUserDesktop(bool isProxyUpdate, Action? afterConnect = null)
+	{
+		ClientException = new();
+		if (Client is null) return;
+
+		try
+		{
+			Me = GetTaskResult(() => Client.LoginUserIfNeeded());
+			TgQuery = string.Empty;
+		}
+		catch (Exception ex)
+		{
+			SetClientException(ex);
 			Me = null;
 		}
 		finally
@@ -1198,38 +1420,7 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 			}
 
 			afterConnect?.Invoke();
-		};
-	}
-
-	public void LoginUserDesktop(bool isProxyUpdate, Action? afterConnect = null)
-	{
-		ClientException = new();
-		if (Client is null) return;
-
-		_ = Task.Run(async () =>
-						{
-							await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-							try
-							{
-								Me = await Client.LoginUserIfNeeded().ConfigureAwait(true);
-								TgQuery = string.Empty;
-							}
-							catch (Exception ex)
-							{
-								ClientException.Set(ex);
-								Me = null;
-							}
-							finally
-							{
-								if (isProxyUpdate && IsReady)
-								{
-									TgSqlTableAppModel app = ContextManager.ContextTableApps.GetCurrentItem();
-									app.ProxyUid = ContextManager.ContextTableApps.GetCurrentProxy().Uid;
-									ContextManager.ContextTableApps.AddOrUpdateItem(app);
-								}
-								afterConnect?.Invoke();
-							}
-						}).ConfigureAwait(true);
+		}
 	}
 
 	public void Disconnect()
@@ -1239,6 +1430,18 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		Client.Dispose();
 		ClientException = new();
 		Me = null;
+	}
+
+	private void SetClientException(Exception ex)
+	{
+		ClientException.Set(ex);
+		UpdateException(ClientException.Message);
+	}
+
+	private void SetProxyException(Exception ex)
+	{
+		ProxyException.Set(ex);
+		UpdateException(ProxyException.Message);
 	}
 
 	#endregion
@@ -1253,9 +1456,30 @@ new InputUser(tgDownloadSettings.SourceId, 0))
 		}
 		catch (Exception ex)
 		{
-			string message = ex.InnerException is not null ? $"{ex.Message} | {ex.InnerException.Message}" : ex.Message;
-			// It should be saved and asked to be sent to the developer.
-			UpdateStatus(message);
+			SetClientException(ex);
+			if (ClientException.Message.Contains("You must connect to Telegram first"))
+			{
+				LoginUserConsole(false);
+				UpdateState("Reconnect client ...");
+			}
+		}
+	}
+
+	private void TryCatchActionDesktop(Action action)
+	{
+		try
+		{
+			action();
+		}
+		catch (Exception ex)
+		{
+			SetClientException(ex);
+			// CHANNEL_INVALID | BadMsgNotification 48
+			if (ClientException.Message.Contains("You must connect to Telegram first"))
+			{
+				UpdateState("Reconnect client ...");
+				LoginUserDesktop(false);
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class TgItemSourceViewModel : TgBaseViewModel
+public sealed partial class TgItemSourceViewModel : TgViewBase, INavigationAware
 {
 	#region Public and private fields, properties, constructor
 
@@ -16,6 +16,22 @@ public sealed partial class TgItemSourceViewModel : TgBaseViewModel
 	#endregion
 
 	#region Public and private methods
+
+	public void OnNavigatedTo()
+	{
+		if (!IsInitialized)
+			InitializeViewModel();
+	}
+
+	public void OnNavigatedFrom()
+	{
+		//
+	}
+
+	private void InitializeViewModel()
+	{
+		IsInitialized = true;
+	}
 
 	[RelayCommand]
 	internal void OnMenuSourceOpen(string id)

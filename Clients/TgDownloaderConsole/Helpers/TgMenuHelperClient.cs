@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using System.Text;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -166,7 +164,7 @@ internal partial class TgMenuHelper
 				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:"));
 			case "session_pathname":
 				string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.FileSession);
-				return Encoding.UTF8.GetBytes(sessionPath).ToString();
+				return sessionPath;
 			case "password":
 				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:"));
 			case "session_key":
@@ -186,7 +184,7 @@ internal partial class TgMenuHelper
 	{
 		if (!ContextManager.ContextTableApps.GetValidXpLite(ContextManager.ContextTableApps.GetCurrentItem()).IsValid) 
 			return;
-		TgClient.ConnectSession(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy());
+		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy());
 	}
 
 	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
@@ -205,7 +203,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSession(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy()); 
+		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.ContextTableApps.GetCurrentProxy()); 
 		if (TgClient.ClientException.IsExists || TgClient.ProxyException.IsExists)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

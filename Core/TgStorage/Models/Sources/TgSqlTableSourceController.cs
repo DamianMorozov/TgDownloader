@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Sources;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourceModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -24,13 +26,20 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
 
     public override TgSqlTableSourceModel NewItem() => new() { Id = 1, Count = 1 };
 
+    public TgSqlTableSourceModel NewItem(long id) => new() { Id = id };
+
     public override TgSqlTableSourceModel NewItem(Session session) => new(session);
 
-    public TgSqlTableSourceModel GetItem(long id) =>
-        new UnitOfWork()
-            .Query<TgSqlTableSourceModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => Equals(item.Id, id)) ?? NewItem();
+    public TgSqlTableSourceModel GetItem(long id)
+    {
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				.Query<TgSqlTableSourceModel>()
+				.Select(item => item)
+				.FirstOrDefault(item => Equals(item.Id, id)) ?? NewItem(id);
+		}
+    }
 
     public override TgSqlTableSourceModel GetNewItem() => new UnitOfWork().Query<TgSqlTableSourceModel>().Select(item => item)
         .FirstOrDefault(item => Equals(item.Id, NewItem().Id) && Equals(item.UserName, NewItem().UserName) &&
@@ -39,7 +48,7 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
 
     public override bool AddItem(TgSqlTableSourceModel item)
     {
-        using UnitOfWork uow = new();
+		using UnitOfWork uow = new();
         TgSqlTableSourceModel itemNew = new(uow)
         {
             UserName = string.IsNullOrEmpty(item.UserName) ? "" : item.UserName,
@@ -54,7 +63,7 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
         };
 		if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -83,8 +92,8 @@ public sealed class TgSqlTableSourceController : TgSqlHelperBase<TgSqlTableSourc
             itemDest.Directory = itemSource.Directory;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;

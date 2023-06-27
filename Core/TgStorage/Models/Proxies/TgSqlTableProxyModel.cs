@@ -1,12 +1,11 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using DevExpress.Xpo.Logger.Transport;
-
 namespace TgStorage.Models.Proxies;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableProxies)]
+[DoNotNotify]
 public sealed class TgSqlTableProxyModel : TgSqlTableBase
 {
     #region Public and private fields, properties, constructor
@@ -50,7 +49,6 @@ public sealed class TgSqlTableProxyModel : TgSqlTableBase
 	[Size(128)]
 	[Indexed]
 	public string Secret { get => _secret; set => SetPropertyValue(nameof(_secret), ref _secret, value); }
-	public string PrettyName => $"{Type} | {HostName} | {Port} | {UserName}";
 
 	/// <summary>
 	/// Default constructor.

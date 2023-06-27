@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.270.0</Version>
+    <Version>0.2.300.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="applicationIcon.ico" />
@@ -32,9 +32,6 @@
     <Resource Include="Assets\applicationIcon-256.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -56,11 +53,11 @@
     <None Include="..\..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="FodyWeavers.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TgCore\TgCore.csproj" />
     <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
+    <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
   </ItemGroup>
 </Project>

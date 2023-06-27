@@ -1,4 +1,4 @@
-﻿<common:TgBasePage
+﻿<common:TgPageBase
 	x:Class="TgDownloaderWinDesktop.Views.Pages.TgMenuClientPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,123 +7,118 @@
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding ViewModel.TgLocale.MenuMainClient, Mode=OneWay}"
+	Title="{Binding ViewModel.TgLocale.MenuMainClient, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgMenuClientPage,
 	                                 IsDesignTimeCreatable=False}"
 	d:DesignHeight="800"
 	d:DesignWidth="1300"
-	x:TypeArguments="viewModels:TgMenuClientViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-	Loaded="TgMenuClientPage_OnLoadedPage_OnLoaded"
-	Tag="Client"
 	mc:Ignorable="d">
 
-	<Grid VerticalAlignment="Top">
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="1*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<CheckBox
-			Grid.Row="0"
-			Grid.Column="0"
-			Margin="5"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			IsChecked="{Binding ViewModel.IsClientReady, Mode=OneWay}"
-			IsEnabled="False" />
-		<Label
-			Grid.Row="0"
-			Grid.Column="1"
-			Margin="5"
-			HorizontalContentAlignment="Center"
-			VerticalContentAlignment="Center"
-			Content="{Binding ViewModel.TgLocale.MenuClientIsReady}"
-			FontWeight="Bold" />
-		<ui:Button
-			Grid.Row="0"
-			Grid.Column="2"
-			Margin="5"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Appearance="Primary"
-			Click="ButtonClientClearSettings_OnClick"
-			Content="{Binding ViewModel.TgLocale.MenuClientClearSettings}"
-			Icon="ArrowSync12"
-			IsEnabled="False" />
-		<ui:Button
-			Grid.Row="0"
-			Grid.Column="3"
-			Margin="5"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Appearance="Primary"
-			Click="ButtonClientConnect_OnClick"
-			Content="{Binding ViewModel.TgLocale.MenuClientConnect}"
-			Icon="Connector24"
-			IsEnabled="{Binding !ViewModel.IsClientReady, Mode=OneWay}" />
-		<ui:Button
-			Grid.Row="0"
-			Grid.Column="4"
-			Margin="5"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Center"
-			Appearance="Primary"
-			Click="ButtonClientDisconnect_OnClick"
-			Content="{Binding ViewModel.TgLocale.MenuClientDisconnect}"
-			Icon="Connector24"
-			IsEnabled="{Binding ViewModel.IsClientReady, Mode=OneWay}" />
-		<!--  FileSession  -->
-		<CheckBox
-			Grid.Row="1"
-			Grid.Column="0"
-			Margin="5"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			IsChecked="{Binding ViewModel.IsFileSession, Mode=OneWay}"
-			IsEnabled="False" />
-		<Label
-			Grid.Row="1"
-			Grid.Column="1"
-			Margin="5"
-			HorizontalContentAlignment="Center"
-			VerticalContentAlignment="Center"
-			Content="{Binding ViewModel.TgLocale.FileSession}"
-			FontWeight="Bold" />
-		<TextBox
-			Grid.Row="1"
-			Grid.Column="2"
-			Grid.ColumnSpan="2"
-			Margin="5"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Center"
-			HorizontalContentAlignment="Left"
-			IsEnabled="False"
-			IsReadOnly="True"
-			Text="{Binding ViewModel.TgAppSettings.AppXml.FileSession, Mode=TwoWay}" />
+		<!--  https://my.telegram.org/apps/  -->
 		<Border
-			Grid.Row="2"
-			Grid.Column="0"
-			Grid.ColumnSpan="5"
-			Margin="5"
+			Grid.Row="0"
+			Margin="2"
 			BorderBrush="DimGray"
 			BorderThickness="1"
 			CornerRadius="10"
 			UseLayoutRounding="True">
-			<Grid Margin="5" Background="Transparent">
+			<Grid Margin="2" Background="Transparent">
+				<ui:Hyperlink
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Content="https://my.telegram.org/apps/"
+					NavigateUri="https://my.telegram.org/apps/" />
+			</Grid>
+		</Border>
+		<!--  2 row | Actions  -->
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="1*" />
+				<ColumnDefinition Width="1*" />
+			</Grid.ColumnDefinitions>
+			<ui:Button
+				Grid.Column="0"
+				Margin="2"
+				Appearance="Primary"
+				Click="ButtonClientClearSettings_OnClick"
+				Content="{Binding ViewModel.TgLocale.MenuClientClearSettings, IsAsync=True}"
+				Icon="ArrowSync12"
+				IsEnabled="False"
+				Visibility="Hidden" />
+			<ui:Button
+				Grid.Column="0"
+				Margin="2"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Center"
+				Appearance="Primary"
+				Click="ButtonClientConnect_OnClick"
+				Content="{Binding ViewModel.TgLocale.MenuClientConnect, Mode=OneWay, IsAsync=True}"
+				Icon="Connector24"
+				IsEnabled="{Binding !ViewModel.IsClientReady, Mode=OneWay, IsAsync=True}" />
+			<ui:Button
+				Grid.Column="1"
+				Margin="2"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Center"
+				Appearance="Primary"
+				Click="ButtonClientDisconnect_OnClick"
+				Content="{Binding ViewModel.TgLocale.MenuClientDisconnect, Mode=OneWay, IsAsync=True}"
+				Icon="Connector24"
+				IsEnabled="{Binding ViewModel.IsClientReady, Mode=OneWay, IsAsync=True}" />
+		</Grid>
+		<!--  3 row | File session  -->
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="1*" />
+				<ColumnDefinition Width="0.25" />
+				<ColumnDefinition Width="6*" />
+			</Grid.ColumnDefinitions>
+			<Label
+				Grid.Column="0"
+				Margin="2"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				Content="{Binding ViewModel.TgLocale.FileSession, Mode=OneWay, IsAsync=True}" />
+			<CheckBox
+				Grid.Column="1"
+				Margin="2"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				IsChecked="{Binding ViewModel.IsFileSession, Mode=OneWay, IsAsync=True}"
+				IsEnabled="False" />
+			<ui:TextBox
+				Grid.Column="2"
+				Margin="2"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Center"
+				HorizontalContentAlignment="Left"
+				IsEnabled="False"
+				IsReadOnly="True"
+				Text="{Binding ViewModel.TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
+		</Grid>
+		<!--  3 row | Client settings  -->
+		<Border
+			Grid.Row="3"
+			Margin="2"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="10"
+			UseLayoutRounding="True">
+			<Grid Margin="2" Background="Transparent">
 				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -148,18 +143,18 @@
 				<Label
 					Grid.Row="0"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.SettingName}"
+					Content="{Binding ViewModel.TgLocale.SettingName, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<Label
 					Grid.Row="0"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.SettingValue}"
+					Content="{Binding ViewModel.TgLocale.SettingValue, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<Separator
 					Grid.Row="1"
@@ -169,7 +164,7 @@
 					Background="DimGray" />
 				<GridSplitter
 					Grid.Row="0"
-					Grid.RowSpan="16"
+					Grid.RowSpan="14"
 					Grid.Column="1"
 					Width="1"
 					HorizontalAlignment="Stretch"
@@ -179,79 +174,79 @@
 				<Label
 					Grid.Row="2"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientApiHash}"
+					Content="{Binding ViewModel.TgLocale.MenuClientApiHash, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:TextBox
 					Grid.Row="2"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
 					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.TgSqlApp.ApiHash, Mode=TwoWay}" />
+					Text="{Binding ViewModel.TgSqlApp.ApiHash, Mode=TwoWay, IsAsync=True}" />
 				<!--  API ID  -->
 				<Label
 					Grid.Row="3"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientApiId}"
+					Content="{Binding ViewModel.TgLocale.MenuClientApiId, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:TextBox
 					Grid.Row="3"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.TgSqlApp.ApiId, Mode=TwoWay}" />
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Text="{Binding ViewModel.TgSqlApp.ApiId, Mode=TwoWay, IsAsync=True}" />
 				<!--  Phone number  -->
 				<Label
 					Grid.Row="4"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientPhoneNumber}"
+					Content="{Binding ViewModel.TgLocale.MenuClientPhoneNumber, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:TextBox
 					Grid.Row="4"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.TgSqlApp.PhoneNumber, Mode=TwoWay}" />
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Text="{Binding ViewModel.TgSqlApp.PhoneNumber, Mode=TwoWay, IsAsync=True}" />
 				<!--  Proxy  -->
 				<Label
 					Grid.Row="5"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientProxy}"
+					Content="{Binding ViewModel.TgLocale.MenuClientProxy, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<ComboBox
 					Grid.Row="5"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					ItemsSource="{Binding ViewModel.Proxies, Mode=OneWay}"
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					ItemsSource="{Binding ViewModel.Proxies, Mode=OneWay, IsAsync=True}"
 					SelectedIndex="0"
-					SelectedItem="{Binding Source=ViewModel.Proxy, Path=Uid, Mode=TwoWay}">
+					SelectedItem="{Binding Source=ViewModel.MvvmProxy, Path=Uid, Mode=TwoWay, IsAsync=True}">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding PrettyName}" />
+							<TextBlock Text="{Binding PrettyName, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
@@ -262,132 +257,158 @@
 					Grid.ColumnSpan="3"
 					Height="1"
 					Background="DimGray" />
+				<!--  Password  -->
 				<Label
 					Grid.Row="7"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientTelegramQuery}"
+					Content="{Binding ViewModel.TgLocale.MenuClientPassword, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:PasswordBox
 					Grid.Row="7"
-					Grid.Column="1"
-					Grid.ColumnSpan="2"
-					Margin="5"
-					HorizontalContentAlignment="Center"
-					VerticalContentAlignment="Center"
-					FontWeight="Bold"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					IsReadOnly="True"
-					Text="{Binding ViewModel.TgClientQuery, Mode=OneWay, IsAsync=True}" />
-				<Separator
+					Grid.Column="2"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="{Binding ViewModel.BackgroundPassword, Mode=OneWay, IsAsync=True}"
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Password="{Binding ViewModel.Password, Mode=TwoWay, IsAsync=False}" />
+				<!--  Verification code  -->
+				<Label
 					Grid.Row="8"
 					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Height="1"
-					Background="DimGray" />
-				<!--  TG query password  -->
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.TgLocale.MenuClientVerificationCode, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="8"
+					Grid.Column="2"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="{Binding ViewModel.BackgroundVerificationCode, Mode=OneWay, IsAsync=True}"
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Text="{Binding ViewModel.VerificationCode, Mode=TwoWay, IsAsync=True}" />
+				<!--  First name  -->
 				<Label
 					Grid.Row="9"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientPassword}"
+					Content="{Binding ViewModel.TgLocale.MenuClientFirstName, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:TextBox
 					Grid.Row="9"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="{Binding ViewModel.BackgroundPassword}"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.Password, Mode=TwoWay}" />
-				<!--  TG query verification code  -->
+					Background="{Binding ViewModel.BackgroundFirstName, Mode=OneWay, IsAsync=True}"
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Text="{Binding ViewModel.FirstName, Mode=TwoWay, IsAsync=True}" />
+				<!--  Last name  -->
 				<Label
 					Grid.Row="10"
 					Grid.Column="0"
-					Margin="5"
+					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientVerificationCode}"
+					Content="{Binding ViewModel.TgLocale.MenuClientLastName, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<TextBox
+				<ui:TextBox
 					Grid.Row="10"
 					Grid.Column="2"
-					Margin="5"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="{Binding ViewModel.BackgroundVerificationCode}"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.VerificationCode, Mode=TwoWay}" />
-				<!--  TG query first name  -->
+					Background="{Binding ViewModel.BackgroundLastName, Mode=OneWay, IsAsync=True}"
+					IsEnabled="{Binding !ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
+					Text="{Binding ViewModel.LastName, Mode=TwoWay, IsAsync=True}" />
+			</Grid>
+		</Border>
+		<!--  4 row | Client state  -->
+		<Border
+			Grid.Row="4"
+			Margin="2"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="10"
+			UseLayoutRounding="True">
+			<Grid Margin="5" Background="Transparent">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="0.8*" />
+					<ColumnDefinition Width="0.3*" />
+					<ColumnDefinition Width="0.3*" />
+					<ColumnDefinition Width="7*" />
+				</Grid.ColumnDefinitions>
 				<Label
-					Grid.Row="11"
 					Grid.Column="0"
 					Margin="5"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientFirstName}"
-					FontWeight="Bold" />
-				<TextBox
-					Grid.Row="11"
-					Grid.Column="2"
+					Content="{Binding ViewModel.TgLocale.MenuClientIsReady, Mode=OneWay, IsAsync=True}" />
+				<CheckBox
+					Grid.Column="1"
 					Margin="5"
-					HorizontalAlignment="Stretch"
+					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
-					Background="{Binding ViewModel.BackgroundFirstName}"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.FirstName, Mode=TwoWay}" />
-				<!--  TG query last name  -->
+					IsChecked="{Binding ViewModel.IsClientReady, Mode=OneWay, IsAsync=True}"
+					IsEnabled="False" />
 				<Label
-					Grid.Row="12"
-					Grid.Column="0"
-					Margin="5"
-					HorizontalContentAlignment="Center"
-					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientLastName}"
-					FontWeight="Bold" />
-				<TextBox
-					Grid.Row="12"
 					Grid.Column="2"
+					Margin="5"
+					HorizontalContentAlignment="Right"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.TgLocale.MenuState, Mode=OneWay, IsAsync=True}" />
+				<ui:TextBox
+					Grid.Column="3"
 					Margin="5"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="{Binding ViewModel.BackgroundLastName}"
-					IsEnabled="{Binding !ViewModel.IsLoad}"
-					Text="{Binding ViewModel.LastName, Mode=TwoWay}" />
-				<!--  Exception  -->
-				<Separator
-					Grid.Row="13"
-					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Height="1"
-					Background="DimGray" />
-				<Label
-					Grid.Row="14"
-					Grid.Column="0"
-					Margin="5"
-					HorizontalContentAlignment="Center"
-					VerticalContentAlignment="Center"
-					Content="{Binding ViewModel.TgLocale.MenuClientException}"
-					FontWeight="Bold" />
-				<TextBox
-					Grid.Row="14"
-					Grid.Column="2"
-					Margin="5"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
+					IsEnabled="False"
 					IsReadOnly="True"
-					Text="{Binding ViewModel.ExceptionMsg, Mode=TwoWay}" />
+					Text="{Binding ViewModel.StateMessage, Mode=OneWay, IsAsync=True}" />
+			</Grid>
+		</Border>
+		<!--  5 row | Exception  -->
+		<Border
+			Grid.Row="5"
+			Margin="2"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="10"
+			UseLayoutRounding="True">
+			<Grid Margin="2" Background="Transparent">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1.2*" />
+					<ColumnDefinition Width="11*" />
+				</Grid.ColumnDefinitions>
+				<Label
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding ViewModel.TgLocale.MenuException, Mode=OneWay, IsAsync=True}" />
+				<ui:TextBox
+					Grid.Column="1"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="False"
+					IsReadOnly="True"
+					Text="{Binding ViewModel.ExceptionMessage, Mode=OneWay, IsAsync=True}" />
 			</Grid>
 		</Border>
 	</Grid>
-</common:TgBasePage>
+</common:TgPageBase>

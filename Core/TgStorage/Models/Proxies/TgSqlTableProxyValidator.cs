@@ -4,6 +4,7 @@
 namespace TgStorage.Models.Proxies;
 
 [DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableProxyValidator : TgSqlTableValidatorBase<TgSqlTableProxyModel>
 {
     #region Public and private fields, properties, constructor

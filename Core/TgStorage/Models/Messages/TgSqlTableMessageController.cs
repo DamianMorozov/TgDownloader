@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Messages;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMessageModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -46,7 +48,7 @@ public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMess
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -65,8 +67,8 @@ public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMess
         itemDest.Message = itemSource.Message;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;
@@ -74,13 +76,18 @@ public sealed class TgSqlTableMessageController : TgSqlHelperBase<TgSqlTableMess
 
     public bool FindExistsMessage(long id, long sourceId) => GetItem(sourceId, id).IsExists;
 
-	public TgSqlTableMessageModel GetItem(long sourceId, long id) =>
-        new UnitOfWork()
-            .Query<TgSqlTableMessageModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => Equals(item.SourceId, sourceId) && Equals(item.Id, id)) ?? NewItem();
+	public TgSqlTableMessageModel GetItem(long sourceId, long id)
+	{
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				.Query<TgSqlTableMessageModel>()
+				.Select(item => item)
+				.FirstOrDefault(item => Equals(item.SourceId, sourceId) && Equals(item.Id, id)) ?? NewItem();
+		}
+	}
 
-    public override bool AddOrUpdateItem(TgSqlTableMessageModel item)
+	public override bool AddOrUpdateItem(TgSqlTableMessageModel item)
     {
 	    lock (Locker)
 	    {

@@ -1,10 +1,13 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgLocalization.Helpers;
+
 namespace TgStorage.Models.Sources;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableSources)]
+[DoNotNotify]
 public sealed class TgSqlTableSourceModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor
@@ -62,12 +65,6 @@ public sealed class TgSqlTableSourceModel : TgSqlTableBase
 	[Persistent(TgSqlConstants.ColumnIsAutoUpdate)]
 	[Indexed]
 	public bool IsAutoUpdate { get => _isAutoUpdate; set => SetPropertyValue(nameof(_isAutoUpdate), ref _isAutoUpdate, value); }
-
-	public bool IsCountComplete => FirstId == Count;
-	public bool IsDirectoryExists => System.IO.Directory.Exists(Directory);
-
-	public int Progress => FirstId * 100 / Count;
-	public string ProgressString => $"{Progress:###.##} % | {FirstId} from {Count}";
 
 	/// <summary>
 	/// Default constructor.

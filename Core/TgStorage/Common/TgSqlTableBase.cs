@@ -6,6 +6,7 @@ namespace TgStorage.Common;
 /// <summary>
 /// SQL table object base.
 /// </summary>
+[DoNotNotify]
 public class TgSqlTableBase : XPLiteObject, ITgSqlTable
 {
 	#region Public and private fields, properties, constructor

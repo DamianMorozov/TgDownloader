@@ -6,7 +6,7 @@ namespace TgCore.Models;
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{ToString()}")]
-public class AppXmlModel : ITgSerializable, INotifyPropertyChanged
+public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 {
 	#region Public and private fields, properties, constructor
 
@@ -30,7 +30,7 @@ public class AppXmlModel : ITgSerializable, INotifyPropertyChanged
 	[XmlElement]
 	public bool IsUseProxy { get; set; }
 
-	public AppXmlModel()
+	public TgAppXmlModel()
 	{
 		if (string.IsNullOrEmpty(Version))
 			Version = this.GetPropertyDefaultValue(nameof(Version));
@@ -48,7 +48,7 @@ public class AppXmlModel : ITgSerializable, INotifyPropertyChanged
 	/// </summary>
 	/// <param name="info"></param>
 	/// <param name="context"></param>
-	protected AppXmlModel(SerializationInfo info, StreamingContext context)
+	protected TgAppXmlModel(SerializationInfo info, StreamingContext context)
 	{
 		Version = info.GetString(nameof(Version)) ?? this.GetPropertyDefaultValue(nameof(Version));
 		FileSession = info.GetString(nameof(FileSession)) ?? this.GetPropertyDefaultValue(nameof(FileSession));
@@ -107,7 +107,7 @@ public class AppXmlModel : ITgSerializable, INotifyPropertyChanged
 	}
 
 	public override string ToString() =>
-		$"{nameof(AppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
+		$"{nameof(TgAppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
 
 	#endregion
 

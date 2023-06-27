@@ -2,16 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.Drawing;
-using ABI.Windows.Devices.Bluetooth.Advertisement;
 
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class TgMenuClientViewModel : TgBaseViewModel
+public sealed partial class TgMenuClientViewModel : TgViewBase, INavigationAware
 {
 	#region Public and private fields, properties, constructor
 
-	public string ExceptionMsg { get; set; }
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
 	public string Notifications { get; set; }
@@ -21,7 +19,6 @@ public sealed partial class TgMenuClientViewModel : TgBaseViewModel
 	public Brush BackgroundPassword { get; set; }
 	public Brush BackgroundFirstName { get; set; }
 	public Brush BackgroundLastName { get; set; }
-
 	private bool _isNeedVerificationCode;
 	public bool IsNeedVerificationCode { get => _isNeedVerificationCode;
 		set
@@ -62,12 +59,11 @@ public sealed partial class TgMenuClientViewModel : TgBaseViewModel
 	}
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	public TgSqlTableAppModel TgSqlApp { get; set; }
-	public ObservableCollection<TgSqlTableProxyModel> Proxies { get; set; }
-	public TgSqlTableProxyModel Proxy { get; set; }
+	public ObservableCollection<TgMvvmProxyModel> Proxies { get; set; }
+	public TgMvvmProxyModel MvvmProxy { get; set; }
 
 	public TgMenuClientViewModel()
 	{
-		ExceptionMsg = string.Empty;
 		FirstName = string.Empty;
 		LastName = string.Empty;
 		Notifications = string.Empty;
@@ -75,26 +71,49 @@ public sealed partial class TgMenuClientViewModel : TgBaseViewModel
 		TgSqlApp = ContextManager.ContextTableApps.GetCurrentItem();
 		VerificationCode = string.Empty;
 		Proxies = new();
-		Proxy = new();
+		MvvmProxy = new(new());
 		BackgroundVerificationCode = new SolidBrush(Color.Transparent);
 		BackgroundPassword = new SolidBrush(Color.Transparent);
 		BackgroundFirstName = new SolidBrush(Color.Transparent);
 		BackgroundLastName = new SolidBrush(Color.Transparent);
-		TgClientQuery = string.Empty;
+		StateMessage = string.Empty;
 	}
 
 	#endregion
 
 	#region Public and private methods
 
+	public void OnNavigatedTo()
+	{
+		if (!IsInitialized)
+			InitializeViewModel();
+	}
+
+	public void OnNavigatedFrom()
+	{
+		//
+	}
+
+	private void InitializeViewModel()
+	{
+		Load();
+		if (TgClientUtils.TgClient.IsReady)
+		{
+			TgClient = TgClientUtils.TgClient;
+			IsClientReady = TgClient.IsReady;
+		}
+		IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+		IsInitialized = true;
+	}
+
 	public void Load()
 	{
 		Proxies.Clear();
 		foreach (TgSqlTableProxyModel proxy in ContextManager.ContextTableProxies.GetList())
 		{
-			Proxies.Add(proxy);
+			Proxies.Add(new(proxy));
 		}
-		Proxy = ContextManager.ContextTableProxies.GetItem(TgSqlApp.ProxyUid);
+		MvvmProxy.Proxy = ContextManager.ContextTableProxies.GetItem(TgSqlApp.ProxyUid);
 	}
 
 	#endregion

@@ -1,41 +1,27 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System;
-using Windows.Storage;
-using TgDownloader.Utils;
-
 namespace TgDownloaderWinDesktop.Views.Pages;
 
 /// <summary>
 /// Interaction logic for TgClientView.xaml
 /// </summary>
-public partial class TgMenuClientPage : INotifyPropertyChanged
+public partial class TgMenuClientPage : TgPageBase
 {
 	#region Public and private fields, properties, constructor
 
 	public TgMenuClientViewModel ViewModel { get; set; }
 
-	public TgMenuClientPage(TgMenuClientViewModel viewModel) : base(viewModel)
+	public TgMenuClientPage(TgMenuClientViewModel viewModel)
 	{
 		ViewModel = viewModel;
+		ViewModel.OnNavigatedTo();
 		InitializeComponent();
 	}
 
 	#endregion
 
 	#region Public and private methods
-
-	private void TgMenuClientPage_OnLoadedPage_OnLoaded(object sender, RoutedEventArgs e)
-	{
-		ViewModel.Load();
-		if (TgClientUtils.TgClient.IsReady)
-		{
-			ViewModel.TgClient = TgClientUtils.TgClient;
-			ViewModel.IsClientReady = ViewModel.TgClient.IsReady;
-		}
-		ViewModel.IsFileSession = ViewModel.TgAppSettings.AppXml.IsExistsFileSession;
-	}
 
 	private void ButtonClientClearSettings_OnClick(object sender, RoutedEventArgs e)
 	{
@@ -53,7 +39,7 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 				{
 					ViewModel.IsLoad = true;
 					
-					ViewModel.ExceptionMsg = string.Empty;
+					ViewModel.Exception.Clear();
 					if (!ViewModel.ContextManager.ContextTableApps.GetValidXpLite(ViewModel.TgSqlApp).IsValid)
 						return;
 					ViewModel.TgClient.ConnectSessionDesktop(GetDesktopConfig, 
@@ -63,9 +49,7 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 		}
 		catch (Exception ex)
 		{
-			ViewModel.ExceptionMsg = ex.InnerException is null
-				? ex.Message
-				: $"{ex.Message}{Environment.NewLine}{ex.InnerException.Message}";
+			ViewModel.Exception.Set(ex);
 		}
 	}
 
@@ -79,7 +63,7 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 
 				Application.Current.Dispatcher.Invoke(() =>
 				{
-				ViewModel.TgClientQuery = ViewModel.TgClient.TgQuery;
+				ViewModel.StateMessage = ViewModel.TgClient.TgQuery;
 				ViewModel.IsClientReady = ViewModel.TgClient.IsReady;
 				ViewModel.IsFileSession = ViewModel.TgAppSettings.AppXml.IsExistsFileSession;
 				if (ViewModel.TgClient.IsReady)
@@ -93,9 +77,7 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 		}
 		catch (Exception ex)
 		{
-			ViewModel.ExceptionMsg = ex.InnerException is null
-				? ex.Message
-				: $"{ex.Message}{Environment.NewLine}{ex.InnerException.Message}";
+			ViewModel.Exception.Set(ex);
 		}
 	}
 
@@ -110,11 +92,11 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 				{
 					ViewModel.IsLoad = true;
 					
-					ViewModel.ExceptionMsg = string.Empty;
+					ViewModel.Exception.Clear();
 					if (!ViewModel.ContextManager.ContextTableApps.GetValidXpLite(ViewModel.TgSqlApp).IsValid)
 						return;
 					ViewModel.TgClient.Disconnect();
-					ViewModel.TgClientQuery = ViewModel.TgClient.TgQuery;
+					ViewModel.StateMessage = ViewModel.TgClient.TgQuery;
 					ViewModel.IsClientReady = ViewModel.TgClient.IsReady;
 					ViewModel.IsLoad = false;
 				});
@@ -122,20 +104,18 @@ public partial class TgMenuClientPage : INotifyPropertyChanged
 		}
 		catch (Exception ex)
 		{
-			ViewModel.ExceptionMsg = ex.InnerException is null
-				? ex.Message
-				: $"{ex.Message}{Environment.NewLine}{ex.InnerException.Message}";
+			ViewModel.Exception.Set(ex);
 		}
 	}
 
 	private string? GetDesktopConfig(string what)
 	{
-		string result;
 		ViewModel.TgClient.TgQuery = what;
 		switch (what)
 		{
 			case "api_hash":
-				return TgDataFormatUtils.ParseGuidToString(ViewModel.TgSqlApp.ApiHash);
+				string apiHash = TgDataFormatUtils.ParseGuidToString(ViewModel.TgSqlApp.ApiHash);
+				return apiHash;
 			case "api_id":
 				return ViewModel.TgSqlApp.ApiId.ToString();
 			case "phone_number":

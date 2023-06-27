@@ -4,11 +4,31 @@
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToString()}")]
-public sealed partial class TgMenuDashboardViewModel : TgBaseViewModel
+public sealed partial class TgMenuDashboardViewModel : TgViewBase, INavigationAware
 {
 	#region Public and private fields, properties, constructor
 
 	public TgAppSettingsHelper TgAppSettings { get; private set; } = TgAppSettingsHelper.Instance;
+
+	#endregion
+
+	#region Public and private methods
+
+	public void OnNavigatedTo()
+	{
+		if (!IsInitialized)
+			InitializeViewModel();
+	}
+
+	public void OnNavigatedFrom()
+	{
+		//
+	}
+
+	private void InitializeViewModel()
+	{
+		IsInitialized = true;
+	}
 
 	#endregion
 }

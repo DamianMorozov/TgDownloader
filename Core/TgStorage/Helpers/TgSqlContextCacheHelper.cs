@@ -20,8 +20,8 @@ public sealed class TgSqlContextCacheHelper
     #region Public and private fields, properties, constructor
 
     private TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-    public TgSqlTableName TableName { get; private set; } = TgSqlTableName.None;
-    public TgSqlTableTopRecords TableTopRecords { get; private set; } = TgSqlTableTopRecords.Top1000;
+    public TgSqlEnumTableName TableName { get; private set; } = TgSqlEnumTableName.None;
+    public TgSqlEnumTableTopRecords TableTopRecords { get; private set; } = TgSqlEnumTableTopRecords.Top1000;
     public List<TgSqlTableAppModel> Apps { get; private set; } = new();
     public List<TgSqlTableDocumentModel> Documents { get; private set; } = new();
     public List<TgSqlTableFilterModel> Filters { get; private set; } = new();
@@ -36,27 +36,27 @@ public sealed class TgSqlContextCacheHelper
 
 	public void Load() => Load(TableName);
 
-    public void Load(TgSqlTableName tableName)
+    public void Load(TgSqlEnumTableName tableName)
     {
 		// Tables.
-		if (!Apps.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Apps))
+		if (!Apps.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Apps))
 			Apps = ContextManager.ContextTableApps.GetList(TableTopRecords);
-		if (!Documents.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Documents))
+		if (!Documents.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Documents))
 			Documents = ContextManager.ContextTableDocuments.GetList(TableTopRecords);
-		if (!Filters.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Filters))
+		if (!Filters.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Filters))
 			Filters = ContextManager.ContextTableFilters.GetList(TableTopRecords);
-		if (!Messages.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Messages))
+		if (!Messages.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Messages))
 			Messages = ContextManager.ContextTableMessages.GetList(TableTopRecords);
-		if (!Proxies.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Proxies))
+		if (!Proxies.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Proxies))
 			Proxies = ContextManager.ContextTableProxies.GetList(TableTopRecords);
-		if (!Sources.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Sources))
+		if (!Sources.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Sources))
 			Sources = ContextManager.ContextTableSources.GetList(TableTopRecords);
-		if (!Versions.Any() || Equals(tableName, TgSqlTableName.All) || Equals(tableName, TgSqlTableName.Versions))
+		if (!Versions.Any() || Equals(tableName, TgSqlEnumTableName.All) || Equals(tableName, TgSqlEnumTableName.Versions))
 			Versions = ContextManager.ContextTableVersions.GetList(TableTopRecords);
 
 		// Optimize.
-		if (TableName.Equals(TgSqlTableName.All))
-            TableName = TgSqlTableName.None;
+		if (TableName.Equals(TgSqlEnumTableName.All))
+            TableName = TgSqlEnumTableName.None;
     }
 
     #endregion

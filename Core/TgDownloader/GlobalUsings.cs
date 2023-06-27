@@ -4,14 +4,14 @@
 global using ProxyLib.Proxy;
 global using TgCore.Common;
 global using TgCore.Helpers;
-global using TgCore.Interfaces;
-global using TgCore.Localization;
 global using TgCore.Models;
 global using TgCore.Utils;
+global using TgLocalization.Helpers;
 global using TgStorage.Helpers;
 global using TgStorage.Models.Apps;
 global using TgStorage.Models.Filters;
 global using TgStorage.Models.Proxies;
+global using TgStorage.Models.Sources;
 global using TL;
 global using WTelegram;
 global using Channel = TL.Channel;

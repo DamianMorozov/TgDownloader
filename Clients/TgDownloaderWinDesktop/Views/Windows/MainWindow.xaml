@@ -39,10 +39,10 @@
 					TooltipText="TgDownloaderWinDesktop">
 					<ui:NotifyIcon.Menu>
 						<ContextMenu>
-							<MenuItem Header="Home" Tag="Home" />
-							<MenuItem Header="Client" Tag="Client" />
-							<MenuItem Header="Proxies" Tag="Proxies" />
-							<MenuItem Header="Sources" Tag="Sources" />
+							<MenuItem Header="Home" Tag="page_home" />
+							<MenuItem Header="Client" Tag="page_client" />
+							<MenuItem Header="Proxies" Tag="page_proxies" />
+							<MenuItem Header="Sources" Tag="page_sources" />
 						</ContextMenu>
 					</ui:NotifyIcon.Menu>
 				</ui:NotifyIcon>

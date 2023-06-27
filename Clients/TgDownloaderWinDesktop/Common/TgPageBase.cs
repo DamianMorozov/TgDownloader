@@ -1,23 +1,19 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgDownloaderWinDesktop.ViewModels;
+namespace TgDownloaderWinDesktop.Common;
 
-[DebuggerDisplay("{ToString()}")]
-public sealed partial class TgDownloadViewModel : TgBaseViewModel
+/// <summary>
+/// Base class for TgPage.
+/// </summary>
+public partial class TgPageBase : UiPage
 {
 	#region Public and private fields, properties, constructor
 
-	public TgDownloadViewModel()
+	public TgPageBase()
 	{
 		//
 	}
-
-	#endregion
-
-	#region Public and private methods
-
-	//
 
 	#endregion
 }

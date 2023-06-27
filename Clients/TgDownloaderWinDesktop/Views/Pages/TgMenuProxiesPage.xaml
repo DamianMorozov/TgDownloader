@@ -1,4 +1,4 @@
-﻿<common:TgBasePage
+﻿<common:TgPageBase
 	x:Class="TgDownloaderWinDesktop.Views.Pages.TgMenuProxiesPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,17 +8,13 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sources="clr-namespace:TgStorage.Models.Sources;assembly=TgStorage"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-	xmlns:viewModels="clr-namespace:TgDownloaderWinDesktop.ViewModels"
-	Title="{Binding .ViewModel.TgLocale.TableSources, Mode=OneWay}"
+	Title="{Binding .ViewModel.TgLocale.TableSources, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgMenuProxiesPage,
 	                                 IsDesignTimeCreatable=False}"
 	d:DesignHeight="800"
 	d:DesignWidth="1300"
-	x:TypeArguments="viewModels:TgMenuProxiesViewModel"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-	Loaded="TgMenuProxiesPage_OnLoaded"
-	Tag="Proxies"
 	mc:Ignorable="d">
 
 	<Grid VerticalAlignment="Top">
@@ -36,50 +32,50 @@
 			Grid.Column="0"
 			Width="30"
 			Height="30"
-			Margin="5"
+			Margin="2"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			IsIndeterminate="{Binding .ViewModel.IsLoad, Mode=OneWay}"
+			IsIndeterminate="{Binding .ViewModel.IsLoad, Mode=OneWay, IsAsync=True}"
 			Visibility="Visible" />
 		<ui:Button
 			Grid.Row="0"
 			Grid.Column="1"
-			Margin="5"
+			Margin="2"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
 			Appearance="Primary"
-			Click="ButtonSourceReloadAll_OnClick"
+			Command="{Binding ViewModel.LoadProxiesFromStorageCommand, Mode=OneWay, IsAsync=True}"
 			Content="Reload all from Storage"
 			Icon="ArrowSync12" />
 		<DataGrid
 			Grid.Row="1"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
-			Margin="5"
+			Margin="2"
 			AutoGenerateColumns="False"
 			Background="Transparent"
-			ItemsSource="{Binding ViewModel.Proxies, Mode=OneWay}">
+			ItemsSource="{Binding ViewModel.MvvmProxies, Mode=OneWay, IsAsync=True}">
 			<DataGrid.Columns>
-				<!--  Reload  -->
+				<!--  Connect  -->
 				<DataGridTemplateColumn Width="0.75*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Reload"
+							Content="Connect"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ui:Button
-								Margin="5"
+								Margin="2"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Appearance="Primary"
-								Click="ButtonSourceLoad_OnClick"
-								Icon="ArrowSync12"
-								Tag="{Binding Id, Mode=OneWay}" />
+								Command="{Binding ConnectProxyCommand, Mode=OneWay, IsAsync=True}"
+								Icon="Connector24"
+								IsEnabled="False" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -87,7 +83,7 @@
 				<DataGridTemplateColumn Width="1*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="Type"
@@ -95,13 +91,14 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:TextBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
 								HorizontalContentAlignment="Center"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Type, Mode=TwoWay}" />
+								Text="{Binding .Proxy.Type, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -109,7 +106,7 @@
 				<DataGridTemplateColumn Width="1*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="Host"
@@ -117,13 +114,14 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:TextBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
 								HorizontalContentAlignment="Center"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding HostName, Mode=TwoWay}" />
+								Text="{Binding Proxy.HostName, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -131,7 +129,7 @@
 				<DataGridTemplateColumn Width="0.7*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="Port"
@@ -139,13 +137,14 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:TextBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
 								HorizontalContentAlignment="Center"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Port, Mode=TwoWay}" />
+								Text="{Binding Proxy.Port, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -153,7 +152,7 @@
 				<DataGridTemplateColumn Width="1*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="User name"
@@ -161,21 +160,22 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:TextBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
 								HorizontalContentAlignment="Center"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding UserName, Mode=OneWay}" />
+								Text="{Binding Proxy.UserName, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 				<!--  Password  -->
-				<DataGridTemplateColumn Width="1*">
+				<DataGridTemplateColumn Width="1.4*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="Password"
@@ -183,13 +183,14 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:PasswordBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
 								HorizontalContentAlignment="Center"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Password, Mode=OneWay}" />
+								Password="{Binding Proxy.Password, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -197,7 +198,7 @@
 				<DataGridTemplateColumn Width="4*">
 					<DataGridTemplateColumn.Header>
 						<Label
-							Margin="5"
+							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
 							Content="Secret"
@@ -205,16 +206,17 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<TextBox
-								Margin="5"
+							<ui:TextBox
+								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
+								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Secret, Mode=OneWay}" />
+								Text="{Binding Proxy.Secret, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>
-</common:TgBasePage>
+</common:TgPageBase>

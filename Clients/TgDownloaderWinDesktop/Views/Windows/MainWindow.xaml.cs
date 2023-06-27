@@ -9,7 +9,7 @@ namespace TgDownloaderWinDesktop.Views.Windows;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : INavigationWindow, INotifyPropertyChanged
+public partial class MainWindow : INavigationWindow
 {
 	public MainWindowViewModel ViewModel { get; init; }
 

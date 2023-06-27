@@ -3,6 +3,8 @@
 
 namespace TgStorage.Models.Apps;
 
+[DebuggerDisplay("{ToString()}")]
+[DoNotNotify]
 public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel>
 {
     #region Design pattern "Lazy Singleton"
@@ -35,12 +37,19 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
     public override TgSqlTableAppModel GetNewItem() => new UnitOfWork().Query<TgSqlTableAppModel>().Select(item => item)
         .FirstOrDefault(item => Equals(item.ApiHash, NewItem().ApiHash) && Equals(item.PhoneNumber, NewItem().PhoneNumber)) ?? NewItem();
 
-    public override TgSqlTableAppModel GetCurrentItem() => new UnitOfWork()
-            .Query<TgSqlTableAppModel>()
-            .Select(item => item)
-            .FirstOrDefault(item => !Equals(item.ApiHash, Guid.Empty)) ?? NewItem();
+    public override TgSqlTableAppModel GetCurrentItem()
+	{
+		lock (Locker)
+		{
+			return new UnitOfWork()
+				.Query<TgSqlTableAppModel>()
+				.Select(item => item)
+				.FirstOrDefault(item => !Equals(item.ApiHash, Guid.Empty)) ?? NewItem();
+		}
+    }
 
     public Guid GetCurrentProxyUid => GetCurrentItem().ProxyUid;
+
     public TgSqlTableProxyModel GetCurrentProxy() => TgSqlTableProxyController.Instance.GetItem(GetCurrentProxyUid);
 
     public override bool AddItem(TgSqlTableAppModel item)
@@ -55,7 +64,7 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -75,7 +84,7 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
         };
         if (GetValidXpLite(itemNew).IsValid)
         {
-            uow.CommitChanges();
+            uow.CommitChangesAsync();
             return true;
         }
         return false;
@@ -92,8 +101,8 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
         itemDest.ProxyUid = itemSource.ProxyUid;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;
@@ -107,8 +116,8 @@ public sealed class TgSqlTableAppController : TgSqlHelperBase<TgSqlTableAppModel
         itemDest.ProxyUid = proxyUid;
         if (GetValidXpLite(itemDest).IsValid)
         {
-            itemDest.Session.Save(itemDest);
-            itemDest.Session.CommitTransaction();
+            itemDest.Session.SaveAsync(itemDest);
+            itemDest.Session.CommitTransactionAsync();
             return true;
         }
         return false;

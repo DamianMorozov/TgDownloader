@@ -1,10 +1,13 @@
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgLocalization.Helpers;
+
 namespace TgStorage.Models.Filters;
 
 [DebuggerDisplay("{ToString()}")]
 [Persistent(TgSqlConstants.TableFilters)]
+[DoNotNotify]
 public sealed class TgSqlTableFilterModel : TgSqlTableBase
 {
 	#region Public and private fields, properties, constructor
