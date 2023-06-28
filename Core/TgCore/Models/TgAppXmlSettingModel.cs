@@ -3,8 +3,11 @@
 
 namespace TgCore.Models;
 
+/// <summary>
+/// App xml setting.
+/// </summary>
 [DebuggerDisplay("{ToString()}")]
-public class TgAppXmlSettingModel
+public class TgAppXmlSettingModel : ITgCommon
 {
 	#region Public and private fields, properties, constructor
 

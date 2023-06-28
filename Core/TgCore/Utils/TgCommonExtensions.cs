@@ -3,7 +3,10 @@
 
 namespace TgCore.Utils;
 
-public static class TgExtUtils
+/// <summary>
+/// Extensions for common classes.
+/// </summary>
+public static class TgCommonExtensions
 {
 	#region Public and private methods - Core
 
@@ -36,11 +39,11 @@ public static class TgExtUtils
 
 	#region Public and private methods - IBase
 
-	public static string GetPropertyDefaultValue(this ITgSerializable item, string name) =>
+	public static string GetPropertyDefaultValue(this ITgCommon item, string name) =>
 		GetPropertyDefaultValueAsStringCore(item, name);
 
-	public static TResult? GetPropertyDefaultValueAsGeneric<TResult>(this ITgSerializable item, string name) =>
-		GetPropertyDefaultValueAsGenericCore<TResult, ITgSerializable>(item, name);
+	public static TResult? GetPropertyDefaultValueAsGeneric<TResult>(this ITgCommon item, string name) =>
+		GetPropertyDefaultValueAsGenericCore<TResult, ITgCommon>(item, name);
 
 	#endregion
 }

@@ -6,7 +6,7 @@ namespace TgStorage.Helpers;
 /// <summary>
 /// SQL data storage cache helper.
 /// </summary>
-public sealed class TgSqlContextCacheHelper
+public sealed class TgSqlContextCacheHelper : ITgHelper
 {
     #region Design pattern "Lazy Singleton"
 

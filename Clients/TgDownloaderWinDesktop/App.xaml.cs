@@ -63,7 +63,7 @@ public partial class App
 	/// </summary>
 	private async void OnStartup(object sender, StartupEventArgs e)
 	{
-		await Host.StartAsync();
+		await Host.StartAsync().ConfigureAwait(false);
 		ContextManager.CreateOrConnectDb(true);
 	}
 
@@ -72,8 +72,7 @@ public partial class App
 	/// </summary>
 	private async void OnExit(object sender, ExitEventArgs e)
 	{
-		await Host.StopAsync();
-
+		await Host.StopAsync().ConfigureAwait(true);
 		Host.Dispose();
 	}
 

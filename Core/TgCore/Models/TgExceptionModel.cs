@@ -6,6 +6,7 @@ namespace TgCore.Models;
 /// <summary>
 /// Wrapper for exception.
 /// </summary>
+[DebuggerDisplay("{ToString()}")]
 public class TgExceptionModel : TgMvvmBase
 {
 	#region Public and private fields, properties, constructor
@@ -35,6 +36,8 @@ public class TgExceptionModel : TgMvvmBase
 
 	#region Public and private methods
 
+	public override string ToString() => Message;
+
 	public void Set(Exception ex)
 	{
 		Exception = ex;
@@ -45,8 +48,8 @@ public class TgExceptionModel : TgMvvmBase
 		Exception = null;
 	}
 
-	private string GetInnerException(Exception ex) => ex.InnerException is null 
-		? ex.Message : GetInnerException(ex.InnerException);
+	private string GetInnerException(Exception ex) => 
+		ex.InnerException is null ? ex.Message : GetInnerException(ex.InnerException);
 
 	#endregion
 }

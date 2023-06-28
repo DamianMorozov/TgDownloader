@@ -6,7 +6,7 @@ namespace TgCore.Common;
 /// <summary>
 /// Base class for TgMvvmModel.
 /// </summary>
-public partial class TgMvvmBase : ObservableObject
+public class TgMvvmBase : ObservableObject, ITgCommon
 {
 	//
 }

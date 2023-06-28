@@ -3,8 +3,11 @@
 
 namespace TgCore.Helpers;
 
+/// <summary>
+/// App helper.
+/// </summary>
 [DebuggerDisplay("{ToString()}")]
-public class TgAppSettingsHelper : ITgHelper, ITgSerializable
+public sealed class TgAppSettingsHelper : ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
 
@@ -33,26 +36,7 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 
 	#region Public and private methods
 
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	protected TgAppSettingsHelper(SerializationInfo info, StreamingContext context)
-	{
-		object? app = info.GetValue(nameof(AppXml), typeof(TgAppXmlModel));
-		AppXml = app as TgAppXmlModel ?? new();
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(AppXml), AppXml);
-	}
+	public override string ToString() => $"{AppXml.Version} | {AppXml.FileSession} | {AppXml.FileStorage}";
 
 	public void LoadXmlSettings(Encoding? encoding = null)
 	{
@@ -87,9 +71,6 @@ public class TgAppSettingsHelper : ITgHelper, ITgSerializable
 		using StreamWriter streamWriter = new(fileStream, encoding ?? Encoding.Unicode);
 		streamWriter.Write(xml);
 	}
-
-	public override string ToString() =>
-		$"{AppXml.Version} | {AppXml.FileSession} | {AppXml.FileStorage}";
 
 	#endregion
 }

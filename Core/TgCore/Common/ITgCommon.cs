@@ -4,9 +4,9 @@
 namespace TgCore.Common;
 
 /// <summary>
-/// Helper interface.
+/// Common interface.
 /// </summary>
-public interface ITgHelper : ITgCommon
+public interface ITgCommon
 {
     //
 }

@@ -3,6 +3,9 @@
 
 namespace TgCore.Common;
 
+/// <summary>
+/// SQL table interface.
+/// </summary>
 public interface ITgSqlTable : ITgSerializable
 {
     #region Public and private fields, properties, constructor

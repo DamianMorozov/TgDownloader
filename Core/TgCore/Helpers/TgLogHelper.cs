@@ -3,7 +3,10 @@
 
 namespace TgCore.Helpers;
 
-public class TgLogHelper
+/// <summary>
+/// Log helper.
+/// </summary>
+public sealed class TgLogHelper : ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
 
@@ -27,7 +30,7 @@ public class TgLogHelper
 
 	#endregion
 
-	#region Public and private methods - main
+	#region Public and private methods
 
 	public void WriteLine(string message) => _markupLine(message);
 
@@ -37,19 +40,9 @@ public class TgLogHelper
 
 	public void MarkupWarning(string message) => _markupLineStamp(GetLineStampWarning(message));
 
-	#endregion
+	public void SetMarkupLine(Action<string> markupLine) => _markupLine = markupLine;
 
-	#region Public and private methods
-
-	public void SetMarkupLine(Action<string> markupLine)
-	{
-		_markupLine = markupLine;
-	}
-
-	public void SetMarkupLineStamp(Action<string> markupLineStamp)
-	{
-		_markupLineStamp = markupLineStamp;
-	}
+	public void SetMarkupLineStamp(Action<string> markupLineStamp) => _markupLineStamp = markupLineStamp;
 
 	public string GetMarkupString(string message, bool removeSpec = false) => removeSpec
 	? message

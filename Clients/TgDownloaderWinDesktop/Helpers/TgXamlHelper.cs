@@ -8,7 +8,7 @@ namespace TgDownloaderWinDesktop.Helpers;
 /// <summary>
 /// XAML helper.
 /// </summary>
-internal sealed class TgXamlHelper
+internal sealed class TgXamlHelper : ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
 

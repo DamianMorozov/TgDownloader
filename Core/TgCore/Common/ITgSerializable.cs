@@ -3,7 +3,10 @@
 
 namespace TgCore.Common;
 
-public interface ITgSerializable : ISerializable
+/// <summary>
+/// Serializable interface. 
+/// </summary>
+public interface ITgSerializable : ISerializable, ITgCommon
 {
     //
 }

@@ -3,7 +3,11 @@
 
 namespace TgCore.Models;
 
-public class TgDownloadSettingsModel : ObservableObject, ITgSerializable
+/// <summary>
+/// Download settings.
+/// </summary>
+[DebuggerDisplay("{ToString()}")]
+public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
@@ -61,7 +65,6 @@ public class TgDownloadSettingsModel : ObservableObject, ITgSerializable
 
 	#region Public and private methods
 
-
 	public void Reset()
 	{
 		DestDirectory = this.GetPropertyDefaultValue(nameof(DestDirectory));
@@ -79,57 +82,17 @@ public class TgDownloadSettingsModel : ObservableObject, ITgSerializable
 		SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));
 	}
 
+	/// <summary>
+	/// Set new source.
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="title"></param>
+	/// <param name="about"></param>
 	public void SetSource(long id, string title, string about)
 	{
 		SourceId = id;
 		SourceTitle = title;
 		SourceAbout = about;
-	}
-
-	#endregion
-
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	protected TgDownloadSettingsModel(SerializationInfo info, StreamingContext context)
-	{
-		DestDirectory = info.GetString(nameof(DestDirectory)) ?? this.GetPropertyDefaultValue(nameof(DestDirectory));
-		IsJoinFileNameWithMessageId = info.GetBoolean(nameof(IsJoinFileNameWithMessageId));
-		IsAutoUpdate = info.GetBoolean(nameof(IsAutoUpdate));
-		IsRewriteFiles = info.GetBoolean(nameof(IsRewriteFiles));
-		IsRewriteMessages = info.GetBoolean(nameof(IsRewriteMessages));
-		SourceLastId = info.GetInt32(nameof(SourceLastId));
-		SourceFirstId = info.GetInt32(nameof(SourceFirstId));
-		SourceId = info.GetInt64(nameof(SourceId));
-		SourceFirstId = info.GetInt32(nameof(SourceFirstId));
-		SourceUserName = info.GetString(nameof(SourceUserName)) ?? this.GetPropertyDefaultValue(nameof(SourceUserName));
-		SourceTitle = info.GetString(nameof(SourceTitle)) ?? this.GetPropertyDefaultValue(nameof(SourceTitle));
-		SourceAbout = info.GetString(nameof(SourceAbout)) ?? this.GetPropertyDefaultValue(nameof(SourceAbout));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(DestDirectory), DestDirectory);
-		info.AddValue(nameof(IsJoinFileNameWithMessageId), IsJoinFileNameWithMessageId);
-		info.AddValue(nameof(IsAutoUpdate), IsAutoUpdate);
-		info.AddValue(nameof(IsRewriteFiles), IsRewriteFiles);
-		info.AddValue(nameof(IsRewriteMessages), IsRewriteMessages);
-		info.AddValue(nameof(SourceLastId), SourceLastId);
-		info.AddValue(nameof(SourceFirstId), SourceFirstId);
-		info.AddValue(nameof(SourceId), SourceId);
-		info.AddValue(nameof(SourceFirstId), SourceFirstId);
-		info.AddValue(nameof(SourceUserName), SourceUserName);
-		info.AddValue(nameof(SourceTitle), SourceTitle);
-		info.AddValue(nameof(SourceAbout), SourceAbout);
 	}
 
 	#endregion

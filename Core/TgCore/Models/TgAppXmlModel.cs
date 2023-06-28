@@ -3,10 +3,13 @@
 
 namespace TgCore.Models;
 
+/// <summary>
+/// App xml.
+/// </summary>
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{ToString()}")]
-public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
+public class TgAppXmlModel : ObservableObject, ITgSerializable
 {
 	#region Public and private fields, properties, constructor
 
@@ -39,10 +42,6 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		IsUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsUseProxy));
 	}
 
-	#endregion
-
-	#region Public and private methods
-
 	/// <summary>
 	/// Constructor.
 	/// </summary>
@@ -55,6 +54,10 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		FileStorage = info.GetString(nameof(FileStorage)) ?? this.GetPropertyDefaultValue(nameof(FileStorage));
 		IsUseProxy = info.GetBoolean(nameof(IsUseProxy));
 	}
+
+	#endregion
+
+	#region Public and private methods
 
 	/// <summary>
 	/// Get object data for serialization info.
@@ -69,6 +72,10 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		info.AddValue(nameof(IsUseProxy), IsUseProxy);
 	}
 
+	/// <summary>
+	/// Set version from assembly.
+	/// </summary>
+	/// <param name="assembly"></param>
 	public void SetVersion(Assembly assembly)
 	{
 		Version = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion ?? string.Empty;
@@ -84,6 +91,10 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		Version = $"v{Version}";
 	}
 
+	/// <summary>
+	///  Set path for file session.
+	/// </summary>
+	/// <param name="path"></param>
 	public void SetFileSessionPath(string path)
 	{
 		FileSession = !File.Exists(path) && Directory.Exists(path)
@@ -95,6 +106,10 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		}
 	}
 
+	/// <summary>
+	/// Set path for file storage.
+	/// </summary>
+	/// <param name="path"></param>
 	public void SetFileStoragePath(string path)
 	{
 		FileStorage = !File.Exists(path) && Directory.Exists(path)
@@ -110,19 +125,4 @@ public class TgAppXmlModel : ITgSerializable, INotifyPropertyChanged
 		$"{nameof(TgAppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
 
 	#endregion
-
-	public event PropertyChangedEventHandler? PropertyChanged;
-
-	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-
-	protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-	{
-		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-		field = value;
-		OnPropertyChanged(propertyName);
-		return true;
-	}
 }

@@ -6,7 +6,7 @@ using TgLocalization.Helpers;
 
 namespace TgDownloaderConsole.Helpers;
 
-internal partial class TgMenuHelper : ITgHelper
+internal sealed partial class TgMenuHelper : ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
 
