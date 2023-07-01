@@ -16,8 +16,8 @@
 ## Обзор
 Скачайте файлы каналов или групп Telegram, в которых вы состоите.
 
-### Сломанные изменения
-- ПО v0.2.xxx имеет новый формат хранилища, сохраните предыдущий файл, он будет перезаписан
+### Особая благодарность
+- [wiz0u](https://github.com/wiz0u) за [WTelegramClient](https://github.com/wiz0u/WTelegramClient) NuGet пакет.
 
 ## Требования к установке
 - [Установите .NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)

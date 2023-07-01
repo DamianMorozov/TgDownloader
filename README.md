@@ -16,8 +16,8 @@
 ## Overview
 Download files of the Telegram channels or groups you are a member of.
 
-### Broken changes
-- Software v0.2.xxx has a new storage format, save the previous file, it will be overwritten
+### Special thanks to
+- [wiz0u](https://github.com/wiz0u) for [WTelegramClient](https://github.com/wiz0u/WTelegramClient) NuGet Package.
 
 ## Install Requirements
 - [Install .NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
