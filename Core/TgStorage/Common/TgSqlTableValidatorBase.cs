@@ -8,15 +8,21 @@ namespace TgStorage.Common;
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [DoNotNotify]
-public class TgSqlTableValidatorBase<T> : AbstractValidator<T> where T : TgSqlTableBase
+public class TgSqlTableValidatorBase<T> : AbstractValidator<T>, ITgCommon where T : ITgSqlTable
 {
     #region Public and private fields, properties, constructor
 
     public TgSqlTableValidatorBase()
-    {
-        RuleFor(item => item.Uid)
-            .NotNull();
-    }
+	{
+		RuleFor(item => item.Uid)
+			.NotNull();
+	}
+
+    #endregion
+
+    #region Public and private methods
+
+    public string ToDebugString() => this is T item ? $"{item.Uid}" : string.Empty;
 
     #endregion
 }

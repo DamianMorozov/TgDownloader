@@ -22,11 +22,15 @@ internal partial class TgMenuHelper
 					TgLocale.MenuAppFileStorage,
 					TgLocale.MenuAppUseProxy
 			));
-		if (prompt.Equals(TgLocale.MenuMainReset)) return TgEnumMenuAppSettings.Reset;
-		if (prompt.Equals(TgLocale.MenuAppFileSession)) return TgEnumMenuAppSettings.SetFileSession;
-		if (prompt.Equals(TgLocale.MenuAppFileStorage)) return TgEnumMenuAppSettings.SetFileStorage;
-		if (prompt.Equals(TgLocale.MenuAppUseProxy)) return TgEnumMenuAppSettings.SetUseProxy;
-return TgEnumMenuAppSettings.Return;
+		if (prompt.Equals(TgLocale.MenuMainReset))
+			return TgEnumMenuAppSettings.Reset;
+		if (prompt.Equals(TgLocale.MenuAppFileSession))
+			return TgEnumMenuAppSettings.SetFileSession;
+		if (prompt.Equals(TgLocale.MenuAppFileStorage))
+			return TgEnumMenuAppSettings.SetFileStorage;
+		if (prompt.Equals(TgLocale.MenuAppUseProxy))
+			return TgEnumMenuAppSettings.SetUseProxy;
+		return TgEnumMenuAppSettings.Return;
 	}
 
 	public void SetupAppSettings(TgDownloadSettingsModel tgDownloadSettings)
@@ -90,7 +94,7 @@ return TgEnumMenuAppSettings.Return;
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuAppUseProxyDisable, TgLocale.MenuAppUseProxyEnable));
 		TgAppSettings.AppXml.IsUseProxy = prompt.Equals(TgLocale.MenuAppUseProxyEnable);
-	SetFileAppSettings();
+		SetFileAppSettings();
 	}
 
 	#endregion

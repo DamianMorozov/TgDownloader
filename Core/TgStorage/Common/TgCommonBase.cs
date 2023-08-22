@@ -1,0 +1,20 @@
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
+namespace TgStorage.Common;
+
+[DebuggerDisplay("{ToDebugString()}")]
+public abstract class TgCommonBase : ITgCommon
+{
+    #region Public and private fields, properties, constructor
+
+    public TgLocaleHelper Locale => TgLocaleHelper.Instance;
+
+    #endregion
+    
+    #region Public and private methods
+
+    public virtual string ToDebugString() => throw new NotImplementedException(Locale.UseOverrideMethod);
+
+    #endregion
+}

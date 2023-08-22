@@ -4,16 +4,16 @@
 namespace TgStorageTest.Helpers;
 
 [TestFixture]
-internal class TgStorageHelperGetListTests
+internal class TgStorageHelperGetEnumerableTests
 {
 	#region Public and private methods
 
 	[Test]
-	public void Get_list_of_apps()
+	public void Get_enumerable_of_apps()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableAppModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableApps.GetList(TgSqlEnumTableTopRecords.Top200);
+            IEnumerable<TgSqlTableAppModel> items = TgStorageTestsUtils.AppRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
 			foreach (TgSqlTableAppModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -22,11 +22,11 @@ internal class TgStorageHelperGetListTests
 	}
 
 	[Test]
-	public void Get_list_of_documents()
+	public void Get_enumerable_of_documents()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableDocuments.GetList(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DocumentRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
 			foreach (TgSqlTableDocumentModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -35,11 +35,11 @@ internal class TgStorageHelperGetListTests
 	}
 
 	[Test]
-	public void Get_list_of_filters()
+	public void Get_enumerable_of_filters()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableFilterModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableFilters.GetList(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableFilterModel> items = TgStorageTestsUtils.FilterRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
 			foreach (TgSqlTableFilterModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -48,11 +48,11 @@ internal class TgStorageHelperGetListTests
 	}
 
 	[Test]
-	public void Get_list_of_proxies()
+	public void Get_enumerable_of_proxies()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableProxyModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableProxies.GetList(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableProxyModel> items = TgStorageTestsUtils.ProxyRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
 			foreach (TgSqlTableProxyModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -61,11 +61,11 @@ internal class TgStorageHelperGetListTests
 	}
 
 	[Test]
-	public void Get_list_of_sources()
+	public void Get_enumerable_of_sources()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableSourceModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableSources.GetList(TgSqlEnumTableTopRecords.Top1000);
+			IEnumerable<TgSqlTableSourceModel> items = TgStorageTestsUtils.SourceRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top1000);
 			foreach (TgSqlTableSourceModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -74,15 +74,24 @@ internal class TgStorageHelperGetListTests
 	}
 
 	[Test]
-	public void Get_list_of_versions()
+	public void Get_enumerable_of_versions()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			List<TgSqlTableVersionModel> items = TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetList(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableVersionModel> items = TgStorageTestsUtils.VersionRepository.GetEnumerable();
+            int i = 0;
 			foreach (TgSqlTableVersionModel item in items)
 			{
-				TestContext.WriteLine(item);
-			}
+				if (i < 18)
+				{
+					TestContext.WriteLine(item);
+					i = item.Version;
+				}
+                else
+                {
+                    TgStorageTestsUtils.VersionRepository.Delete(item);
+                }
+            }
 		});
 	}
 
@@ -95,10 +104,10 @@ internal class TgStorageHelperGetListTests
 			TgStorageTestsUtils.DataCore.ContextManager.FillTableVersions();
 			TgSqlTableVersionModel versionLast =
 				!TgStorageTestsUtils.DataCore.ContextManager.IsTableExists(TgSqlConstants.TableVersions)
-				? TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetNewItem() 
-				: TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.GetItemLast();
+				? TgStorageTestsUtils.VersionRepository.GetNew()
+				: TgStorageTestsUtils.VersionRepository.GetItemLast();
 			TestContext.WriteLine(versionLast);
-			Assert.That(Equals(TgStorageTestsUtils.DataCore.ContextManager.ContextTableVersions.VersionLast, versionLast.Version));
+			Assert.That(Equals(TgStorageTestsUtils.VersionRepository.LastVersion, versionLast.Version));
 		});
 	}
 

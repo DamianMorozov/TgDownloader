@@ -23,11 +23,16 @@ internal partial class TgMenuHelper
 						TgLocale.MenuScanDialogs,
 							TgLocale.MenuViewSources
 				));
-		if (prompt.Equals(TgLocale.MenuAutoDownload)) return TgEnumMenuDownload.AutoDownload;
-		if (prompt.Equals(TgLocale.MenuAutoViewEvents)) return TgEnumMenuDownload.AutoViewEvents;
-		if (prompt.Equals(TgLocale.MenuScanChats)) return TgEnumMenuDownload.ScanChats;
-		if (prompt.Equals(TgLocale.MenuScanDialogs)) return TgEnumMenuDownload.ScanDialogs;
-		if (prompt.Equals(TgLocale.MenuViewSources)) return TgEnumMenuDownload.ViewSources;
+		if (prompt.Equals(TgLocale.MenuAutoDownload))
+			return TgEnumMenuDownload.AutoDownload;
+		if (prompt.Equals(TgLocale.MenuAutoViewEvents))
+			return TgEnumMenuDownload.AutoViewEvents;
+		if (prompt.Equals(TgLocale.MenuScanChats))
+			return TgEnumMenuDownload.ScanChats;
+		if (prompt.Equals(TgLocale.MenuScanDialogs))
+			return TgEnumMenuDownload.ScanDialogs;
+		if (prompt.Equals(TgLocale.MenuViewSources))
+			return TgEnumMenuDownload.ViewSources;
 		return TgEnumMenuDownload.Return;
 	}
 
@@ -80,55 +85,53 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Chat);
+	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Chat);
 
-	private void ScanSourcesChatsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Chat);
+	private void ScanSourcesChatsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) =>
+		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Chat);
 
-	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
+	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
 
-	private void ScanSourcesDialogsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) => 
-		TgClient.ScanSourceConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
+	private void ScanSourcesDialogsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) =>
+		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
 
 	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgSqlTableSourceModel source = GetSourceFromList(TgLocale.MenuViewSources, 
-			ContextManager.ContextTableSources.GetList());
+		TgSqlTableSourceModel source = GetSourceFromEnumerable(TgLocale.MenuViewSources,
+			ContextManager.SourceRepository.GetEnumerable());
 		if (source.IsExists)
 		{
 			Value = TgEnumMenuMain.Download;
-			SetupDownloadSource(tgDownloadSettings, source.Id);
+            tgDownloadSettings = SetupDownloadSource(source.Id);
 			SetupDownload(tgDownloadSettings);
 		}
 	}
 
 	private void AutoDownload(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		List<TgSqlTableSourceModel> sources = ContextManager.ContextTableSources.GetList();
+		IEnumerable<TgSqlTableSourceModel> sources = ContextManager.SourceRepository.GetEnumerable();
 		foreach (TgSqlTableSourceModel source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
-			SetupDownloadSource(tgDownloadSettings, source.Id);
+            tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
 			// StatusContext.
-			TgClient.UpdateState(
+			TgClient.UpdateStateClient(
 				source.Count <= 0
 					? $"The source {sourceId} hasn't any messages!"
 					: $"The source {sourceId} has {source.Count} messages.");
 			// ManualDownload.
-			if (source.Count > 0)
-			{
-				ManualDownload(tgDownloadSettings);
-			}
+			if (source.Count > 0) 
+                ManualDownload(tgDownloadSettings);
 		}
 	}
 
 	private void AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
-		TgClient.UpdateState("Auto view updates is started");
+		TgClient.UpdateStateClient("Auto view updates is started");
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 		TgClient.IsUpdateStatus = false;

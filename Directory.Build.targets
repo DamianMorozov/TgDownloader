@@ -12,7 +12,7 @@
 	<!-- Uncomment this for clean -->
 	<!--<Target Name="ClearObj" BeforeTargets="Clean">
         <RemoveDir Directories="./obj" />
-    </Target>-->
+  </Target>-->
 	<Target Name="ClearBin" BeforeTargets="Clean">
 		<RemoveDir Directories="./bin" />
 	</Target>

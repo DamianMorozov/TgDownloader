@@ -7,17 +7,13 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.300.0</Version>
+    <Version>0.2.360.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="applicationIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.7.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="WPF-UI" Version="2.0.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
@@ -55,9 +51,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\TgCore\TgCore.csproj" />
     <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
     <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\Controls\TgExceptionsUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

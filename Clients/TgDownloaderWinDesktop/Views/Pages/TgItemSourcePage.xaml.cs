@@ -4,18 +4,18 @@
 namespace TgDownloaderWinDesktop.Views.Pages;
 
 /// <summary>
-/// Interaction logic for TgItemSourceView.xaml
+/// Interaction logic for TgItemSourceVm.xaml
 /// </summary>
-public partial class TgItemSourcePage : TgPageBase
+public partial class TgItemSourcePage
 {
 	#region Public and private fields, properties, constructor
 
-	public TgItemSourceViewModel ViewModel { get; set; }
-
-	public TgItemSourcePage(TgItemSourceViewModel viewModel)
+	public TgItemSourcePage()
 	{
-		ViewModel = viewModel;
-		ViewModel.OnNavigatedTo();
+		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
+		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
+		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
+		TgDesktopUtils.TgItemSourceVm.OnNavigatedTo();
 		InitializeComponent();
 	}
 

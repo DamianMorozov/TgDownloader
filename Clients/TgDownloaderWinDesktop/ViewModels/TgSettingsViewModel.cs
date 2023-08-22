@@ -3,8 +3,8 @@
 
 namespace TgDownloaderWinDesktop.ViewModels;
 
-[DebuggerDisplay("{ToString()}")]
-public sealed partial class TgSettingsViewModel : TgViewBase, INavigationAware
+[DebuggerDisplay("{ToDebugString()}")]
+public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigationAware
 {
 	public string AppVersion { get; set; } = string.Empty;
 
@@ -21,11 +21,11 @@ public sealed partial class TgSettingsViewModel : TgViewBase, INavigationAware
 		//
 	}
 
-	private void InitializeViewModel()
+	protected override void InitializeViewModel()
 	{
+		base.InitializeViewModel();
 		CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
-		AppVersion = $"{TgLocale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
-		IsInitialized = true;
+		AppVersion = $"{TgDesktopUtils.TgLocale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
 	}
 
 	private string GetAssemblyVersion()
@@ -34,7 +34,7 @@ public sealed partial class TgSettingsViewModel : TgViewBase, INavigationAware
 	}
 
 	[RelayCommand]
-	private void OnChangeTheme(string parameter)
+	public void OnChangeTheme(string parameter)
 	{
 		switch (parameter)
 		{

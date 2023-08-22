@@ -16,18 +16,18 @@ public static class TgSqlConstants
 	public const string TableSources = "SOURCES";
 	public const string TableVersions = "VERSIONS";
 	public const string XPObjectType = "XPObjectType";
-	public static List<string> GetTableNames() => new()
-	{
-		TableApps,
-		TableDocuments,
-		TableFilters,
-		TableMessages,
-		TableProxies,
-		TableSources,
-		TableVersions,
-	};
+	public static IEnumerable<string> GetTableNames()
+    {
+        yield return TableApps;
+        yield return TableDocuments;
+        yield return TableFilters;
+        yield return TableMessages;
+        yield return TableProxies;
+        yield return TableSources;
+        yield return TableVersions;
+    }
 
-	#endregion
+    #endregion
 
 	#region Public and private fields, properties, constructor - Columns
 

@@ -400,3 +400,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /TgCore/TgDownloader.xml
+/Core/TgStorage/TgDownloader.session
+/Core/TgStorage/TgDownloader.xml

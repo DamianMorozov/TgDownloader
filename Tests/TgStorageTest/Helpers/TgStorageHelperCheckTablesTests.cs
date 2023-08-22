@@ -18,7 +18,7 @@ internal class TgStorageHelperCheckTablesTests
 		});
 	}
 
-	[Test]
+    [Test]
 	public void Check_table_documents()
 	{
 		Assert.DoesNotThrow(() =>

@@ -8,168 +8,239 @@ namespace TgAssertCoreTests.Helpers;
 /// </summary>
 public static class TgDataEnums
 {
-    /// <summary>
-    /// List of bool values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<bool> GetBool()
+	/// <summary>
+	/// Enumerable of bool values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<bool> GetBool()
+	{
+		yield return false;
+        yield return true;
+	}
+
+	/// <summary>
+	/// Enumerable of bool values with null value.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<bool?> GetBoolNullable()
     {
-        return new() { false, true };
-    }
+        yield return null;
+        yield return false;
+        yield return true;
+	}
 
-    /// <summary>
-    /// List of bool values with null value.
-    /// </summary>
-    /// <returns></returns>
-    public static List<bool?> GetBoolNullable()
+	/// <summary>
+	/// Enumerable of string values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<string?> GetString()
+	{
+        yield return null;
+        yield return "";
+        yield return string.Empty;
+	}
+
+	/// <summary>
+	/// Enumerable of Guid values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<Guid> GetGuid()
     {
-        return new() { null, false, true };
-    }
+        yield return Guid.Empty;
+        yield return Guid.NewGuid();
+        yield return Guid.NewGuid();
+        yield return Guid.NewGuid();
+        yield return Guid.NewGuid();
+	}
 
-    /// <summary>
-    /// List of string values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<string?> GetString()
+	/// <summary>
+	/// Enumerable of decimal values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<decimal> GetDecimal()
     {
-        return new() { null, "", string.Empty };
-    }
+        yield return decimal.MinValue;
+        yield return decimal.MinValue / 2;
+        yield return 0;
+        yield return 1;
+        yield return decimal.MaxValue / 2;
+        yield return decimal.MaxValue;
+	}
 
-    /// <summary>
-    /// List of Guid values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<Guid> GetGuid()
+	/// <summary>
+	/// Enumerable of ushort values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<ushort> GetUshort()
     {
-        return new() { Guid.Empty, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), };
-    }
+        yield return ushort.MinValue;
+        yield return 1;
+        yield return ushort.MaxValue / 2;
+        yield return ushort.MaxValue;
+	}
 
-    /// <summary>
-    /// List of decimal values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<decimal> GetDecimal()
+	/// <summary>
+	/// Enumerable of progress values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<ushort> GetProgress()
     {
-        return new() { decimal.MinValue, decimal.MinValue / 2, 0, 1, decimal.MaxValue / 2, decimal.MaxValue };
-    }
+        yield return 0;
+        yield return 5;
+        yield return 10;
+        yield return 15;
+        yield return 20;
+        yield return 25;
+        yield return 30;
+        yield return 35;
+        yield return 40;
+        yield return 45;
+        yield return 50;
+        yield return 55;
+        yield return 60;
+        yield return 65;
+        yield return 70;
+        yield return 75;
+        yield return 80;
+        yield return 85;
+        yield return 90;
+        yield return 95;
+        yield return 100;
+	}
 
-    /// <summary>
-    /// List of ushort values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<ushort> GetUshort()
+	/// <summary>
+	/// Enumerable of short values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<short> GetShort()
     {
-        return new() { ushort.MinValue, 1, ushort.MaxValue / 2, ushort.MaxValue };
-    }
+        yield return short.MinValue;
+        yield return 1;
+        yield return short.MaxValue / 2;
+        yield return short.MaxValue;
+	}
 
-    /// <summary>
-    /// List of progress values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<ushort> GetProgress()
+	/// <summary>
+	/// Enumerable of uint values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<uint> GetUint()
     {
-        return new() { 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 };
-    }
+        yield return uint.MinValue;
+        yield return 1;
+        yield return uint.MaxValue / 2;
+        yield return uint.MaxValue;
+	}
 
-    /// <summary>
-    /// List of short values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<short> GetShort()
+	/// <summary>
+	/// Enumerable of int values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<int> GetInt()
     {
-        return new() { short.MinValue, 1, short.MaxValue / 2, short.MaxValue };
-    }
+        yield return int.MinValue;
+        yield return 1;
+        yield return int.MaxValue / 2;
+        yield return int.MaxValue;
+	}
 
-    /// <summary>
-    /// List of uint values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<uint> GetUint()
+	/// <summary>
+	/// Enumerable of int values with null value.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<int?> GetIntNullable()
     {
-        return new() { uint.MinValue, 1, uint.MaxValue / 2, uint.MaxValue };
-    }
+        yield return null;
+        yield return int.MinValue;
+        yield return 1;
+        yield return int.MaxValue / 2;
+        yield return int.MaxValue;
+	}
 
-    /// <summary>
-    /// List of int values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<int> GetInt()
+	/// <summary>
+	/// Enumerable of int values with null value.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<long?> GetLongNullable()
     {
-        return new() { int.MinValue, 1, int.MaxValue / 2, int.MaxValue };
-    }
+        yield return null;
+        yield return long.MinValue;
+        yield return 1;
+        yield return long.MaxValue / 2;
+        yield return long.MaxValue;
+	}
 
-    /// <summary>
-    /// List of int values with null value.
-    /// </summary>
-    /// <returns></returns>
-    public static List<int?> GetIntNullable()
+	/// <summary>
+	/// Enumerable of long values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<long> GetLong()
+	{
+        yield return long.MinValue;
+        yield return 1;
+        yield return long.MaxValue / 2;
+        yield return long.MaxValue;
+	}
+
+	/// <summary>
+	/// Enumerable of DateTime values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<DateTime> GetDateTime()
+	{
+        yield return DateTime.MinValue;
+        yield return DateTime.MaxValue;
+        yield return DateTime.Now;
+        yield return DateTime.Today;
+        yield return DateTime.UtcNow;
+	}
+
+	/// <summary>
+	/// String value.
+	/// </summary>
+	/// <param name="str"></param>
+	/// <returns></returns>
+	public static string AsString(this string str)
+	{
+		return str is null ? "<null>" : str == "" ? "<empty>" : str;
+	}
+
+	/// <summary>
+	/// Enumerable of uri values.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<Uri> GetUri()
+	{
+        yield return new("http://google.com/");
+        yield return new("http://microsoft.com/");
+	}
+
+	/// <summary>
+	/// Enumerable of timeout values in ms.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<int> GetTimeoutMs()
     {
-        return new() { null, int.MinValue, 1, int.MaxValue / 2, int.MaxValue };
-    }
+        yield return 50;
+        yield return 500;
+	}
 
-    /// <summary>
-    /// List of int values with null value.
-    /// </summary>
-    /// <returns></returns>
-    public static List<long?> GetLongNullable()
+	/// <summary>
+	/// Enumerable of bytes.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<byte> GetBytes()
     {
-        return new() { null, long.MinValue, 1, long.MaxValue / 2, long.MaxValue };
-    }
-
-    /// <summary>
-    /// List of long values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<long> GetLong()
-    {
-        return new() { long.MinValue, 1, long.MaxValue / 2, long.MaxValue };
-    }
-
-    /// <summary>
-    /// List of DateTime values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<DateTime> GetDateTime()
-    {
-        return new() { DateTime.MinValue, DateTime.MaxValue, DateTime.Now, DateTime.Today, DateTime.UtcNow };
-    }
-
-    /// <summary>
-    /// String value.
-    /// </summary>
-    /// <param name="str"></param>
-    /// <returns></returns>
-    public static string AsString(this string str)
-    {
-        return str is null ? "<null>" : str == "" ? "<empty>" : str;
-    }
-
-    /// <summary>
-    /// List of uri values.
-    /// </summary>
-    /// <returns></returns>
-    public static List<Uri> GetUri()
-    {
-        return new() { new("http://google.com/"), new("http://microsoft.com/") };
-    }
-
-    /// <summary>
-    /// List of timeout values in ms.
-    /// </summary>
-    /// <returns></returns>
-    public static List<int> GetTimeoutMs()
-    {
-        return new() { 50, 500 };
-    }
-
-    /// <summary>
-    /// List of bytes.
-    /// </summary>
-    /// <returns></returns>
-    public static List<byte> GetBytes()
-    {
-        return new() { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, };
-    }
-
-
+        yield return 0x00;
+        yield return 0x01;
+        yield return 0x02;
+        yield return 0x03;
+        yield return 0x04;
+        yield return 0x05;
+        yield return 0x06;
+        yield return 0x07;
+        yield return 0x08;
+        yield return 0x09;
+        yield return 0x10;
+	}
 }

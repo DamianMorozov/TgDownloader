@@ -5,14 +5,13 @@
 
 global using NUnit.Framework;
 global using TgAssertCoreTests.Helpers;
-global using TgCore.Common;
 global using TgStorage.Common;
-global using TgStorage.Models.Apps;
-global using TgStorage.Models.Documents;
-global using TgStorage.Models.Filters;
-global using TgStorage.Models.Messages;
-global using TgStorage.Models.Proxies;
-global using TgStorage.Models.Sources;
-global using TgStorage.Models.Versions;
+global using TgStorage.Domain.Apps;
+global using TgStorage.Domain.Documents;
+global using TgStorage.Domain.Filters;
+global using TgStorage.Domain.Messages;
+global using TgStorage.Domain.Proxies;
+global using TgStorage.Domain.Sources;
+global using TgStorage.Domain.Versions;
 global using TgStorage.Utils;
 global using TgStorageTest.Utils;

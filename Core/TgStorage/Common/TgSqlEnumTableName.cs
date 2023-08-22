@@ -5,13 +5,13 @@ namespace TgStorage.Common;
 
 public enum TgSqlEnumTableName
 {
-    None,
-    All,
-    Apps,
-    Documents,
-    Filters,
-    Messages,
-    Proxies,
-    Sources,
-    Versions,
+	None,
+	All,
+	Apps,
+	Documents,
+	Filters,
+	Messages,
+	Proxies,
+	Sources,
+	Versions,
 }

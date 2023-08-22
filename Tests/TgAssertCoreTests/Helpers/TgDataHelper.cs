@@ -5,25 +5,25 @@ namespace TgAssertCoreTests.Helpers;
 
 public class TgDataHelper
 {
-    #region Design pattern "Lazy Singleton"
+	#region Design pattern "Lazy Singleton"
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private static TgDataHelper _instance;
+	private static TgDataHelper _instance;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    public static TgDataHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
+	public static TgDataHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
-    #endregion
+	#endregion
 
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-    public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
+	public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
+	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
-    public TgDataHelper()
-    {
+	public TgDataHelper()
+	{
 		TgAppSettings.LoadXmlSettings();
 		ContextManager.CreateOrConnectDb(false);
 	}
 
-    #endregion
+	#endregion
 }

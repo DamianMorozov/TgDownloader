@@ -22,12 +22,17 @@ internal partial class TgMenuHelper
 					TgLocale.MenuFiltersRemove,
 					TgLocale.MenuFiltersReset
 				));
-		if (prompt.Equals(TgLocale.MenuFiltersView)) return TgEnumMenuFilter.FiltersView;
-		if (prompt.Equals(TgLocale.MenuFiltersAdd)) return TgEnumMenuFilter.FiltersAdd;
-		if (prompt.Equals(TgLocale.MenuFiltersEdit)) return TgEnumMenuFilter.FiltersEdit;
-		if (prompt.Equals(TgLocale.MenuFiltersRemove)) return TgEnumMenuFilter.FiltersRemove;
-		if (prompt.Equals(TgLocale.MenuFiltersReset)) return TgEnumMenuFilter.FiltersReset;
-			return TgEnumMenuFilter.Return;
+		if (prompt.Equals(TgLocale.MenuFiltersView))
+			return TgEnumMenuFilter.FiltersView;
+		if (prompt.Equals(TgLocale.MenuFiltersAdd))
+			return TgEnumMenuFilter.FiltersAdd;
+		if (prompt.Equals(TgLocale.MenuFiltersEdit))
+			return TgEnumMenuFilter.FiltersEdit;
+		if (prompt.Equals(TgLocale.MenuFiltersRemove))
+			return TgEnumMenuFilter.FiltersRemove;
+		if (prompt.Equals(TgLocale.MenuFiltersReset))
+			return TgEnumMenuFilter.FiltersReset;
+		return TgEnumMenuFilter.Return;
 	}
 
 	public void SetupFilters(TgDownloadSettingsModel tgDownloadSettings)
@@ -67,14 +72,15 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersAdd()
 	{
-		TgSqlTableFilterModel filter = ContextManager.ContextTableFilters.NewItem();
+		TgSqlTableFilterModel filter = TgSqlUtils.CreateNewFilter();
 		string type = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(10)
 			.AddChoices(TgLocale.MenuMainReturn, TgLocale.MenuFiltersSetSingleName, TgLocale.MenuFiltersSetSingleExtension,
 				TgLocale.MenuFiltersSetMultiName, TgLocale.MenuFiltersSetMultiExtension,
 				TgLocale.MenuFiltersSetMinSize, TgLocale.MenuFiltersSetMaxSize));
-		if (Equals(type, TgLocale.MenuMainReturn)) return;
+		if (Equals(type, TgLocale.MenuMainReturn))
+			return;
 
 		//filter.IsActive = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsActive, true);
 		filter.IsEnabled = true;
@@ -116,20 +122,19 @@ internal partial class TgMenuHelper
 				break;
 		}
 
-		ContextManager.ContextTableFilters.AddOrUpdateItem(filter);
-		ContextManager.ContextTableFilters.DeleteDefaultItem();
+		ContextManager.FilterRepository.Save(filter);
 		TgFiltersView();
 	}
 
 	private void SetTgFiltersEdit()
 	{
-		List<TgSqlTableFilterModel> filters = ContextManager.ContextTableFilters.GetList();
+		IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerable();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
 			.Title(TgLocale.MenuFiltersSetEnabled)
 			.PageSize(10)
 			.AddChoices(filters));
 		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
-		ContextManager.ContextTableFilters.AddOrUpdateItem(filter);
+		ContextManager.FilterRepository.Save(filter);
 		TgFiltersView();
 	}
 
@@ -144,19 +149,20 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersRemove()
 	{
-		List<TgSqlTableFilterModel> filters = ContextManager.ContextTableFilters.GetList();
+		IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerable();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(10)
 			.AddChoices(filters));
-		ContextManager.ContextTableFilters.DeleteItem(filter);
+		ContextManager.FilterRepository.Delete(filter);
 		TgFiltersView();
 	}
 
 	private void SetTgFiltersReset()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset)) return;
-		ContextManager.ContextTableFilters.DeleteAllItems();
+		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset))
+			return;
+		ContextManager.FilterRepository.DeleteAllItems();
 		TgFiltersView();
 	}
 

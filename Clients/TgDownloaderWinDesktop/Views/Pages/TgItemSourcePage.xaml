@@ -1,4 +1,4 @@
-﻿<common:TgPageBase
+﻿<common:TgPageViewBase
 	x:Class="TgDownloaderWinDesktop.Views.Pages.TgItemSourcePage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,11 +7,12 @@
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-	Title="{Binding ViewModel.TgLocale.MenuMainFilters}"
+	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
+	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TableSources, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgItemSourcePage,
-	                                 IsDesignTimeCreatable=False}"
-	d:DesignHeight="800"
+	                                 IsDesignTimeCreatable=True}"
+	d:DesignHeight="150"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -21,25 +22,5 @@
 			<RowDefinition Height="1*" />
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-			</Grid.RowDefinitions>
-		</Grid>
-		<Grid Row="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-				<RowDefinition Height="1*" />
-			</Grid.RowDefinitions>
-		</Grid>
 	</Grid>
-</common:TgPageBase>
+</common:TgPageViewBase>

@@ -22,12 +22,17 @@ internal partial class TgMenuHelper
 					TgLocale.MenuStorageTablesVersionsView,
 					TgLocale.MenuStorageTablesClear
 				));
-		if (prompt.Equals(TgLocale.MenuStorageDbBackup)) return TgEnumMenuStorage.DbBackup;
-		if (prompt.Equals(TgLocale.MenuStorageDbCreateNew)) return TgEnumMenuStorage.DbCreateNew;
-		if (prompt.Equals(TgLocale.MenuStorageDbDeleteExists)) return TgEnumMenuStorage.DbDeleteExists;
-		if (prompt.Equals(TgLocale.MenuStorageTablesVersionsView)) return TgEnumMenuStorage.TablesVersionsView;
-		if (prompt.Equals(TgLocale.MenuStorageTablesClear)) return TgEnumMenuStorage.TablesClear;
-			return TgEnumMenuStorage.Return;
+		if (prompt.Equals(TgLocale.MenuStorageDbBackup))
+			return TgEnumMenuStorage.DbBackup;
+		if (prompt.Equals(TgLocale.MenuStorageDbCreateNew))
+			return TgEnumMenuStorage.DbCreateNew;
+		if (prompt.Equals(TgLocale.MenuStorageDbDeleteExists))
+			return TgEnumMenuStorage.DbDeleteExists;
+		if (prompt.Equals(TgLocale.MenuStorageTablesVersionsView))
+			return TgEnumMenuStorage.TablesVersionsView;
+		if (prompt.Equals(TgLocale.MenuStorageTablesClear))
+			return TgEnumMenuStorage.TablesClear;
+		return TgEnumMenuStorage.Return;
 	}
 
 	public void SetupStorage(TgDownloadSettingsModel tgDownloadSettings)
@@ -60,7 +65,8 @@ internal partial class TgMenuHelper
 
 	private void TgStorageBackupDb()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup)) return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup))
+			return;
 		TgLog.WriteLine($"{TgLocale.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.FileStorage)}");
 		(bool IsSuccess, string FileName) backupResult = ContextManager.BackupDb();
 		TgLog.WriteLine($"{TgLocale.MenuStorageBackupFile}: {backupResult.FileName}");
@@ -71,7 +77,8 @@ internal partial class TgMenuHelper
 
 	private void TgStorageCreateNewDb()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew)) return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew))
+			return;
 		ContextManager.CreateOrConnectDb(true);
 	}
 
@@ -93,7 +100,8 @@ internal partial class TgMenuHelper
 
 	private void TgStorageTablesClear()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear)) return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
+			return;
 		ContextManager.DeleteTables();
 		ContextManager.CreateOrConnectDb(true);
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);

@@ -1,8 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgLocalization.Helpers;
-
+TgAsyncUtils.SetAppType(TgEnumAppType.Sync);
 TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
 TgMenuHelper menu = TgMenuHelper.Instance;
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
@@ -26,7 +25,7 @@ do
 				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainStorage, tgLocale.MenuMainClient,
 				tgLocale.MenuMainFilters, tgLocale.MenuMainDownload, tgLocale.MenuMainAdvanced));
 		if (prompt.Equals(tgLocale.MenuMainExit))
-					menu.Value = TgEnumMenuMain.Exit;
+			menu.Value = TgEnumMenuMain.Exit;
 		if (prompt.Equals(tgLocale.MenuMainApp))
 		{
 			menu.Value = TgEnumMenuMain.AppSettings;
@@ -74,18 +73,21 @@ bool Setup()
 	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
 	// Console.
 	Console.OutputEncoding = Encoding.UTF8;
+	Console.Title = "TG-DC";
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
 	// Storage.
-	if (!contextManager.IsExistsDb())
+	if (!contextManager.IsExistsDb)
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
-		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew)) return false;
+		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
+			return false;
 	}
 	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.FileStorage), (long)0))
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.FileStorage));
-		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew)) return false;
+		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
+			return false;
 	}
 	contextManager.CreateOrConnectDb(true);
 	// Client.

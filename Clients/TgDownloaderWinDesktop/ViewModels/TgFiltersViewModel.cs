@@ -3,8 +3,8 @@
 
 namespace TgDownloaderWinDesktop.ViewModels;
 
-[DebuggerDisplay("{ToString()}")]
-public sealed partial class TgFiltersViewModel : TgViewBase, INavigationAware
+[DebuggerDisplay("{ToDebugString()}")]
+public sealed partial class TgFiltersViewModel : TgPageViewModelBase, INavigationAware
 {
 	#region Public and private fields, properties, constructor
 
@@ -26,11 +26,6 @@ public sealed partial class TgFiltersViewModel : TgViewBase, INavigationAware
 	public void OnNavigatedFrom()
 	{
 		//
-	}
-
-	private void InitializeViewModel()
-	{
-		IsInitialized = true;
 	}
 
 	#endregion

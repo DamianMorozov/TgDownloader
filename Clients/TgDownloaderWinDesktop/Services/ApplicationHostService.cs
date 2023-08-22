@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Threading;
-
 namespace TgDownloaderWinDesktop.Services;
 
 /// <summary>
@@ -11,7 +9,7 @@ namespace TgDownloaderWinDesktop.Services;
 public sealed class ApplicationHostService : IHostedService
 {
 	private readonly IServiceProvider _serviceProvider;
-	
+
 	public ApplicationHostService(IServiceProvider serviceProvider)
 	{
 		_serviceProvider = serviceProvider;
@@ -42,12 +40,12 @@ public sealed class ApplicationHostService : IHostedService
 	{
 		await Task.CompletedTask.ConfigureAwait(true);
 
-		if (!Application.Current.Windows.OfType<Views.Windows.MainWindow>().Any())
+		if (!Application.Current.Windows.OfType<MainWindow>().Any())
 		{
-			INavigationWindow navigationWindow = 
+			INavigationWindow navigationWindow =
 				(_serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow)!;
 			navigationWindow.ShowWindow();
-			navigationWindow.Navigate(typeof(TgMenuDashboardPage));
+			navigationWindow.Navigate(typeof(TgDashboardPage));
 		}
 
 		await Task.CompletedTask.ConfigureAwait(true);

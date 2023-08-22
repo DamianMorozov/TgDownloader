@@ -4,7 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.2.300.0</Version>
+		<Version>0.2.360.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
@@ -59,7 +59,6 @@
 		<PackageReference Include="WTelegramClient" Version="3.5.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Core\TgCore\TgCore.csproj" />
 	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
 	  <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
 	  <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />

@@ -6,14 +6,14 @@ namespace TgDownloaderWinDesktop.Views.Pages;
 /// <summary>
 /// Interaction logic for TgSettingsPage.xaml
 /// </summary>
-public partial class TgSettingsPage : TgPageBase
+public partial class TgSettingsPage
 {
-	public TgSettingsViewModel ViewModel { get; set; }
-
-	public TgSettingsPage(TgSettingsViewModel viewModel)
+	public TgSettingsPage()
 	{
-		ViewModel = viewModel;
-		ViewModel.OnNavigatedTo();
+		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
+		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
+		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
+		TgDesktopUtils.TgSettingsVm.OnNavigatedTo();
 		InitializeComponent();
 	}
 }
