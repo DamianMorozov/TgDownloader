@@ -31,5 +31,5 @@ jobs:
       - name: Install dependencies
         run: nuget restore TgDownloader.sln
 
-      - name: Tests for Debug Any CPU
-        run: dotnet test TgDownloader.sln --verbosity quiet -property:Platform="Any CPU"
+      - name: Tests for Release Any CPU
+        run: dotnet test TgDownloader.sln --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"

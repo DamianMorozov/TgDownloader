@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Wpf.Ui.Controls;
+
 namespace TgDownloaderWinDesktop.Views;
 
 /// <summary>
@@ -15,11 +17,13 @@ public sealed partial class MainWindow : INavigationWindow
 	public MainWindow(TgMainWindowViewModel viewModel, IPageService pageService, INavigationService navigationService)
 	{
 		ViewModel = viewModel;
-		//ViewModel.AddUpdateUi(TgEnumUpdateType.Window, UpdateWindow);
-		//ViewModel.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
+        //ViewModel.AddUpdateUi(TgEnumUpdateType.Window, UpdateWindow);
+        //ViewModel.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		DataContext = this;
 
-		InitializeComponent();
+        InitializeComponent();
+        
+        TgTitleBar.Tray = null;
 		SetPageService(pageService);
 
 		navigationService.SetNavigationControl(RootNavigation);

@@ -27,6 +27,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     public TgExceptionModel ClientException { get; private set; }
     public TgExceptionModel ProxyException { get; private set; }
     public bool IsReady { get; private set; }
+    public bool IsProxyUsage { get; private set; }
     public User? Me { get; set; }
     public Dictionary<long, ChatBase> DicChatsAll { get; private set; }
     public Dictionary<long, ChatBase> DicChatsUpdated { get; }
@@ -126,6 +127,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public void ConnectThroughProxy(TgSqlTableProxyModel proxy)
     {
+        IsProxyUsage = false;
         if (!CheckClientIsReady())
             return;
         if (Client is null)
@@ -140,6 +142,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         try
         {
             ProxyException = new();
+            IsProxyUsage = true;
             switch (proxy.Type)
             {
                 case TgEnumProxyType.Http:
@@ -160,6 +163,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         }
         catch (Exception ex)
         {
+            IsProxyUsage = false;
             SetProxyException(ex);
         }
     }

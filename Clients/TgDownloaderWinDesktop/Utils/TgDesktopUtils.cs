@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Utils;
-
 namespace TgDownloaderWinDesktop.Utils;
 
 /// <summary>
@@ -22,14 +20,14 @@ public static class TgDesktopUtils
 	public static TgSettingsViewModel TgSettingsVm { get; } = new();
 	public static TgSourcesViewModel TgSourcesVm { get; } = new();
 
-	#endregion
+    #endregion
 
-	#region Public and private methods
+    #region Public and private methods
 
-	/// <summary>
-	/// Set client state update.
-	/// </summary>
-	public static void SetClientActions()
+    /// <summary>
+    /// Set client state update.
+    /// </summary>
+    public static void SetClientActions()
 	{
 		TgClient.UpdateStateClient = TgClientVm.UpdateStateClient;
 		TgClient.UpdateStateException = TgClientVm.UpdateStateException;

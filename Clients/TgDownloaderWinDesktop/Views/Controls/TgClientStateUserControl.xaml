@@ -25,7 +25,6 @@
 			<ColumnDefinition Width="9.5*" />
 		</Grid.ColumnDefinitions>
 		<Label
-			Grid.RowSpan="2"
 			Grid.Column="0"
 			Margin="2"
 			HorizontalContentAlignment="Center"
@@ -33,12 +32,26 @@
 			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientIsReady, Mode=OneWay, IsAsync=True}" />
 		<CheckBox
 			Grid.Row="0"
-			Grid.RowSpan="2"
 			Grid.Column="1"
 			Margin="2"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}"
+			IsEnabled="False" />
+		<Label
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientProxyIsUsage, Mode=OneWay, IsAsync=True}" />
+		<CheckBox
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="2"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsProxyUsage, Mode=OneWay, IsAsync=True}"
 			IsEnabled="False" />
 		<Label
 			Grid.Row="0"

@@ -26,9 +26,9 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	}
 
 	public void OnNavigatedFrom()
-	{
-		//
-	}
+    {
+        //
+    }
 
 	/// <summary>
 	/// Sort proxies.
@@ -39,32 +39,47 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 			.OrderBy(x => x.HostName);
 		ProxiesVms.Clear();
 		foreach (TgSqlTableProxyModel proxy in proxies)
-			ProxiesVms.Add(new(proxy, ConnectProxy));
+			ProxiesVms.Add(new(proxy, ConnectProxy, DeleteProxy, LoadProxies, 
+                TgDesktopUtils.TgClientVm.LoadProxiesForClient));
 	}
 
-	/// <summary>
-	/// TODO: Connect proxy.
-	/// </summary>
-	/// <param name="proxyVm"></param>
-	public void ConnectProxy(TgSqlTableProxyViewModel proxyVm)
-	{
-		// Checks.
-		if (!CheckClientReady())
-			return;
-	}
+    /// <summary>
+    /// Connect proxy.
+    /// </summary>
+    /// <param name="proxyVm"></param>
+    public void ConnectProxy(TgSqlTableProxyViewModel proxyVm)
+    {
+        // Checks.
+        if (!CheckClientReady())
+            return;
+    }
 
-	#endregion
+    /// <summary>
+    /// Delete proxy.
+    /// </summary>
+    /// <param name="proxyVm"></param>
+    public void DeleteProxy(TgSqlTableProxyViewModel proxyVm)
+    {
+        ContextManager.ProxyRepository.Delete(proxyVm.Proxy);
+    }
 
-	#region Public and private methods - RelayCommand
+    private void LoadProxies()
+    {
+        TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
+        {
+            SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
+        });
+    }
 
-	[RelayCommand]
+    #endregion
+
+    #region Public and private methods - RelayCommand
+
+    [RelayCommand]
 	public async Task OnLoadProxiesFromStorageAsync()
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, () =>
-		{
-			SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
-		});
+		TgDesktopUtils.RunAction(this, LoadProxies);
 	}
 
 	[RelayCommand]

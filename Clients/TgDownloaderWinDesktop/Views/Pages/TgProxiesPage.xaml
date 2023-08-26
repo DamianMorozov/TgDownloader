@@ -236,6 +236,29 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
+				<!--  Delete  -->
+				<DataGridTemplateColumn Width="0.75*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Delete"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ui:Button
+								Margin="2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Appearance="Primary"
+								Command="{Binding DeleteProxyCommand, Mode=OneWay, IsAsync=True}"
+								Icon="Delete48"
+								IsEnabled="True" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

@@ -29,5 +29,15 @@ public static class TgCommonUtils
     public static string GetLongString(long current) =>
         current > 999 ? $"{current:### ###}" : $"{current:###}";
 
+    public static Version? GetTrimVersion(Version? version)
+    {
+        if (version is null) return null;
+        string versionStr = version.ToString();
+        int lastDotIndex = versionStr.LastIndexOf('.');
+        if (lastDotIndex < 0) return version;
+        versionStr = versionStr.Substring(0, lastDotIndex);
+        return Version.Parse(versionStr);
+    }
+
     #endregion
 }

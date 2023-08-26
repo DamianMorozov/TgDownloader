@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Utils;
-
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -103,12 +101,22 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
         {
             IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+        });
+        LoadProxiesForClient();
+    }
+
+    public void LoadProxiesForClient()
+    {
+        TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
+        {
             ProxiesVms.Clear();
             foreach (TgSqlTableProxyModel proxy in ContextManager.ProxyRepository.GetEnumerable())
             {
                 ProxiesVms.Add(new(proxy));
             }
-            ProxyVm.Proxy = ContextManager.ProxyRepository.Get(AppVm.App.ProxyUid) ?? ContextManager.ProxyRepository.GetNew();
+
+            ProxyVm.Proxy = ContextManager.ProxyRepository.Get(AppVm.App.ProxyUid) ??
+                            ContextManager.ProxyRepository.GetNew();
         });
     }
 

@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -11,6 +13,8 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
 	public ObservableCollection<INavigationControl> NavigationFooter { get; set; } = new();
 
 	public ObservableCollection<MenuItem> TrayMenuItems { get; set; } = new();
+
+    public string AppTitle => $"{TgDesktopUtils.TgLocale.AppTitleWinDesktop} v";
 
 	public TgMainWindowViewModel(INavigationService navigationService)
 	{

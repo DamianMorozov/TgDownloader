@@ -46,6 +46,6 @@
 			Margin="0,24,0,0"
 			FontSize="20"
 			FontWeight="Medium"
-			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersion, Mode=OneWay, IsAsync=True}" />
+			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionFull, Mode=OneWay, IsAsync=True}" />
 	</StackPanel>
 </common:TgPageViewBase>

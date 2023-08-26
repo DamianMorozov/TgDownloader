@@ -23,7 +23,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	public string AppName => "Name";
 	public string AppTitle => "TG-Downloader";
-	public string AppTitleConsole => "TG-Downloader Console app";
+	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
 	public string AppTitleConsoleShort => "TG-DC";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
@@ -56,6 +56,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Client
 
+    public string MenuClientProxyIsUsage => "Proxy usage";
 	public string MenuClientApiHash => "API hash";
 	public string MenuClientApiId => "API ID";
 	public string MenuClientClearSettings => "Clear settings";
@@ -63,7 +64,9 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuClientDisconnect => "Disconnect the client from TG server";
 	public string MenuClientException => "Client exception";
 	public string MenuClientFirstName => "First name";
-	public string MenuClientIsReady => "Client is ready";
+	public string MenuClientIsNotReady => "Client is not ready";
+	public string MenuClientIsQuery => "Client is query";
+	public string MenuClientIsReady => "Client ready";
 	public string MenuClientLastName => "Last name";
 	public string MenuClientLoadAllFromStorage => "Load all from storage";
 	public string MenuClientNotifications => "Notifications";
@@ -74,14 +77,12 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuClientSaveToStorage => "Save to storage";
 	public string MenuClientTelegramQuery => "Telegram query";
 	public string MenuClientVerificationCode => "Verification code";
-	public string MenuClientIsNotReady => "Client is not ready";
-	public string MenuClientIsQuery => "Client is query";
 
-	#endregion
+    #endregion
 
-	#region Download
+    #region Download
 
-	public string MenuAutoDownload => "Auto download";
+    public string MenuAutoDownload => "Auto download";
 	public string MenuAutoViewEvents => "Auto view events";
 	public string MenuManualDownload => "Manual download";
 	public string MenuDownloadSetFolder => "Setup download folder";

@@ -21,7 +21,11 @@ public static class TgSqlUtils
             uow.CommitTransaction();
             return true;
         }
+#if DEBUG
         catch (Exception ex)
+#else
+        catch (Exception)
+#endif
         {
             uow.RollbackTransaction();
             throw;
@@ -39,7 +43,11 @@ public static class TgSqlUtils
             await xpLite.Session.CommitTransactionAsync();
             return true;
         }
+#if DEBUG
         catch (Exception ex)
+#else
+        catch (Exception)
+#endif
         {
             xpLite.Session.RollbackTransaction();
             throw;
@@ -59,7 +67,11 @@ public static class TgSqlUtils
             await uow.CommitTransactionAsync();
             return true;
         }
+#if DEBUG
         catch (Exception ex)
+#else
+        catch (Exception)
+#endif
         {
             uow.RollbackTransaction();
             throw;
@@ -77,7 +89,11 @@ public static class TgSqlUtils
             await xpLite.Session.CommitTransactionAsync();
             return true;
         }
+#if DEBUG
         catch (Exception ex)
+#else
+        catch (Exception)
+#endif
         {
             xpLite.Session.RollbackTransaction();
             throw;

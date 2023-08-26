@@ -18,17 +18,29 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
         set => Proxy = TgSqlTableProxyRepository.Instance.Get(value) ?? TgSqlTableProxyRepository.Instance.GetNew();
     }
 	public Action<TgSqlTableProxyViewModel> ConnectProxy { get; set; }
+	public Action<TgSqlTableProxyViewModel> DeleteProxy { get; set; }
+	public Action LoadProxiesForClient { get; set; }
+	public Action LoadProxies { get; set; }
+
 	public string PrettyName => $"{Proxy.Type} | {Proxy.HostName} | {Proxy.Port} | {Proxy.UserName}";
-	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy, Action<TgSqlTableProxyViewModel> connectProxy)
+
+	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy, Action<TgSqlTableProxyViewModel> connectProxy,
+        Action<TgSqlTableProxyViewModel> deleteProxy, Action loadProxies, Action loadProxiesForClient)
 	{
 		Proxy = proxy;
 		ConnectProxy = connectProxy;
-	}
+        DeleteProxy = deleteProxy;
+        LoadProxies = loadProxies;
+		LoadProxiesForClient = loadProxiesForClient;
+    }
 
 	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy)
 	{
 		Proxy = proxy;
 		ConnectProxy = _ => { };
+        DeleteProxy = _ => { };
+        LoadProxies = () => { };
+        LoadProxiesForClient = () => { };
 	}
 
 	#endregion
@@ -45,6 +57,18 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
 		{
 			ConnectProxy(this);
 		});
+	}
+
+	[RelayCommand]
+	public async Task OnDeleteProxyAsync()
+	{
+		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		TgAsyncUtils.ExecAction(() =>
+		{
+            DeleteProxy(this);
+            LoadProxies();
+            LoadProxiesForClient();
+        });
 	}
 
 	#endregion

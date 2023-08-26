@@ -8,7 +8,7 @@
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
 	xmlns:views="clr-namespace:TgDownloaderWinDesktop.Views"
-	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=AppTitle, Mode=OneWay, IsAsync=True}"
+	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 	Width="1300"
 	Height="800"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -30,8 +30,8 @@
 		<!--  The title bar contains window navigation elements and some Tray related extras.  -->
 		<!--  You can put additional controls in the header, such as a search bar.  -->
 		<!--  <ui:TitleBar.Header />  -->
-		<ui:TitleBar
-			Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=AppTitle, Mode=OneWay}"
+		<ui:TitleBar x:Name="TgTitleBar"
+			Title="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 			Grid.Row="0"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"

@@ -6,11 +6,11 @@ namespace TgDownloaderWinDesktop.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigationAware
 {
-	public string AppVersion { get; set; } = string.Empty;
-
-	public Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
-
-	public void OnNavigatedTo()
+    public static Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
+    public static string AppVersionTitle { get; set; } = string.Empty;
+    public static string AppVersionFull { get; set; } = string.Empty;
+	
+    public void OnNavigatedTo()
 	{
 		if (!IsInitialized)
 			InitializeViewModel();
@@ -24,9 +24,11 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
 	protected override void InitializeViewModel()
 	{
 		base.InitializeViewModel();
-		CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
-		AppVersion = $"{TgDesktopUtils.TgLocale.AppVersion}: {Assembly.GetExecutingAssembly().GetName().Version}";
-	}
+        CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
+        AppVersionTitle = $"{TgDesktopUtils.TgLocale.AppTitleWinDesktop} " +
+                          $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+        AppVersionFull = $"{TgDesktopUtils.TgLocale.AppVersion}: v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+    }
 
 	private string GetAssemblyVersion()
 	{
