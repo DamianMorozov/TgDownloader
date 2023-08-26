@@ -11,7 +11,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     #region Public and private fields, properties, constructor
 
     public TgMvvmAppModel AppVm { get; }
-    public TgSqlTableProxyViewModel ProxyVm { get; }
+    public TgSqlTableProxyViewModel ProxyVm { get; set; }
     public ObservableCollection<TgSqlTableProxyViewModel> ProxiesVms { get; }
 
     public string FirstName { get; set; }
@@ -196,9 +196,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
         TgDesktopUtils.RunAction(this, () =>
         {
-            if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid)
-                return;
-            TgDesktopUtils.TgClient.ConnectSessionDesktop(ContextManager.AppRepository.GetCurrentProxy());
+            if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid) return;
+            TgDesktopUtils.TgClient.ConnectSessionDesktop(ProxyVm.Proxy);
         });
     }
 

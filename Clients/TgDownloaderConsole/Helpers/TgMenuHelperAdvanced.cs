@@ -13,7 +13,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(12)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
 					TgLocale.MenuMainReturn,
@@ -88,13 +88,7 @@ internal partial class TgMenuHelper
 	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
 		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Chat);
 
-	private void ScanSourcesChatsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) =>
-		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Chat);
-
 	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
-		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
-
-	private void ScanSourcesDialogsWithoutSave(TgDownloadSettingsModel tgDownloadSettings) =>
 		TgClient.ScanSourcesTgConsole(tgDownloadSettings, TgEnumSourceType.Dialog);
 
 	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
@@ -110,12 +104,12 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void AutoDownload(TgDownloadSettingsModel tgDownloadSettings)
+	private void AutoDownload(TgDownloadSettingsModel _)
 	{
 		IEnumerable<TgSqlTableSourceModel> sources = ContextManager.SourceRepository.GetEnumerable();
 		foreach (TgSqlTableSourceModel source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
-            tgDownloadSettings = SetupDownloadSource(source.Id);
+            TgDownloadSettingsModel tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
 			// StatusContext.
 			TgClient.UpdateStateClient(

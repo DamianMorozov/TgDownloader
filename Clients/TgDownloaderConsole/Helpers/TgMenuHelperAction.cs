@@ -13,8 +13,13 @@ internal partial class TgMenuHelper
         bool result = TgClient is { IsReady: true } && tgDownloadSettings.SourceVm.IsReady;
         if (!result)
         {
-            TgLog.MarkupWarning(TgLocale.TgMustSetSettings);
-            Console.ReadKey();
+            ClientConnect(tgDownloadSettings, true);
+            result = TgClient is { IsReady: true } && tgDownloadSettings.SourceVm.IsReady;
+            if (!result)
+            {
+                TgLog.MarkupWarning(TgLocale.TgMustSetSettings);
+                Console.ReadKey();
+            }
         }
         return result;
     }
@@ -34,15 +39,16 @@ internal partial class TgMenuHelper
                 statusContext.Spinner(Spinner.Known.Star);
                 statusContext.SpinnerStyle(Style.Parse("green"));
                 // Update Console Title
-                void UpdateConsoleTitle(string title)
-                {
-                    Console.Title = title;
-                }
+                void UpdateConsoleTitle(string title) => Console.Title = string.IsNullOrEmpty(title) 
+                    ? $"{TgLocale.AppTitleConsoleShort}" : $"{TgLocale.AppTitleConsoleShort} {title}";
                 // Update status.
                 void UpdateStateClient(string message)
                 {
-                    statusContext.Status(TgLog.GetMarkupString(message));
-                    statusContext.Refresh();
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        statusContext.Status(TgLog.GetMarkupString(message));
+                        statusContext.Refresh();
+                    }
                 }
                 void UpdateStateSource(long sourceId, int messageId, string message)
                 {
@@ -73,21 +79,15 @@ internal partial class TgMenuHelper
         Console.ReadKey();
     }
 
-    private double CalcSourceProgress(long count, long current) =>
-        count is 0 ? 0 : (double)(current * 100) / count;
-
-    private string GetLongString(long current) =>
-        current > 999 ? $"{current:### ###}" : $"{current:###}";
-
     private string GetStatus(Stopwatch sw, long count, long current) =>
         count is 0 && current is 0
             ? $"{TgLog.GetDtShortStamp()} | {sw.Elapsed} | "
-            : $"{TgLog.GetDtShortStamp()} | {sw.Elapsed} | {CalcSourceProgress(count, current):#00.00} % | {GetLongString(current)} / {GetLongString(count)}";
+            : $"{TgLog.GetDtShortStamp()} | {sw.Elapsed} | {TgCommonUtils.CalcSourceProgress(count, current):#00.00} % | {TgCommonUtils.GetLongString(current)} / {TgCommonUtils.GetLongString(count)}";
 
     private string GetStatus(long count, long current) =>
         count is 0 && current is 0
             ? TgLog.GetDtShortStamp()
-            : $"{TgLog.GetDtShortStamp()} | {CalcSourceProgress(count, current):#00.00} % | {GetLongString(current)} / {GetLongString(count)}";
+            : $"{TgLog.GetDtShortStamp()} | {TgCommonUtils.CalcSourceProgress(count, current):#00.00} % | {TgCommonUtils.GetLongString(current)} / {TgCommonUtils.GetLongString(count)}";
 
     #endregion
 }

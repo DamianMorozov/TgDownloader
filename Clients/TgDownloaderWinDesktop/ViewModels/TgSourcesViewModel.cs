@@ -276,10 +276,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 			// Download settings.
 		TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(sourceVm);
 			// Job.
-			TgDesktopUtils.TgClient.DownloadAllData(tgDownloadSettings,
-				ContextManager.MessageRepository.Save,
-				ContextManager.DocumentRepository.Save,
-				ContextManager.MessageRepository.GetExists);
+			TgDesktopUtils.TgClient.DownloadAllData(tgDownloadSettings);
 			TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgLocale.SettingsSource);
 		});
 	}

@@ -13,7 +13,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuMainReturn,
 					TgLocale.MenuFiltersView,
@@ -75,7 +75,7 @@ internal partial class TgMenuHelper
 		TgSqlTableFilterModel filter = TgSqlUtils.CreateNewFilter();
 		string type = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(TgLocale.MenuFiltersSetType)
-			.PageSize(10)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(TgLocale.MenuMainReturn, TgLocale.MenuFiltersSetSingleName, TgLocale.MenuFiltersSetSingleExtension,
 				TgLocale.MenuFiltersSetMultiName, TgLocale.MenuFiltersSetMultiExtension,
 				TgLocale.MenuFiltersSetMinSize, TgLocale.MenuFiltersSetMaxSize));
@@ -131,7 +131,7 @@ internal partial class TgMenuHelper
 		IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerable();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
 			.Title(TgLocale.MenuFiltersSetEnabled)
-			.PageSize(10)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
 		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
 		ContextManager.FilterRepository.Save(filter);
@@ -142,7 +142,7 @@ internal partial class TgMenuHelper
 	{
 		filter.SizeType = AnsiConsole.Prompt(new SelectionPrompt<TgEnumFileSizeType>()
 			.Title(TgLocale.MenuFiltersSetSizeType)
-			.PageSize(5)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(TgEnumFileSizeType.Bytes, TgEnumFileSizeType.KBytes, TgEnumFileSizeType.MBytes, TgEnumFileSizeType.GBytes, TgEnumFileSizeType.TBytes));
 		filter.Size = AnsiConsole.Ask<uint>(TgLog.GetMarkupString($"{question}:"));
 	}
@@ -152,7 +152,7 @@ internal partial class TgMenuHelper
 		IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerable();
 		TgSqlTableFilterModel filter = AnsiConsole.Prompt(new SelectionPrompt<TgSqlTableFilterModel>()
 			.Title(TgLocale.MenuFiltersSetType)
-			.PageSize(10)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
 		ContextManager.FilterRepository.Delete(filter);
 		TgFiltersView();

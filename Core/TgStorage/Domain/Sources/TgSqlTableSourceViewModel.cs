@@ -33,6 +33,8 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     public int SourceScanCurrent { get; set; }
     [DefaultValue(1)]
     public int SourceScanCount { get; set; }
+    [DefaultValue(false)]
+    public bool IsAutoUpdate { get => Source.IsAutoUpdate; set => Source.IsAutoUpdate = value; }
 
     public bool IsSourceDirectoryExists => Directory.Exists(Source.Directory);
     public bool IsReadySourceDirectory => !string.IsNullOrEmpty(SourceDirectory);
@@ -74,6 +76,7 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
         SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
         SourceScanCurrent = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCurrent));
         SourceScanCount = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCount));
+        IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
     }
 
     public TgSqlTableSourceViewModel() : this(TgSqlUtils.CreateNewSource()) { }
@@ -84,7 +87,7 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
 
     public override string ToString() => $"{Source} | {Progress}";
 
-    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | {SourceId} | {SourceFirstId}";
+    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsAutoUpdate(IsAutoUpdate)} | {SourceId} | {SourceFirstId}";
 
     public static TgSqlTableSourceViewModel CreateNew() => new();
 

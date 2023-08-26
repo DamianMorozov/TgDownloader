@@ -13,7 +13,6 @@ public class TgSqlTableEmpty : XPLiteObject, ITgSqlTable
 {
 	#region Public and private fields, properties, constructor
 
-	public TgLocaleHelper Locale => TgLocaleHelper.Instance;
 	private Guid _uid;
 	[Key(true)]
 	[DefaultValue("00000000-0000-0000-0000-000000000000")]

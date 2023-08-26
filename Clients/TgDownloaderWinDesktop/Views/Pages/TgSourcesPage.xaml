@@ -386,7 +386,7 @@
 								IsEnabled="False"
 								IsManipulationEnabled="{Binding !IsLoad, Mode=OneWay, IsAsync=True}"
 								IsReadOnly="True"
-								Text="{Binding SourceCount, Mode=TwoWay, IsAsync=True}" />
+								Text="{Binding SourceLastId, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>

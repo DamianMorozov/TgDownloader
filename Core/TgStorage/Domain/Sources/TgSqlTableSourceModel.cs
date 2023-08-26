@@ -189,9 +189,17 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 
     #region Public and private methods
 
-    public override string ToString() =>
-        $"{Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +
-        $"{TgDataFormatUtils.TrimStringEnd(Title)} | {FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+    public string ToConsoleStringShort() =>
+        $"{(Equals(FirstId, Count) ? "" : "x | ")}{(IsAutoUpdate ? "a | " : "")}{Id} | " +
+        $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.FormatString(UserName, 30))} | " +
+        $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.FormatString(Title, 30))} | " +
+        $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+
+    public string ToConsoleString() =>
+        $"{(Equals(FirstId, Count) ? " " : "x")} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
+        $"{TgDataFormatUtils.FormatString(UserName, 30)} | " +
+        $"{TgDataFormatUtils.FormatString(Title, 30)} | " +
+        $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
     public string ToDebugString() => 
 		$"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +

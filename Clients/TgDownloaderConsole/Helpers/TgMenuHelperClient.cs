@@ -13,7 +13,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
 					TgLocale.MenuMainReturn,
@@ -43,7 +43,7 @@ internal partial class TgMenuHelper
 					AskClientConnect(tgDownloadSettings);
 					break;
 				case TgEnumMenuClient.Connect:
-					ClientConnect(tgDownloadSettings);
+					ClientConnect(tgDownloadSettings, false);
 					break;
 				case TgEnumMenuClient.Disconnect:
 					ClientDisconnect(tgDownloadSettings);
@@ -57,7 +57,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
 					nameof(TgEnumProxyType.None),
@@ -111,7 +111,7 @@ internal partial class TgMenuHelper
 			string prompt = AnsiConsole.Prompt(
 				new SelectionPrompt<string>()
 					.Title($"  {TgLocale.MenuSwitchNumber}")
-					.PageSize(10)
+					.PageSize(Console.WindowHeight - 17)
 					.MoreChoicesText(TgLocale.MoveUpDown)
 					.AddChoices("Use secret", "Do not use secret"));
 			bool isSecret = prompt switch
@@ -195,15 +195,15 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title(TgLocale.MenuClientConnect)
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
 		bool isConnect = prompt.Equals(TgLocale.MenuYes);
 		if (isConnect)
-			ClientConnect(tgDownloadSettings);
+			ClientConnect(tgDownloadSettings, false);
 	}
 
-	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings)
+	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
 		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxy());
@@ -211,14 +211,15 @@ internal partial class TgMenuHelper
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteSuccess);
-		Console.ReadKey();
+		if (!isSilent)
+		    Console.ReadKey();
 	}
 
 	public void ClientDisconnect(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
-		ContextManager.AppRepository.Delete(app);
+		//TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
+		//ContextManager.AppRepository.Delete(app);
 		TgClient.Disconnect();
 	}
 

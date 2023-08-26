@@ -19,7 +19,7 @@ do
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")
-			.PageSize(10)
+			.PageSize(Console.WindowHeight - 17)
 			.MoreChoicesText(tgLocale.MoveUpDown)
 			.AddChoices(
 				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainStorage, tgLocale.MenuMainClient,
@@ -73,7 +73,7 @@ bool Setup()
 	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
 	// Console.
 	Console.OutputEncoding = Encoding.UTF8;
-	Console.Title = "TG-DC";
+	Console.Title = tgLocale.AppTitleConsoleShort;
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
 	// Storage.

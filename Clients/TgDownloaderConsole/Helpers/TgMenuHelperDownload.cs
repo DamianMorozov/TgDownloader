@@ -13,7 +13,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(12)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
 					TgLocale.MenuMainReturn,
@@ -71,7 +71,7 @@ internal partial class TgMenuHelper
 					break;
 				case TgEnumMenuDownload.SetDestDirectory:
 					SetupDownloadDestDirectory(tgDownloadSettings);
-					if (!tgDownloadSettings.IsAutoUpdate)
+					if (!tgDownloadSettings.SourceVm.IsAutoUpdate)
 						SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SetIsRewriteFiles:
@@ -194,25 +194,11 @@ internal partial class TgMenuHelper
 		tgDownloadSettings.IsJoinFileNameWithMessageId = AskQuestionReturnPositive(TgLocale.TgSettingsIsJoinFileNameWithMessageId, true);
 
 	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings) =>
-		tgDownloadSettings.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
+		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
     private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
-	{
-		if (!tgDownloadSettings.SourceVm.IsReadySourceId) return;
-        // Update source.
-        tgDownloadSettings.SourceVm.Source = new()
-        {
-            Id = tgDownloadSettings.SourceVm.SourceId,
-            UserName = tgDownloadSettings.SourceVm.SourceUserName,
-            Title = tgDownloadSettings.SourceVm.SourceTitle,
-            About = tgDownloadSettings.SourceVm.SourceAbout,
-            Count = tgDownloadSettings.SourceVm.SourceLastId,
-            Directory = tgDownloadSettings.SourceVm.SourceDirectory,
-            FirstId = tgDownloadSettings.SourceVm.SourceFirstId,
-            IsAutoUpdate = tgDownloadSettings.IsAutoUpdate
-        };
-		if (ContextManager.SourceRepository.Save(tgDownloadSettings.SourceVm.Source))
-			tgDownloadSettings.SourceVm.Source = ContextManager.SourceRepository.Get(tgDownloadSettings.SourceVm.Source.Id);
+    {
+        tgDownloadSettings.UpdateSourceWithSettings();
 		// Refresh.
 		TgClient.UpdateStateClient(TgLocale.SettingsSource);
 	}
@@ -232,11 +218,8 @@ internal partial class TgMenuHelper
 	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
-		TgClient.DownloadAllData(tgDownloadSettings,
-			ContextManager.MessageRepository.Save,
-			ContextManager.DocumentRepository.Save,
-			ContextManager.MessageRepository.GetExists);
-		UpdateSourceWithSettings(tgDownloadSettings);
+		TgClient.DownloadAllData(tgDownloadSettings);
+        UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
 	#endregion

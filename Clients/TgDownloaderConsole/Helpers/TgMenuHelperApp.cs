@@ -13,7 +13,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(
 					TgLocale.MenuMainReturn,
@@ -90,7 +90,7 @@ internal partial class TgMenuHelper
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
-				.PageSize(10)
+				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuAppUseProxyDisable, TgLocale.MenuAppUseProxyEnable));
 		TgAppSettings.AppXml.IsUseProxy = prompt.Equals(TgLocale.MenuAppUseProxyEnable);

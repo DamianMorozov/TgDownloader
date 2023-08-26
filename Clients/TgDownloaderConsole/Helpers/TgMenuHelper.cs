@@ -275,7 +275,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		{
 			TgSqlTableSourceModel source = ContextManager.SourceRepository.Get(tgDownloadSettings.SourceVm.SourceId);
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
-				new Markup(TgLog.GetMarkupString(source.ToString())));
+				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.DtFormat(source.DtChanged)));
 		}
@@ -317,7 +317,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 
 		// Enable auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
-			new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
+			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
         IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerableEnabled();
@@ -328,26 +328,30 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	{
 		// Is auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
-			new Markup(tgDownloadSettings.IsAutoUpdate.ToString()));
+			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 	}
 
-	internal void FillTableRowsScanDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
-	{
-		// Source ID/username.
-		FillTableRowsDownloadedSources(tgDownloadSettings, table);
-	}
+    /// <summary>
+    /// Source ID/username.
+    /// </summary>
+    /// <param name="tgDownloadSettings"></param>
+    /// <param name="table"></param>
+    internal void FillTableRowsScanDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
+        FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
-	internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
-	{
-		// Source ID/username.
-		FillTableRowsDownloadedSources(tgDownloadSettings, table);
-	}
+    /// <summary>
+    /// Source ID/username.
+    /// </summary>
+    /// <param name="tgDownloadSettings"></param>
+    /// <param name="table"></param>
+    internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
+        FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
-	public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
+    public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
 	{
 		string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title($"{title}?")
-			.PageSize(3)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(isTrueFirst
 				? new List<string> { TgLocale.MenuIsTrue, TgLocale.MenuIsFalse }
 				: new List<string> { TgLocale.MenuIsFalse, TgLocale.MenuIsTrue }));
@@ -359,19 +363,22 @@ internal sealed partial class TgMenuHelper : ITgHelper
 
 	public TgSqlTableSourceModel GetSourceFromEnumerable(string title, IEnumerable<TgSqlTableSourceModel> sources)
 	{
-		sources = sources.OrderBy(item => item.Id).ToList();
-		sources = sources.OrderBy(item => item.UserName).ToList();
+		sources = sources.OrderBy(item => item.UserName).ThenBy(item => item.Id);
 		List<string> list = new() { TgLocale.MenuMainReturn };
-		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToString())).ToList());
+		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
-			.PageSize(15)
+			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(list));
-		return Equals(sourceString, TgLocale.MenuMainReturn)
-			? ContextManager.SourceRepository.GetNew() :
-			long.TryParse(sourceString.Substring(0, sourceString.IndexOf('|')).TrimEnd(' '), out long id)
-			? ContextManager.SourceRepository.Get(id) : ContextManager.SourceRepository.GetNew();
+        if (!Equals(sourceString, TgLocale.MenuMainReturn))
+        {
+            int len = sourceString.IndexOf('|', 8) - 9;
+            string sourceId = sourceString.Substring(8, len).TrimEnd(' ');
+            if (long.TryParse(sourceId, out long id))
+                return ContextManager.SourceRepository.Get(id);
+        }
+        return ContextManager.SourceRepository.GetNew();
 	}
 
-	#endregion
+    #endregion
 }

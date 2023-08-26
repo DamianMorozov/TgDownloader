@@ -24,6 +24,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string AppName => "Name";
 	public string AppTitle => "TG-Downloader";
 	public string AppTitleConsole => "TG-Downloader Console app";
+	public string AppTitleConsoleShort => "TG-DC";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
 	public string From => "from";

@@ -7,7 +7,9 @@ public static class TgCommonUtils
 {
 	#region Public and private methods
 
-	public static string GetIsFlag(bool isFlag, string positive, string negative) => $"{(isFlag ? positive : negative)}";
+    public static string GetIsAutoUpdate(bool isAutoUpdate) => $"{(isAutoUpdate ? "<Auto update>" : "<Not update>")}";
+	
+    public static string GetIsFlag(bool isFlag, string positive, string negative) => $"{(isFlag ? positive : negative)}";
 
 	public static string GetIsEnabled(bool isEnabled) => $"{(isEnabled ? "<Enabled>" : "<Disabled>")}";
 
@@ -21,5 +23,11 @@ public static class TgCommonUtils
 
     public static string GetIsReady(bool isReady) => $"{(isReady ? "<Ready>" : "<Not ready>")}";
 
-	#endregion
+    public static double CalcSourceProgress(long count, long current) =>
+        count is 0 ? 0 : (double)(current * 100) / count;
+
+    public static string GetLongString(long current) =>
+        current > 999 ? $"{current:### ###}" : $"{current:###}";
+
+    #endregion
 }

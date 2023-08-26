@@ -11,21 +11,20 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-    public TgSqlTableSourceViewModel SourceVm { get; set; }
+	public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
+
+	public TgSqlTableSourceViewModel SourceVm { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteMessages { get; set; }
 	[DefaultValue(true)]
 	public bool IsJoinFileNameWithMessageId { get; set; }
-	[DefaultValue(false)]
-	public bool IsAutoUpdate { get; set; }
 
 	public TgDownloadSettingsModel()
 	{
 		SourceVm = TgSqlTableSourceViewModel.CreateNew();
 		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsJoinFileNameWithMessageId));
-		IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
 		IsRewriteFiles = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteFiles));
 		IsRewriteMessages = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteMessages));
 	}
@@ -37,6 +36,14 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
     public string ToDebugString() => $"{SourceVm.ToDebugString()}";
 
     public static TgDownloadSettingsModel CreateNew() => new();
+
+    public void UpdateSourceWithSettings()
+    {
+        if (!SourceVm.IsReadySourceId)
+            return;
+        if (ContextManager.SourceRepository.SaveByViewModel(SourceVm))
+            SourceVm.Source = ContextManager.SourceRepository.Get(SourceVm.Source.Id);
+    }
 
     #endregion
 }

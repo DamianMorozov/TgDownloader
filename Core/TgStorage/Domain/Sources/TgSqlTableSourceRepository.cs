@@ -78,6 +78,19 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
         }
     }
 
+    public bool SaveByViewModel(TgSqlTableSourceViewModel itemVm) =>
+        Save(new TgSqlTableSourceModel()
+        {
+            Id = itemVm.SourceId,
+            UserName = itemVm.SourceUserName,
+            Title = itemVm.SourceTitle,
+            About = itemVm.SourceAbout,
+            Count = itemVm.SourceLastId,
+            Directory = itemVm.SourceDirectory,
+            FirstId = itemVm.SourceFirstId,
+            IsAutoUpdate = itemVm.IsAutoUpdate
+        });
+
     public override TgSqlTableSourceModel Get(TgSqlTableSourceModel item) =>
         Get(item.Id);
 
