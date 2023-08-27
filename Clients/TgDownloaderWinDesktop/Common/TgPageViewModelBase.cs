@@ -67,7 +67,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 	{
 			TgDesktopUtils.RunAction(() =>
 			{
-			StateClientDt = TgDataFormatUtils.DtFormat(DateTime.Now);
+			StateClientDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 			StateClientMsg = message;
 			});
 	}
@@ -83,7 +83,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 	{
 		TgDesktopUtils.RunAction(() =>
 		{
-StateExceptionDt = TgDataFormatUtils.DtFormat(DateTime.Now);
+StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 		StateExceptionMsg = $"Line {lineNumber} | Member {memberName} | {message}";
 		});
 	}
@@ -98,7 +98,7 @@ StateExceptionDt = TgDataFormatUtils.DtFormat(DateTime.Now);
 	{
 		TgDesktopUtils.RunAction(() =>
 				{
-StateSourceDt = TgDataFormatUtils.DtFormat(DateTime.Now);
+StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 		StateSourceMsg = $"{sourceId} | {messageId} | {message}";
 				});
 	}

@@ -277,7 +277,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
-				new Markup(TgDataFormatUtils.DtFormat(source.DtChanged)));
+				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
 		}
 	}
 

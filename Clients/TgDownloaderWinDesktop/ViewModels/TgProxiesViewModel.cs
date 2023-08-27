@@ -8,14 +8,9 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 {
 	#region Public and private fields, properties, constructor
 
-	public ObservableCollection<TgSqlTableProxyViewModel> ProxiesVms { get; set; }
+	public ObservableCollection<TgSqlTableProxyViewModel> ProxiesVms { get; set; } = new();
 
-	public TgProxiesViewModel()
-	{
-		ProxiesVms = new();
-	}
-
-	#endregion
+    #endregion
 
 	#region Public and private methods
 
@@ -30,28 +25,47 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         //
     }
 
-	/// <summary>
-	/// Sort proxies.
-	/// </summary>
-	private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
+    protected override void InitializeViewModel()
+    {
+        base.InitializeViewModel();
+        // Load sources from storage.
+        LoadProxiesFromStorageCommand.Execute(null);
+    }
+	
+    /// <summary>
+    /// Sort proxies.
+    /// </summary>
+    private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
 	{
 		proxies = proxies.OrderBy(x => x.Port).ToList()
 			.OrderBy(x => x.HostName);
 		ProxiesVms.Clear();
 		foreach (TgSqlTableProxyModel proxy in proxies)
-			ProxiesVms.Add(new(proxy, ConnectProxy, DeleteProxy, LoadProxies, 
-                TgDesktopUtils.TgClientVm.LoadProxiesForClient));
+			ProxiesVms.Add(new(proxy, ConnectClientByProxy, DisconnectClient, DeleteProxy));
 	}
 
     /// <summary>
-    /// Connect proxy.
+    /// Connect client through proxy.
     /// </summary>
     /// <param name="proxyVm"></param>
-    public void ConnectProxy(TgSqlTableProxyViewModel proxyVm)
+    public void ConnectClientByProxy(TgSqlTableProxyViewModel proxyVm)
     {
-        // Checks.
-        if (!CheckClientReady())
-            return;
+        _ = Task.Run(async () =>
+        {
+            await TgDesktopUtils.TgClientVm.OnClientConnectAsync().ConfigureAwait(false);
+        }).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Disconnect client.
+    /// </summary>
+    /// <param name="proxyVm"></param>
+    public void DisconnectClient(TgSqlTableProxyViewModel proxyVm)
+    {
+        _ = Task.Run(async () =>
+        {
+            await TgDesktopUtils.TgClientVm.OnClientDisconnectAsync().ConfigureAwait(false);
+        }).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -61,6 +75,8 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     public void DeleteProxy(TgSqlTableProxyViewModel proxyVm)
     {
         ContextManager.ProxyRepository.Delete(proxyVm.Proxy);
+        LoadProxies();
+        TgDesktopUtils.TgClientVm.LoadProxiesForClient();
     }
 
     private void LoadProxies()

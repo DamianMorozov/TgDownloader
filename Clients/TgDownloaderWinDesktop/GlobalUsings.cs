@@ -42,4 +42,5 @@ global using Wpf.Ui.Controls.Interfaces;
 global using Wpf.Ui.Mvvm.Contracts;
 global using Wpf.Ui.Mvvm.Services;
 global using MenuItem = Wpf.Ui.Controls.MenuItem;
+global using TgDesktopUtils = TgDownloaderWinDesktop.Utils.TgDesktopUtils;
 global using TgMvvmAppModel = TgStorage.Domain.Apps.TgSqlTableAppViewModel;

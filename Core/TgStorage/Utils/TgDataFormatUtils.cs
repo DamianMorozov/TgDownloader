@@ -105,14 +105,14 @@ public static class TgDataFormatUtils
 	public static string TrimStringEnd(string value, int len = 30) =>
 		value.Length <= len ? value : value.Substring(0, len);
 
-	public static string FormatString(string value, int len = 30) =>
+	public static string GetFormatString(string value, int len = 30) =>
         value.PadRight(len).Substring(0, len);
 
-	public static string DtFormat(DateTime dt) => $"{dt:yyyy-MM-dd HH:mm:ss}";
+	public static string GetDtFormat(DateTime dt) => $"{dt:yyyy-MM-dd HH:mm:ss}";
 
-	public static string DateFormat(DateTime dt) => $"{dt:yyyy-MM-dd}";
+	public static string GetDateFormat(DateTime dt) => $"{dt:yyyy-MM-dd}";
 
-	public static string TimeFormat(DateTime dt) => $"{dt:HH:mm:ss}";
+	public static string GetTimeFormat(DateTime dt) => $"{dt:HH:mm:ss}";
 
 	#endregion
 }

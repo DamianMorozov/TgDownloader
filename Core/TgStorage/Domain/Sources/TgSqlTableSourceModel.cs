@@ -191,14 +191,14 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 
     public string ToConsoleStringShort() =>
         $"{(Equals(FirstId, Count) ? "" : "x | ")}{(IsAutoUpdate ? "a | " : "")}{Id} | " +
-        $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.FormatString(UserName, 30))} | " +
-        $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.FormatString(Title, 30))} | " +
+        $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
+        $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +
         $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
     public string ToConsoleString() =>
         $"{(Equals(FirstId, Count) ? " " : "x")} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
-        $"{TgDataFormatUtils.FormatString(UserName, 30)} | " +
-        $"{TgDataFormatUtils.FormatString(Title, 30)} | " +
+        $"{TgDataFormatUtils.GetFormatString(UserName, 30)} | " +
+        $"{TgDataFormatUtils.GetFormatString(Title, 30)} | " +
         $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
     public string ToDebugString() => 

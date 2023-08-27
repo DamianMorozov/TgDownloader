@@ -93,9 +93,32 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Appearance="Primary"
-								Command="{Binding ConnectProxyCommand, Mode=OneWay, IsAsync=True}"
+								Command="{Binding ConnectClientByProxyCommand, Mode=OneWay, IsAsync=True}"
 								Icon="Connector24"
-								IsEnabled="False" />
+								IsEnabled="True" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  Disconnect  -->
+				<DataGridTemplateColumn Width="0.75*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="Disconnect"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ui:Button
+								Margin="2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Appearance="Primary"
+								Command="{Binding DisconnectClientCommand, Mode=OneWay, IsAsync=True}"
+								Icon="Connector24"
+								IsEnabled="True" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -215,7 +238,7 @@
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 				<!--  Secret  -->
-				<DataGridTemplateColumn Width="4*">
+				<DataGridTemplateColumn Width="2*">
 					<DataGridTemplateColumn.Header>
 						<Label
 							Margin="2"

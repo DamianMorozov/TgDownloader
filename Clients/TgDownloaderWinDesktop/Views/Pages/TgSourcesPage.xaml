@@ -59,7 +59,7 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					Appearance="Primary"
-					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=LoadSourcesCommand, Mode=OneWay, IsAsync=True}"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=LoadSourcesFromStorageCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Load, Mode=OneWay, IsAsync=True}"
 					Icon="ArrowSync12" />
 				<ui:Button

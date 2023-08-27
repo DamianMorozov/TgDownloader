@@ -448,7 +448,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     // https://corefork.telegram.org/type/Update
     private void SwitchUpdateType(Update update, Channel? channel = null)
     {
-        UpdateTitle(TgDataFormatUtils.TimeFormat(DateTime.Now));
+        UpdateTitle(TgDataFormatUtils.GetTimeFormat(DateTime.Now));
         string channelLabel = channel is null ? string.Empty :
             string.IsNullOrEmpty(channel.MainUsername) ? channel.ID.ToString() : $"{channel.ID} | {channel.MainUsername}";
         if (!string.IsNullOrEmpty(channelLabel))

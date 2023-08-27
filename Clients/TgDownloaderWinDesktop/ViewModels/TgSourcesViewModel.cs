@@ -34,7 +34,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 	{
 		base.InitializeViewModel();
 		TgDesktopUtils.TgClient.UpdateStateSource = UpdateStateSource;
-		LoadSourcesCommand.Execute(null);
+        // Load sources from storage.
+		LoadSourcesFromStorageCommand.Execute(null);
 	}
 
 	/// <summary>
@@ -124,7 +125,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 	#region Public and private methods - RelayCommand
 
 	[RelayCommand]
-	public async Task OnLoadSourcesAsync()
+	public async Task OnLoadSourcesFromStorageAsync()
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		TgDesktopUtils.RunAction(this, () =>
