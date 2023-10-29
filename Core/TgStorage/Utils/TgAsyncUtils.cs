@@ -18,111 +18,17 @@ public static class TgAsyncUtils
 
 	public static void SetAppType(TgEnumAppType appType) => AppType = appType;
 
-	public static T GetTaskResult<T>(Func<Task<T>> job, TgEnumAppType appType = TgEnumAppType.Default)
-	{
-		if (appType == TgEnumAppType.Default)
-			appType = AppType;
-		switch (appType)
-		{
-			case TgEnumAppType.Async:
-				Task<T> task = Task.Run(async () =>
-				{
-					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-					return await job().ConfigureAwait(false);
-				});
-				task.ConfigureAwait(false);
-				return task.GetAwaiter().GetResult();
-			case TgEnumAppType.Sync:
-				return job().ConfigureAwait(true).GetAwaiter().GetResult();
-			default:
-				throw new ArgumentException(null, nameof(appType));
-		}
-	}
-
-	public static void ExecTaskAsync(Func<Task> job, bool isWait, TgEnumAppType appType = TgEnumAppType.Default)
-	{
-		if (appType == TgEnumAppType.Default)
-			appType = AppType;
-		switch (appType)
-		{
-			case TgEnumAppType.Async:
-				Task task = Task.Run(async () =>
-				{
-					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-					await job().ConfigureAwait(false);
-				});
-				task.ConfigureAwait(false);
-				if (isWait)
-					task.GetAwaiter().GetResult();
-				break;
-			case TgEnumAppType.Sync:
-				job().ConfigureAwait(true);
-				break;
-			default:
-				throw new ArgumentException(null, nameof(appType));
-		}
-	}
-
-	public static void ExecTask(Task job, bool isWait, TgEnumAppType appType = TgEnumAppType.Default)
-	{
-		if (appType == TgEnumAppType.Default)
-			appType = AppType;
-		switch (appType)
-		{
-			case TgEnumAppType.Async:
-				Task task = Task.Run(async () =>
-				{
-					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-					await job.ConfigureAwait(false);
-				});
-				task.ConfigureAwait(false);
-				if (isWait)
-					task.GetAwaiter().GetResult();
-				break;
-			case TgEnumAppType.Sync:
-				job.ConfigureAwait(true);
-				break;
-			default:
-				throw new ArgumentException(null, nameof(appType));
-		}
-	}
-
-	public static void ExecAction(Action action, TgEnumAppType appType = TgEnumAppType.Default)
-	{
-		if (appType == TgEnumAppType.Default)
-			appType = AppType;
-		switch (appType)
-		{
-			case TgEnumAppType.Async:
-				Task task = Task.Run(async () =>
-				{
-					await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-					action();
-				});
-				task.ConfigureAwait(false);
-				break;
-			case TgEnumAppType.Sync:
-				action();
-				break;
-			default:
-				throw new ArgumentException(null, nameof(appType));
-		}
-	}
-
-	public static void AddAction(ref Action actionMain, Action actionNew)
-{
-    if (actionMain.GetInvocationList().Length == 0)
+	public static T GetFuncResult<T>(Func<Task<T>> job, TgEnumAppType appType = TgEnumAppType.Default)
     {
-        actionMain = actionNew;
-        return;
+        if (appType == TgEnumAppType.Default)
+			appType = AppType;
+        return appType switch
+        {
+            TgEnumAppType.Async => Task.Run(job).Result,
+            TgEnumAppType.Sync => job().Result,
+            _ => throw new ArgumentException(null, nameof(appType))
+        };
     }
-    if (actionMain.GetInvocationList().Length > 0)
-    {
-        IEnumerable<string> namesExists = actionMain.GetInvocationList().Select(item => item.Method.Name);
-        if (!namesExists.Contains(actionNew.Method.Name))
-            actionMain += actionNew;
-    }
-}
 
-	#endregion
+    #endregion
 }

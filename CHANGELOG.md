@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.2.400] - 2023-08-27
+## [0.2.460] - 2023-10-29
 ### Fixed in TgDownloaderConsole
 - Refactoring and tests
 ### Added in TgDownloaderConsole
@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added in TgDownloaderWinDesktop
 - Connecting a client via proxy
 - Disconnecting a client via proxy
+- Saving settings
+- Navigation to the source item page
 ### Fixed in TgStorage
 - Fixed methods in Repositories
 

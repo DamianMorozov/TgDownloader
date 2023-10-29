@@ -77,7 +77,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         BackgroundPassword = new SolidBrush(Color.Transparent);
         BackgroundFirstName = new SolidBrush(Color.Transparent);
         BackgroundLastName = new SolidBrush(Color.Transparent);
-        StateClientMsg = string.Empty;
+        StateConnectMsg = string.Empty;
     }
 
     #endregion
@@ -98,18 +98,20 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     protected override void InitializeViewModel()
     {
         base.InitializeViewModel();
-        TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
+
+        TgDesktopUtils.RunAction(this, () =>
         {
             IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
-        });
+        }, true);
         LoadProxiesForClient();
     }
 
     public void LoadProxiesForClient()
     {
-        TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
+        TgDesktopUtils.RunAction(this, () =>
         {
             ProxiesVms.Clear();
+            ProxiesVms.Add(new(ContextManager.ProxyRepository.GetNew()));
             foreach (TgSqlTableProxyModel proxy in ContextManager.ProxyRepository.GetEnumerable())
             {
                 ProxiesVms.Add(new(proxy));
@@ -117,32 +119,25 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
             ProxyVm.Proxy = ContextManager.ProxyRepository.Get(AppVm.App.ProxyUid) ??
                             ContextManager.ProxyRepository.GetNew();
-        });
+        }, false);
     }
 
     public void AfterClientConnect()
     {
-        try
+        TgDesktopUtils.RunAction(this, () =>
         {
-            TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
-            {
-                TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgClient.IsReady
-                    ? TgDesktopUtils.TgLocale.MenuClientIsReady : TgDesktopUtils.TgLocale.MenuClientIsNotReady);
-                IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
-                if (TgDesktopUtils.TgClient.IsReady)
-                    ViewModelClearConfig();
-                IsLoad = false;
-            });
-        }
-        catch (Exception ex)
-        {
-            Exception.Set(ex);
-        }
+            //TgDesktopUtils.TgClient.UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
+            //    ? TgDesktopUtils.TgLocale.MenuClientIsConnected : TgDesktopUtils.TgLocale.MenuClientIsDisconnected);
+            IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+            if (TgDesktopUtils.TgClient.IsReady)
+                ViewModelClearConfig();
+            IsLoad = false;
+        }, false);
     }
 
-    public string? GetDesktopConfig(string what)
+    public string? GetClientDesktopConfig(string what)
     {
-        TgDesktopUtils.TgClient.UpdateStateClient($"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}");
+        //TgDesktopUtils.TgClient.UpdateStateMessage($"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}");
         switch (what)
         {
             case "api_hash":
@@ -198,29 +193,57 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         Password = string.Empty;
     }
 
+    // ClientConnectCommand
     [RelayCommand]
-    public async Task OnClientConnectAsync()
+    public async Task OnClientConnectAsync(TgSqlTableProxyViewModel? proxyVm = null)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-        TgDesktopUtils.RunAction(this, () =>
-        {
-            if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid) return;
-            TgDesktopUtils.TgClient.ConnectSessionDesktop(ProxyVm.Proxy);
-        });
-    }
-
-    [RelayCommand]
-    public async Task OnClientDisconnectAsync()
-    {
-        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunActionAsync(this, () =>
         {
             if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid)
                 return;
-            TgDesktopUtils.TgClient.Disconnect();
-            TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgLocale.MenuClientIsNotReady);
-        });
+            TgDesktopUtils.TgClient.ConnectSessionDesktop(proxyVm ?? ProxyVm);
+        }, false).ConfigureAwait(false);
     }
 
+    // ClientDisconnectCommand
+    [RelayCommand]
+    public async Task OnClientDisconnectAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            TgDesktopUtils.TgClient.Disconnect();
+        }, false).ConfigureAwait(false);
+    }
+
+    // AppSaveCommand
+    [RelayCommand]
+    public async Task OnAppSaveAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            ContextManager.AppRepository.Save(AppVm.App);
+        }, false).ConfigureAwait(false);
+    }
+
+    // AppClearCommand
+    [RelayCommand]
+    public async Task OnAppClearAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            AppVm.App = ContextManager.AppRepository.GetNew();
+        }, false).ConfigureAwait(true);
+    }
+
+    // AppLoadCommand
+    [RelayCommand]
+    public async Task OnAppLoadAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            AppVm.App = ContextManager.AppRepository.GetFirst();
+        }, false).ConfigureAwait(false);
+    }
+    
     #endregion
 }

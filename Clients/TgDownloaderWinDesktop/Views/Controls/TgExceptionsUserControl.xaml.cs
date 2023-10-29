@@ -12,9 +12,6 @@ public sealed partial class TgExceptionsUserControl : TgUserControlViewBase
 
 	public TgExceptionsUserControl()
 	{
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.UserControl, UpdateUserControl);
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}

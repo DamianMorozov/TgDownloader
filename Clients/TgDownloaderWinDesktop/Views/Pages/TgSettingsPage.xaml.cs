@@ -10,9 +10,6 @@ public partial class TgSettingsPage
 {
 	public TgSettingsPage()
 	{
-		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgSettingsVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgSettingsVm.OnNavigatedTo();
 		InitializeComponent();
 	}

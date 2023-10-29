@@ -200,7 +200,7 @@ internal partial class TgMenuHelper
     {
         tgDownloadSettings.UpdateSourceWithSettings();
 		// Refresh.
-		TgClient.UpdateStateClient(TgLocale.SettingsSource);
+		TgClient.UpdateStateMessage(TgLocale.SettingsSource);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)

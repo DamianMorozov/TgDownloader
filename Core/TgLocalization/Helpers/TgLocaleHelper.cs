@@ -56,17 +56,22 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Client
 
+    public string MenuClientMessage => "Message";
     public string MenuClientProxyIsUsage => "Proxy usage";
+    public string MenuClientSource => "Source";
 	public string MenuClientApiHash => "API hash";
 	public string MenuClientApiId => "API ID";
 	public string MenuClientClearSettings => "Clear settings";
 	public string MenuClientConnect => "Connect the client to TG server";
+	public string MenuClientConnectStatus => "Connect status";
 	public string MenuClientDisconnect => "Disconnect the client from TG server";
 	public string MenuClientException => "Client exception";
 	public string MenuClientFirstName => "First name";
+	public string MenuClientIsConnected => "Client is connected";
+	public string MenuClientIsDisconnected => "Client is disconnected";
 	public string MenuClientIsNotReady => "Client is not ready";
 	public string MenuClientIsQuery => "Client is query";
-	public string MenuClientIsReady => "Client ready";
+	public string MenuClientIsReady => "Client is ready";
 	public string MenuClientLastName => "Last name";
 	public string MenuClientLoadAllFromStorage => "Load all from storage";
 	public string MenuClientNotifications => "Notifications";
@@ -74,6 +79,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuClientPhoneNumber => "Phone number";
 	public string MenuClientProgressStatus => "Progress status";
 	public string MenuClientProxy => "Proxy";
+	public string MenuClientProxyStatus => "Proxy status";
 	public string MenuClientSaveToStorage => "Save to storage";
 	public string MenuClientTelegramQuery => "Telegram query";
 	public string MenuClientVerificationCode => "Verification code";
@@ -99,11 +105,11 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuSetProxy => "Setup proxy";
 	public string MenuViewSources => "View sources";
 
-	#endregion
+    #endregion
 
-	#region Filters
+    #region Filters
 
-	public string MenuFiltersAdd => "Add filter";
+    public string MenuFiltersAdd => "Add filter";
 	public string MenuFiltersAllCount => "All filters count";
 	public string MenuFiltersEnabledCount => "Enabled filters count";
 	public string MenuFiltersEdit => "Edit filter";
@@ -136,6 +142,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuMainDownload => "Download";
 	public string MenuMainExit => "Exit";
 	public string MenuMainProxies => "Proxies";
+	public string MenuMainSettings => "Settings";
 	public string MenuMainFilters => "Filters";
 	public string MenuMainReset => "Reset";
 	public string MenuMainReturn => "Return";
@@ -172,11 +179,12 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Public and private fields, properties, constructor
 
+	public string Clear => "Clear";
 	public string ClearView => "Clear view";
 	public string DirectoryCreate => "Create directory";
 	public string DirectoryCreateIsException(Exception ex) => $"Exception of create directory: {(ex.InnerException is null ? ex.Message : ex.Message + $" | {ex.InnerException.Message}")}";
 	public string DirectoryDestType => "Type destination directory";
-	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "Th directory is not exists!" : $"The directory \"{dir}\" is not exists!";
+	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "The directory is not exists!" : $"The directory \"{dir}\" is not exists!";
 	public string Empty => "<Empty>";
 	public string FileIsAlreadyExists => "File is already exists!";
 	public string FileIsAlreadyExistsSpecify(string file) => $"File \"{file}\" is already exists!";
@@ -191,23 +199,18 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FileStorageName => "Storage file name";
 	public string FileStorageSetDefaultName(string fileName) => $"Set default file name '{fileName}'";
 	public string FileStorageTablesExists => "Tables are exists";
-	public string Load=> "Load";
-	public string LoadStorage => "Load Storage";
-	public string UpdateFromStorage => "Update from Storage";
-	public string LoadTelegram => "Load Telegram";
-	public string LoadOnline => "Load online";
+	public string GetFromStorage => "Get from Storage";
+	public string GetFromTelegram => "Get from Telegram";
 	public string GetSources => "Get sources";
-	public string Scan => "Scan";
-	public string Update => "Update";
-	public string UpdateOnline => "Update online";
+	public string Load=> "Load";
 	public string MoveUpDown => "(Move up and down to switch select)";
 	public string Save => "Save";
 	public string SaveToStorage=> "Save to Storage";
-	public string Settings => "Settings";
 	public string SettingCheck => "Check";
 	public string SettingIsDisabled => "Setting is disabled";
 	public string SettingIsEnabled => "Setting is enabled";
 	public string SettingName => "Setting";
+	public string Settings => "Settings";
 	public string SettingsDtChanged => "Changed";
 	public string SettingsIsNeedSetup => "Something is need setup";
 	public string SettingsIsOk => "Everything is ok";
@@ -218,14 +221,14 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string StatusFinish(Stopwatch sw) => $"Job is finished. Elapsed time: {sw.Elapsed}.";
 	public string StatusInnerException => "Inner exception";
 	public string TablesAppsException => "Table APPS exception!";
+	public string TablesAreExists => "Tables are exists";
+	public string TablesAreNotExists => "Tables are not exists";
 	public string TablesDocumentsException => "Table DOCUMENTS exception!";
 	public string TablesFiltersException => "Table FILTERS exception!";
 	public string TablesMessagesException => "Table MESSAGES exception!";
 	public string TablesProxiesException => "Table PROXIES exception!";
 	public string TablesSourcesException => "Table SOURCES exception!";
 	public string TablesVersionsException => "Table VERSIONS exception!";
-	public string TablesAreExists => "Tables are exists";
-	public string TablesAreNotExists => "Tables are not exists";
 	public string TgClientException => "Client exception";
 	public string TgClientProxyException => "Proxy exception";
 	public string TgClientProxyHostName => "Proxy hostname";
@@ -243,6 +246,9 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string TgGetInfoComplete => "Get TG info was complete";
 	public string TgMustClientConnect => "You must connect the client before";
 	public string TgMustSetSettings => "You must setup the settings before";
+	public string TgSettingDirectory => "Directory";
+    public string TgDirectoryIsExists => "The directory is exist";
+    public string TgDirectoryIsNotExists => "The directory is not exists";
 	public string TgSettings => "TG settings";
 	public string TgSettingsDestDirectory => "Destination";
 	public string TgSettingsIsJoinFileNameWithMessageId => "Join message ID";
@@ -263,6 +269,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string TypeTgProxySecret => "Type the secret";
 	public string TypeTgProxyType => "Type the proxy type";
 	public string TypeTgSourceFirstId => "Type the source first ID";
+	public string Update => "Update";
+	public string UpdateFromTelegram => "Update from Telegram";
 
 	#endregion
 
@@ -290,6 +298,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	#region Public and private methods
 
 	public string TableSources => "Sources";
+	public string TableSource => "Item source";
 
 	#endregion
 
@@ -299,11 +308,14 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldAll => "All";
 	public string FieldCount => "Count";
 	public string FieldDb => "DB";
+	public string FieldChanged => "Changed";
 	public string FieldDir => "Dir";
 	public string FieldEdit => "Edit";
 	public string FieldFirstId => "First ID";
+	public string FieldLastId => "Last ID";
 	public string FieldId => "ID";
 	public string FieldIsAutoUpdate => "Auto-update";
+	public string FieldIsReady => "Is ready";
 	public string FieldIsCountComplete => "Count complete";
 	public string FieldLinkTelegramApps => "https://my.telegram.org/apps/";
 	public string FieldLinkTgDownloader => "https://github.com/DamianMorozov/TgDownloader";
@@ -311,6 +323,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldLoad => "Load";
 	public string FieldPercent => "Percent";
 	public string FieldPercentSpec => "%";
+	public string FieldSetting => "Setting";
 	public string FieldSourceId => "Source ID";
 	public string FieldTgDownloader => "TgDownloader on GitHub";
 	public string FieldTitle => "Title";
@@ -328,6 +341,20 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	#region System
 
     public string UseOverrideMethod => "Use override method!";
+
+	#endregion
+
+	#region Proxies
+
+    public string ProxiesDelete => "Delete";
+    public string ProxiesHost => "Host";
+    public string ProxiesPort => "Port";
+    public string ProxiesType => "Type";
+    public string ProxiesUserName => "User name";
+    public string ProxiesUserPassword => "Password";
+    public string ProxiesUserSecret => "Secret";
+    public string ProxyIsConnected => "Proxy is connected";
+    public string ProxyIsDisconnect => "Proxy is disconnected";
 
     #endregion
 }

@@ -12,9 +12,6 @@ public partial class TgFiltersPage
 
 	public TgFiltersPage()
 	{
-		TgDesktopUtils.TgFiltersVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgFiltersVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgFiltersVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgFiltersVm.OnNavigatedTo();
 		InitializeComponent();
 	}

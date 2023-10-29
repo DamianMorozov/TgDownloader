@@ -19,29 +19,29 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
 		//
 	}
 
-	#endregion
+    #endregion
 
-	#region Public and private methods
+    #region Public and private methods
 
-	[RelayCommand]
+    // SettingsDefaultCommand
+    [RelayCommand]
 	public async Task OnSettingsDefaultAsync()
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, () =>
-		{
-				TgAppSettings.DefaultXmlSettings();
-		});
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            TgAppSettings.DefaultXmlSettings();
+        }, false).ConfigureAwait(false);
 	}
 
-[RelayCommand]
+    // SettingsSaveCommand
+    [RelayCommand]
 	public async Task OnSettingsSaveAsync()
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, () =>
-		{
-				TgAppSettings.StoreXmlSettingsUnsafe();
-		TgAppSettings.LoadXmlSettings();
-		});
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            TgAppSettings.StoreXmlSettingsUnsafe();
+            TgAppSettings.LoadXmlSettings();
+        }, false).ConfigureAwait(false);
 	}
 
 	#endregion

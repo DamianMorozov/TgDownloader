@@ -38,7 +38,7 @@ public partial class App
 			// Main window with navigation
 			services.AddScoped<INavigationWindow, MainWindow>();
 			services.AddScoped<TgMainWindowViewModel>();
-			// Views and ViewModels
+            // Views and ViewModels
 			services.AddTransient<TgDashboardPage>();
 			services.AddTransient<TgDashboardViewModel>();
 			services.AddTransient<TgSettingsPage>();
@@ -49,8 +49,10 @@ public partial class App
 			services.AddTransient<TgClientViewModel>();
 			services.AddTransient<TgProxiesPage>();
 			services.AddTransient<TgProxiesViewModel>();
+            services.AddTransient<TgItemSourcePage>();
+            services.AddTransient<TgItemSourceViewModel>();
 			// Configuration
-			services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
+            services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
 		}).Build();
 
 	/// <summary>
@@ -69,7 +71,7 @@ public partial class App
 		TgAsyncUtils.SetAppType(TgEnumAppType.Async);
 		ContextManager.CreateOrConnectDb(true);
 		await Host.StartAsync().ConfigureAwait(false);
-		TgDesktopUtils.SetClientActions();
+		TgDesktopUtils.SetupClient();
 	}
 
 	/// <summary>

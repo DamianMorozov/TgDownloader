@@ -36,22 +36,25 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
 	}
 
 	[RelayCommand]
-	public void OnChangeTheme(string parameter)
+	public async Task OnChangeThemeAsync(string parameter)
 	{
-		switch (parameter)
-		{
-			case "theme_light":
-				if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Light)
-					break;
-				Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
-				CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
-				break;
-			default:
-				if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
-					break;
-				Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
-				CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
-				break;
-		}
-	}
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            switch (parameter)
+            {
+                case "theme_light":
+                    if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Light)
+                        break;
+                    Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
+                    CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
+                    break;
+                default:
+                    if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
+                        break;
+                    Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
+                    CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
+                    break;
+            }
+        }, false).ConfigureAwait(false);
+    }
 }

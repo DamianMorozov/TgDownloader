@@ -12,9 +12,6 @@ public partial class TgProxiesPage
 
 	public TgProxiesPage()
 	{
-		TgDesktopUtils.TgProxiesVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgProxiesVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgProxiesVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgProxiesVm.OnNavigatedTo();
 		InitializeComponent();
 	}

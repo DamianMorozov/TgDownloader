@@ -12,9 +12,6 @@ public partial class TgClientPage
 
 	public TgClientPage()
 	{
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}

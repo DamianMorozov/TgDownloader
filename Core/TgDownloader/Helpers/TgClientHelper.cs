@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Diagnostics;
+
 namespace TgDownloader.Helpers;
 
 /// <summary>
@@ -27,6 +29,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     public TgExceptionModel ClientException { get; private set; }
     public TgExceptionModel ProxyException { get; private set; }
     public bool IsReady { get; private set; }
+    public bool IsNotReady => !IsReady;
     public bool IsProxyUsage { get; private set; }
     public User? Me { get; set; }
     public Dictionary<long, ChatBase> DicChatsAll { get; private set; }
@@ -41,12 +44,14 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     private IEnumerable<TgSqlTableFilterModel> Filters { get; set; }
     private object Locker { get; }
 
-    public Action<string> UpdateTitle { get; set; }
-    public Action<string> UpdateStateClient { get; set; }
-    public Action<string, int, string, string> UpdateStateException { get; set; }
-    public Action<long, int, string> UpdateStateSource { get; set; }
-    public Action AfterClientConnect { get; set; }
-    public Func<string, string?>? GetClientDesktopConfig { get; set; }
+    public Action<string> UpdateTitle { get; private set; }
+    public Action<string> UpdateStateConnect { get; private set; }
+    public Action<string> UpdateStateProxy { get; private set; }
+    public Action<string> UpdateStateMessage { get; private set; }
+    public Action<long, int, string> UpdateStateSource { get; private set; }
+    public Action<string, int, string, string> UpdateStateException { get; private set; }
+    public Action AfterClientConnect { get; private set; }
+    public Func<string, string?> GetClientDesktopConfig { get; private set; }
 
     public TgClientHelper()
     {
@@ -64,15 +69,21 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         Locker = new();
 
         UpdateTitle = _ => { };
-        UpdateStateClient = _ => { };
+        UpdateStateConnect = _ => { };
+        UpdateStateProxy = _ => { };
+        UpdateStateMessage = _ => { };
         UpdateStateException = (_, _, _, _) => { };
         UpdateStateSource = (_, _, _) => { };
         AfterClientConnect = () => { };
+        GetClientDesktopConfig = what => null;
 
+#if DEBUG
         // TgLog to VS Output debugging pane in addition.
-        //WTelegram.Helpers.Log += (i, str) => Debug.WriteLine($"{i} | {str}");
+        WTelegram.Helpers.Log = (i, str) => Debug.WriteLine($"{i} | {str}");
+#else
         // Disable logging in Console.
         WTelegram.Helpers.Log = (_, _) => { };
+#endif
     }
 
     #endregion
@@ -81,21 +92,57 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public string ToDebugString() => $"{TgCommonUtils.GetIsReady(IsReady)} | {Me}";
 
+    public void SetupActions(Action<string> updateStateConnect, Action<string> updateStateProxy,
+        Action<string> updateStateMessage, Action<long, int, string> updateStateSource,
+        Action<string, int, string, string> updateStateException, 
+        Action afterClientConnect, Func<string, string?> getClientDesktopConfig)
+    {
+        UpdateStateConnect = updateStateConnect;
+        UpdateStateProxy = updateStateProxy;
+        UpdateStateMessage = updateStateMessage;
+        UpdateStateSource = updateStateSource;
+        UpdateStateException = updateStateException;
+        AfterClientConnect = afterClientConnect;
+        GetClientDesktopConfig = getClientDesktopConfig;
+    }
+
+    public void SetupActions(Action<string> updateTitle, Action<string> updateStateMessage, Action<long, int, string> updateStateSource)
+    {
+        UpdateTitle = updateTitle;
+        UpdateStateConnect = UpdateStateMessage;
+        UpdateStateProxy = UpdateStateMessage;
+        UpdateStateMessage = updateStateMessage;
+        UpdateStateSource = updateStateSource;
+    }
+
     public bool CheckClientIsReady()
     {
+        bool ResultDisconnected()
+        {
+            UpdateStateSource(0, 0, string.Empty);
+            UpdateStateMessage(string.Empty);
+            UpdateStateProxy(TgLocale.ProxyIsDisconnect);
+            UpdateStateConnect(TgLocale.MenuClientIsDisconnected);
+            return IsReady = false;
+        }
+        bool ResultConnected()
+        {
+            UpdateStateConnect(TgLocale.MenuClientIsConnected);
+            return IsReady = true;
+        }
         bool result = Client is { Disconnected: false };
-        if (!result)
-            return IsReady = false;
+        if (!result) 
+            return ResultDisconnected();
         if (!TgAppSettings.AppXml.IsExistsFileSession)
-            return IsReady = false;
+            return ResultDisconnected();
         if (!(!TgAppSettings.AppXml.IsUseProxy ||
               (TgAppSettings.AppXml.IsUseProxy &&
                (ContextManager.ProxyRepository.Get(ContextManager.AppRepository.GetFirstProxyUid) ??
                 ContextManager.ProxyRepository.GetNew()).IsExists)))
-            return IsReady = false;
+            return ResultDisconnected();
         if (ProxyException.IsExists || ClientException.IsExists)
-            return IsReady = false;
-        return IsReady = true;
+            return ResultDisconnected();
+        return ResultConnected();
     }
 
     public void ConnectSessionConsole(Func<string, string?>? config, TgSqlTableProxyModel proxy)
@@ -107,37 +154,33 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         Client = new(config);
         Client.OnUpdate += Client_OnUpdateAsync;
         Client.OnOther += Client_OnOtherAsync;
-        ConnectThroughProxy(proxy);
+        ConnectThroughProxy(proxy, false);
 
         LoginUserConsole(true);
     }
 
-    public void ConnectSessionDesktop(TgSqlTableProxyModel proxy)
+    public void ConnectSessionDesktop(TgSqlTableProxyViewModel proxyVm)
     {
         if (IsReady) return;
         Disconnect();
 
         Client = new(GetClientDesktopConfig);
-        ConnectThroughProxy(proxy);
+        ConnectThroughProxy(proxyVm.Proxy, true);
         Client.OnUpdate += Client_OnUpdateAsync;
         Client.OnOther += Client_OnOtherAsync;
 
         LoginUserDesktop(true);
     }
 
-    public void ConnectThroughProxy(TgSqlTableProxyModel proxy)
+    public void ConnectThroughProxy(TgSqlTableProxyModel proxy, bool isDesktop)
     {
         IsProxyUsage = false;
-        if (!CheckClientIsReady())
-            return;
-        if (Client is null)
-            return;
-        if (!TgAppSettings.AppXml.IsUseProxy && proxy.IsNotExists)
-            return;
-        if (Equals(proxy.Type, TgEnumProxyType.None))
-            return;
-        if (!TgSqlUtils.GetValidXpLite(proxy).IsValid)
-            return;
+        if (!CheckClientIsReady()) return;
+        if (Client is null) return;
+        if (proxy.IsNotExists) return;
+        if (!isDesktop && !TgAppSettings.AppXml.IsUseProxy) return;
+        if (Equals(proxy.Type, TgEnumProxyType.None)) return;
+        if (!TgSqlUtils.GetValidXpLite(proxy).IsValid) return;
 
         try
         {
@@ -151,6 +194,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                     {
                         Socks5ProxyClient proxyClient = string.IsNullOrEmpty(proxy.UserName) && string.IsNullOrEmpty(proxy.Password)
                             ? new(proxy.HostName, proxy.Port) : new(proxy.HostName, proxy.Port, proxy.UserName, proxy.Password);
+                        UpdateStateProxy(TgLocale.ProxyIsConnected);
                         return Task.FromResult(proxyClient.CreateConnection(address, port));
                     };
                     break;
@@ -158,6 +202,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                     Client.MTProxyUrl = string.IsNullOrEmpty(proxy.Secret)
                         ? $"https://t.me/proxy?server={proxy.HostName}&port={proxy.Port}"
                         : $"https://t.me/proxy?server={proxy.HostName}&port={proxy.Port}&secret={proxy.Secret}";
+                    UpdateStateProxy(TgLocale.ProxyIsConnected);
                     break;
             }
         }
@@ -201,8 +246,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         Messages_Chats? messagesChats = null;
         if (Me is not null)
-            messagesChats = TgAsyncUtils.GetTaskResult<Messages_Chats?>(() =>
-        Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceVm.SourceId, Me.access_hash)));
+            messagesChats = TgAsyncUtils.GetFuncResult<Messages_Chats?>(() =>
+                Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceVm.SourceId, Me.access_hash)));
         if (messagesChats is not null)
         {
             foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
@@ -239,7 +284,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         Messages_Chats? messagesChats = null;
         if (Me is not null)
-            messagesChats = TgAsyncUtils.GetTaskResult(Client.Channels_GetGroupsForDiscussion);
+            messagesChats = TgAsyncUtils.GetFuncResult(Client.Channels_GetGroupsForDiscussion);
 
         if (messagesChats is not null)
             foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
@@ -261,7 +306,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             return null;
         Bots_BotInfo? botInfo = null;
         if (Me is not null)
-            botInfo = TgAsyncUtils.GetTaskResult(() =>
+            botInfo = TgAsyncUtils.GetFuncResult(() =>
                 Client.Bots_GetBotInfo("en", new InputUser(tgDownloadSettings.SourceVm.SourceId, 0)));
         return botInfo;
     }
@@ -283,7 +328,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             case true when Client is not null:
             {
-                Messages_Chats messages = TgAsyncUtils.GetTaskResult(Client.Messages_GetAllChats);
+                Messages_Chats messages = TgAsyncUtils.GetFuncResult(Client.Messages_GetAllChats);
                 DicChatsAll = messages.chats;
                 FillEnumerableChats(DicChatsAll);
                 return DicChatsAll;
@@ -298,7 +343,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         switch (IsReady)
         {
             case true when Client is not null:
-                Messages_Chats messages = TgAsyncUtils.GetTaskResult(Client.Messages_GetAllChats);
+                Messages_Chats messages = TgAsyncUtils.GetFuncResult(Client.Messages_GetAllChats);
                 DicChatsAll = messages.chats;
                 FillEnumerableChats(DicChatsAll);
                 break;
@@ -312,7 +357,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             case true when Client is { }:
             {
-                Messages_Dialogs messages = TgAsyncUtils.GetTaskResult(() => Client.Messages_GetAllDialogs());
+                Messages_Dialogs messages = TgAsyncUtils.GetFuncResult(() => Client.Messages_GetAllDialogs());
                 DicChatsAll = messages.chats;
                 FillEnumerableChats(DicChatsAll);
                 return messages.chats;
@@ -457,133 +502,133 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             case UpdateNewChannelMessage updateNewChannelMessage:
                 //if (channel is not null && updateNewChannelMessage.message.Peer.ID.Equals(channel.ID))
-                UpdateStateClient($"New channel message [{updateNewChannelMessage}]{channelLabel}");
+                UpdateStateMessage($"New channel message [{updateNewChannelMessage}]{channelLabel}");
                 break;
             case UpdateNewMessage updateNewMessage:
-                UpdateStateClient($"New message [{updateNewMessage}]{channelLabel}");
+                UpdateStateMessage($"New message [{updateNewMessage}]{channelLabel}");
                 break;
             case UpdateMessageID updateMessageId:
-                UpdateStateClient($"Message ID [{updateMessageId}]{channelLabel}");
+                UpdateStateMessage($"Message ID [{updateMessageId}]{channelLabel}");
                 break;
             case UpdateDeleteChannelMessages updateDeleteChannelMessages:
-                UpdateStateClient($"Delete channel messages [{string.Join(", ", updateDeleteChannelMessages.messages)}]{channelLabel}");
+                UpdateStateMessage($"Delete channel messages [{string.Join(", ", updateDeleteChannelMessages.messages)}]{channelLabel}");
                 break;
             case UpdateDeleteMessages updateDeleteMessages:
-                UpdateStateClient($"Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
+                UpdateStateMessage($"Delete messages [{string.Join(", ", updateDeleteMessages.messages)}]{channelLabel}");
                 break;
             case UpdateChatUserTyping updateChatUserTyping:
-                UpdateStateClient($"Chat user typing [{updateChatUserTyping}]{channelLabel}");
+                UpdateStateMessage($"Chat user typing [{updateChatUserTyping}]{channelLabel}");
                 break;
             case UpdateChatParticipants { participants: ChatParticipants chatParticipants }:
-                UpdateStateClient($"Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
+                UpdateStateMessage($"Chat participants [{chatParticipants.ChatId} | {string.Join(", ", chatParticipants.Participants.Length)}]{channelLabel}");
                 break;
             case UpdateUserStatus updateUserStatus:
-                UpdateStateClient($"User status [{updateUserStatus.user_id} | {updateUserStatus}]{channelLabel}");
+                UpdateStateMessage($"User status [{updateUserStatus.user_id} | {updateUserStatus}]{channelLabel}");
                 break;
             case UpdateUserName updateUserName:
-                UpdateStateClient($"User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
+                UpdateStateMessage($"User name [{updateUserName.user_id} | {string.Join(", ", updateUserName.usernames.Select(item => item.username))}]{channelLabel}");
                 break;
             case UpdateNewEncryptedMessage updateNewEncryptedMessage:
-                UpdateStateClient($"New encrypted message [{updateNewEncryptedMessage}]{channelLabel}");
+                UpdateStateMessage($"New encrypted message [{updateNewEncryptedMessage}]{channelLabel}");
                 break;
             case UpdateEncryptedChatTyping updateEncryptedChatTyping:
-                UpdateStateClient($"Encrypted chat typing [{updateEncryptedChatTyping}]{channelLabel}");
+                UpdateStateMessage($"Encrypted chat typing [{updateEncryptedChatTyping}]{channelLabel}");
                 break;
             case UpdateEncryption updateEncryption:
-                UpdateStateClient($"Encryption [{updateEncryption}]{channelLabel}");
+                UpdateStateMessage($"Encryption [{updateEncryption}]{channelLabel}");
                 break;
             case UpdateEncryptedMessagesRead updateEncryptedMessagesRead:
-                UpdateStateClient($"Encrypted message read [{updateEncryptedMessagesRead}]{channelLabel}");
+                UpdateStateMessage($"Encrypted message read [{updateEncryptedMessagesRead}]{channelLabel}");
                 break;
             case UpdateChatParticipantAdd updateChatParticipantAdd:
-                UpdateStateClient($"Chat participant add [{updateChatParticipantAdd}]{channelLabel}");
+                UpdateStateMessage($"Chat participant add [{updateChatParticipantAdd}]{channelLabel}");
                 break;
             case UpdateChatParticipantDelete updateChatParticipantDelete:
-                UpdateStateClient($"Chat participant delete [{updateChatParticipantDelete}]{channelLabel}");
+                UpdateStateMessage($"Chat participant delete [{updateChatParticipantDelete}]{channelLabel}");
                 break;
             case UpdateDcOptions updateDcOptions:
-                UpdateStateClient($"Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
+                UpdateStateMessage($"Dc options [{string.Join(", ", updateDcOptions.dc_options.Select(item => item.id))}]{channelLabel}");
                 break;
             case UpdateNotifySettings updateNotifySettings:
-                UpdateStateClient($"Notify settings [{updateNotifySettings}]{channelLabel}");
+                UpdateStateMessage($"Notify settings [{updateNotifySettings}]{channelLabel}");
                 break;
             case UpdateServiceNotification updateServiceNotification:
-                UpdateStateClient($"Service notification [{updateServiceNotification}]{channelLabel}");
+                UpdateStateMessage($"Service notification [{updateServiceNotification}]{channelLabel}");
                 break;
             case UpdatePrivacy updatePrivacy:
-                UpdateStateClient($"Privacy [{updatePrivacy}]{channelLabel}");
+                UpdateStateMessage($"Privacy [{updatePrivacy}]{channelLabel}");
                 break;
             case UpdateUserPhone updateUserPhone:
-                UpdateStateClient($"User phone [{updateUserPhone}]{channelLabel}");
+                UpdateStateMessage($"User phone [{updateUserPhone}]{channelLabel}");
                 break;
             case UpdateReadHistoryInbox updateReadHistoryInbox:
-                UpdateStateClient($"Read history inbox [{updateReadHistoryInbox}]{channelLabel}");
+                UpdateStateMessage($"Read history inbox [{updateReadHistoryInbox}]{channelLabel}");
                 break;
             case UpdateReadHistoryOutbox updateReadHistoryOutbox:
-                UpdateStateClient($"Read history outbox [{updateReadHistoryOutbox}]{channelLabel}");
+                UpdateStateMessage($"Read history outbox [{updateReadHistoryOutbox}]{channelLabel}");
                 break;
             case UpdateWebPage updateWebPage:
-                UpdateStateClient($"Web page [{updateWebPage}]{channelLabel}");
+                UpdateStateMessage($"Web page [{updateWebPage}]{channelLabel}");
                 break;
             case UpdateReadMessagesContents updateReadMessagesContents:
-                UpdateStateClient($"Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
+                UpdateStateMessage($"Read messages contents [{string.Join(", ", updateReadMessagesContents.messages.Select(item => item.ToString()))}]{channelLabel}");
                 break;
             case UpdateEditChannelMessage updateEditChannelMessage:
-                UpdateStateClient($"Edit channel message [{updateEditChannelMessage}]{channelLabel}");
+                UpdateStateMessage($"Edit channel message [{updateEditChannelMessage}]{channelLabel}");
                 break;
             case UpdateEditMessage updateEditMessage:
-                UpdateStateClient($"Edit message [{updateEditMessage}]{channelLabel}");
+                UpdateStateMessage($"Edit message [{updateEditMessage}]{channelLabel}");
                 break;
             case UpdateUserTyping updateUserTyping:
-                UpdateStateClient($"User typing [{updateUserTyping}]{channelLabel}");
+                UpdateStateMessage($"User typing [{updateUserTyping}]{channelLabel}");
                 break;
             case UpdateChannelMessageViews updateChannelMessageViews:
-                UpdateStateClient($"Channel message views [{updateChannelMessageViews}]{channelLabel}");
+                UpdateStateMessage($"Channel message views [{updateChannelMessageViews}]{channelLabel}");
                 break;
             case UpdateChannel updateChannel:
-                UpdateStateClient($"Channel [{updateChannel}]");
+                UpdateStateMessage($"Channel [{updateChannel}]");
                 break;
             case UpdateChannelReadMessagesContents updateChannelReadMessages:
-                UpdateStateClient($"Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
+                UpdateStateMessage($"Channel read messages [{string.Join(", ", updateChannelReadMessages.messages)}]{channelLabel}");
                 break;
             case UpdateChannelUserTyping updateChannelUserTyping:
-                UpdateStateClient($"Channel user typing [{updateChannelUserTyping}]{channelLabel}");
+                UpdateStateMessage($"Channel user typing [{updateChannelUserTyping}]{channelLabel}");
                 break;
             case UpdateMessagePoll updateMessagePoll:
-                UpdateStateClient($"Message poll [{updateMessagePoll}]{channelLabel}");
+                UpdateStateMessage($"Message poll [{updateMessagePoll}]{channelLabel}");
                 break;
             case UpdateChannelTooLong updateChannelTooLong:
-                UpdateStateClient($"Channel too long [{updateChannelTooLong}]{channelLabel}");
+                UpdateStateMessage($"Channel too long [{updateChannelTooLong}]{channelLabel}");
                 break;
             case UpdateReadChannelInbox updateReadChannelInbox:
-                UpdateStateClient($"Channel inbox [{updateReadChannelInbox}]{channelLabel}");
+                UpdateStateMessage($"Channel inbox [{updateReadChannelInbox}]{channelLabel}");
                 break;
             case UpdateChatParticipantAdmin updateChatParticipantAdmin:
-                UpdateStateClient($"Chat participant admin[{updateChatParticipantAdmin}]{channelLabel}");
+                UpdateStateMessage($"Chat participant admin[{updateChatParticipantAdmin}]{channelLabel}");
                 break;
             case UpdateNewStickerSet updateNewStickerSet:
-                UpdateStateClient($"New sticker set [{updateNewStickerSet}]{channelLabel}");
+                UpdateStateMessage($"New sticker set [{updateNewStickerSet}]{channelLabel}");
                 break;
             case UpdateStickerSetsOrder updateStickerSetsOrder:
-                UpdateStateClient($"Sticker sets order [{updateStickerSetsOrder}]{channelLabel}");
+                UpdateStateMessage($"Sticker sets order [{updateStickerSetsOrder}]{channelLabel}");
                 break;
             case UpdateStickerSets updateStickerSets:
-                UpdateStateClient($"Sticker sets [{updateStickerSets}]{channelLabel}");
+                UpdateStateMessage($"Sticker sets [{updateStickerSets}]{channelLabel}");
                 break;
             case UpdateSavedGifs updateSavedGifs:
-                UpdateStateClient($"SavedGifs [{updateSavedGifs}]{channelLabel}");
+                UpdateStateMessage($"SavedGifs [{updateSavedGifs}]{channelLabel}");
                 break;
             case UpdateBotInlineQuery updateBotInlineQuery:
-                UpdateStateClient($"Bot inline query [{updateBotInlineQuery}]{channelLabel}");
+                UpdateStateMessage($"Bot inline query [{updateBotInlineQuery}]{channelLabel}");
                 break;
             case UpdateBotInlineSend updateBotInlineSend:
-                UpdateStateClient($"Bot inline send [{updateBotInlineSend}]{channelLabel}");
+                UpdateStateMessage($"Bot inline send [{updateBotInlineSend}]{channelLabel}");
                 break;
             case UpdateBotCallbackQuery updateBotCallbackQuery:
-                UpdateStateClient($"Bot cCallback query [{updateBotCallbackQuery}]{channelLabel}");
+                UpdateStateMessage($"Bot cCallback query [{updateBotCallbackQuery}]{channelLabel}");
                 break;
             case UpdateInlineBotCallbackQuery updateInlineBotCallbackQuery:
-                UpdateStateClient($"Inline bot callback query [{updateInlineBotCallbackQuery}]{channelLabel}");
+                UpdateStateMessage($"Inline bot callback query [{updateInlineBotCallbackQuery}]{channelLabel}");
                 break;
         }
     }
@@ -699,7 +744,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         Messages_ChatFull? chatFull = null;
         try
         {
-            chatFull = TgAsyncUtils.GetTaskResult(() => Client.Channels_GetFullChannel(channel));
+            chatFull = TgAsyncUtils.GetFuncResult(() => Client.Channels_GetFullChannel(channel));
             if (isSave)
                 ContextManager.SourceRepository.Save(new() { Id = channel.id, UserName = channel.username, Title = channel.title });
             if (!isSilent)
@@ -727,7 +772,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             return chatFull;
         try
         {
-            chatFull = TgAsyncUtils.GetTaskResult(() => Client.GetFullChat(chatBase));
+            chatFull = TgAsyncUtils.GetFuncResult(() => Client.GetFullChat(chatBase));
             if (!isSilent)
             {
                 if (chatFull.full_chat is ChannelFull channelFull)
@@ -765,7 +810,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     {
         if (chatBase.ID is 0 || chatBase is not Channel channel)
             return false;
-        return TgAsyncUtils.GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
+        return TgAsyncUtils.GetFuncResult(() => Client.Channels_ReadMessageContents(channel));
     }
 
     public int GetChannelMessageIdWithLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase,
@@ -799,10 +844,10 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         if (chatBase is Channel channel)
         {
-            Messages_ChatFull fullChannel = TgAsyncUtils.GetTaskResult(() => Client.Channels_GetFullChannel(channel));
+            Messages_ChatFull fullChannel = TgAsyncUtils.GetFuncResult(() => Client.Channels_GetFullChannel(channel));
             if (fullChannel.full_chat is not ChannelFull channelFull)
                 return 0;
-            bool isAccessToMessages = TgAsyncUtils.GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
+            bool isAccessToMessages = TgAsyncUtils.GetFuncResult(() => Client.Channels_ReadMessageContents(channel));
             if (isAccessToMessages)
             {
                 switch (position)
@@ -818,7 +863,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         }
         else
         {
-            Messages_ChatFull fullChannel = TgAsyncUtils.GetTaskResult(() => Client.GetFullChat(chatBase));
+            Messages_ChatFull fullChannel = TgAsyncUtils.GetFuncResult(() => Client.GetFullChat(chatBase));
             switch (position)
             {
                 case TgEnumPosition.First:
@@ -838,7 +883,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     public int GetChannelMessageIdLastWithoutLock(TgDownloadSettingsModel? tgDownloadSettings, ChatBase chatBase) =>
         GetChannelMessageIdWithoutLock(tgDownloadSettings, chatBase, TgEnumPosition.Last);
 
-    private int GetChannelMessageIdLastCore(ChatFullBase chatFullBase) =>
+    private int GetChannelMessageIdLastCore(ChatFullBase chatFullBase) => 
         chatFullBase is ChannelFull channelFull ? channelFull.read_inbox_max_id : 0;
 
     public void SetChannelMessageIdFirstWithLock(TgDownloadSettingsModel tgDownloadSettings, ChatBase chatBase) =>
@@ -864,8 +909,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 inputMessages[i] = offset + i + 1;
             }
             tgDownloadSettings.SourceVm.SourceFirstId = offset;
-            UpdateStateClient($"Read from {offset} to {offset + partition} messages");
-            Messages_MessagesBase? messages = TgAsyncUtils.GetTaskResult(() =>
+            UpdateStateMessage($"Read from {offset} to {offset + partition} messages");
+            Messages_MessagesBase? messages = TgAsyncUtils.GetFuncResult(() =>
                 Client.Channels_GetMessages(chatBase as Channel, inputMessages));
             for (int i = messages.Offset; i < messages.Count; i++)
             {
@@ -894,7 +939,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         if (result >= max)
             result = 1;
         tgDownloadSettings.SourceVm.SourceFirstId = result;
-        UpdateStateClient($"Get the first ID message '{result}' is complete.");
+        UpdateStateMessage($"Get the first ID message '{result}' is complete.");
         return result;
     }
 
@@ -985,11 +1030,11 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             switch (sourceType)
             {
                 case TgEnumSourceType.Chat:
-                    UpdateStateClient(TgLocale.CollectChats);
+                    UpdateStateMessage(TgLocale.CollectChats);
                     CollectAllChatsConsole();
                     break;
                 case TgEnumSourceType.Dialog:
-                    UpdateStateClient(TgLocale.CollectDialogs);
+                    UpdateStateMessage(TgLocale.CollectDialogs);
                     CollectAllDialogs();
                     break;
             }
@@ -1006,18 +1051,18 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                         int messagesCount = GetChannelMessageIdLastWithoutLock(tgDownloadSettings, channel);
                         if (channel.IsChannel)
                         {
-                            Messages_ChatFull? chatFull = TgAsyncUtils.GetTaskResult(() =>
+                            Messages_ChatFull? chatFull = TgAsyncUtils.GetFuncResult(() =>
                                 Client.Channels_GetFullChannel(channel));
                             if (chatFull?.full_chat is ChannelFull channelFull)
                             {
                                 UpdateSourceTg(channel, channelFull.about, messagesCount);
-                                UpdateStateClient($"{channel} | {messagesCount} | {TgDataFormatUtils.TrimStringEnd(channelFull.about)}");
+                                UpdateStateMessage($"{channel} | {messagesCount} | {TgDataFormatUtils.TrimStringEnd(channelFull.about)}");
                             }
                         }
                         else
                         {
                             UpdateSourceTg(channel, messagesCount);
-                            UpdateStateClient($"{channel} | {messagesCount}");
+                            UpdateStateMessage($"{channel} | {messagesCount}");
                         }
                     });
                 }
@@ -1034,7 +1079,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                     {
                         int messagesCount = GetChannelMessageIdLastWithoutLock(tgDownloadSettings, group);
                         UpdateSourceTg(group, messagesCount);
-                        UpdateStateClient($"{group} | {messagesCount}");
+                        UpdateStateMessage($"{group} | {messagesCount}");
                     });
                 }
             }
@@ -1049,11 +1094,11 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             switch (sourceType)
             {
                 case TgEnumSourceType.Chat:
-                    UpdateStateClient(TgLocale.CollectChats);
+                    UpdateStateMessage(TgLocale.CollectChats);
                     CollectAllChatsDesktopAsync(AfterCollectSources, afterScan);
                     break;
                 case TgEnumSourceType.Dialog:
-                    UpdateStateClient(TgLocale.CollectDialogs);
+                    UpdateStateMessage(TgLocale.CollectDialogs);
                     CollectAllDialogs();
                     break;
             }
@@ -1077,7 +1122,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                     source.Count = messagesCount;
                     if (channel.IsChannel)
                     {
-                        Messages_ChatFull chatFull = TgAsyncUtils.GetTaskResult(() => Client.Channels_GetFullChannel(channel));
+                        Messages_ChatFull chatFull = TgAsyncUtils.GetFuncResult(() => Client.Channels_GetFullChannel(channel));
                         if (chatFull.full_chat is ChannelFull channelFull)
                         {
                             source.About = channelFull.about;
@@ -1089,7 +1134,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 });
             }
             i++;
-            UpdateStateClient($"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
+            UpdateStateMessage($"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
             UpdateStateSource(channel.ID, 0, $"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
         }
 
@@ -1109,7 +1154,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 afterScan(new(source));
             });
             i++;
-            UpdateStateClient($"Read group '{group.ID}' | {group.IsActive} | {i} from {count}");
+            UpdateStateMessage($"Read group '{group.ID}' | {group.IsActive} | {i} from {count}");
             UpdateStateSource(group.ID, 0, $"Read channel '{group.ID}' | {group.IsActive} | {i} from {count}");
         }
     }
@@ -1137,15 +1182,15 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 {
                     bool isAccessToMessages = false;
                     if (channel is not null)
-                        isAccessToMessages = TgAsyncUtils.GetTaskResult(() => Client.Channels_ReadMessageContents(channel));
+                        isAccessToMessages = TgAsyncUtils.GetFuncResult(() => Client.Channels_ReadMessageContents(channel));
                     else if (chatBase is not null)
                         isAccessToMessages = true;
                     if (isAccessToMessages && Client is not null)
                     {
                         Messages_MessagesBase messages = channel is not null
-                            ? TgAsyncUtils.GetTaskResult(() =>
+                            ? TgAsyncUtils.GetFuncResult(() =>
                                 Client.Channels_GetMessages(channel, tgDownloadSettings.SourceVm.SourceFirstId))
-                            : TgAsyncUtils.GetTaskResult(() =>
+                            : TgAsyncUtils.GetFuncResult(() =>
                                 Client.GetMessages(chatBase, tgDownloadSettings.SourceVm.SourceFirstId));
                         UpdateTitle($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceLastId, tgDownloadSettings.SourceVm.SourceFirstId):#00.00} %");
                         foreach (MessageBase message in messages.Messages)
@@ -1157,8 +1202,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                             }
                             else
                             {
-                                UpdateStateClient("Message is not exists!");
-                                UpdateStateClient($"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.SourceId}!");
+                                UpdateStateMessage("Message is not exists!");
+                                UpdateStateMessage($"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.SourceId}!");
                                 UpdateStateSource(tgDownloadSettings.SourceVm.SourceId, message.ID,
                                     $"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.SourceId}!");
                             }
@@ -1188,7 +1233,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     {
         if (messageBase is not Message message)
         {
-            UpdateStateClient("Empty message");
+            UpdateStateMessage("Empty message");
             UpdateStateSource(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, "Empty message");
             return;
         }
@@ -1222,7 +1267,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                         DownloadDataCore(tgDownloadSettings, messageBase, null, photo);
                     }
                 }
-                UpdateStateClient("Read the message");
+                UpdateStateMessage("Read the message");
                 UpdateStateSource(tgDownloadSettings.SourceVm.SourceId, message.ID, "Read the message");
             }
         });
@@ -1411,7 +1456,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 {
                     if (document is { })
                     {
-                        TgAsyncUtils.GetTaskResult(() => Client.DownloadFileAsync(document, localFileStream));
+                        TgAsyncUtils.GetFuncResult(() => Client.DownloadFileAsync(document, localFileStream));
                         ContextManager.DocumentRepository.Save(document.ID, tgDownloadSettings.SourceVm.SourceId, messageBase.ID, fileName, files[i].Size, accessHash);
                     }
                     else if (photo is { })
@@ -1419,7 +1464,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                         //WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
                         //    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, 
                         //        size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
-                        TgAsyncUtils.GetTaskResult(() => Client.DownloadFileAsync(photo, localFileStream));
+                        TgAsyncUtils.GetFuncResult(() => Client.DownloadFileAsync(photo, localFileStream));
                     }
                 }
                 localFileStream.Close();
@@ -1459,7 +1504,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     //	return GetAccessHash(contactsResolved.peer.ID);
     //}
 
-    private long GetPeerId(string userName) => TgAsyncUtils.GetTaskResult(() => Client.Contacts_ResolveUsername(userName)).peer.ID;
+    private long GetPeerId(string userName) => TgAsyncUtils.GetFuncResult(() => Client.Contacts_ResolveUsername(userName)).peer.ID;
 
     // AUTH_KEY_DUPLICATED  | rpcException.Code, 406
     // "Could not read payload length : Connection shut down"
@@ -1481,8 +1526,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         try
         {
-            Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
-            UpdateStateClient(string.Empty);
+            Me = Client.LoginUserIfNeeded().Result;
+            UpdateStateMessage(string.Empty);
         }
         catch (Exception ex)
         {
@@ -1509,8 +1554,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         try
         {
-            Me = TgAsyncUtils.GetTaskResult(() => Client.LoginUserIfNeeded());
-            UpdateStateClient(string.Empty);
+            Me = TgAsyncUtils.GetFuncResult(() => Client.LoginUserIfNeeded());
+            UpdateStateMessage(string.Empty);
         }
         catch (Exception ex)
         {
@@ -1532,6 +1577,11 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public void Disconnect()
     {
+        IsProxyUsage = false;
+        UpdateStateSource(0, 0, string.Empty);
+        UpdateStateMessage(string.Empty);
+        UpdateStateProxy(TgLocale.ProxyIsDisconnect);
+        UpdateStateConnect(TgLocale.MenuClientIsDisconnected);
         if (Client is null) return;
         Client.OnUpdate -= Client_OnUpdateAsync;
         Client.OnOther -= Client_OnOtherAsync;
@@ -1572,7 +1622,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             if (ClientException.Message.Contains("You must connect to Telegram first"))
             {
                 LoginUserConsole();
-                UpdateStateClient("Reconnect client ...");
+                UpdateStateMessage("Reconnect client ...");
             }
         }
     }
@@ -1589,7 +1639,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             // CHANNEL_INVALID | BadMsgNotification 48
             if (ClientException.Message.Contains("You must connect to Telegram first"))
             {
-                UpdateStateClient("Reconnect client ...");
+                UpdateStateMessage("Reconnect client ...");
                 LoginUserDesktop();
             }
         }

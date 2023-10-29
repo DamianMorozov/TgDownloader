@@ -9,14 +9,16 @@ namespace TgStorage.Domain.Sources;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
 {
-	#region Public and private fields, properties, constructor
+    #region Public and private fields, properties, constructor
 
-	public TgSqlTableSourceModel Source { get; set; }
-	public int Progress => Source.FirstId * 100 / Source.Count;
-	public string ProgressString => $"{Progress:###.##} % | {Source.FirstId} from {Source.Count}";
-	public bool IsComplete => Source.FirstId >= Source.Count;
+    public TgSqlTableSourceModel Source { get; set; }
+    public int Progress => Source.FirstId * 100 / Source.Count;
+    public string ProgressString => $"{Progress:###.##} % | {Source.FirstId} from {Source.Count}";
+    public bool IsComplete => Source.FirstId >= Source.Count;
     [DefaultValue(0)]
     public long SourceId { get => Source.Id; set => Source.Id = value; }
+    [DefaultValue("")]
+    public DateTime SourceDtChanged { get => Source.DtChanged; set => Source.DtChanged = value; }
     [DefaultValue("")]
     public string SourceUserName { get => Source.UserName; set => Source.UserName = value; }
     [DefaultValue("")]
@@ -26,54 +28,35 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     [DefaultValue(1)]
     public int SourceFirstId { get => Source.FirstId; set => Source.FirstId = value; }
     [DefaultValue(1)]
-    public int SourceLastId { get => Source.Count; set => _ = value; }
+    public int SourceLastId { get => Source.Count; set => Source.Count = value; }
     [DefaultValue("")]
-	public string SourceDirectory { get => Source.Directory; set => Source.Directory = value; }
+    public string SourceDirectory { get => Source.Directory; set => Source.Directory = value; }
     [DefaultValue(1)]
     public int SourceScanCurrent { get; set; }
     [DefaultValue(1)]
     public int SourceScanCount { get; set; }
-    [DefaultValue(false)]
     public bool IsAutoUpdate { get => Source.IsAutoUpdate; set => Source.IsAutoUpdate = value; }
 
-    public bool IsSourceDirectoryExists => Directory.Exists(Source.Directory);
-    public bool IsReadySourceDirectory => !string.IsNullOrEmpty(SourceDirectory);
+    public bool IsReadySourceDirectory => !string.IsNullOrEmpty(SourceDirectory) && Directory.Exists(SourceDirectory);
+    public string IsReadySourceDirectoryDescription => IsReadySourceDirectory 
+        ? $"{TgLocaleHelper.Instance.TgDirectoryIsExists}." : $"{TgLocaleHelper.Instance.TgDirectoryIsNotExists}!";
     public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
     public bool IsReadySourceId => SourceId is not 0;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsReadySourceUserName => !Equals(SourceUserName, string.Empty);
     public bool IsReadyAbout => !string.IsNullOrEmpty(SourceAbout);
 
-    public Action<TgSqlTableSourceViewModel> LoadAction { get; set; }
-	public Action<TgSqlTableSourceViewModel> UpdateAction { get; set; }
-	public Action<TgSqlTableSourceViewModel> DownloadAction { get; set; }
-	public Action<TgSqlTableSourceViewModel> EditAction { get; set; }
-
-	public TgSqlTableSourceViewModel(TgSqlTableSourceModel source, 
-		Action<TgSqlTableSourceViewModel> loadAction, Action<TgSqlTableSourceViewModel> updateAction,
-		Action<TgSqlTableSourceViewModel> downloadAction, Action<TgSqlTableSourceViewModel> editAction)
-	{
-		Source = source;
-		LoadAction = loadAction;
-		UpdateAction = updateAction;
-		DownloadAction = downloadAction;
-		EditAction = editAction;
-	}
-
-	public TgSqlTableSourceViewModel(TgSqlTableSourceModel source)
-	{
-		Source = source;
-		LoadAction = _ => { };
-		UpdateAction = _ => { };
-		DownloadAction = _ => { };
-		EditAction = _ => { };
-        SourceDirectory = this.GetPropertyDefaultValue(nameof(SourceDirectory));
-        SourceId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceId));
-        SourceUserName = this.GetPropertyDefaultValue(nameof(SourceUserName));
-        SourceFirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceFirstId));
-        SourceLastId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceLastId));
-        SourceAbout = this.GetPropertyDefaultValue(nameof(SourceAbout));
-        SourceTitle = this.GetPropertyDefaultValue(nameof(SourceTitle));
+    public TgSqlTableSourceViewModel(TgSqlTableSourceModel source)
+    {
+        Source = source;
+        SourceDirectory = source.Directory;
+        SourceId = source.Id;
+        SourceDtChanged = source.DtChanged;
+        SourceUserName = source.UserName;
+        SourceFirstId = source.FirstId;
+        SourceLastId = source.Count;
+        SourceAbout = source.About;
+        SourceTitle = source.Title;
         SourceScanCurrent = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCurrent));
         SourceScanCount = this.GetPropertyDefaultValueAsGeneric<int>(nameof(SourceScanCount));
         IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
@@ -91,18 +74,6 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
 
     public static TgSqlTableSourceViewModel CreateNew() => new();
 
-    [RelayCommand]
-	public void OnLoad() => LoadAction(this);
-
-	[RelayCommand]
-	public void OnUpdate() => UpdateAction(this);
-
-	[RelayCommand]
-	public void OnDownload() => DownloadAction(this);
-
-	[RelayCommand]
-	public void OnEdit() => EditAction(this);
-
     /// <summary>
     /// Set new source.
     /// </summary>
@@ -116,5 +87,5 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
         SourceAbout = about;
     }
 
-	#endregion
+    #endregion
 }

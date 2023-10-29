@@ -12,9 +12,6 @@ public partial class TgSourcesPage
 
 	public TgSourcesPage()
 	{
-		TgDesktopUtils.TgSourcesVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgSourcesVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgSourcesVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgSourcesVm.OnNavigatedTo();
 		InitializeComponent();
 	}

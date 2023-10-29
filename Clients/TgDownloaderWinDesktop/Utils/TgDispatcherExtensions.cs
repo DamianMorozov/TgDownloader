@@ -21,10 +21,7 @@ public static class TgDispatcherExtensions
 	public static void DispatcherUpdateGrid(this Grid grid, DispatcherPriority priority)
 	{
 		if (!grid.Dispatcher.CheckAccess())
-			grid.Dispatcher.BeginInvoke(() =>
-			{
-				grid.UpdateLayout();
-			}, priority);
+			grid.Dispatcher.BeginInvoke(grid.UpdateLayout, priority);
 		else
 		{
 			grid.UpdateLayout();
@@ -38,13 +35,11 @@ public static class TgDispatcherExtensions
 		if (!grid.Dispatcher.CheckAccess())
 			grid.Dispatcher.BeginInvoke(() =>
 			{
-				//TgAsyncUtils.ExecAction(action);
 				action();
 				grid.UpdateLayout();
 			}, priority);
 		else
 		{
-			//TgAsyncUtils.ExecAction(action);
 			action();
 			grid.UpdateLayout();
 		}
@@ -56,10 +51,7 @@ public static class TgDispatcherExtensions
 	public static void DispatcherUpdateUserControl(this UserControl userControl, DispatcherPriority priority)
 	{
 		if (!userControl.Dispatcher.CheckAccess())
-			userControl.Dispatcher.BeginInvoke(() =>
-			{
-				userControl.UpdateLayout();
-			}, priority);
+			userControl.Dispatcher.BeginInvoke(userControl.UpdateLayout, priority);
 		else
 		{
 			userControl.UpdateLayout();
@@ -73,13 +65,11 @@ public static class TgDispatcherExtensions
 		if (!userControl.Dispatcher.CheckAccess())
 			userControl.Dispatcher.BeginInvoke(() =>
 			{
-				//TgAsyncUtils.ExecAction(action);
 				action();
 				userControl.UpdateLayout();
 			}, priority);
 		else
 		{
-			//TgAsyncUtils.ExecAction(action);
 			action();
 			userControl.UpdateLayout();
 		}
@@ -91,10 +81,7 @@ public static class TgDispatcherExtensions
 	public static void DispatcherUpdatePage(this UiPage uiPage, DispatcherPriority priority)
 	{
 		if (!uiPage.Dispatcher.CheckAccess())
-			uiPage.Dispatcher.BeginInvoke(() =>
-			{
-				uiPage.UpdateLayout();
-			}, priority);
+			uiPage.Dispatcher.BeginInvoke(uiPage.UpdateLayout, priority);
 		else
 		{
 			uiPage.UpdateLayout();
@@ -108,13 +95,11 @@ public static class TgDispatcherExtensions
 		if (!uiPage.Dispatcher.CheckAccess())
 			uiPage.Dispatcher.BeginInvoke(() =>
 			{
-				//TgAsyncUtils.ExecAction(action);
 				action();
 				uiPage.UpdateLayout();
 			}, priority);
 		else
 		{
-			//TgAsyncUtils.ExecAction(action);
 			action();
 			uiPage.UpdateLayout();
 		}
@@ -126,10 +111,7 @@ public static class TgDispatcherExtensions
 	public static void DispatcherUpdateWindow(this Window window, DispatcherPriority priority)
 	{
 		if (!window.Dispatcher.CheckAccess())
-			window.Dispatcher.BeginInvoke(() =>
-			{
-				window.UpdateLayout();
-			}, priority);
+			window.Dispatcher.BeginInvoke(window.UpdateLayout, priority);
 		else
 		{
 			window.UpdateLayout();
@@ -143,13 +125,11 @@ public static class TgDispatcherExtensions
 		if (!window.Dispatcher.CheckAccess())
 			window.Dispatcher.BeginInvoke(() =>
 			{
-				//TgAsyncUtils.ExecAction(action);
 				action();
 				window.UpdateLayout();
 			}, priority);
 		else
 		{
-			//TgAsyncUtils.ExecAction(action);
 			action();
 			window.UpdateLayout();
 		}

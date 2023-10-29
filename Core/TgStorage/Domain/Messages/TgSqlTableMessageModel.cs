@@ -1,10 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using DevExpress.Utils.Filtering.Internal;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
 namespace TgStorage.Domain.Messages;
 
 /// <summary>

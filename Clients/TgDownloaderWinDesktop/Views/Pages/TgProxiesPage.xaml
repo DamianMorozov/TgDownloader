@@ -4,9 +4,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:common="clr-namespace:TgDownloaderWinDesktop.Common"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:helpers="clr-namespace:TgDownloaderWinDesktop.Helpers"
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:sources="clr-namespace:TgStorage.Domain.Sources;assembly=TgStorage"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainProxies, Mode=OneWay, IsAsync=True}"
@@ -46,6 +46,7 @@
 					VerticalAlignment="Center"
 					IsIndeterminate="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=IsLoad, Mode=OneWay, IsAsync=True}"
 					Visibility="Visible" />
+				<!--  Get from Storage  -->
 				<ui:Button
 					Grid.Column="1"
 					Margin="2"
@@ -53,8 +54,9 @@
 					VerticalAlignment="Center"
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=LoadProxiesFromStorageCommand, Mode=OneWay, IsAsync=True}"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ActionReloadAllFromStorage, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}"
 					Icon="ArrowSync12" />
+				<!--  Button Clear  -->
 				<ui:Button
 					Grid.Column="2"
 					Margin="2"
@@ -83,7 +85,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Connect"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyIsConnected, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -93,7 +95,8 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Appearance="Primary"
-								Command="{Binding ConnectClientByProxyCommand, Mode=OneWay, IsAsync=True}"
+								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ClientConnectCommand, Mode=OneWay, IsAsync=True}"
+								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 								Icon="Connector24"
 								IsEnabled="True" />
 						</DataTemplate>
@@ -106,7 +109,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Disconnect"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyIsDisconnect, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -116,7 +119,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Appearance="Primary"
-								Command="{Binding DisconnectClientCommand, Mode=OneWay, IsAsync=True}"
+								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ClientDisconnectCommand, Mode=OneWay, IsAsync=True}"
 								Icon="Connector24"
 								IsEnabled="True" />
 						</DataTemplate>
@@ -129,7 +132,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Type"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesType, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -141,7 +144,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding .Proxy.Type, Mode=TwoWay, IsAsync=True}" />
+								Text="{Binding Proxy.Type, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -152,7 +155,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Host"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesHost, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -175,7 +178,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Port"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesPort, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -198,7 +201,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="User name"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesUserName, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -221,7 +224,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Password"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesUserPassword, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -244,7 +247,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Secret"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesUserSecret, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -266,7 +269,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="Delete"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxiesDelete, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -276,7 +279,7 @@
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Appearance="Primary"
-								Command="{Binding DeleteProxyCommand, Mode=OneWay, IsAsync=True}"
+								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=DeleteProxyCommand, Mode=OneWay, IsAsync=True}"
 								Icon="Delete48"
 								IsEnabled="True" />
 						</DataTemplate>

@@ -17,48 +17,37 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="1*" />
 			<RowDefinition Height="1*" />
+			<RowDefinition Height="1*" />
+			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="1.2*" />
 			<ColumnDefinition Width="0.3*" />
+			<ColumnDefinition Width="1.2*" />
 			<ColumnDefinition Width="1.5*" />
 			<ColumnDefinition Width="9.5*" />
 		</Grid.ColumnDefinitions>
-		<Label
-			Grid.Column="0"
-			Margin="2"
-			HorizontalContentAlignment="Center"
-			VerticalContentAlignment="Center"
-			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientIsReady, Mode=OneWay, IsAsync=True}" />
+		<!--  Connect  -->
 		<CheckBox
 			Grid.Row="0"
-			Grid.Column="1"
+			Grid.Column="0"
 			Margin="2"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}"
 			IsEnabled="False" />
 		<Label
-			Grid.Row="1"
-			Grid.Column="0"
+			Grid.Row="0"
+			Grid.Column="1"
 			Margin="2"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
-			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientProxyIsUsage, Mode=OneWay, IsAsync=True}" />
-		<CheckBox
-			Grid.Row="1"
-			Grid.Column="1"
-			Margin="2"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsProxyUsage, Mode=OneWay, IsAsync=True}"
-			IsEnabled="False" />
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientConnectStatus, Mode=OneWay, IsAsync=True}" />
 		<Label
 			Grid.Row="0"
 			Grid.Column="2"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
-			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateClientDt, Mode=OneWay, IsAsync=True}" />
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateConnectDt, Mode=OneWay, IsAsync=True}" />
 		<ui:TextBox
 			Grid.Row="0"
 			Grid.Column="3"
@@ -68,15 +57,79 @@
 			HorizontalContentAlignment="Left"
 			IsEnabled="False"
 			IsReadOnly="True"
-			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateClientMsg, Mode=OneWay, IsAsync=True}" />
+			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateConnectMsg, Mode=OneWay, IsAsync=True}" />
+		<!--  Proxy  -->
+		<CheckBox
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="2"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsProxyUsage, Mode=OneWay, IsAsync=True}"
+			IsEnabled="False" />
+		<Label
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientProxyStatus, Mode=OneWay, IsAsync=True}" />
 		<Label
 			Grid.Row="1"
 			Grid.Column="2"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
-			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateSourceDt, Mode=OneWay, IsAsync=True}" />
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateProxyDt, Mode=OneWay, IsAsync=True}" />
 		<ui:TextBox
 			Grid.Row="1"
+			Grid.Column="3"
+			Margin="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Center"
+			HorizontalContentAlignment="Left"
+			IsEnabled="False"
+			IsReadOnly="True"
+			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateProxyMsg, Mode=OneWay, IsAsync=True}" />
+		<!--  Message  -->
+		<Label
+			Grid.Row="2"
+			Grid.Column="1"
+			Margin="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientMessage, Mode=OneWay, IsAsync=True}" />
+		<Label
+			Grid.Row="2"
+			Grid.Column="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateMessageDt, Mode=OneWay, IsAsync=True}" />
+		<ui:TextBox
+			Grid.Row="2"
+			Grid.Column="3"
+			Margin="2"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Center"
+			HorizontalContentAlignment="Left"
+			IsEnabled="False"
+			IsReadOnly="True"
+			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateMessageMsg, Mode=OneWay, IsAsync=True}" />
+		<!--  Source  -->
+		<Label
+			Grid.Row="3"
+			Grid.Column="1"
+			Margin="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientSource, Mode=OneWay, IsAsync=True}" />
+		<Label
+			Grid.Row="3"
+			Grid.Column="2"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Content="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateSourceDt, Mode=OneWay, IsAsync=True}" />
+		<ui:TextBox
+			Grid.Row="3"
 			Grid.Column="3"
 			Margin="2"
 			HorizontalAlignment="Stretch"

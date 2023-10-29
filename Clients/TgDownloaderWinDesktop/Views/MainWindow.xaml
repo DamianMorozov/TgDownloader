@@ -30,7 +30,8 @@
 		<!--  The title bar contains window navigation elements and some Tray related extras.  -->
 		<!--  You can put additional controls in the header, such as a search bar.  -->
 		<!--  <ui:TitleBar.Header />  -->
-		<ui:TitleBar x:Name="TgTitleBar"
+		<ui:TitleBar
+			x:Name="TgTitleBar"
 			Title="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 			Grid.Row="0"
 			HorizontalContentAlignment="Center"
@@ -55,10 +56,15 @@
 					TooltipText="TgDownloaderWinDesktop">
 					<ui:NotifyIcon.Menu>
 						<ContextMenu>
-							<MenuItem Header="Home" Tag="page_home" />
-							<MenuItem Header="Client" Tag="page_client" />
-							<MenuItem Header="Proxies" Tag="page_proxies" />
-							<MenuItem Header="Sources" Tag="page_sources" />
+							<MenuItem Header="Tray Items">
+								<MenuItem ItemsSource="{Binding ViewModel.TrayMenuItems}">
+									<MenuItem.ItemTemplate>
+										<DataTemplate>
+											<MenuItem Header="{Binding Header}" Tag="{Binding Tag}" />
+										</DataTemplate>
+									</MenuItem.ItemTemplate>
+								</MenuItem>
+							</MenuItem>
 						</ContextMenu>
 					</ui:NotifyIcon.Menu>
 				</ui:NotifyIcon>

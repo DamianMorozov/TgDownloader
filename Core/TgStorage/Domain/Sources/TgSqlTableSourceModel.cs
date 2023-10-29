@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Net.Sockets;
-
 namespace TgStorage.Domain.Sources;
 
 /// <summary>
@@ -119,27 +117,27 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 		_uid = uid ?? this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(Uid));
         if (item is { } source)
         {
-            _dtChanged = source.DtChanged > DateTime.MinValue ? source.DtChanged : DateTime.Now;
-            _id = source.Id;
-            _firstId = source.FirstId;
-            _isAutoUpdate = source.IsAutoUpdate;
-            _userName = string.IsNullOrEmpty(source.UserName) ? "" : source.UserName;
-            _title = source.Title;
-            _about = source.About;
-            _count = source.Count;
-            _directory = source.Directory;
+            DtChanged = source.DtChanged > DateTime.MinValue ? source.DtChanged : DateTime.Now;
+            Id = source.Id;
+            FirstId = source.FirstId;
+            IsAutoUpdate = source.IsAutoUpdate;
+            UserName = string.IsNullOrEmpty(source.UserName) ? "" : source.UserName;
+            Title = source.Title;
+            About = source.About;
+            Count = source.Count;
+            Directory = source.Directory;
         }
         else
         {
-            _id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-            _dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
-            _userName = this.GetPropertyDefaultValue(nameof(UserName));
-            _title = this.GetPropertyDefaultValue(nameof(Title));
-            _about = this.GetPropertyDefaultValue(nameof(About));
-            _count = this.GetPropertyDefaultValueAsGeneric<int>(nameof(Count));
-            _directory = this.GetPropertyDefaultValue(nameof(Directory));
-            _firstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
-            _isAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
+            Id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
+            DtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
+            UserName = this.GetPropertyDefaultValue(nameof(UserName));
+            Title = this.GetPropertyDefaultValue(nameof(Title));
+            About = this.GetPropertyDefaultValue(nameof(About));
+            Count = this.GetPropertyDefaultValueAsGeneric<int>(nameof(Count));
+            Directory = this.GetPropertyDefaultValue(nameof(Directory));
+            FirstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
+            IsAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
         }
     }
 

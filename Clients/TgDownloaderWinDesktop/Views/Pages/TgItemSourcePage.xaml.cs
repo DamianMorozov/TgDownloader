@@ -12,9 +12,6 @@ public partial class TgItemSourcePage
 
 	public TgItemSourcePage()
 	{
-		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgItemSourceVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgItemSourceVm.OnNavigatedTo();
 		InitializeComponent();
 	}

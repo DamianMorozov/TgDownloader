@@ -12,15 +12,394 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgItemSourcePage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="150"
+	d:DesignHeight="450"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="1*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
+		<!--  1 row | Actions  -->
+		<Border
+			Grid.Row="0"
+			Margin="2"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="5"
+			UseLayoutRounding="True">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="0.5*" />
+					<ColumnDefinition Width="1.5*" />
+					<ColumnDefinition Width="1.5*" />
+					<ColumnDefinition Width="1.5*" />
+					<ColumnDefinition Width="1.5*" />
+					<ColumnDefinition Width="1.5*" />
+				</Grid.ColumnDefinitions>
+				<ui:ProgressRing
+					Name="ProgressRingReload"
+					Grid.Column="0"
+					Width="30"
+					Height="30"
+					Margin="2"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					IsIndeterminate="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=IsLoad, Mode=OneWay, IsAsync=True}"
+					Visibility="Visible" />
+				<!--  Get from storage  -->
+				<ui:Button
+					Grid.Column="1"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=GetSourceFromStorageCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}"
+					Icon="ArrowUp28"
+					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
+				<!--  Update from Telegram  -->
+				<ui:Button
+					Grid.Column="2"
+					Margin="3"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=UpdateSourceFromTelegramCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}"
+					Icon="ArrowSync12"
+					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}"
+					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
+				<!--  Download from Telegram  -->
+				<ui:Button
+					Grid.Column="3"
+					Margin="3"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=DownloadSourceCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainDownload, Mode=OneWay, IsAsync=True}"
+					Icon="ArrowDownload48"
+					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}"
+					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainDownload, Mode=OneWay, IsAsync=True}" />
+				<!--  Clear view  -->
+				<ui:Button
+					Grid.Column="4"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ClearViewCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ClearView, Mode=OneWay, IsAsync=True}"
+					Icon="Recycle32" />
+				<!--  Save  -->
+				<ui:Button
+					Grid.Column="5"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=SaveSourceCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Save, Mode=OneWay, IsAsync=True}"
+					Icon="Save28" />
+			</Grid>
+		</Border>
+		<!--  2 row | Grid settings  -->
+		<Border
+			Grid.Row="1"
+			Margin="2"
+			VerticalAlignment="Top"
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="5"
+			IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsNotLoad, Mode=OneWay, IsAsync=True}"
+			UseLayoutRounding="True">
+			<Grid Margin="2" Background="Transparent">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="0.25*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="0.25*" />
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="0.25*" />
+					<RowDefinition Height="1*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="5*" />
+				</Grid.ColumnDefinitions>
+				<!--  Headers  -->
+				<Label
+					Grid.Row="0"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SettingName, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="2"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SettingValue, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<!--  Separator  -->
+				<Separator
+					Grid.Row="1"
+					Grid.Column="0"
+					Grid.ColumnSpan="3"
+					Height="1"
+					Background="DimGray" />
+				<!--  Splitter  -->
+				<GridSplitter
+					Grid.Row="0"
+					Grid.RowSpan="17"
+					Grid.Column="1"
+					Width="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="DimGray" />
+				<!--  ID  -->
+				<Label
+					Grid.Row="3"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldId, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="3"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="DimGray"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceId, Mode=TwoWay, IsAsync=True}" />
+				<!--  User name  -->
+				<Label
+					Grid.Row="4"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUserName, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="4"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="DimGray"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceUserName, Mode=TwoWay, IsAsync=True}" />
+				<!--  Title  -->
+				<Label
+					Grid.Row="5"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTitle, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="5"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceTitle, Mode=TwoWay, IsAsync=True}" />
+				<!--  About  -->
+				<Label
+					Grid.Row="6"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldAbout, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="6"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceAbout, Mode=TwoWay, IsAsync=True}" />
+				<!--  First ID  -->
+				<Label
+					Grid.Row="7"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldFirstId, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="7"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="DimGray"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceFirstId, Mode=TwoWay, IsAsync=True}" />
+				<!--  Last ID  -->
+				<Label
+					Grid.Row="8"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLastId, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="8"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceLastId, Mode=OneWay, IsAsync=True}" />
+				<!--  Directory  -->
+				<Label
+					Grid.Row="9"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TgSettingDirectory, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="9"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="DimGray"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceDirectory, Mode=TwoWay, IsAsync=True}" />
+				<!--  Is directory ready  -->
+				<Label
+					Grid.Row="10"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TgSettingDirectory, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<Label
+					Grid.Row="10"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalContentAlignment="Left"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsReadySourceDirectoryDescription, Mode=OneWay, IsAsync=True}" />
+				<!--  Is auto update  -->
+				<Label
+					Grid.Row="11"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldIsAutoUpdate, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:ToggleSwitch
+					Grid.Row="11"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="DimGray"
+					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsAutoUpdate, Mode=TwoWay, IsAsync=True}" />
+				<!--  Dt changed  -->
+				<Label
+					Grid.Row="12"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldChanged, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="12"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceDtChanged, Mode=TwoWay, IsAsync=True}" />
+				<!--  Separator  -->
+				<Separator
+					Grid.Row="13"
+					Grid.Column="0"
+					Grid.ColumnSpan="3"
+					Height="1"
+					Background="DimGray" />
+				<!--  Is ready  -->
+				<Label
+					Grid.Row="14"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldIsReady, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<CheckBox
+					Grid.Row="14"
+					Grid.Column="2"
+					Margin="10,2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsReady, Mode=OneWay, IsAsync=True}"
+					IsEnabled="False" />
+				<!--  Separator  -->
+				<Separator
+					Grid.Row="15"
+					Grid.Column="0"
+					Grid.ColumnSpan="3"
+					Height="1"
+					Background="DimGray" />
+				<!--  Progress  -->
+				<Label
+					Grid.Row="16"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientProgressStatus, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ProgressBar
+					Grid.Row="16"
+					Grid.Column=" 2"
+					Margin="10,2"
+					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.ProgressString, Mode=OneWay, IsAsync=True}"
+					Value="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Progress, Mode=OneWay, IsAsync=True}" />
+			</Grid>
+		</Border>
 	</Grid>
 </common:TgPageViewBase>

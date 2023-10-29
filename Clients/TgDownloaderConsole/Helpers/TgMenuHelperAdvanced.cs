@@ -112,7 +112,7 @@ internal partial class TgMenuHelper
             TgDownloadSettingsModel tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
 			// StatusContext.
-			TgClient.UpdateStateClient(
+			TgClient.UpdateStateMessage(
 				source.Count <= 0
 					? $"The source {sourceId} hasn't any messages!"
 					: $"The source {sourceId} has {source.Count} messages.");
@@ -125,7 +125,7 @@ internal partial class TgMenuHelper
 	private void AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
-		TgClient.UpdateStateClient("Auto view updates is started");
+		TgClient.UpdateStateMessage("Auto view updates is started");
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 		TgClient.IsUpdateStatus = false;

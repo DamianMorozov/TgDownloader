@@ -6,15 +6,17 @@ namespace TgStorage.Common;
 /// <summary>
 /// Base class for TgMvvmModel.
 /// </summary>
-public abstract class TgViewModelBase : ObservableObject, ITgCommon
+[DebuggerDisplay("{ToDebugString()}")]
+public abstract class TgViewModelBase : ObservableObject, ITgViewModelBase
 {
-	#region Public and private fields, properties, constructor
+    #region Public and private fields, properties, constructor
 
-	public bool IsLoad { get; set; }
+    public bool IsLoad { get; set; }
+    public bool IsNotLoad => !IsLoad;
 
-	#endregion
+    #endregion
 
-	#region Public and private methods
+    #region Public and private methods
 
     public virtual string ToDebugString() => $"{TgCommonUtils.GetIsLoad(IsLoad)}";
 

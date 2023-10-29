@@ -12,9 +12,6 @@ public sealed partial class TgClientStateUserControl : TgUserControlViewBase
 
 	public TgClientStateUserControl()
 	{
-		TgDesktopUtils.TgClientVm.AddUpdateUi(TgEnumUpdateType.UserControl, UpdateUserControl);
-		TgDesktopUtils.TgProxiesVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgProxiesVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}

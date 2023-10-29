@@ -28,6 +28,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     protected override void InitializeViewModel()
     {
         base.InitializeViewModel();
+        
         // Load sources from storage.
         LoadProxiesFromStorageCommand.Execute(null);
     }
@@ -37,72 +38,46 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     /// </summary>
     private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
 	{
-		proxies = proxies.OrderBy(x => x.Port).ToList()
-			.OrderBy(x => x.HostName);
-		ProxiesVms.Clear();
-		foreach (TgSqlTableProxyModel proxy in proxies)
-			ProxiesVms.Add(new(proxy, ConnectClientByProxy, DisconnectClient, DeleteProxy));
-	}
-
-    /// <summary>
-    /// Connect client through proxy.
-    /// </summary>
-    /// <param name="proxyVm"></param>
-    public void ConnectClientByProxy(TgSqlTableProxyViewModel proxyVm)
-    {
-        _ = Task.Run(async () =>
-        {
-            await TgDesktopUtils.TgClientVm.OnClientConnectAsync().ConfigureAwait(false);
-        }).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Disconnect client.
-    /// </summary>
-    /// <param name="proxyVm"></param>
-    public void DisconnectClient(TgSqlTableProxyViewModel proxyVm)
-    {
-        _ = Task.Run(async () =>
-        {
-            await TgDesktopUtils.TgClientVm.OnClientDisconnectAsync().ConfigureAwait(false);
-        }).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Delete proxy.
-    /// </summary>
-    /// <param name="proxyVm"></param>
-    public void DeleteProxy(TgSqlTableProxyViewModel proxyVm)
-    {
-        ContextManager.ProxyRepository.Delete(proxyVm.Proxy);
-        LoadProxies();
-        TgDesktopUtils.TgClientVm.LoadProxiesForClient();
-    }
-
-    private void LoadProxies()
-    {
-        TgDispatcherUtils.DispatcherUpdateMainWindow(() =>
-        {
-            SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
-        });
+        ProxiesVms.Clear();
+        proxies = proxies.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
+        foreach (TgSqlTableProxyModel proxy in proxies)
+            ProxiesVms.Add(new(proxy));
     }
 
     #endregion
 
     #region Public and private methods - RelayCommand
 
+    // LoadProxiesFromStorageCommand
     [RelayCommand]
 	public async Task OnLoadProxiesFromStorageAsync()
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, LoadProxies);
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
+        }, false).ConfigureAwait(false);
 	}
 
-	[RelayCommand]
+    // ClearViewCommand
+    [RelayCommand]
 	public async Task OnClearViewAsync()
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, ProxiesVms.Clear);
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            ProxiesVms.Clear();
+        }, false).ConfigureAwait(true);
+	}
+
+    // DeleteProxyCommand
+    [RelayCommand]
+	public async Task OnDeleteProxyAsync(TgSqlTableProxyViewModel proxyVm)
+	{
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            ContextManager.ProxyRepository.Delete(proxyVm.Proxy);
+            LoadProxiesFromStorageCommand.Execute(null);
+            TgDesktopUtils.TgClientVm.LoadProxiesForClient();
+        }, false).ConfigureAwait(false);
 	}
 
 	#endregion

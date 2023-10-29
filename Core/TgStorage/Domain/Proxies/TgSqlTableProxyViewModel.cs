@@ -17,28 +17,17 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
         get => Proxy.Uid;
         set => Proxy = TgSqlTableProxyRepository.Instance.Get(value) ?? TgSqlTableProxyRepository.Instance.GetNew();
     }
-	public Action<TgSqlTableProxyViewModel> ConnectClientByProxy { get; set; }
-	public Action<TgSqlTableProxyViewModel> DisconnectClient { get; set; }
-	public Action<TgSqlTableProxyViewModel> DeleteProxy { get; set; }
 
-	public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 20)} | {Proxy.Port} | {Proxy.UserName}";
+	public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
 
-	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy, 
-        Action<TgSqlTableProxyViewModel> connectClient, Action<TgSqlTableProxyViewModel> disconnectClient, 
-        Action<TgSqlTableProxyViewModel> deleteProxy)
+	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy, Action<TgSqlTableProxyViewModel> deleteProxy)
 	{
 		Proxy = proxy;
-		ConnectClientByProxy = connectClient;
-        DisconnectClient = disconnectClient;
-        DeleteProxy = deleteProxy;
     }
 
 	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy)
 	{
 		Proxy = proxy;
-		ConnectClientByProxy = _ => { };
-		DisconnectClient = _ => { };
-        DeleteProxy = _ => { };
 	}
 
 	#endregion
@@ -46,36 +35,6 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
 	#region Public and private methods
 
 	public override string ToString() => PrettyName;
-
-	[RelayCommand]
-	public async Task OnConnectClientByProxyAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgAsyncUtils.ExecAction(() =>
-		{
-			ConnectClientByProxy(this);
-		});
-	}
-
-	[RelayCommand]
-	public async Task OnDisconnectClientAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgAsyncUtils.ExecAction(() =>
-		{
-			DisconnectClient(this);
-		});
-	}
-
-	[RelayCommand]
-	public async Task OnDeleteProxyAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgAsyncUtils.ExecAction(() =>
-		{
-            DeleteProxy(this);
-        });
-	}
 
 	#endregion
 }

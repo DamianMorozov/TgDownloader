@@ -6,50 +6,46 @@ namespace TgDownloaderWinDesktop.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigationAware
 {
-	#region Public and private fields, properties, constructor
+    #region Public and private fields, properties, constructor
 
-	public ObservableCollection<TgSqlTableSourceViewModel> SourcesVms { get; set; }
+    public ObservableCollection<TgSqlTableSourceViewModel> SourcesVms { get; set; } = new();
+    public Visibility GridVisibility { get; set; } = Visibility.Visible;
 
-	public TgSourcesViewModel()
-	{
-		SourcesVms = new();
-	}
+    #endregion
 
-	#endregion
+    #region Public and private methods
 
-	#region Public and private methods
+    public void OnNavigatedTo()
+    {
+        if (!IsInitialized)
+            InitializeViewModel();
+    }
 
-	public void OnNavigatedTo()
-	{
-		if (!IsInitialized)
-			InitializeViewModel();
-	}
+    public void OnNavigatedFrom()
+    {
+        //
+    }
 
-	public void OnNavigatedFrom()
-	{
-		//
-	}
+    protected override void InitializeViewModel()
+    {
+        base.InitializeViewModel();
 
-	protected override void InitializeViewModel()
-	{
-		base.InitializeViewModel();
-		TgDesktopUtils.TgClient.UpdateStateSource = UpdateStateSource;
-        // Load sources from storage.
-		LoadSourcesFromStorageCommand.Execute(null);
-	}
+        OnGetSourcesFromStorageAsync().ConfigureAwait(false);
+    }
 
-	/// <summary>
-	/// Sort sources.
-	/// </summary>
-	private void SetOrderSources(IEnumerable<TgSqlTableSourceModel> sources)
-	{
-		// exe inside other TgDesktopUtils.RunAction(this, () =>
-		sources = sources.OrderBy(x => x.Title).ToList()
-			.OrderBy(x => x.UserName);
-		SourcesVms.Clear();
-		foreach (TgSqlTableSourceModel source in sources)
-			SourcesVms.Add(new(source, LoadSource, UpdateSource, DownloadSource, EditSource));
-	}
+    /// <summary>
+    /// Sort sources.
+    /// </summary>
+    private void SetOrderSources(IEnumerable<TgSqlTableSourceModel> sources)
+    {
+        SourcesVms.Clear();
+
+        sources = sources.OrderBy(x => x.Title).ThenBy(x => x.UserName).ToList();
+        foreach (TgSqlTableSourceModel source in sources)
+        {
+            SourcesVms.Add(new(source));
+        }
+    }
 
     /// <summary>
     /// Load sources from Telegram.
@@ -57,53 +53,11 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     /// <param name="sourceVm"></param>
     public void LoadFromTelegram(TgSqlTableSourceViewModel sourceVm)
     {
-        TgDesktopUtils.RunAction(this, () =>
-        {
-            TgSqlTableSourceModel sourceDb = ContextManager.SourceRepository.Get(sourceVm.Source.Id);
-            if (sourceDb.IsExists)
-                sourceVm = new(sourceDb);
-            SourcesVms.Add(sourceVm);
-        });
+        TgSqlTableSourceModel sourceDb = ContextManager.SourceRepository.Get(sourceVm.Source.Id);
+        if (sourceDb.IsExists)
+            sourceVm = new(sourceDb);
+        SourcesVms.Add(sourceVm);
     }
-
-    /// <summary>
-    /// Save sources into the Storage.
-    /// </summary>
-    public void SaveSourcesIntoStorage()
-	{
-		TgDesktopUtils.RunAction(this, () =>
-			{
-		// Checks.
-		if (!SourcesVms.Any())
-		{
-			TgDesktopUtils.TgClient.UpdateStateSource(0, 0, "Empty sources list!");
-			return;
-		}
-		foreach (TgSqlTableSourceViewModel sourceVm in SourcesVms)
-		{
-			TgSqlTableSourceModel sourceDb = ContextManager.SourceRepository.Get(sourceVm.Source.Id);
-			if (!sourceDb.IsExists)
-			{
-				ContextManager.SourceRepository.Save(sourceVm.Source);
-				TgDesktopUtils.TgClient.UpdateStateSource(sourceVm.Source.Id, 0, $"Saved source | {sourceVm.Source}");
-			}
-		}
-			});
-	}
-
-	/// <summary>
-	/// Create new download settings.
-	/// </summary>
-	/// <param name="sourceVm"></param>
-	/// <returns></returns>
-	public TgDownloadSettingsModel CreateDownloadSettings(TgSqlTableSourceViewModel sourceVm) =>
-        new() { SourceVm = new TgSqlTableSourceViewModel()
-            {
-                SourceId = sourceVm.Source.Id,
-                SourceFirstId = sourceVm.Source.FirstId,
-                SourceDirectory = sourceVm.Source.Directory
-            }
-        };
 
     /// <summary>
 	/// Update state.
@@ -112,200 +66,177 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 	/// <param name="messageId"></param>
 	/// <param name="message"></param>
 	public override void UpdateStateSource(long sourceId, int messageId, string message)
-	{
-		base.UpdateStateSource(sourceId, messageId, message);
-		TgDesktopUtils.RunAction(() =>
-		{
-		LoadSource(sourceId);
-		});
-	}
+    {
+        base.UpdateStateSource(sourceId, messageId, message);
+        for (int i = 0; i < SourcesVms.Count; i++)
+        {
+            if (SourcesVms[i].SourceId.Equals(sourceId))
+            {
+                SourcesVms[i].Source = ContextManager.SourceRepository.Get(sourceId);
+                break;
+            }
+        }
+    }
 
-	#endregion
+    #endregion
 
-	#region Public and private methods - RelayCommand
+    #region Public and private methods - RelayCommand - All
 
-	[RelayCommand]
-	public async Task OnLoadSourcesFromStorageAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, () =>
-		{
-			SetOrderSources(ContextManager.SourceRepository.GetEnumerable());
-		});
-	}
+    // GetSourcesFromStorageCommand
+    [RelayCommand]
+    public async Task OnGetSourcesFromStorageAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            SetOrderSources(ContextManager.SourceRepository.GetEnumerable());
+        }, false).ConfigureAwait(false);
+    }
 
-	[RelayCommand]
-	public async Task OnUpdateSourcesAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-				TgDesktopUtils.RunAction(this, () =>
-				{
-		if (!CheckClientReady()) return;
-		foreach (TgSqlTableSourceViewModel sourceVm in SourcesVms) 
-			UpdateSource(sourceVm);
-				});
-	}
+    // UpdateSourcesFromTelegram
+    [RelayCommand]
+    public async Task OnUpdateSourcesFromTelegramAsync()
+    {
+        if (!CheckClientReady())
+            return;
 
-	[RelayCommand]
-	public async Task OnGetSourcesAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, () =>
-				{
-		if (!CheckClientReady()) return;
-		SourcesVms.Clear();
-		TgDesktopUtils.TgClient.ScanSourcesTgDesktop(TgEnumSourceType.Chat, LoadFromTelegram);
-		TgDesktopUtils.TgClient.ScanSourcesTgDesktop(TgEnumSourceType.Dialog, LoadFromTelegram);
-				});
-	}
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            GridVisibility = Visibility.Hidden;
+            foreach (TgSqlTableSourceViewModel sourceVm in SourcesVms)
+                OnUpdateSourceFromTelegramAsync(sourceVm).ConfigureAwait(true);
+            GridVisibility = Visibility.Visible;
+        }, false).ConfigureAwait(false);
+    }
 
-	[RelayCommand]
-	public async Task OnClearViewAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, SourcesVms.Clear);
-	}
+    // GetSourcesFromTelegramCommand
+    [RelayCommand]
+    public async Task OnGetSourcesFromTelegramAsync()
+    {
+        if (!CheckClientReady())
+            return;
 
-	[RelayCommand]
-	public async Task OnSortViewAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-				TgDesktopUtils.RunAction(this, () =>
-				{
-					SetOrderSources(SourcesVms.Select(x => x.Source).ToList());
-				});
-	}
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            SourcesVms.Clear();
+            GridVisibility = Visibility.Hidden;
+            TgDesktopUtils.TgClient.ScanSourcesTgDesktop(TgEnumSourceType.Chat,
+                sourceVm => LoadFromTelegram(sourceVm));
+            TgDesktopUtils.TgClient.ScanSourcesTgDesktop(TgEnumSourceType.Dialog,
+                sourceVm => LoadFromTelegram(sourceVm));
+            GridVisibility = Visibility.Visible;
+        }, false).ConfigureAwait(false);
+    }
 
-	[RelayCommand]
-	public async Task OnSaveSourcesAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		TgDesktopUtils.RunAction(this, SaveSourcesIntoStorage);
-	}
+    // ClearViewCommand
+    [RelayCommand]
+    public async Task OnClearViewAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            SourcesVms.Clear();
+        }, false).ConfigureAwait(true);
+    }
 
-	#endregion
+    // SortViewCommand
+    
+    [RelayCommand]
+    public async Task OnSortView()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (SourcesVms.Any())
+                SetOrderSources(SourcesVms.Select(x => x.Source).ToList());
+        }, false).ConfigureAwait(false);
+    }
 
-	#region Public and private methods - RelayCommand from TgSqlTableSourceViewModel
+    /// <summary>
+    /// Save sources into the Storage.
+    /// </summary>
+    // SaveSourcesCommand
+    [RelayCommand]
+    public async Task OnSaveSourcesAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            // Checks.
+            if (!SourcesVms.Any())
+            {
+                TgDesktopUtils.TgClient.UpdateStateSource(0, 0, "Empty sources list!");
+                return;
+            }
+            foreach (TgSqlTableSourceViewModel sourceVm in SourcesVms)
+            {
+                TgSqlTableSourceModel sourceDb = ContextManager.SourceRepository.Get(sourceVm.Source.Id);
+                if (!sourceDb.IsExists)
+                {
+                    ContextManager.SourceRepository.Save(sourceVm.Source);
+                    TgDesktopUtils.TgClient.UpdateStateSource(sourceVm.Source.Id, 0, $"Saved source | {sourceVm.Source}");
+                }
+            }
+        }, false).ConfigureAwait(false);
+    }
 
-	/// <summary>
-	/// Load source from Storage.
-	/// </summary>
-	/// <param name="sourceVm"></param>
-	internal void LoadSource(TgSqlTableSourceViewModel sourceVm)
-	{
-		TgDesktopUtils.RunAction(() =>
-		{
-			for (int i = 0; i < SourcesVms.Count; i++)
-			{
-				if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
-				{
-					SourcesVms[i].Source = ContextManager.SourceRepository.Get(sourceVm.SourceId);
-					break;
-				}
-			}
-		});
-	}
+    #endregion
 
-	/// <summary>
-	/// Load source from Storage.
-	/// </summary>
-	/// <param name="sourceId"></param>
-	internal void LoadSource(long sourceId)
-	{
-		TgDesktopUtils.RunAction(() =>
-		{
-			for (int i = 0; i < SourcesVms.Count; i++)
-			{
-				if (SourcesVms[i].SourceId.Equals(sourceId))
-				{
-					SourcesVms[i].Source = ContextManager.SourceRepository.Get(sourceId);
-					break;
-				}
-			}
-		});
-	}
+    #region Public and private methods - RelayCommand - One
 
-	/// <summary>
-	/// Update source.
-	/// </summary>
-	/// <param name="sourceVm"></param>
-	public void UpdateSource(TgSqlTableSourceViewModel sourceVm)
-	{
-		// Checks.
-		if (!CheckClientReady()) return;
-		TgDesktopUtils.RunAction(sourceVm, () =>
-		{
-			// Collect chats from Telegram.
-		if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
-			TgDesktopUtils.TgClient.CollectAllChatsConsole();
-		// Download settings.
-		TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(sourceVm);
-		// Update source from Telegram.
-		TgDesktopUtils.TgClient.UpdateSourceDb(sourceVm, tgDownloadSettings);
-		ContextManager.SourceRepository.Save(sourceVm.Source);
-		// Check directory.
-		if (!Directory.Exists(sourceVm.Source.Directory))
-			TgDesktopUtils.TgClient.UpdateStateSource(sourceVm.Source.Id, sourceVm.Source.FirstId, $"Directory is not exists! {sourceVm.Source.Directory}");
-		TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgLocale.SettingsSource);
-		TgDesktopUtils.TgClient.UpdateStateSource(sourceVm.Source.Id, sourceVm.Source.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
-			//TgDesktopUtils.TgClient.UpdateStateClient($"{TgLocale.GetSourceInfo} | {sourceVm.Source.Id} | {sourceVm.Source.UserName} | {sourceVm.Source.Title}");
-		// Job.
-		
-		TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgLocale.SettingsSource);
-		});
-	}
+    // GetSourceFromStorageCommand
+    [RelayCommand]
+    public async Task OnGetSourceFromStorageAsync(TgSqlTableSourceViewModel sourceVm)
+    {
+        TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+        await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
 
-	/// <summary>
-	/// Download source.
-	/// </summary>
-	/// <param name="sourceVm"></param>
-	public void DownloadSource(TgSqlTableSourceViewModel sourceVm)
-	{
-		// Checks.
-		if (!CheckClientReady()) return;
-		// Scan source.
-		UpdateSource(sourceVm);
-		
-		TgDesktopUtils.RunAction(sourceVm, () =>
-		{
-			// Check directory.
-		if (!Directory.Exists(sourceVm.Source.Directory))
-		{
-			TgDesktopUtils.TgClient.UpdateStateSource(sourceVm.Source.Id, sourceVm.Source.FirstId, $"Directory is not exists! {sourceVm.Source.Directory}");
-			return;
-		}
-			// Download settings.
-		TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(sourceVm);
-			// Job.
-			TgDesktopUtils.TgClient.DownloadAllData(tgDownloadSettings);
-			TgDesktopUtils.TgClient.UpdateStateClient(TgDesktopUtils.TgLocale.SettingsSource);
-		});
-	}
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            for (int i = 0; i < SourcesVms.Count; i++)
+            {
+                if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
+                {
+                    SourcesVms[i].Source.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Source, TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Source.Uid);
+                    break;
+                }
+            }
+        }, false).ConfigureAwait(false);
+    }
 
-	/// <summary>
-	/// Open edit page for source.
-	/// </summary>
-	/// <param name="sourceVm"></param>
-	public void EditSource(TgSqlTableSourceViewModel sourceVm)
-	{
-		TgDesktopUtils.RunAction(sourceVm, () =>
-		{
-			//	TgDesktopUtils.RunAction(() =>
-	//	{
-	//	if (sender is not TextBox textBox)
-	//		return;
-	//	if (textBox.Tag is not long sourceId)
-	//		return;
-	//	if (!Directory.Exists(textBox.Text))
-	//		return;
-	//	TgSqlTableSourceModel sourceDb = TgDesktopUtils.TgSourcesVm.ContextManager.ContextTableSources.Get(sourceId);
-	//	if (!sourceDb.IsExists)
-	//		return;
-	//	sourceDb.Directory = textBox.Text;
-	//	TgDesktopUtils.TgSourcesVm.ContextManager.ContextTableSources.Save(sourceDb);
-	//	});
-		});
-	}
+    // UpdateSourceFromTelegram
+    [RelayCommand]
+    public async Task OnUpdateSourceFromTelegramAsync(TgSqlTableSourceViewModel sourceVm)
+    {
+        TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+        await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
 
-	#endregion
+        await OnGetSourceFromStorageAsync(sourceVm).ConfigureAwait(false);
+    }
+
+    // DownloadCommand
+    [RelayCommand]
+    public async Task OnDownloadAsync(TgSqlTableSourceViewModel sourceVm)
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+            TgDesktopUtils.TgItemSourceVm.ViewModel = this;
+            TgDesktopUtils.TgItemSourceVm.OnDownloadSourceAsync().ConfigureAwait(true);
+            TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync().ConfigureAwait(true);
+        }, false).ConfigureAwait(false);
+    }
+
+    // EditSourceCommand
+    [RelayCommand]
+    public async Task OnEditSourceAsync(TgSqlTableSourceViewModel sourceVm)
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (Application.Current.MainWindow is MainWindow navigationWindow)
+            {
+                TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+                navigationWindow.ShowWindow();
+                navigationWindow.Navigate(typeof(TgItemSourcePage));
+            }
+        }, false).ConfigureAwait(false);
+    }
+
+    #endregion
 }

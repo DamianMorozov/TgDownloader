@@ -45,6 +45,8 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
         IsTableExists(TgSqlConstants.TableProxies) && IsTableExists(TgSqlConstants.TableSources) &&
         IsTableExists(TgSqlConstants.TableVersions);
 
+    public bool IsNotReady => !IsReady;
+
     public bool IsExistsDb => File.Exists(TgAppSettings.AppXml.FileStorage);
 
 
@@ -76,7 +78,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
 	public void DeleteExistsDb()
 	{
-		if (!IsReady)
+		if (IsNotReady)
 			return;
 		File.Delete(TgAppSettings.AppXml.FileStorage);
 	}

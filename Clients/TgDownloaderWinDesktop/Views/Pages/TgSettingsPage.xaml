@@ -7,7 +7,6 @@
 	xmlns:helpers="clr-namespace:TgDownloaderWinDesktop.Helpers"
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Settings, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"

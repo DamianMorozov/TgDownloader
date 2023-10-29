@@ -42,7 +42,7 @@ internal partial class TgMenuHelper
                 void UpdateConsoleTitle(string title) => Console.Title = string.IsNullOrEmpty(title) 
                     ? $"{TgLocale.AppTitleConsoleShort}" : $"{TgLocale.AppTitleConsoleShort} {title}";
                 // Update status.
-                void UpdateStateClient(string message)
+                void UpdateStateMessage(string message)
                 {
                     if (!string.IsNullOrEmpty(message))
                     {
@@ -62,15 +62,13 @@ internal partial class TgMenuHelper
                                 tgDownloadSettings.SourceVm.SourceFirstId)} | {message}"));
                     statusContext.Refresh();
                 }
-                TgClient.UpdateTitle = UpdateConsoleTitle;
-                TgClient.UpdateStateClient = UpdateStateClient;
-                TgClient.UpdateStateSource = UpdateStateSource;
+                TgClient.SetupActions(UpdateConsoleTitle, UpdateStateMessage, UpdateStateSource);
                 // Action.
                 Stopwatch sw = new();
                 sw.Start();
                 action(tgDownloadSettings);
                 sw.Stop();
-                UpdateStateClient(
+                UpdateStateMessage(
                     isScanCount
                         ? $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceScanCount, tgDownloadSettings.SourceVm.SourceScanCurrent)}"
                         : $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceLastId)}");

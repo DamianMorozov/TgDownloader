@@ -8,13 +8,5 @@ namespace TgDownloaderWinDesktop.Common;
 /// </summary>
 public partial class TgPageViewBase : UiPage
 {
-	#region Public and private methods
-
-	protected void UpdatePage(Action action) => this.DispatcherUpdatePage(action);
-
-	protected void UpdateMainWindow(Action action) => TgDispatcherUtils.DispatcherUpdateMainWindow(action);
-
-	protected void UpdateApplication(Action action) => TgDispatcherUtils.DispatcherUpdateApplication(action);
-
-	#endregion
+    //
 }

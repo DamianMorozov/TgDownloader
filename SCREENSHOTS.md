@@ -1,5 +1,12 @@
 # Screenshots
 
+## [0.2.460] - 2023-10-29
+### Added in TgDownloaderWinDesktop
+<p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop.png"></p>
+<p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Proxies.png"></p>
+<p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Sources.png"></p>
+
 ## [0.2.300] - 2023-06-27
 ### Added in TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.300/TgDownloaderWinDesktop.png"></p>

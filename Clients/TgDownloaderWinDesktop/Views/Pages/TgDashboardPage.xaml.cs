@@ -12,9 +12,6 @@ public partial class TgDashboardPage
 
 	public TgDashboardPage()
 	{
-		TgDesktopUtils.TgDashboardVm.AddUpdateUi(TgEnumUpdateType.Page, UpdatePage);
-		TgDesktopUtils.TgDashboardVm.AddUpdateUi(TgEnumUpdateType.Window, UpdateMainWindow);
-		TgDesktopUtils.TgDashboardVm.AddUpdateUi(TgEnumUpdateType.Application, UpdateApplication);
 		TgDesktopUtils.TgDashboardVm.OnNavigatedTo();
 		InitializeComponent();
 	}
