@@ -33,9 +33,10 @@
 
 ## Актуальные скриншоты
 
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
 
-## <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
+<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
