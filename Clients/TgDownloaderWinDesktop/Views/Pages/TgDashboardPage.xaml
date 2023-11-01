@@ -20,7 +20,7 @@
 	<Grid VerticalAlignment="Top">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="1*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<!--  1 row  -->
 		<Border

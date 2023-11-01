@@ -13,7 +13,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgProxiesPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="150"
+	d:DesignHeight="300"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -36,7 +36,9 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="1*" />
 					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
 				</Grid.ColumnDefinitions>
+				<!--  IsLoad  -->
 				<ui:ProgressRing
 					Name="ProgressRingReload"
 					Width="30"
@@ -56,7 +58,7 @@
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=LoadProxiesFromStorageCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}"
 					Icon="ArrowSync12" />
-				<!--  Button Clear  -->
+				<!--  Clear view  -->
 				<ui:Button
 					Grid.Column="2"
 					Margin="2"
@@ -66,6 +68,16 @@
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=ClearViewCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ClearView, Mode=OneWay, IsAsync=True}"
 					Icon="Recycle32" />
+				<!--  Add new  -->
+				<ui:Button
+					Grid.Column="3"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=AddProxyCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=AddNew, Mode=OneWay, IsAsync=True}"
+					Icon="Add32" />
 			</Grid>
 		</Border>
 		<!--  2 row | Grid  -->
@@ -85,7 +97,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyIsConnected, Mode=OneWay, IsAsync=True}"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyConnect, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -109,7 +121,7 @@
 							Margin="2"
 							HorizontalContentAlignment="Center"
 							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyIsDisconnect, Mode=OneWay, IsAsync=True}"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ProxyDisconnect, Mode=OneWay, IsAsync=True}"
 							FontWeight="Bold" />
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
@@ -122,6 +134,30 @@
 								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ClientDisconnectCommand, Mode=OneWay, IsAsync=True}"
 								Icon="Connector24"
 								IsEnabled="True" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<!--  Edit  -->
+				<DataGridTemplateColumn Width="0.5*">
+					<DataGridTemplateColumn.Header>
+						<Label
+							Margin="2"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
+							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}"
+							FontWeight="Bold" />
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<ui:Button
+								Margin="2"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Appearance="Primary"
+								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=EditProxyCommand, Mode=OneWay, IsAsync=True}"
+								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+								Icon="Edit48"
+								ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -218,7 +254,7 @@
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 				<!--  Password  -->
-				<DataGridTemplateColumn Width="1.4*">
+				<DataGridTemplateColumn Width="1.5*">
 					<DataGridTemplateColumn.Header>
 						<Label
 							Margin="2"
@@ -241,7 +277,7 @@
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 				<!--  Secret  -->
-				<DataGridTemplateColumn Width="2*">
+				<DataGridTemplateColumn Width="1.5*">
 					<DataGridTemplateColumn.Header>
 						<Label
 							Margin="2"
@@ -252,13 +288,14 @@
 					</DataGridTemplateColumn.Header>
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<ui:TextBox
+							<ui:PasswordBox
 								Margin="2"
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Stretch"
+								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Proxy.Secret, Mode=OneWay, IsAsync=True}" />
+								Password="{Binding Proxy.Secret, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -280,6 +317,7 @@
 								VerticalAlignment="Center"
 								Appearance="Primary"
 								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=DeleteProxyCommand, Mode=OneWay, IsAsync=True}"
+								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 								Icon="Delete48"
 								IsEnabled="True" />
 						</DataTemplate>

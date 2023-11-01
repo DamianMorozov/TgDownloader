@@ -37,9 +37,9 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableDocumentModel item)
+    public bool Save(TgSqlTableDocumentModel item, bool isGetByUid = false)
     {
-        TgSqlTableDocumentModel itemFind = Get(item);
+        TgSqlTableDocumentModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -65,6 +65,9 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
             AccessHash = accessHash
         });
 
+    public override TgSqlTableDocumentModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableDocumentModel>(uid) ?? CreateNew(true);
+    
     public override TgSqlTableDocumentModel Get(TgSqlTableDocumentModel item) =>
         Get(item.SourceId, item.Id, item.MessageId);
 

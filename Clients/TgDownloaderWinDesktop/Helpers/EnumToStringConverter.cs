@@ -3,21 +3,21 @@
 
 namespace TgDownloaderWinDesktop.Helpers;
 
-public sealed class EnumToBooleanConverter : IValueConverter
+public sealed class EnumToStringConverter : IValueConverter
 {
-	public EnumToBooleanConverter()
+	public EnumToStringConverter()
 	{
 	}
 
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (parameter is not string enumString)
-			throw new ArgumentException($"Exception \tpublic {nameof(EnumToBooleanConverter)}()\r\n");
+			throw new ArgumentException($"Exception \tpublic {nameof(EnumToStringConverter)}()\r\n");
 
 		if (!Enum.IsDefined(typeof(Wpf.Ui.Appearance.ThemeType), value))
-			throw new ArgumentException($"Exception \tpublic {nameof(EnumToBooleanConverter)}()\r\n");
+			throw new ArgumentException($"Exception \tpublic {nameof(EnumToStringConverter)}()\r\n");
 
-		object enumValue = Enum.Parse(typeof(Wpf.Ui.Appearance.ThemeType), enumString);
+		object enumValue = Enum.Parse(typeof(TgEnumProxyType), enumString);
 
 		return enumValue.Equals(value);
 	}
@@ -25,7 +25,7 @@ public sealed class EnumToBooleanConverter : IValueConverter
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (parameter is not string enumString)
-			throw new ArgumentException($"Exception {nameof(EnumToBooleanConverter)}");
+			throw new ArgumentException($"Exception {nameof(EnumToStringConverter)}");
 
 		return Enum.Parse(typeof(Wpf.Ui.Appearance.ThemeType), enumString);
 	}

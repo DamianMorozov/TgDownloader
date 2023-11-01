@@ -53,9 +53,9 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableProxyModel item)
+    public bool Save(TgSqlTableProxyModel item, bool isGetByUid = false)
     {
-        TgSqlTableProxyModel itemFind = Get(item);
+        TgSqlTableProxyModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -70,13 +70,16 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
         }
     }
 
+    public override TgSqlTableProxyModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableProxyModel>(uid) ?? CreateNew(true);
+
     public override TgSqlTableProxyModel Get(TgSqlTableProxyModel item) => 
         Get(item.Type, item.HostName, item.Port);
 
     public TgSqlTableProxyModel Get(TgEnumProxyType proxyType, string hostName, ushort port) => TgSqlUtils.CreateUnitOfWork()
         .FindObject<TgSqlTableProxyModel>(CriteriaOperator.Parse(
             $"{nameof(TgSqlTableProxyModel.Type)}='{proxyType}' AND {nameof(TgSqlTableProxyModel.HostName)}='{hostName}' AND " +
-            $"{nameof(TgSqlTableProxyModel.Port)}={port}")) ?? CreateNew(true); 
+            $"{nameof(TgSqlTableProxyModel.Port)}={port}")) ?? CreateNew(true);
 
     public TgSqlTableProxyModel GetNew()
     {
@@ -90,6 +93,9 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
     }
 
     public override TgSqlTableProxyModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+
+    public IReadOnlyList<TgEnumProxyType> GetProxyTypes() => 
+        Enum.GetValues(typeof(TgEnumProxyType)).Cast<TgEnumProxyType>().ToList();
 
     #endregion
 }

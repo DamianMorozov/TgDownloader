@@ -1,0 +1,103 @@
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
+namespace TgDownloaderWinDesktop.ViewModels;
+
+[DebuggerDisplay("{ToDebugString()}")]
+public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigationAware
+{
+    #region Public and private fields, properties, constructor
+
+    public TgSqlTableProxyViewModel ItemProxyVm { get; private set; } = new(TgSqlUtils.CreateNewProxy());
+    public IReadOnlyList<TgEnumProxyType> ProxyTypes { get; }
+    public TgPageViewModelBase? ViewModel { get; set; }
+    private Guid ProxyUid { get; set; }
+
+    public TgItemProxyViewModel()
+    {
+        ProxyTypes = ContextManager.ProxyRepository.GetProxyTypes();
+    }
+
+    #endregion
+
+    #region Public and private methods
+
+    public void OnNavigatedTo()
+    {
+        //if (!IsInitialized)
+        InitializeViewModel();
+    }
+
+    public void OnNavigatedFrom()
+    {
+        //
+    }
+
+    protected override void InitializeViewModel()
+    {
+        base.InitializeViewModel();
+
+        OnGetProxyFromStorageAsync().ConfigureAwait(false);
+    }
+
+    public void SetItemProxyVm(TgSqlTableProxyViewModel itemProxyVm) =>
+        SetItemProxyVm(itemProxyVm.Proxy, itemProxyVm.Proxy.Uid);
+
+    public void SetItemProxyVm(TgSqlTableProxyModel proxy, Guid? uid = null)
+    {
+        ItemProxyVm.Proxy.Fill(proxy, uid);
+        TgSqlTableProxyViewModel itemBackup = ItemProxyVm;
+        ItemProxyVm = new(itemBackup.Proxy);
+    }
+
+    // GetProxyFromStorageCommand
+    [RelayCommand]
+    public async Task OnGetProxyFromStorageAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        {
+            if (ItemProxyVm.ProxyUid != Guid.Empty)
+                ProxyUid = ItemProxyVm.ProxyUid;
+            TgSqlTableProxyModel proxy = ContextManager.ProxyRepository.Get(ProxyUid);
+            SetItemProxyVm(proxy, proxy.Uid);
+        }, true).ConfigureAwait(true);
+    }
+
+    // ClearViewCommand
+    [RelayCommand]
+    public async Task OnClearViewAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        {
+            if (ItemProxyVm.ProxyUid != Guid.Empty)
+                ProxyUid = ItemProxyVm.ProxyUid;
+            ItemProxyVm.Proxy = ContextManager.ProxyRepository.GetNew();
+        }, false).ConfigureAwait(true);
+    }
+
+    // SaveProxyCommand
+    [RelayCommand]
+    public async Task OnSaveProxyAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        {
+            ContextManager.ProxyRepository.Save(ItemProxyVm.Proxy, true);
+        }, false).ConfigureAwait(false);
+    }
+
+    // ReturnToSectionProxiesCommand
+    [RelayCommand]
+    public async Task OnReturnToSectionProxiesAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (Application.Current.MainWindow is MainWindow navigationWindow)
+            {
+                navigationWindow.ShowWindow();
+                navigationWindow.Navigate(typeof(TgProxiesPage));
+            }
+        }, false).ConfigureAwait(false);
+    }
+
+    #endregion
+}

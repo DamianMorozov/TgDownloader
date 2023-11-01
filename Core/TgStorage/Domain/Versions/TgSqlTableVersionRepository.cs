@@ -39,9 +39,9 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableVersionModel item)
+    public bool Save(TgSqlTableVersionModel item, bool isGetByUid = false)
     {
-        TgSqlTableVersionModel itemFind = Get(item);
+        TgSqlTableVersionModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -55,6 +55,9 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
             return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
         }
     }
+
+    public override TgSqlTableVersionModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableVersionModel>(uid) ?? CreateNew(true);
 
     public override TgSqlTableVersionModel Get(TgSqlTableVersionModel item) =>
         Get(item.Version);

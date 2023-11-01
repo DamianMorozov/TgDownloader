@@ -17,24 +17,37 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
         get => Proxy.Uid;
         set => Proxy = TgSqlTableProxyRepository.Instance.Get(value) ?? TgSqlTableProxyRepository.Instance.GetNew();
     }
+    [DefaultValue(0)]
+    public TgEnumProxyType ProxyType { get => Proxy.Type; set => Proxy.Type = value; }
+    [DefaultValue("")]
+    public string ProxyHostName { get => Proxy.HostName; set => Proxy.HostName = value; }
+    [DefaultValue(0)]
+    public ushort ProxyPort { get => Proxy.Port; set => Proxy.Port = value; }
+    [DefaultValue("")]
+    public string ProxyUserName { get => Proxy.UserName; set => Proxy.UserName = value; }
+    [DefaultValue("")]
+    public string ProxyPassword { get => Proxy.Password; set => Proxy.Password = value; }
+    [DefaultValue("")]
+    public string ProxySecret { get => Proxy.Secret; set => Proxy.Secret = value; }
 
-	public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
+    public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
 
-	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy, Action<TgSqlTableProxyViewModel> deleteProxy)
+    public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy)
 	{
 		Proxy = proxy;
+        ProxyType = proxy.Type;
+        ProxyHostName = proxy.HostName;
+        ProxyPort = proxy.Port;
+        ProxyUserName = proxy.UserName;
+        ProxyPassword = proxy.Password;
+        ProxySecret = proxy.Secret;
     }
 
-	public TgSqlTableProxyViewModel(TgSqlTableProxyModel proxy)
-	{
-		Proxy = proxy;
-	}
+    #endregion
 
-	#endregion
+    #region Public and private methods
 
-	#region Public and private methods
-
-	public override string ToString() => PrettyName;
+    public override string ToString() => PrettyName;
 
 	#endregion
 }

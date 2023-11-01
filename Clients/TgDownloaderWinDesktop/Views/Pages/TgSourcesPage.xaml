@@ -13,7 +13,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgSourcesPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="120"
+	d:DesignHeight="300"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">

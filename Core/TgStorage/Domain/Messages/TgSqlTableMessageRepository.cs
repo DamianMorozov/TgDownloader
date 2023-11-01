@@ -39,9 +39,9 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
 
     public bool DeleteNew() => Delete(GetNew());
     
-    public bool Save(TgSqlTableMessageModel item)
+    public bool Save(TgSqlTableMessageModel item, bool isGetByUid = false)
     {
-        TgSqlTableMessageModel itemFind = Get(item);
+        TgSqlTableMessageModel itemFind = isGetByUid ? Get(item.Uid) :  Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -66,6 +66,9 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
         Size = size,
         Message = message
     });
+
+    public override TgSqlTableMessageModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableMessageModel>(uid) ?? CreateNew(true);
 
     public override TgSqlTableMessageModel Get(TgSqlTableMessageModel item) => 
         Get(item.SourceId, item.Id);

@@ -20,7 +20,7 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="1*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<!--  1 row | Actions  -->
 		<Border
@@ -33,12 +33,14 @@
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="0.5*" />
+					<ColumnDefinition Width="1.0*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 				</Grid.ColumnDefinitions>
+				<!--  IsLoad  -->
 				<ui:ProgressRing
 					Name="ProgressRingReload"
 					Grid.Column="0"
@@ -49,9 +51,19 @@
 					VerticalAlignment="Center"
 					IsIndeterminate="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=IsLoad, Mode=OneWay, IsAsync=True}"
 					Visibility="Visible" />
-				<!--  Get from storage  -->
+				<!--  Return  -->
 				<ui:Button
 					Grid.Column="1"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ReturnToSectionSourcesCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Return, Mode=OneWay, IsAsync=True}"
+					Icon="ArrowLeft48" />
+				<!--  Get from storage  -->
+				<ui:Button
+					Grid.Column="2"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -62,7 +74,7 @@
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
 				<!--  Update from Telegram  -->
 				<ui:Button
-					Grid.Column="2"
+					Grid.Column="3"
 					Margin="3"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -74,7 +86,7 @@
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
 				<!--  Download from Telegram  -->
 				<ui:Button
-					Grid.Column="3"
+					Grid.Column="4"
 					Margin="3"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -86,7 +98,7 @@
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainDownload, Mode=OneWay, IsAsync=True}" />
 				<!--  Clear view  -->
 				<ui:Button
-					Grid.Column="4"
+					Grid.Column="5"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -96,7 +108,7 @@
 					Icon="Recycle32" />
 				<!--  Save  -->
 				<ui:Button
-					Grid.Column="5"
+					Grid.Column="6"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"

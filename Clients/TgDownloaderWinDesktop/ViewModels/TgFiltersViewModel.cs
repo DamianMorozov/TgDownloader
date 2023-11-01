@@ -19,8 +19,8 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-		if (!IsInitialized)
-			InitializeViewModel();
+		//if (!IsInitialized)
+		InitializeViewModel();
 	}
 
 	public void OnNavigatedFrom()

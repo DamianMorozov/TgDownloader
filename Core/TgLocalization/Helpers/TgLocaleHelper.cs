@@ -179,6 +179,9 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Public and private fields, properties, constructor
 
+    public string TgDirectoryIsExists => "The directory is exist";
+    public string TgDirectoryIsNotExists => "The directory is not exists";
+	public string AddNew => "Add new";
 	public string Clear => "Clear";
 	public string ClearView => "Clear view";
 	public string DirectoryCreate => "Create directory";
@@ -186,6 +189,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string DirectoryDestType => "Type destination directory";
 	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "The directory is not exists!" : $"The directory \"{dir}\" is not exists!";
 	public string Empty => "<Empty>";
+	public string FieldProxyHostName => "Hostname";
+	public string FieldProxyPort => "Port";
 	public string FileIsAlreadyExists => "File is already exists!";
 	public string FileIsAlreadyExistsSpecify(string file) => $"File \"{file}\" is already exists!";
 	public string FileIsExists => "file is exists";
@@ -194,7 +199,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FileIsNotExistsSpecify(string file) => $"File \"{file}\" is not exists!";
 	public string FileSession => "File session";
 	public string FileSessionExists => "File session is exists";
-	public string FileStorage => "File Storage";
+	public string FileStorage => "File storage";
 	public string FileStorageExists => "File storage is exists";
 	public string FileStorageName => "Storage file name";
 	public string FileStorageSetDefaultName(string fileName) => $"Set default file name '{fileName}'";
@@ -204,6 +209,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string GetSources => "Get sources";
 	public string Load=> "Load";
 	public string MoveUpDown => "(Move up and down to switch select)";
+	public string Return => "Return";
 	public string Save => "Save";
 	public string SaveToStorage=> "Save to Storage";
 	public string SettingCheck => "Check";
@@ -247,8 +253,6 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string TgMustClientConnect => "You must connect the client before";
 	public string TgMustSetSettings => "You must setup the settings before";
 	public string TgSettingDirectory => "Directory";
-    public string TgDirectoryIsExists => "The directory is exist";
-    public string TgDirectoryIsNotExists => "The directory is not exists";
 	public string TgSettings => "TG settings";
 	public string TgSettingsDestDirectory => "Destination";
 	public string TgSettingsIsJoinFileNameWithMessageId => "Join message ID";
@@ -306,20 +310,20 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	public string FieldAbout => "About";
 	public string FieldAll => "All";
+	public string FieldChanged => "Changed";
 	public string FieldCount => "Count";
 	public string FieldDb => "DB";
-	public string FieldChanged => "Changed";
 	public string FieldDir => "Dir";
+	public string FieldDown => "Down";
 	public string FieldEdit => "Edit";
 	public string FieldFirstId => "First ID";
-	public string FieldLastId => "Last ID";
 	public string FieldId => "ID";
 	public string FieldIsAutoUpdate => "Auto-update";
-	public string FieldIsReady => "Is ready";
 	public string FieldIsCountComplete => "Count complete";
+	public string FieldIsReady => "Is ready";
+	public string FieldLastId => "Last ID";
 	public string FieldLinkTelegramApps => "https://my.telegram.org/apps/";
 	public string FieldLinkTgDownloader => "https://github.com/DamianMorozov/TgDownloader";
-	public string FieldDown => "Down";
 	public string FieldLoad => "Load";
 	public string FieldPercent => "Percent";
 	public string FieldPercentSpec => "%";
@@ -327,6 +331,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldSourceId => "Source ID";
 	public string FieldTgDownloader => "TgDownloader on GitHub";
 	public string FieldTitle => "Title";
+	public string FieldUid => "UID";
 	public string FieldUpd => "Upd";
 	public string FieldUserName => "Username";
 
@@ -353,6 +358,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
     public string ProxiesUserName => "User name";
     public string ProxiesUserPassword => "Password";
     public string ProxiesUserSecret => "Secret";
+    public string ProxyConnect => "Connect";
+    public string ProxyDisconnect => "Disconnect";
     public string ProxyIsConnected => "Proxy is connected";
     public string ProxyIsDisconnect => "Proxy is disconnected";
 

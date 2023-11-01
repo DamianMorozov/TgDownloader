@@ -15,6 +15,7 @@ public static class TgDesktopUtils
     public static TgClientViewModel TgClientVm { get; } = new();
     public static TgDashboardViewModel TgDashboardVm { get; } = new();
     public static TgFiltersViewModel TgFiltersVm { get; } = new();
+    public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
     public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
     public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
     public static TgProxiesViewModel TgProxiesVm { get; } = new();

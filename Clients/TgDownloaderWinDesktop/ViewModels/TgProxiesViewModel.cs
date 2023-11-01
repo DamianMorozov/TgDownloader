@@ -16,8 +16,8 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-		if (!IsInitialized)
-			InitializeViewModel();
+		//if (!IsInitialized)
+		InitializeViewModel();
 	}
 
 	public void OnNavigatedFrom()
@@ -80,5 +80,35 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         }, false).ConfigureAwait(false);
 	}
 
-	#endregion
+    // EditProxyCommand
+    [RelayCommand]
+    public async Task OnEditProxyAsync(TgSqlTableProxyViewModel proxyVm)
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (Application.Current.MainWindow is MainWindow navigationWindow)
+            {
+                TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(proxyVm);
+                navigationWindow.ShowWindow();
+                navigationWindow.Navigate(typeof(TgItemProxyPage));
+            }
+        }, false).ConfigureAwait(false);
+    }
+
+    // AddProxyCommand
+    [RelayCommand]
+    public async Task OnAddProxyAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (Application.Current.MainWindow is MainWindow navigationWindow)
+            {
+                TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(new TgSqlTableProxyViewModel(new TgSqlTableProxyModel()));
+                navigationWindow.ShowWindow();
+                navigationWindow.Navigate(typeof(TgItemProxyPage));
+            }
+        }, false).ConfigureAwait(false);
+    }
+
+    #endregion
 }

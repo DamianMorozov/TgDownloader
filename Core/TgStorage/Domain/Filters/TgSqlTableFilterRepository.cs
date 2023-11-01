@@ -39,9 +39,9 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableFilterModel item)
+    public bool Save(TgSqlTableFilterModel item, bool isGetByUid = false)
     {
-        TgSqlTableFilterModel itemFind = Get(item);
+        TgSqlTableFilterModel itemFind = isGetByUid ? Get(item.Uid) :  Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -55,6 +55,9 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
             return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
         }
     }
+
+    public override TgSqlTableFilterModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableFilterModel>(uid) ?? CreateNew(true);
 
     public override TgSqlTableFilterModel Get(TgSqlTableFilterModel item) => 
         Get(item.FilterType, item.Name);

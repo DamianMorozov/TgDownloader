@@ -51,6 +51,8 @@ public partial class App
 			services.AddTransient<TgProxiesViewModel>();
             services.AddTransient<TgItemSourcePage>();
             services.AddTransient<TgItemSourceViewModel>();
+            services.AddTransient<TgItemProxyPage>();
+            services.AddTransient<TgItemProxyViewModel>();
 			// Configuration
             services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
 		}).Build();

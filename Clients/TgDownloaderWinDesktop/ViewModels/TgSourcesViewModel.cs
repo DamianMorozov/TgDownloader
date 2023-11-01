@@ -17,8 +17,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 
     public void OnNavigatedTo()
     {
-        if (!IsInitialized)
-            InitializeViewModel();
+        //if (!IsInitialized)
+        InitializeViewModel();
     }
 
     public void OnNavigatedFrom()
@@ -138,9 +138,10 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     }
 
     // SortViewCommand
-    
+
+    // SortViewCommand
     [RelayCommand]
-    public async Task OnSortView()
+    public async Task OnSortViewAsync()
     {
         await TgDesktopUtils.RunActionAsync(this, () =>
         {

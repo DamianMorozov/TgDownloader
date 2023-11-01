@@ -15,6 +15,11 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     public int Progress => Source.FirstId * 100 / Source.Count;
     public string ProgressString => $"{Progress:###.##} % | {Source.FirstId} from {Source.Count}";
     public bool IsComplete => Source.FirstId >= Source.Count;
+    public Guid SourceUid
+    {
+        get => Source.Uid;
+        set => Source = TgSqlTableSourceRepository.Instance.Get(value) ?? TgSqlTableSourceRepository.Instance.GetNew();
+    }
     [DefaultValue(0)]
     public long SourceId { get => Source.Id; set => Source.Id = value; }
     [DefaultValue("")]
@@ -43,8 +48,6 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
     public bool IsReadySourceId => SourceId is not 0;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
-    public bool IsReadySourceUserName => !Equals(SourceUserName, string.Empty);
-    public bool IsReadyAbout => !string.IsNullOrEmpty(SourceAbout);
 
     public TgSqlTableSourceViewModel(TgSqlTableSourceModel source)
     {

@@ -86,8 +86,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public void OnNavigatedTo()
     {
-        if (!IsInitialized)
-            InitializeViewModel();
+        //if (!IsInitialized)
+        InitializeViewModel();
     }
 
     public void OnNavigatedFrom()

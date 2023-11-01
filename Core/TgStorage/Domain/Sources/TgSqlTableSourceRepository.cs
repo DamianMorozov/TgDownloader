@@ -61,9 +61,9 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableSourceModel item)
+    public bool Save(TgSqlTableSourceModel item, bool isGetByUid = false)
     {
-        TgSqlTableSourceModel itemFind = Get(item);
+        TgSqlTableSourceModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -90,6 +90,9 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
             FirstId = itemVm.SourceFirstId,
             IsAutoUpdate = itemVm.IsAutoUpdate
         });
+
+    public override TgSqlTableSourceModel Get(Guid uid) =>
+        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableSourceModel>(uid) ?? CreateNew(true);
 
     public override TgSqlTableSourceModel Get(TgSqlTableSourceModel item) =>
         Get(item.Id);

@@ -37,7 +37,7 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
 
     public bool DeleteNew() => Delete(GetNew());
 
-    public bool Save(TgSqlTableAppModel item)
+    public bool Save(TgSqlTableAppModel item, bool isGetByUid = false)
     {
         TgSqlTableAppModel itemFind = Get(item);
         if (itemFind.IsNotExists)

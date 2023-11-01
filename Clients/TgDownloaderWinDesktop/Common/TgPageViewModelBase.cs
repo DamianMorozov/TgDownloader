@@ -15,7 +15,6 @@ public partial class TgPageViewModelBase : TgViewModelBase
     protected bool IsInitialized;
     public Action<Action> UpdateApplication { get; private set; }
     public Action<Action> UpdateMainWindow { get; private set; }
-    //public Action<Action> UpdatePage { get; private set; }
     public Action<Action> UpdateUserControl { get; private set; }
     public Action<Action> UpdateWindow { get; private set; }
     public bool IsFileSession { get; set; }
@@ -52,7 +51,6 @@ public partial class TgPageViewModelBase : TgViewModelBase
         Dispatcher = Dispatcher.CurrentDispatcher;
 
         UpdateUserControl = _ => { };
-        //UpdatePage = _ => { };
         UpdateWindow = _ => { };
         UpdateMainWindow = _ => { };
         UpdateApplication = _ => { };

@@ -10,7 +10,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
     public TgSqlTableSourceViewModel ItemSourceVm { get; private set; } = new();
     public TgPageViewModelBase? ViewModel { get; set; }
-    private long SourceId { get; set; }
+    private Guid SourceUid { get; set; }
 
     public TgItemSourceViewModel()
 	{
@@ -23,8 +23,8 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
 	public void OnNavigatedTo()
 	{
-		if (!IsInitialized)
-			InitializeViewModel();
+		//if (!IsInitialized)
+		InitializeViewModel();
     }
 
 	public void OnNavigatedFrom()
@@ -74,9 +74,9 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
         {
-            if (SourceId < 2)
-                SourceId = ItemSourceVm.SourceId;
-            var source = ContextManager.SourceRepository.Get(SourceId);
+            if (ItemSourceVm.SourceUid != Guid.Empty)
+                SourceUid = ItemSourceVm.SourceUid;
+            TgSqlTableSourceModel source = ContextManager.SourceRepository.Get(SourceUid);
             SetItemSourceVm(source, source.Uid);
         }, true).ConfigureAwait(true);
     }
@@ -90,8 +90,8 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
         await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
         {
-            if (SourceId < 2)
-                SourceId = ItemSourceVm.SourceId;
+            if (ItemSourceVm.SourceUid != Guid.Empty)
+                SourceUid = ItemSourceVm.SourceUid;
             // Collect chats from Telegram.
             if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
                 TgDesktopUtils.TgClient.CollectAllChatsDesktopAsync(_ => { }, _ => { });
@@ -144,20 +144,33 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
         {
-            if (SourceId < 2)
-                SourceId = ItemSourceVm.SourceId;
+            if (ItemSourceVm.SourceUid != Guid.Empty)
+                SourceUid = ItemSourceVm.SourceUid;
             ItemSourceVm.Source = ContextManager.SourceRepository.GetNew();
         }, false).ConfigureAwait(true);
     }
 
     // SaveSourceCommand
     [RelayCommand]
-    public async Task OnSaveSourceAsyTask()
+    public async Task OnSaveSourceAsync()
     {
         await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
         {
-            if (ItemSourceVm.SourceId > 2)
-                ContextManager.SourceRepository.Save(ItemSourceVm.Source);
+            ContextManager.SourceRepository.Save(ItemSourceVm.Source, true);
+        }, false).ConfigureAwait(false);
+    }
+
+    // ReturnToSectionSourcesCommand
+    [RelayCommand]
+    public async Task OnReturnToSectionSourcesAsync()
+    {
+        await TgDesktopUtils.RunActionAsync(this, () =>
+        {
+            if (Application.Current.MainWindow is MainWindow navigationWindow)
+            {
+                navigationWindow.ShowWindow();
+                navigationWindow.Navigate(typeof(TgSourcesPage));
+            }
         }, false).ConfigureAwait(false);
     }
 

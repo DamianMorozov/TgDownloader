@@ -69,10 +69,12 @@ public static class TgSqlUtils
         }
 #if DEBUG
         catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
 #else
         catch (Exception)
-#endif
         {
+#endif
             uow.RollbackTransaction();
             throw;
         }
