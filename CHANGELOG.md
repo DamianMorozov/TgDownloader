@@ -8,11 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.480] - 2023-11-01
+### Added in TgDownloaderWinDesktop
+- Add new proxy
+- Edit proxy
+- Return to proxies section
+- Return to sources section
+### Fixed in TgDownloaderWinDesktop
+- Delete proxy
+
 ## [0.2.460] - 2023-10-29
 ### Fixed in TgDownloaderConsole
 - Refactoring and tests
 ### Added in TgDownloaderConsole
-- The progress of the download in the console title.
+- The progress of the download in the console title
 ### Fixed in TgDownloaderWinDesktop
 - Refactoring and tests
 ### Added in TgDownloaderWinDesktop

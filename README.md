@@ -7,13 +7,6 @@
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
-## <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
-
-## <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
-
 ## Overview
 Download files of the Telegram channels or groups you are a member of.
 
@@ -37,3 +30,12 @@ Please click the `star` button if this tool was helpful to you.
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 - [TgDownloader News](https://t.me/TgDownloader)
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
+
+## Actual screenshots
+
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
+## <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
+
+## <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
