@@ -116,6 +116,8 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 			throw new(TgLocaleHelper.Instance.TablesMessagesException);
 		if (!CheckTableSources())
 			throw new(TgLocaleHelper.Instance.TablesSourcesException);
+		if (!CheckTableProxies())
+			throw new(TgLocaleHelper.Instance.TablesProxiesException);
 		if (!CheckTableVersions())
 			throw new(TgLocaleHelper.Instance.TablesVersionsException);
 		FillTableVersions();
