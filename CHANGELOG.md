@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.500] - 2023-11-03
+### Fixed in TgDownloaderWinDesktop
+- Clearing the application table
+- Message when client connects to Telegram server
+- Correct loading of empty sources on first download
+### Added
+- Guide to setting up the desktop version
+
 ## [0.2.490] - 2023-11-02
 ### Fixed
 - Creating a new storage

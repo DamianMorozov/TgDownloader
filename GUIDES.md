@@ -1,3 +1,6 @@
+## Desktop version
+- [Guide to setting up the desktop version](GUIDE-SET-DESKTOP.md)
+
 ## Run under Windows OS
 - Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
 - Change the current directory to `cd TgDownloader v1.2.333`

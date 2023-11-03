@@ -1,3 +1,6 @@
+## Десктоп версия
+- [Руководство по настройке десктоп версии](GUIDE-SET-DESKTOP-RUS.md)
+
 ## Запуск под ОС Windows
 - Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`.
 - Измените текущий каталог `cd TgDownloader v1.2.333`.
