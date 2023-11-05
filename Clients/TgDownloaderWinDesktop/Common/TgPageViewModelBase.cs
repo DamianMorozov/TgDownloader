@@ -67,13 +67,18 @@ public partial class TgPageViewModelBase : TgViewModelBase
         IsInitialized = true;
     }
 
+    protected virtual async Task InitializeViewModelAsync()
+    {
+        IsInitialized = true;
+    }
+
     /// <summary>
     /// Update state client message.
     /// </summary>
     /// <param name="message"></param>
-    public virtual void UpdateStateConnect(string message)
+    public virtual async Task UpdateStateConnectAsync(string message)
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             StateConnectDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateConnectMsg = message;
@@ -84,9 +89,9 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// Update state client message.
     /// </summary>
     /// <param name="message"></param>
-    public virtual void UpdateStateProxy(string message)
+    public virtual async Task UpdateStateProxyAsync(string message)
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             StateProxyDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateProxyMsg = message;
@@ -100,9 +105,9 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// <param name="lineNumber"></param>
     /// <param name="memberName"></param>
     /// <param name="message"></param>
-    public virtual void UpdateStateException(string filePath, int lineNumber, string memberName, string message)
+    public virtual async Task UpdateStateExceptionAsync(string filePath, int lineNumber, string memberName, string message)
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateExceptionMsg = $"Line {lineNumber} | Member {memberName} | {message}";
@@ -113,9 +118,9 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// Update state source message.
     /// </summary>
     /// <param name="message"></param>
-    public virtual void UpdateStateMessage(string message)
+    public virtual async Task UpdateStateMessageAsync(string message)
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             StateMessageDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateMessageMsg = message;
@@ -128,9 +133,9 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// <param name="sourceId"></param>
     /// <param name="messageId"></param>
     /// <param name="message"></param>
-    public virtual void UpdateStateSource(long sourceId, int messageId, string message)
+    public virtual async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateSourceMsg = $"{sourceId} | {messageId} | {message}";
@@ -138,81 +143,6 @@ public partial class TgPageViewModelBase : TgViewModelBase
     }
 
     public bool CheckClientReady() => TgDesktopUtils.TgClient.CheckClientIsReady();
-
-    //private void AddUpdateUserControl(Action<Action> updateUi)
-    //{
-    //    if (UpdateUserControl.GetInvocationList().Length == 0)
-    //    {
-    //        UpdateUserControl = updateUi;
-    //        return;
-    //    }
-    //    if (UpdateUserControl.GetInvocationList().Length > 0)
-    //    {
-    //        IEnumerable<string> namesExists = UpdateUserControl.GetInvocationList().Select(item => item.Method.Name);
-    //        if (!namesExists.Contains(updateUi.Method.Name))
-    //            UpdateUserControl += updateUi;
-    //    }
-    //}
-
-    //private void AddUpdatePage(Action<Action> updateUi)
-    //{
-    //    if (UpdatePage.GetInvocationList().Length == 0)
-    //    {
-    //        UpdatePage = updateUi;
-    //        return;
-    //    }
-    //    if (UpdatePage.GetInvocationList().Length > 0)
-    //    {
-    //        IEnumerable<string> namesExists = UpdatePage.GetInvocationList().Select(item => item.Method.Name);
-    //        if (!namesExists.Contains(updateUi.Method.Name))
-    //            UpdatePage += updateUi;
-    //    }
-    //}
-
-    //private void AddUpdateWindow(Action<Action> updateUi)
-    //{
-    //    if (UpdateWindow.GetInvocationList().Length == 0)
-    //    {
-    //        UpdateWindow = updateUi;
-    //        return;
-    //    }
-    //    if (UpdateWindow.GetInvocationList().Length > 0)
-    //    {
-    //        IEnumerable<string> namesExists = UpdateWindow.GetInvocationList().Select(item => item.Method.Name);
-    //        if (!namesExists.Contains(updateUi.Method.Name))
-    //            UpdateWindow += updateUi;
-    //    }
-    //}
-
-    //private void AddUpdateMainWindow(Action<Action> updateUi)
-    //{
-    //    if (UpdateMainWindow.GetInvocationList().Length == 0)
-    //    {
-    //        UpdateMainWindow = updateUi;
-    //        return;
-    //    }
-    //    if (UpdateMainWindow.GetInvocationList().Length > 0)
-    //    {
-    //        IEnumerable<string> namesExists = UpdateMainWindow.GetInvocationList().Select(item => item.Method.Name);
-    //        if (!namesExists.Contains(updateUi.Method.Name))
-    //            UpdateMainWindow += updateUi;
-    //    }
-    //}
-
-    //private void AddUpdateApp(Action<Action> updateUi)
-    //{
-    //    if (UpdateApplication.GetInvocationList().Length == 0)
-    //    {
-    //        UpdateApplication = updateUi;
-    //        return;
-    //    }
-    //    if (UpdateApplication.GetInvocationList().Length > 0)
-    //    {
-    //        IEnumerable<string> namesExists = UpdateApplication.GetInvocationList().Select(item => item.Method.Name);
-    //        if (!namesExists.Contains(updateUi.Method.Name))
-    //            UpdateApplication += updateUi;
-    //    }
-    //}
 
     #endregion
 }

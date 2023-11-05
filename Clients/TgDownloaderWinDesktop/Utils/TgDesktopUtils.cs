@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System;
 namespace TgDownloaderWinDesktop.Utils;
 
 /// <summary>
@@ -31,9 +30,9 @@ public static class TgDesktopUtils
     /// </summary>
     public static void SetupClient()
     {
-        TgClient.SetupActions(TgClientVm.UpdateStateConnect, TgClientVm.UpdateStateProxy,
-            TgClientVm.UpdateStateMessage, TgClientVm.UpdateStateSource, TgClientVm.UpdateStateException,
-            TgClientVm.AfterClientConnect, TgClientVm.GetClientDesktopConfig);
+        TgClient.SetupActions(message => TgClientVm.UpdateStateConnectAsync(message), message => TgClientVm.UpdateStateProxyAsync(message),
+            message => TgClientVm.UpdateStateMessageAsync(message), (sourceId, messageId, message) => TgClientVm.UpdateStateSourceAsync(sourceId, messageId, message), (filePath, lineNumber, memberName, message) => TgClientVm.UpdateStateExceptionAsync(filePath, lineNumber, memberName, message),
+            TgClientVm.AfterClientConnectAsync, TgClientVm.GetClientDesktopConfig);
     }
 
     #endregion
@@ -193,27 +192,34 @@ public static class TgDesktopUtils
         }
     }
 
-    public static async Task RunFuncAsync(TgPageViewModelBase viewModel, Func<Task> func, bool isUpdateLoad)
+    public static async Task RunFuncAsync(TgPageViewModelBase viewModel, Func<Task> action, bool isUpdateLoad)
     {
         await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+
+        async Task Job()
+        {
+            if (isUpdateLoad)
+                viewModel.IsLoad = true;
+            TgClientVm.Exception.Clear();
+            await action();
+        }
+
+        void JobFinally()
+        {
+            viewModel.IsLoad = false;
+        }
 
         try
         {
             if (viewModel.Dispatcher.CheckAccess())
             {
-                if (isUpdateLoad)
-                    viewModel.IsLoad = true;
-                TgClientVm.Exception.Clear();
-                await func();
+                await Job();
             }
             else
             {
-                viewModel.Dispatcher.InvokeAsync(() =>
+                await viewModel.Dispatcher.InvokeAsync(async () =>
                 {
-                    if (isUpdateLoad)
-                        viewModel.IsLoad = true;
-                    TgClientVm.Exception.Clear();
-                    func();
+                    await Job();
                 });
             }
         }
@@ -222,16 +228,16 @@ public static class TgDesktopUtils
             if (viewModel.Dispatcher.CheckAccess())
                 TgClientVm.Exception.Set(ex);
             else
-                viewModel.Dispatcher.InvokeAsync(() => { TgClientVm.Exception.Set(ex); });
+                await viewModel.Dispatcher.InvokeAsync(() => TgClientVm.Exception.Set(ex));
         }
         finally
         {
             if (isUpdateLoad)
             {
                 if (viewModel.Dispatcher.CheckAccess())
-                    viewModel.IsLoad = false;
+                    JobFinally();
                 else
-                    viewModel.Dispatcher.InvokeAsync(() => { viewModel.IsLoad = false; });
+                    await viewModel.Dispatcher.InvokeAsync(JobFinally);
             }
         }
     }

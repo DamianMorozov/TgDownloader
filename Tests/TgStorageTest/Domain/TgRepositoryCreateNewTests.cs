@@ -109,31 +109,31 @@ internal class TgRepositoryCreateNewTests
                 {
                     case var cls when cls == typeof(TgSqlTableAppModel):
                         if (CreateNew<TgSqlTableAppModel>() is TgSqlTableAppModel app)
-                            TgStorageTestsUtils.AppRepository.Get(app);
+                            TgStorageTestsUtils.AppRepository.GetAsync(app).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableDocumentModel):
                         if (CreateNew<TgSqlTableDocumentModel>() is TgSqlTableDocumentModel doc)
-                            TgStorageTestsUtils.DocumentRepository.Get(doc);
+                            TgStorageTestsUtils.DocumentRepository.GetAsync(doc).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableFilterModel):
                         if (CreateNew<TgSqlTableFilterModel>() is TgSqlTableFilterModel filter)
-                            TgStorageTestsUtils.FilterRepository.Get(filter);
+                            TgStorageTestsUtils.FilterRepository.GetAsync(filter).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableMessageModel):
                         if (CreateNew<TgSqlTableMessageModel>() is TgSqlTableMessageModel message)
-                            TgStorageTestsUtils.DataCore.ContextManager.MessageRepository.Get(message);
+                            TgStorageTestsUtils.DataCore.ContextManager.MessageRepository.GetAsync(message).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableProxyModel):
                         if (CreateNew<TgSqlTableProxyModel>() is TgSqlTableProxyModel proxy)
-                            TgStorageTestsUtils.ProxyRepository.Get(proxy);
+                            TgStorageTestsUtils.ProxyRepository.GetAsync(proxy).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableSourceModel):
                         if (CreateNew<TgSqlTableSourceModel>() is TgSqlTableSourceModel source)
-                            TgStorageTestsUtils.SourceRepository.Get(source);
+                            TgStorageTestsUtils.SourceRepository.GetAsync(source).GetAwaiter().GetResult();
                         break;
                     case var cls when cls == typeof(TgSqlTableVersionModel):
                         if (CreateNew<TgSqlTableVersionModel>() is TgSqlTableVersionModel version)
-                            TgStorageTestsUtils.VersionRepository.Get(version);
+                            TgStorageTestsUtils.VersionRepository.GetAsync(version).GetAwaiter().GetResult();
                         break;
                 }
                 TestContext.WriteLine();

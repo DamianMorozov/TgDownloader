@@ -18,7 +18,7 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     public Guid SourceUid
     {
         get => Source.Uid;
-        set => Source = TgSqlTableSourceRepository.Instance.Get(value) ?? TgSqlTableSourceRepository.Instance.GetNew();
+        set => Source = TgSqlTableSourceRepository.Instance.GetAsync(value).Result ?? TgSqlTableSourceRepository.Instance.GetNewAsync().Result;
     }
     [DefaultValue(0)]
     public long SourceId { get => Source.Id; set => Source.Id = value; }

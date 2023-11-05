@@ -17,10 +17,12 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     public string Notifications { get; set; }
     public string Password { get; set; }
     public string VerificationCode { get; set; }
+    public string ServerMessage { get; set; }
     public Brush BackgroundVerificationCode { get; set; }
     public Brush BackgroundPassword { get; set; }
     public Brush BackgroundFirstName { get; set; }
     public Brush BackgroundLastName { get; set; }
+    public Brush BackgroundServerMessage { get; set; }
     private bool _isNeedVerificationCode;
     public bool IsNeedVerificationCode
     {
@@ -64,7 +66,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public TgClientViewModel()
     {
-        AppVm = new(ContextManager.AppRepository.GetFirst());
+        AppVm = new(ContextManager.AppRepository.GetFirstAsync().GetAwaiter().GetResult());
         ProxyVm = new(new());
         ProxiesVms = new();
 
@@ -77,7 +79,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         BackgroundPassword = new SolidBrush(Color.Transparent);
         BackgroundFirstName = new SolidBrush(Color.Transparent);
         BackgroundLastName = new SolidBrush(Color.Transparent);
+        BackgroundServerMessage = new SolidBrush(Color.Transparent);
         StateConnectMsg = string.Empty;
+        ServerMessage = string.Empty;
     }
 
     #endregion
@@ -86,45 +90,38 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public void OnNavigatedTo()
     {
-        //if (!IsInitialized)
-        InitializeViewModel();
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
     }
 
-    public void OnNavigatedFrom()
+    public void OnNavigatedFrom() { }
+
+    protected override async Task InitializeViewModelAsync()
     {
-        //
+        await base.InitializeViewModelAsync();
+
+        IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+        await LoadProxiesForClientAsync();
     }
 
-    protected override void InitializeViewModel()
+    public async Task LoadProxiesForClientAsync()
     {
-        base.InitializeViewModel();
-
-        TgDesktopUtils.RunAction(this, () =>
-        {
-            IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
-        }, true);
-        LoadProxiesForClient();
-    }
-
-    public void LoadProxiesForClient()
-    {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             ProxiesVms.Clear();
-            ProxiesVms.Add(new(ContextManager.ProxyRepository.GetNew()));
+            ProxiesVms.Add(new(await ContextManager.ProxyRepository.GetNewAsync()));
             foreach (TgSqlTableProxyModel proxy in ContextManager.ProxyRepository.GetEnumerable())
             {
                 ProxiesVms.Add(new(proxy));
             }
 
-            ProxyVm.Proxy = ContextManager.ProxyRepository.Get(AppVm.App.ProxyUid) ??
-                            ContextManager.ProxyRepository.GetNew();
+            ProxyVm.Proxy = await ContextManager.ProxyRepository.GetAsync(AppVm.App.ProxyUid) ??
+                await ContextManager.ProxyRepository.GetNewAsync();
         }, false);
     }
 
-    public void AfterClientConnect()
+    public async Task AfterClientConnectAsync()
     {
-        TgDesktopUtils.RunAction(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             //TgDesktopUtils.TgClient.UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
             //    ? TgDesktopUtils.TgLocale.MenuClientIsConnected : TgDesktopUtils.TgLocale.MenuClientIsDisconnected);
@@ -197,19 +194,24 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     [RelayCommand]
     public async Task OnClientConnectAsync(TgSqlTableProxyViewModel? proxyVm = null)
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await OnAppSaveAsync();
+
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid)
                 return;
-            TgDesktopUtils.TgClient.ConnectSessionDesktop(proxyVm ?? ProxyVm);
-        }, false).ConfigureAwait(false);
+            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm ?? ProxyVm);
+        }, true);
+
+        ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExists 
+            ? TgDesktopUtils.TgClientVm.Exception.Message : string.Empty;
     }
 
     // ClientDisconnectCommand
     [RelayCommand]
     public async Task OnClientDisconnectAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             TgDesktopUtils.TgClient.Disconnect();
         }, false).ConfigureAwait(false);
@@ -219,9 +221,10 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     [RelayCommand]
     public async Task OnAppSaveAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            ContextManager.AppRepository.Save(AppVm.App);
+            await ContextManager.AppRepository.DeleteAllItemsAsync();
+            await ContextManager.AppRepository.SaveAsync(AppVm.App);
         }, false).ConfigureAwait(false);
     }
 
@@ -229,9 +232,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     [RelayCommand]
     public async Task OnAppClearAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            AppVm.App = ContextManager.AppRepository.GetNew();
+            AppVm.App = await ContextManager.AppRepository.GetNewAsync();
         }, false).ConfigureAwait(true);
     }
 
@@ -239,10 +242,22 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     [RelayCommand]
     public async Task OnAppLoadAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            AppVm.App = ContextManager.AppRepository.GetFirst();
+            AppVm.App = await ContextManager.AppRepository.GetFirstAsync();
         }, false).ConfigureAwait(false);
+    }
+    
+    // AppEmptyCommand
+    [RelayCommand]
+    public async Task OnAppEmptyAsync()
+    {
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
+        {
+            await ContextManager.AppRepository.DeleteAllItemsAsync();
+        }, false).ConfigureAwait(true);
+
+        await OnAppLoadAsync();
     }
     
     #endregion

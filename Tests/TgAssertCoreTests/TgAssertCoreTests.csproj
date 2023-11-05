@@ -3,12 +3,12 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.2.490.0</Version>
+    <Version>0.2.540.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NSubstitute" Version="5.1.0" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />

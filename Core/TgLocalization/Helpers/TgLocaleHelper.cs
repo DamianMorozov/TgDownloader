@@ -23,8 +23,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	public string AppName => "Name";
 	public string AppTitle => "TG-Downloader";
-	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
 	public string AppTitleConsoleShort => "TG-DC";
+	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
 	public string From => "from";
@@ -41,6 +41,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuLastException => "Last exception";
 	public string MenuState => "State";
 	public string Messages => "messages";
+	public string ServerMessage => "Server message";
 	public string StorageVersion => "Storage version";
 
 	#endregion
@@ -188,7 +189,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string DirectoryCreateIsException(Exception ex) => $"Exception of create directory: {(ex.InnerException is null ? ex.Message : ex.Message + $" | {ex.InnerException.Message}")}";
 	public string DirectoryDestType => "Type destination directory";
 	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "The directory is not exists!" : $"The directory \"{dir}\" is not exists!";
-	public string Empty => "<Empty>";
+	public string Empty => "Empty";
 	public string FieldProxyHostName => "Hostname";
 	public string FieldProxyPort => "Port";
 	public string FileIsAlreadyExists => "File is already exists!";

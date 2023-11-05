@@ -98,7 +98,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	{
 		// App version.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppXml.Version));
-		TgSqlTableVersionModel version = !ContextManager.IsTableExists(TgSqlConstants.TableVersions) ? new() : ContextManager.VersionRepository.GetItemLast();
+		TgSqlTableVersionModel version = !ContextManager.IsTableExists(TgSqlConstants.TableVersions) 
+            ? new() : ContextManager.VersionRepository.GetItemLastAsync().Result;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
 		// App settings.
@@ -206,7 +207,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		}
 
 		// Proxy setup.
-		if (Equals(ContextManager.AppRepository.GetFirstProxyUid, Guid.Empty))
+		if (Equals(ContextManager.AppRepository.GetFirstProxyUidAsync(), Guid.Empty))
 		{
 			if (TgAppSettings.AppXml.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
@@ -218,7 +219,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (ContextManager.AppRepository.GetCurrentProxy().IsNotExists || TgClient.Me is null)
+			if (ContextManager.AppRepository.GetCurrentProxyAsync().Result.IsNotExists || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
@@ -237,14 +238,14 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxy().Type.ToString())));
+					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Type.ToString())));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxy().HostName)));
+					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.HostName)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxy().Port.ToString())));
-				if (Equals(ContextManager.AppRepository.GetCurrentProxy().Type, TgEnumProxyType.MtProto))
+					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Port.ToString())));
+				if (Equals(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Type, TgEnumProxyType.MtProto))
 					table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
-						new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxy().Secret)));
+						new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Secret)));
 			}
 		}
 
@@ -273,7 +274,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgSqlTableSourceModel source = ContextManager.SourceRepository.Get(tgDownloadSettings.SourceVm.SourceId);
+			TgSqlTableSourceModel source = ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId).Result;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -375,9 +376,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
             int len = sourceString.IndexOf('|', 8) - 9;
             string sourceId = sourceString.Substring(8, len).TrimEnd(' ');
             if (long.TryParse(sourceId, out long id))
-                return ContextManager.SourceRepository.Get(id);
+                return ContextManager.SourceRepository.GetAsync(id).Result;
         }
-        return ContextManager.SourceRepository.GetNew();
+        return ContextManager.SourceRepository.GetNewAsync().Result;
 	}
 
     #endregion

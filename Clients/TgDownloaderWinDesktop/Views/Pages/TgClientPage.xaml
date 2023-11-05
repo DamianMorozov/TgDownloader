@@ -97,6 +97,7 @@
 					<ColumnDefinition Width="2*" />
 					<ColumnDefinition Width="2*" />
 					<ColumnDefinition Width="2*" />
+					<ColumnDefinition Width="2*" />
 				</Grid.ColumnDefinitions>
 				<!--  Label  -->
 				<Label
@@ -121,7 +122,7 @@
 					IsEnabled="False"
 					IsReadOnly="True"
 					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
-				<!--  Save & clear  -->
+				<!--  Load  -->
 				<ui:Button
 					Grid.Column="3"
 					Margin="2"
@@ -132,6 +133,7 @@
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Load, Mode=OneWay, IsAsync=True}"
 					Icon="ArrowSync12"
 					IsEnabled="True" />
+				<!--  Save  -->
 				<ui:Button
 					Grid.Column="4"
 					Margin="2"
@@ -142,6 +144,7 @@
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Save, Mode=OneWay, IsAsync=True}"
 					Icon="Save28"
 					IsEnabled="True" />
+				<!--  Clear  -->
 				<ui:Button
 					Grid.Column="5"
 					Margin="2"
@@ -151,6 +154,17 @@
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppClearCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Clear, Mode=OneWay, IsAsync=True}"
 					Icon="Recycle32"
+					IsEnabled="True" />
+				<!--  Empty  -->
+				<ui:Button
+					Grid.Column="6"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppEmptyCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Empty, Mode=OneWay, IsAsync=True}"
+					Icon="Delete48"
 					IsEnabled="True" />
 			</Grid>
 		</Border>
@@ -379,6 +393,31 @@
 					Background="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=BackgroundLastName, Mode=OneWay, IsAsync=True}"
 					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=IsNotLoad, Mode=OneWay, IsAsync=True}"
 					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=LastName, Mode=TwoWay, IsAsync=True}" />
+				<Separator
+					Grid.Row="11"
+					Grid.Column="0"
+					Grid.ColumnSpan="3"
+					Height="1"
+					Background="DimGray" />
+				<!--  Last name  -->
+				<Label
+					Grid.Row="12"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ServerMessage, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<ui:TextBox
+					Grid.Row="12"
+					Grid.Column="2"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=BackgroundServerMessage, Mode=OneWay, IsAsync=True}"
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ServerMessage, Mode=TwoWay, IsAsync=True}" />
 			</Grid>
 		</Border>
 	</Grid>

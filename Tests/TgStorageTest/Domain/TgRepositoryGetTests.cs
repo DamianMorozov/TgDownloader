@@ -20,7 +20,7 @@ internal class TgRepositoryGetTests
                 if (i > count)
                     break;
                 i++;
-                T itemFind = repository.Get(item);
+                T itemFind = repository.GetAsync(item).Result;
                 Assert.That(item, Is.EqualTo(itemFind));
                 TestContext.WriteLine(item.ToDebugString());
             }

@@ -37,12 +37,12 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 
     public static TgDownloadSettingsModel CreateNew() => new();
 
-    public void UpdateSourceWithSettings()
+    public async Task UpdateSourceWithSettingsAsync()
     {
         if (!SourceVm.IsReadySourceId)
             return;
-        if (ContextManager.SourceRepository.SaveByViewModel(SourceVm))
-            SourceVm.Source = ContextManager.SourceRepository.Get(SourceVm.Source.Id);
+        if (await ContextManager.SourceRepository.SaveByViewModelAsync(SourceVm))
+            SourceVm.Source = await ContextManager.SourceRepository.GetAsync(SourceVm.Source.Id);
     }
 
     #endregion

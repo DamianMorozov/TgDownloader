@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.490.0</Version>
+    <Version>0.2.540.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="applicationIcon.ico" />
@@ -16,8 +16,8 @@
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="WPF-UI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-    <PackageReference Include="WTelegramClient" Version="3.5.6" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="WTelegramClient" Version="3.5.8" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\applicationIcon-1024.png" />
@@ -34,6 +34,8 @@
     <None Include="..\..\CHANGELOG.md" Link="CHANGELOG.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\GUIDE-SET-DESKTOP-RUS.md" Link="GUIDE-SET-DESKTOP-RUS.md" />
+    <None Include="..\..\GUIDE-SET-DESKTOP.md" Link="GUIDE-SET-DESKTOP.md" />
     <None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -49,6 +51,7 @@
     <None Include="..\..\README.md" Link="README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\SCREENSHOTS.md" Link="SCREENSHOTS.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />

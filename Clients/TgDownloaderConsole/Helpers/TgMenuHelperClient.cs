@@ -39,7 +39,7 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuClient.SetProxy:
-					SetupClientProxy();
+					SetupClientProxyAsync().GetAwaiter().GetResult();
 					AskClientConnect(tgDownloadSettings);
 					break;
 				case TgEnumMenuClient.Connect:
@@ -52,7 +52,7 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuClient.Return);
 	}
 
-	private TgSqlTableProxyModel AddOrUpdateProxy()
+	private async Task<TgSqlTableProxyModel> AddOrUpdateProxyAsync()
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
@@ -79,14 +79,14 @@ internal partial class TgMenuHelper
 			proxy.HostName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyHostName}:"));
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
-		TgSqlTableProxyModel proxyDb = ContextManager.ProxyRepository.Get(proxy.Type, proxy.HostName, proxy.Port);
+		TgSqlTableProxyModel proxyDb = await ContextManager.ProxyRepository.GetAsync(proxy.Type, proxy.HostName, proxy.Port);
 		if (proxyDb.IsNotExists)
-			ContextManager.ProxyRepository.Save(proxy);
-		proxy = ContextManager.ProxyRepository.Get(proxy.Type, proxy.HostName, proxy.Port);
+			await ContextManager.ProxyRepository.SaveAsync(proxy);
+		proxy = await ContextManager.ProxyRepository.GetAsync(proxy.Type, proxy.HostName, proxy.Port);
 
-		TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
+		TgSqlTableAppModel app = await ContextManager.AppRepository.GetFirstAsync();
 		app.ProxyUid = proxy.Uid;
-		ContextManager.AppRepository.Save(app);
+		await ContextManager.AppRepository.SaveAsync(app);
 
 		return proxy;
 	}
@@ -102,9 +102,9 @@ internal partial class TgMenuHelper
 	//	TgStorage.Apps.Save(app);
 	//}
 
-	private void SetupClientProxy()
+	private async Task SetupClientProxyAsync()
 	{
-		TgSqlTableProxyModel proxy = AddOrUpdateProxy();
+		TgSqlTableProxyModel proxy = await AddOrUpdateProxyAsync();
 
 		if (proxy.Type == TgEnumProxyType.MtProto)
 		{
@@ -122,15 +122,14 @@ internal partial class TgMenuHelper
 			if (isSecret)
 				proxy.Secret = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxySecret}:"));
 		}
-		ContextManager.ProxyRepository.Save(proxy);
-
+        await ContextManager.ProxyRepository.SaveAsync(proxy);
 		//SetupClientProxyCore();
 	}
 
 	private string? GetConsoleConfig(string what)
 	{
 		TgSqlTableAppModel appNew = TgSqlUtils.CreateNewApp();
-		TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
+		TgSqlTableAppModel app = ContextManager.AppRepository.GetFirstAsync().Result;
 		switch (what)
 		{
 			case "api_hash":
@@ -140,7 +139,7 @@ internal partial class TgMenuHelper
 						AnsiConsole.Ask<string>(
 							TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:"))));
 				app.ApiHash = TgDataFormatUtils.ParseStringToGuid(apiHash);
-				ContextManager.AppRepository.Save(app);
+				ContextManager.AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				return apiHash;
 			case "api_id":
 				string apiId = !Equals(app.ApiId, appNew.ApiId)
@@ -148,14 +147,14 @@ internal partial class TgMenuHelper
 					: (app.ApiId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:")))
 					.ToString();
 				app.ApiId = int.Parse(apiId);
-				ContextManager.AppRepository.Save(app);
+				ContextManager.AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				return apiId;
 			case "phone_number":
 				string phoneNumber = !Equals(app.PhoneNumber, appNew.PhoneNumber)
 					? app.PhoneNumber
 					: app.PhoneNumber = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:"));
 				app.PhoneNumber = phoneNumber;
-				ContextManager.AppRepository.Save(app);
+				ContextManager.AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				return phoneNumber;
 			case "verification_code":
 				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgVerificationCode}:"));
@@ -185,9 +184,9 @@ internal partial class TgMenuHelper
 
 	public void ClientConnectExists()
 	{
-		if (!TgSqlUtils.GetValidXpLite(ContextManager.AppRepository.GetFirst()).IsValid)
+		if (!TgSqlUtils.GetValidXpLite(ContextManager.AppRepository.GetFirstAsync().GetAwaiter().GetResult()).IsValid)
 			return;
-		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxy());
+		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
 	}
 
 	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
@@ -206,7 +205,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxy());
+		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
 		if (TgClient.ClientException.IsExists || TgClient.ProxyException.IsExists)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

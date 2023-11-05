@@ -24,20 +24,16 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
 
     public void OnNavigatedTo()
     {
-        //if (!IsInitialized)
-        InitializeViewModel();
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
     }
 
-    public void OnNavigatedFrom()
-    {
-        //
-    }
+    public void OnNavigatedFrom() { }
 
-    protected override void InitializeViewModel()
+    protected override async Task InitializeViewModelAsync()
     {
-        base.InitializeViewModel();
+        await base.InitializeViewModelAsync();
 
-        OnGetProxyFromStorageAsync().ConfigureAwait(false);
+        await OnGetProxyFromStorageAsync();
     }
 
     public void SetItemProxyVm(TgSqlTableProxyViewModel itemProxyVm) =>
@@ -54,11 +50,11 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
     public async Task OnGetProxyFromStorageAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            TgSqlTableProxyModel proxy = ContextManager.ProxyRepository.Get(ProxyUid);
+            TgSqlTableProxyModel proxy = await ContextManager.ProxyRepository.GetAsync(ProxyUid);
             SetItemProxyVm(proxy, proxy.Uid);
         }, true).ConfigureAwait(true);
     }
@@ -67,11 +63,11 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
     public async Task OnClearViewAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Proxy = ContextManager.ProxyRepository.GetNew();
+            ItemProxyVm.Proxy = await ContextManager.ProxyRepository.GetNewAsync();
         }, false).ConfigureAwait(true);
     }
 
@@ -79,9 +75,9 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
     public async Task OnSaveProxyAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            ContextManager.ProxyRepository.Save(ItemProxyVm.Proxy, true);
+            await ContextManager.ProxyRepository.SaveAsync(ItemProxyVm.Proxy, true);
         }, false).ConfigureAwait(false);
     }
 
@@ -89,7 +85,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
     public async Task OnReturnToSectionProxiesAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {

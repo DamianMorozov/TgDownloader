@@ -6,6 +6,6 @@ namespace TgStorage.Common;
 public enum TgEnumAppType
 {
 	Default,
-	Sync,
-	Async
+	Console,
+	Desktop
 }

@@ -17,65 +17,69 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableFilters;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableFilterModel CreateNew(bool isCreateSession) => isCreateSession 
-        ? new(TgSqlUtils.CreateUnitOfWork())
-            { IsEnabled = true, FilterType = TgEnumFilterType.SingleName, Name = "Any", Mask = "*", SizeType = TgEnumFileSizeType.Bytes }
-        : new() 
-            { IsEnabled = true, FilterType = TgEnumFilterType.SingleName, Name = "Any", Mask = "*", SizeType = TgEnumFileSizeType.Bytes };
-
-    public override bool Delete(TgSqlTableFilterModel item)
+    public TgSqlTableFilterModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableFilterModel itemFind = Get(item.FilterType, item.Name);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableFilterModel source = isCreateSession
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        source.IsEnabled = true;
+        source.FilterType = TgEnumFilterType.SingleName;
+        source.Name = "Any";
+        source.Mask = "*";
+        source.SizeType = TgEnumFileSizeType.Bytes;
+        return source;
     }
 
-    public bool DeleteNew() => Delete(GetNew());
-
-    public bool Save(TgSqlTableFilterModel item, bool isGetByUid = false)
+    public override async Task<bool> DeleteAsync(TgSqlTableFilterModel item)
     {
-        TgSqlTableFilterModel itemFind = isGetByUid ? Get(item.Uid) :  Get(item);
+        TgSqlTableFilterModel itemFind = await GetAsync(item.FilterType, item.Name);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
+    }
+
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+
+    public async Task<bool> SaveAsync(TgSqlTableFilterModel item, bool isGetByUid = false)
+    {
+        TgSqlTableFilterModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public override TgSqlTableFilterModel Get(Guid uid) =>
-        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableFilterModel>(uid) ?? CreateNew(true);
+    public override async Task<TgSqlTableFilterModel> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<TgSqlTableFilterModel>(uid) 
+        ?? CreateNew(true);
 
-    public override TgSqlTableFilterModel Get(TgSqlTableFilterModel item) => 
-        Get(item.FilterType, item.Name);
+    public override async Task<TgSqlTableFilterModel> GetAsync(TgSqlTableFilterModel item) =>
+        await GetAsync(item.FilterType, item.Name);
 
-    public TgSqlTableFilterModel Get(TgEnumFilterType filterType, string name) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableFilterModel>(CriteriaOperator.Parse(
+    public async Task<TgSqlTableFilterModel> GetAsync(TgEnumFilterType filterType, string name) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .FindObjectAsync<TgSqlTableFilterModel>(CriteriaOperator.Parse(
             $"{nameof(TgSqlTableFilterModel.FilterType)}='{filterType}' AND " +
-            $"{nameof(TgSqlTableFilterModel.Name)}='{name}'")) ?? CreateNew(true); 
+            $"{nameof(TgSqlTableFilterModel.Name)}='{name}'")) 
+        ?? CreateNew(true);
 
-    public TgSqlTableFilterModel GetNew()
+    public async Task<TgSqlTableFilterModel> GetNewAsync()
     {
         TgSqlTableFilterModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-            .Query<TgSqlTableFilterModel>().Select(i => i)
-            .FirstOrDefault(i => Equals(i.IsEnabled, itemNew.IsEnabled) &&
-                Equals(i.FilterType, itemNew.FilterType) && Equals(i.Name, itemNew.Name) &&
-                Equals(i.Mask, itemNew.Mask) && Equals(i.SizeType, itemNew.SizeType)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableFilterModel>().Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.IsEnabled, itemNew.IsEnabled) &&
+                                             Equals(i.FilterType, itemNew.FilterType) && Equals(i.Name, itemNew.Name) &&
+                                             Equals(i.Mask, itemNew.Mask) && Equals(i.SizeType, itemNew.SizeType))
+               ?? itemNew;
     }
 
     public IEnumerable<TgSqlTableFilterModel> GetEnumerableEnabled() => TgSqlUtils.CreateUnitOfWork()
@@ -83,7 +87,8 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
         .Select(i => i)
         .Where(item => item.IsEnabled);
 
-    public override TgSqlTableFilterModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableFilterModel> GetFirstAsync() =>
+        await base.GetFirstAsync() ?? CreateNew(true);
 
     #endregion
 }

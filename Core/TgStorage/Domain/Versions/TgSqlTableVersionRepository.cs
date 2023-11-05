@@ -17,73 +17,76 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableVersions;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableVersionModel CreateNew(bool isCreateSession) => isCreateSession
-        ? new(TgSqlUtils.CreateUnitOfWork())
-            { Version = short.MaxValue, Description = "New version" }
-        : new()
-            { Version = short.MaxValue, Description = "New version" };
-
-    public override bool Delete(TgSqlTableVersionModel item)
+    public TgSqlTableVersionModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableVersionModel itemFind = Get(item.Version);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableVersionModel version = isCreateSession 
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        version.Version = short.MaxValue;
+        version.Description = "New version";
+        return version;
     }
 
-    public bool DeleteNew() => Delete(GetNew());
-
-    public bool Save(TgSqlTableVersionModel item, bool isGetByUid = false)
+    public override async Task<bool> DeleteAsync(TgSqlTableVersionModel item)
     {
-        TgSqlTableVersionModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
+        TgSqlTableVersionModel itemFind = await GetAsync(item.Version);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
+    }
+
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+
+    public async Task<bool> SaveAsync(TgSqlTableVersionModel item, bool isGetByUid = false)
+    {
+        TgSqlTableVersionModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public override TgSqlTableVersionModel Get(Guid uid) =>
-        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableVersionModel>(uid) ?? CreateNew(true);
-
-    public override TgSqlTableVersionModel Get(TgSqlTableVersionModel item) =>
-        Get(item.Version);
-
-    public TgSqlTableVersionModel Get(short version) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableVersionModel>(CriteriaOperator.Parse(
-            $"{nameof(TgSqlTableVersionModel.Version)}={version}")) ?? CreateNew(true);
-
-    public TgSqlTableVersionModel GetItemLast() => TgSqlUtils.CreateUnitOfWork()
-        .Query<TgSqlTableVersionModel>()
-        .Select(i => i)
-        .OrderByDescending(item => item.Version)
-        .FirstOrDefault() 
+    public override async Task<TgSqlTableVersionModel> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<TgSqlTableVersionModel>(uid) 
         ?? CreateNew(true);
 
-    public TgSqlTableVersionModel GetNew()
+    public override async Task<TgSqlTableVersionModel> GetAsync(TgSqlTableVersionModel item) =>
+        await GetAsync(item.Version);
+
+    public async Task<TgSqlTableVersionModel> GetAsync(short version) =>
+        await TgSqlUtils.CreateUnitOfWork()
+        .FindObjectAsync<TgSqlTableVersionModel>(CriteriaOperator.Parse(
+            $"{nameof(TgSqlTableVersionModel.Version)}={version}")) 
+        ?? CreateNew(true);
+
+    public async Task<TgSqlTableVersionModel> GetItemLastAsync() => 
+        await TgSqlUtils.CreateUnitOfWork()
+            .Query<TgSqlTableVersionModel>()
+            .Select(i => i)
+            .OrderByDescending(item => item.Version)
+            .FirstOrDefaultAsync() 
+        ?? CreateNew(true);
+
+    public async Task<TgSqlTableVersionModel> GetNewAsync()
     {
         TgSqlTableVersionModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-        .Query<TgSqlTableVersionModel>()
-        .Select(i => i)
-        .FirstOrDefault(i => Equals(i.Version, itemNew.Version) && Equals(i.Description, itemNew.Description)) 
-        ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableVersionModel>()
+                   .Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.Version, itemNew.Version) && Equals(i.Description, itemNew.Description))
+               ?? itemNew;
     }
 
-    public override TgSqlTableVersionModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableVersionModel> GetFirstAsync() => 
+        await base.GetFirstAsync() ?? CreateNew(true);
 
     public short LastVersion => 18;
 

@@ -17,69 +17,53 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableSources;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableSourceModel CreateNew(bool isCreateSession) => isCreateSession
-        ? new(TgSqlUtils.CreateUnitOfWork())
-        {
-            Id = 1,
-            Count = 1,
-            About = "Test",
-            Directory = "C:",
-            DtChanged = DateTime.Now,
-            FirstId = 1,
-            IsAutoUpdate = false,
-            Title = "Test",
-            UserName = "Test"
-        }
-        : new()
-        {
-            Id = 1,
-            Count = 1,
-            About = "Test",
-            Directory = "C:",
-            DtChanged = DateTime.Now,
-            FirstId = 1,
-            IsAutoUpdate = false,
-            Title = "Test",
-            UserName = "Test"
-        };
+    public TgSqlTableSourceModel CreateNew(bool isCreateSession)
+    {
+        TgSqlTableSourceModel source = isCreateSession
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        source.Id = 1;
+        source.Count = 1;
+        source.About = "Test";
+        source.Directory = TgFileUtils.GetDefaultDirectory();
+        source.DtChanged = DateTime.Now;
+        source.FirstId = 1;
+        source.IsAutoUpdate = false;
+        source.Title = "Test";
+        source.UserName = "Test";
+        return source;
+    }
 
     public TgSqlTableSourceModel CreateNew(long id) => new() { Id = id };
 
-    public override bool Delete(TgSqlTableSourceModel item)
+    public override async Task<bool> DeleteAsync(TgSqlTableSourceModel item)
     {
-        TgSqlTableSourceModel itemFind = Get(item.Id);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableSourceModel itemFind = await GetAsync(item.Id);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public bool DeleteNew() => Delete(GetNew());
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
 
-    public bool Save(TgSqlTableSourceModel item, bool isGetByUid = false)
+    public async Task<bool> SaveAsync(TgSqlTableSourceModel item, bool isGetByUid = false)
     {
-        TgSqlTableSourceModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
+        TgSqlTableSourceModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public bool SaveByViewModel(TgSqlTableSourceViewModel itemVm) =>
-        Save(new TgSqlTableSourceModel()
+    public async Task<bool> SaveByViewModelAsync(TgSqlTableSourceViewModel itemVm) =>
+        await SaveAsync(new TgSqlTableSourceModel()
         {
             Id = itemVm.SourceId,
             UserName = itemVm.SourceUserName,
@@ -91,30 +75,34 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
             IsAutoUpdate = itemVm.IsAutoUpdate
         });
 
-    public override TgSqlTableSourceModel Get(Guid uid) =>
-        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableSourceModel>(uid) ?? CreateNew(true);
+    public override async Task<TgSqlTableSourceModel> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<TgSqlTableSourceModel>(uid) 
+        ?? CreateNew(true);
 
-    public override TgSqlTableSourceModel Get(TgSqlTableSourceModel item) =>
-        Get(item.Id);
+    public override async Task<TgSqlTableSourceModel> GetAsync(TgSqlTableSourceModel item) =>
+        await GetAsync(item.Id);
 
-    public TgSqlTableSourceModel Get(long id) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableSourceModel>(CriteriaOperator.Parse(
-            $"{nameof(TgSqlTableSourceModel.Id)}={id}")) ?? CreateNew(true); 
+    public async Task<TgSqlTableSourceModel> GetAsync(long id) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .FindObjectAsync<TgSqlTableSourceModel>(CriteriaOperator.Parse($"{nameof(TgSqlTableSourceModel.Id)}={id}"))
+        ?? CreateNew(true);
 
-    public TgSqlTableSourceModel GetNew()
+    public async Task<TgSqlTableSourceModel> GetNewAsync()
     {
         TgSqlTableSourceModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-            .Query<TgSqlTableSourceModel>().Select(i => i)
-            .FirstOrDefault(i => Equals(i.Id, itemNew.Id)
-                && Equals(i.UserName, itemNew.UserName) && Equals(i.Title, itemNew.Title) &&
-                Equals(i.About, itemNew.About) && Equals(i.Count, itemNew.Count) &&
-                Equals(i.Directory, itemNew.Directory) && Equals(i.FirstId, itemNew.FirstId) &&
-                Equals(i.IsAutoUpdate, itemNew.IsAutoUpdate)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableSourceModel>().Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id)
+                                             && Equals(i.UserName, itemNew.UserName) && Equals(i.Title, itemNew.Title) &&
+                                             Equals(i.About, itemNew.About) && Equals(i.Count, itemNew.Count) &&
+                                             Equals(i.Directory, itemNew.Directory) && Equals(i.FirstId, itemNew.FirstId) &&
+                                             Equals(i.IsAutoUpdate, itemNew.IsAutoUpdate))
+               ?? itemNew;
     }
 
-    public override TgSqlTableSourceModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableSourceModel> GetFirstAsync() =>
+        await base.GetFirstAsync() ?? CreateNew(true);
 
     #endregion
 }

@@ -17,65 +17,75 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableApps;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableAppModel CreateNew(bool isCreateSession) => isCreateSession 
-        ? new(TgSqlUtils.CreateUnitOfWork()) { PhoneNumber = "+00000000000" }
-        : new () { PhoneNumber = "+00000000000" };
-
-    public override bool Delete(TgSqlTableAppModel item)
+    public TgSqlTableAppModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableAppModel itemFind = Get(item);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableAppModel app = isCreateSession
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        app.PhoneNumber = "+00000000000";
+        return app;
     }
 
-    public bool DeleteNew() => Delete(GetNew());
-
-    public bool Save(TgSqlTableAppModel item, bool isGetByUid = false)
+    public override async Task<bool> DeleteAsync(TgSqlTableAppModel item)
     {
-        TgSqlTableAppModel itemFind = Get(item);
+        TgSqlTableAppModel itemFind = await GetAsync(item);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
+    }
+
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+
+    public async Task<bool> SaveAsync(TgSqlTableAppModel item, bool isGetByUid = false)
+    {
+        TgSqlTableAppModel itemFind = await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public override TgSqlTableAppModel Get(TgSqlTableAppModel item) => Get(item.ApiHash);
+    public override async Task<TgSqlTableAppModel> GetAsync(TgSqlTableAppModel item) =>
+        await GetByHashAsync(item.ApiHash);
 
-    public override TgSqlTableAppModel Get(Guid apiHash) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableAppModel>(CriteriaOperator.Parse(
-            $"{nameof(TgSqlTableAppModel.ApiHash)}='{apiHash}'")) ?? CreateNew(true);
+    public async Task<TgSqlTableAppModel> GetByHashAsync(Guid apiHash) =>
+        await TgSqlUtils.CreateUnitOfWork()
+        .FindObjectAsync<TgSqlTableAppModel>(CriteriaOperator.Parse(
+            $"{nameof(TgSqlTableAppModel.ApiHash)}='{apiHash}'")) 
+        ?? CreateNew(true);
 
-    public TgSqlTableAppModel GetNew()
+    public async Task<TgSqlTableAppModel> GetNewAsync()
     {
         TgSqlTableAppModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-           .Query<TgSqlTableAppModel>()
-           .Select(i => i)
-           .FirstOrDefault(i => Equals(i.ApiHash, itemNew.ApiHash) && Equals(i.PhoneNumber, itemNew.PhoneNumber)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableAppModel>()
+                   .Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.ApiHash, itemNew.ApiHash) && Equals(i.PhoneNumber, itemNew.PhoneNumber))
+               ?? itemNew;
     }
 
-    public override TgSqlTableAppModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableAppModel> GetFirstAsync() => 
+        await base.GetFirstAsync() ?? CreateNew(true);
 
-    public Guid GetFirstProxyUid => GetFirst().ProxyUid;
+    public async Task<Guid> GetFirstProxyUidAsync()
+    {
+        TgSqlTableAppModel app = await GetFirstAsync();
+        return app.ProxyUid;
+    }
 
-    public TgSqlTableProxyModel GetCurrentProxy() =>
-        TgSqlTableProxyRepository.Instance.Get(GetFirstProxyUid) ?? TgSqlTableProxyRepository.Instance.GetNew();
+    public async Task<TgSqlTableProxyModel> GetCurrentProxyAsync()
+    {
+        var proxyUid = await GetFirstProxyUidAsync();
+        return await TgSqlTableProxyRepository.Instance.GetAsync(proxyUid) ?? await TgSqlTableProxyRepository.Instance.GetNewAsync();
+    }
+
 
     #endregion
 }

@@ -17,31 +17,33 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableMessages;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableMessageModel CreateNew(bool isCreateSession) => isCreateSession 
-        ? new(TgSqlUtils.CreateUnitOfWork())
-            { Id = 0, SourceId = 0, DtCreated = DateTime.Now, Type = TgEnumMessageType.Message, Size = 0, Message = string.Empty }
-        : new()
-            { Id = 0, SourceId = 0, DtCreated = DateTime.Now, Type = TgEnumMessageType.Message, Size = 0, Message = string.Empty };
-
-    public override bool Delete(TgSqlTableMessageModel item)
+    public TgSqlTableMessageModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableMessageModel itemFind = Get(item.SourceId, item.Id);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableMessageModel message = isCreateSession
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        message.Id = 0;
+        message.SourceId = 0;
+        message.DtCreated = DateTime.Now;
+        message.Type = TgEnumMessageType.Message;
+        message.Size = 0;
+        message.Message = string.Empty;
+
+        return message;
     }
 
-    public bool DeleteNew() => Delete(GetNew());
-    
-    public bool Save(TgSqlTableMessageModel item, bool isGetByUid = false)
+    public override async Task<bool> DeleteAsync(TgSqlTableMessageModel item)
     {
-        TgSqlTableMessageModel itemFind = isGetByUid ? Get(item.Uid) :  Get(item);
+        TgSqlTableMessageModel itemFind = await GetAsync(item.SourceId, item.Id);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
+    }
+
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    
+    public async Task<bool> SaveAsync(TgSqlTableMessageModel item, bool isGetByUid = false)
+    {
+        TgSqlTableMessageModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
@@ -56,8 +58,8 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
         }
     }
 
-    public void Save(int id, long sourceId, DateTime dtCreate, TgEnumMessageType type,
-        long size, string message) => Save(new()
+    public async Task SaveAsync(int id, long sourceId, DateTime dtCreate, TgEnumMessageType type,
+        long size, string message) => await SaveAsync(new()
     {
         Id = id,
         SourceId = sourceId,
@@ -67,30 +69,34 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
         Message = message
     });
 
-    public override TgSqlTableMessageModel Get(Guid uid) =>
+    public override async Task<TgSqlTableMessageModel> GetAsync(Guid uid) =>
         TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableMessageModel>(uid) ?? CreateNew(true);
 
-    public override TgSqlTableMessageModel Get(TgSqlTableMessageModel item) => 
-        Get(item.SourceId, item.Id);
+    public override async Task<TgSqlTableMessageModel> GetAsync(TgSqlTableMessageModel item) =>
+        await GetAsync(item.SourceId, item.Id);
 
-    public TgSqlTableMessageModel Get(long sourceId, long id) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableMessageModel>(CriteriaOperator.Parse(
+    public async Task<TgSqlTableMessageModel> GetAsync(long sourceId, long id) =>
+        await TgSqlUtils.CreateUnitOfWork()
+        .FindObjectAsync<TgSqlTableMessageModel>(CriteriaOperator.Parse(
             $"{nameof(TgSqlTableMessageModel.SourceId)}={sourceId} AND " +
-            $"{nameof(TgSqlTableMessageModel.Id)}={id}")) ?? CreateNew(true);
+            $"{nameof(TgSqlTableMessageModel.Id)}={id}")) 
+        ?? CreateNew(true);
 
-    public bool GetExists(long id, long sourceId) => Get(sourceId, id).IsExists;
+    public async Task<bool> GetExistsAsync(long id, long sourceId) =>
+        (await GetAsync(sourceId, id)).IsExists;
 
-    public TgSqlTableMessageModel GetNew()
+    public async Task<TgSqlTableMessageModel> GetNewAsync()
     {
         TgSqlTableMessageModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-            .Query<TgSqlTableMessageModel>().Select(i => i)
-            .FirstOrDefault(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.Type, itemNew.Type) &&
-                Equals(i.Size, itemNew.Size) && Equals(i.Message, itemNew.Message)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableMessageModel>().Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.Type, itemNew.Type) &&
+                                             Equals(i.Size, itemNew.Size) && Equals(i.Message, itemNew.Message))
+               ?? itemNew;
     }
 
-    public override TgSqlTableMessageModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableMessageModel> GetFirstAsync() 
+        => await base.GetFirstAsync() ?? CreateNew(true);
 
     #endregion
 }

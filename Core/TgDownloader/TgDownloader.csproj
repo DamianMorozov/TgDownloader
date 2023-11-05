@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.2.490.0</Version>
+    <Version>0.2.540.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
@@ -12,10 +12,10 @@
     <None Remove="Models\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="ProxyLib" Version="1.0.2" />
-    <PackageReference Include="WTelegramClient" Version="3.5.6" />
+    <PackageReference Include="WTelegramClient" Version="3.5.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />

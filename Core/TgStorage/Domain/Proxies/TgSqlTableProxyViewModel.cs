@@ -15,7 +15,7 @@ public sealed partial class TgSqlTableProxyViewModel : TgViewModelBase
     public Guid ProxyUid
     {
         get => Proxy.Uid;
-        set => Proxy = TgSqlTableProxyRepository.Instance.Get(value) ?? TgSqlTableProxyRepository.Instance.GetNew();
+        set => Proxy = TgSqlTableProxyRepository.Instance.GetAsync(value).Result ?? TgSqlTableProxyRepository.Instance.GetNewAsync().Result;
     }
     [DefaultValue(0)]
     public TgEnumProxyType ProxyType { get => Proxy.Type; set => Proxy.Type = value; }

@@ -17,45 +17,39 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableDocuments;
-
-    #endregion
-
     #region Public and private methods
 
     public TgSqlTableDocumentModel CreateNew(bool isCreateSession) => isCreateSession 
         ? new(TgSqlUtils.CreateUnitOfWork()) 
         : new();
 
-    public override bool Delete(TgSqlTableDocumentModel item)
+    public override async Task<bool> DeleteAsync(TgSqlTableDocumentModel item)
     {
-        TgSqlTableDocumentModel itemFind = Get(item.SourceId, item.Id, item.MessageId);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableDocumentModel itemFind = await GetAsync(item.SourceId, item.Id, item.MessageId);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public bool DeleteNew() => Delete(GetNew());
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
 
-    public bool Save(TgSqlTableDocumentModel item, bool isGetByUid = false)
+    public async Task<bool> SaveAsync(TgSqlTableDocumentModel item, bool isGetByUid = false)
     {
-        TgSqlTableDocumentModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
+        TgSqlTableDocumentModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public void Save(long id, long sourceId, long messageId, string fileName, long fileSize, long accessHash) =>
-        Save(new(TgSqlUtils.CreateUnitOfWork())
+    public async Task SaveAsync(long id, long sourceId, long messageId, string fileName, long fileSize, long accessHash) =>
+        await SaveAsync(new(TgSqlUtils.CreateUnitOfWork())
         {
             Id = id,
             SourceId = sourceId,
@@ -65,27 +59,31 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
             AccessHash = accessHash
         });
 
-    public override TgSqlTableDocumentModel Get(Guid uid) =>
-        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableDocumentModel>(uid) ?? CreateNew(true);
+    public override async Task<TgSqlTableDocumentModel> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<TgSqlTableDocumentModel>(uid) ?? CreateNew(true);
     
-    public override TgSqlTableDocumentModel Get(TgSqlTableDocumentModel item) =>
-        Get(item.SourceId, item.Id, item.MessageId);
+    public override async Task<TgSqlTableDocumentModel> GetAsync(TgSqlTableDocumentModel item) =>
+        await GetAsync(item.SourceId, item.Id, item.MessageId);
 
-    public TgSqlTableDocumentModel Get(long sourceId, long id, long messageId) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableDocumentModel>(CriteriaOperator.Parse(
+    public async Task<TgSqlTableDocumentModel> GetAsync(long sourceId, long id, long messageId) =>
+        await TgSqlUtils.CreateUnitOfWork()
+        .FindObjectAsync<TgSqlTableDocumentModel>(CriteriaOperator.Parse(
             $"{nameof(TgSqlTableDocumentModel.SourceId)}={sourceId} AND {nameof(TgSqlTableDocumentModel.Id)}={id} AND " +
-            $"{nameof(TgSqlTableDocumentModel.MessageId)}={messageId}")) ?? CreateNew(true); 
-    
-    public TgSqlTableDocumentModel GetNew()
+            $"{nameof(TgSqlTableDocumentModel.MessageId)}={messageId}")) 
+        ?? CreateNew(true);
+
+    public async Task<TgSqlTableDocumentModel> GetNewAsync()
     {
         TgSqlTableDocumentModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-            .Query<TgSqlTableDocumentModel>().Select(i => i)
-            .FirstOrDefault(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.MessageId, itemNew.MessageId)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableDocumentModel>().Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.MessageId, itemNew.MessageId))
+               ?? itemNew;
     }
 
-    public override TgSqlTableDocumentModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableDocumentModel> GetFirstAsync() =>
+        await base.GetFirstAsync() ?? CreateNew(true);
 
     #endregion
 }

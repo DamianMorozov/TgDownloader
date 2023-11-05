@@ -17,82 +17,74 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
 
     #endregion
 
-    #region Public and private fields, properties, constructor
-
-    public string TableName => TgSqlConstants.TableProxies;
-
-    #endregion
-
     #region Public and private methods
 
-    public TgSqlTableProxyModel CreateNew(bool isCreateSession) => isCreateSession
-        ? new(TgSqlUtils.CreateUnitOfWork())
-        {
-            Type = TgEnumProxyType.None,
-            HostName = "No proxy",
-            Port = 404,
-            UserName = "No user",
-            Password = "No password",
-            Secret = string.Empty
-        }
-        : new()
-        {
-            Type = TgEnumProxyType.None,
-            HostName = "No proxy",
-            Port = 404,
-            UserName = "No user",
-            Password = "No password",
-            Secret = string.Empty
-        };
-
-    public override bool Delete(TgSqlTableProxyModel item)
+    public TgSqlTableProxyModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableProxyModel itemFind = Get(item.Type, item.HostName, item.Port);
-        return itemFind.IsExists && base.Delete(itemFind);
+        TgSqlTableProxyModel proxy = isCreateSession
+            ? new(TgSqlUtils.CreateUnitOfWork()) : new();
+        proxy.Type = TgEnumProxyType.None;
+        proxy.HostName = "No proxy";
+        proxy.Port = 404;
+        proxy.UserName = "No user";
+        proxy.Password = "No password";
+        proxy.Secret = string.Empty;
+        return proxy;
     }
 
-    public bool DeleteNew() => Delete(GetNew());
-
-    public bool Save(TgSqlTableProxyModel item, bool isGetByUid = false)
+    public override async Task<bool> DeleteAsync(TgSqlTableProxyModel item)
     {
-        TgSqlTableProxyModel itemFind = isGetByUid ? Get(item.Uid) : Get(item);
+        TgSqlTableProxyModel itemFind = await GetAsync(item.Type, item.HostName, item.Port);
+        return itemFind.IsExists && await base.DeleteAsync(itemFind);
+    }
+
+    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+
+    public async Task<bool> SaveAsync(TgSqlTableProxyModel item, bool isGetByUid = false)
+    {
+        TgSqlTableProxyModel itemFind = isGetByUid ? await GetAsync(item.Uid) : await GetAsync(item);
         if (itemFind.IsNotExists)
         {
             itemFind.Fill(item);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryInsertAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryInsertAsync(itemFind);
         }
         else
         {
             itemFind.Fill(item, itemFind.Uid);
             ValidationResult validationResult = TgSqlUtils.GetValidXpLite(itemFind);
-            return validationResult.IsValid && TgSqlUtils.TryUpdateAsync(itemFind).Result;
+            return validationResult.IsValid && await TgSqlUtils.TryUpdateAsync(itemFind);
         }
     }
 
-    public override TgSqlTableProxyModel Get(Guid uid) =>
-        TgSqlUtils.CreateUnitOfWork().GetObjectByKey<TgSqlTableProxyModel>(uid) ?? CreateNew(true);
+    public override async Task<TgSqlTableProxyModel> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<TgSqlTableProxyModel>(uid) 
+        ?? CreateNew(true);
 
-    public override TgSqlTableProxyModel Get(TgSqlTableProxyModel item) => 
-        Get(item.Type, item.HostName, item.Port);
+    public override async Task<TgSqlTableProxyModel> GetAsync(TgSqlTableProxyModel item) =>
+        await GetAsync(item.Type, item.HostName, item.Port);
 
-    public TgSqlTableProxyModel Get(TgEnumProxyType proxyType, string hostName, ushort port) => TgSqlUtils.CreateUnitOfWork()
-        .FindObject<TgSqlTableProxyModel>(CriteriaOperator.Parse(
+    public async Task<TgSqlTableProxyModel> GetAsync(TgEnumProxyType proxyType, string hostName, ushort port) =>
+        await TgSqlUtils.CreateUnitOfWork()
+            .FindObjectAsync<TgSqlTableProxyModel>(CriteriaOperator.Parse(
             $"{nameof(TgSqlTableProxyModel.Type)}='{proxyType}' AND {nameof(TgSqlTableProxyModel.HostName)}='{hostName}' AND " +
-            $"{nameof(TgSqlTableProxyModel.Port)}={port}")) ?? CreateNew(true);
+            $"{nameof(TgSqlTableProxyModel.Port)}={port}")) 
+        ?? CreateNew(true);
 
-    public TgSqlTableProxyModel GetNew()
+    public async Task<TgSqlTableProxyModel> GetNewAsync()
     {
         TgSqlTableProxyModel itemNew = CreateNew(true);
-        return new UnitOfWork()
-            .Query<TgSqlTableProxyModel>().Select(i => i)
-            .FirstOrDefault(i => Equals(i.Type, itemNew.Type) &&
-                Equals(i.HostName, itemNew.HostName) && Equals(i.Port, itemNew.Port) &&
-                Equals(i.UserName, itemNew.UserName) && Equals(i.Password, itemNew.Password)) 
-            ?? itemNew;
+        return await new UnitOfWork()
+                   .Query<TgSqlTableProxyModel>().Select(i => i)
+                   .FirstOrDefaultAsync(i => Equals(i.Type, itemNew.Type) &&
+                                             Equals(i.HostName, itemNew.HostName) && Equals(i.Port, itemNew.Port) &&
+                                             Equals(i.UserName, itemNew.UserName) && Equals(i.Password, itemNew.Password))
+               ?? itemNew;
     }
 
-    public override TgSqlTableProxyModel GetFirst() => base.GetFirst() ?? CreateNew(true);
+    public override async Task<TgSqlTableProxyModel> GetFirstAsync() =>
+        await base.GetFirstAsync() ?? CreateNew(true);
 
     public IReadOnlyList<TgEnumProxyType> GetProxyTypes() => 
         Enum.GetValues(typeof(TgEnumProxyType)).Cast<TgEnumProxyType>().ToList();

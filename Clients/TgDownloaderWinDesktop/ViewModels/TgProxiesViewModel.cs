@@ -16,21 +16,16 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-		//if (!IsInitialized)
-		InitializeViewModel();
-	}
-
-	public void OnNavigatedFrom()
-    {
-        //
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
     }
 
-    protected override void InitializeViewModel()
+	public void OnNavigatedFrom() { }
+
+    protected override async Task InitializeViewModelAsync()
     {
-        base.InitializeViewModel();
-        
-        // Load sources from storage.
-        LoadProxiesFromStorageCommand.Execute(null);
+        await base.InitializeViewModelAsync();
+
+        await OnLoadProxiesFromStorageAsync();
     }
 	
     /// <summary>
@@ -38,8 +33,11 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     /// </summary>
     private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
 	{
-        ProxiesVms.Clear();
-        proxies = proxies.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
+        List<TgSqlTableProxyModel> listProxies = proxies.ToList();
+        if (!listProxies.Any()) return;
+        ProxiesVms = new();
+
+        proxies = listProxies.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
         foreach (TgSqlTableProxyModel proxy in proxies)
             ProxiesVms.Add(new(proxy));
     }
@@ -52,7 +50,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
 	public async Task OnLoadProxiesFromStorageAsync()
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
         }, false).ConfigureAwait(false);
@@ -62,9 +60,9 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
 	public async Task OnClearViewAsync()
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            ProxiesVms.Clear();
+            ProxiesVms = new();
         }, false).ConfigureAwait(true);
 	}
 
@@ -72,11 +70,11 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
 	public async Task OnDeleteProxyAsync(TgSqlTableProxyViewModel proxyVm)
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            ContextManager.ProxyRepository.Delete(proxyVm.Proxy);
+            await ContextManager.ProxyRepository.DeleteAsync(proxyVm.Proxy);
             LoadProxiesFromStorageCommand.Execute(null);
-            TgDesktopUtils.TgClientVm.LoadProxiesForClient();
+            await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
         }, false).ConfigureAwait(false);
 	}
 
@@ -84,7 +82,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
     public async Task OnEditProxyAsync(TgSqlTableProxyViewModel proxyVm)
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
@@ -99,7 +97,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
     public async Task OnAddProxyAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {

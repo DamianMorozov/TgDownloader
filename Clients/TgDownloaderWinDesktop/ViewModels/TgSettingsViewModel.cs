@@ -12,18 +12,15 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
 	
     public void OnNavigatedTo()
 	{
-		if (!IsInitialized)
-			InitializeViewModel();
-	}
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+    }
 
-	public void OnNavigatedFrom()
-	{
-		//
-	}
+	public void OnNavigatedFrom() { }
 
-	protected override void InitializeViewModel()
-	{
-		base.InitializeViewModel();
+    protected override async Task InitializeViewModelAsync()
+    {
+        await base.InitializeViewModelAsync();
+
         CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
         AppVersionTitle = $"{TgDesktopUtils.TgLocale.AppTitleWinDesktop} " +
                           $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";

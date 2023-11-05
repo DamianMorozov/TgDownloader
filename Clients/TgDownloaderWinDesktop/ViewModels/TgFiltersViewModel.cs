@@ -19,14 +19,10 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-		//if (!IsInitialized)
-		InitializeViewModel();
-	}
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+    }
 
-	public void OnNavigatedFrom()
-	{
-		//
-	}
+	public void OnNavigatedFrom() { }
 
 	#endregion
 }

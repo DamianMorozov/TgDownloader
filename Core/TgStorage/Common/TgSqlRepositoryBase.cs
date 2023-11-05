@@ -13,30 +13,31 @@ public abstract class TgSqlRepositoryBase<T> : TgCommonBase where T : ITgSqlTabl
 {
     #region Public and private methods
 
-    public virtual bool Delete(T item) =>
-        !item.IsNotExists && TgSqlUtils.TryDeleteAsync(item).Result;
+    public virtual async Task<bool> DeleteAsync(T item) =>
+        !item.IsNotExists && await TgSqlUtils.TryDeleteAsync(item);
 
-    public virtual bool DeleteAllItems()
+    public virtual async Task<bool> DeleteAllItemsAsync()
     {
         IEnumerable<T> items = GetEnumerable();
         bool result = true;
         foreach (T item in items)
         {
             if (item.IsExists)
-                if (!Delete(item))
+                if (!await DeleteAsync(item))
                     result = false;
         }
         return result;
     }
 
-    public virtual T? Get(Guid uid) => TgSqlUtils.CreateUnitOfWork()
-        .GetObjectByKey<T?>(uid);
+    public virtual async Task<T> GetAsync(Guid uid) =>
+        await TgSqlUtils.CreateUnitOfWork()
+        .GetObjectByKeyAsync<T>(uid);
 
-    public virtual T? Get(T item)
+    public virtual async Task<T> GetAsync(T item)
     {
-        if (item is not XPLiteObject xpLite) return default;
-        return TgSqlUtils.CreateUnitOfWork()
-            .GetObjectByKey<T?>(xpLite.Session.GetKeyValue(item));
+        if (item is not XPLiteObject xpLite) return new();
+        return await TgSqlUtils.CreateUnitOfWork()
+            .GetObjectByKeyAsync<T>(xpLite.Session.GetKeyValue(item));
     }
 
     public virtual IEnumerable<T> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
@@ -53,9 +54,10 @@ public abstract class TgSqlRepositoryBase<T> : TgCommonBase where T : ITgSqlTabl
     public virtual IEnumerable<T> GetEnumerable(int count) =>
         TgSqlUtils.CreateUnitOfWork().Query<T>().Select(i => i).Take(count);
 
-    public virtual T? GetFirst() => TgSqlUtils.CreateUnitOfWork()
-        .Query<T>()
-        .FirstOrDefault();
+    public virtual async Task<T> GetFirstAsync() => 
+        await TgSqlUtils.CreateUnitOfWork()
+            .Query<T>()
+            .FirstOrDefaultAsync();
 
     #endregion
 }

@@ -5,14 +5,12 @@ namespace TgStorage.Common;
 
 public interface ITgSqlRepository<T> where T : ITgSqlTable, new()
 {
-    public string TableName { get; }
-
-    public bool Delete(T item);
-    public bool DeleteNew();
-    public bool Save(T item, bool isGetByUid = false);
-    public T Get(T item);
-    public T GetNew();
-    public T GetFirst();
+    public Task<bool> DeleteAsync(T item);
+    public Task<bool> DeleteNewAsync();
+    public Task<bool> SaveAsync(T item, bool isGetByUid = false);
+    public Task<T> GetAsync(T item);
+    public Task<T> GetNewAsync();
+    public Task<T> GetFirstAsync();
     public IEnumerable<T> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All);
     public IEnumerable<T> GetEnumerable(int count);
 }

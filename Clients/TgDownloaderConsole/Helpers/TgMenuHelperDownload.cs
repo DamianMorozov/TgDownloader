@@ -64,7 +64,7 @@ internal partial class TgMenuHelper
                     tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					RunAction(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, true, false);
+					RunAction(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, true, false);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
 					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
@@ -90,7 +90,7 @@ internal partial class TgMenuHelper
 					RunAction(tgDownloadSettings, UpdateSourceWithSettings, true, false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					RunAction(tgDownloadSettings, ManualDownload, false, false);
+					RunAction(tgDownloadSettings, ManualDownloadAsync, false, false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -101,9 +101,9 @@ internal partial class TgMenuHelper
         TgDownloadSettingsModel tgDownloadSettings = TgDownloadSettingsModel.CreateNew();
 		//tgDownloadSettings.SourceVm.SourceFirstId = 1;
 		SetupDownloadSourceCore(id, tgDownloadSettings);
-        Channel? channel = TgClient.PrepareChannelDownloadMessages(tgDownloadSettings, true);
+        Channel? channel = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (channel is null)
-			_ = TgClient.PrepareChatBaseDownloadMessages(tgDownloadSettings, true);
+			_ = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		LoadTgClientSettings(tgDownloadSettings, false, false);
         return tgDownloadSettings;
     }
@@ -134,20 +134,20 @@ internal partial class TgMenuHelper
         } while (!isCheck);
     }
 
-    private void SetupDownloadSourceFirstIdAuto(TgDownloadSettingsModel tgDownloadSettings)
+    private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		Channel? channel = TgClient.PrepareChannelDownloadMessages(tgDownloadSettings, true);
+		Channel? channel = await TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
 		if (channel is not null)
 		{
-			TgClient.SetChannelMessageIdFirstWithLock(tgDownloadSettings, channel);
+            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, channel);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 			return;
 		}
 
-		ChatBase? chatBase = TgClient.PrepareChatBaseDownloadMessages(tgDownloadSettings, true);
+		ChatBase? chatBase = await TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
 		if (chatBase is not null)
 		{
-			TgClient.SetChannelMessageIdFirstWithLock(tgDownloadSettings, chatBase);
+            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, chatBase);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 		}
 	}
@@ -196,18 +196,18 @@ internal partial class TgMenuHelper
 	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings) =>
 		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
-    private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
+    private async Task UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
     {
-        tgDownloadSettings.UpdateSourceWithSettings();
+        await tgDownloadSettings.UpdateSourceWithSettingsAsync();
 		// Refresh.
-		TgClient.UpdateStateMessage(TgLocale.SettingsSource);
+		await TgClient.UpdateStateMessageAsync(TgLocale.SettingsSource);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
     {
         int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
         string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-        TgSqlTableSourceModel source = ContextManager.SourceRepository.Get(tgDownloadSettings.SourceVm.SourceId);
+        TgSqlTableSourceModel source = ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId).GetAwaiter().GetResult();
         tgDownloadSettings.SourceVm.Source = source;
 		if (isSkipLoadFirstId)
 			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;
@@ -215,11 +215,11 @@ internal partial class TgMenuHelper
 			tgDownloadSettings.SourceVm.SourceDirectory = sourceDirectory;
 	}
 
-	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings)
+	private async Task ManualDownloadAsync(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
-		TgClient.DownloadAllData(tgDownloadSettings);
-        UpdateSourceWithSettings(tgDownloadSettings);
+		await TgClient.DownloadAllDataAsync(tgDownloadSettings);
+        await UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
 	#endregion

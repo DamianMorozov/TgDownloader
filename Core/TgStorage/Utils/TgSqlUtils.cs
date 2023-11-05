@@ -8,25 +8,39 @@ public static class TgSqlUtils
     #region Public and private methods
 
     public static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
+    private static string _connectionString = "";
+    public static string ConnectionString {
+        get
+        {
+            if (string.IsNullOrEmpty(_connectionString))
+                _connectionString = SQLiteConnectionProvider.GetConnectionString(TgAppSettings.AppXml.FileStorage);
+            return _connectionString;
+        }
+    }
 
-    public static bool TryExecute(string cmd)
+    private static ThreadSafeDataLayer? DataLayer { get; set; }
+
+    public static async Task<bool> TryExecuteAsync(string cmd)
     {
         using UnitOfWork uow = CreateUnitOfWork();
         try
         {
             if (!uow.InTransaction)
                 uow.BeginTransaction();
-            uow.ExecuteNonQuery(cmd);
-            uow.CommitChangesAsync();
-            uow.CommitTransaction();
+
+            await uow.ExecuteNonQueryAsync(cmd);
+            await uow.CommitChangesAsync();
+            await uow.CommitTransactionAsync();
             return true;
         }
 #if DEBUG
         catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
 #else
         catch (Exception)
-#endif
         {
+#endif
             uow.RollbackTransaction();
             throw;
         }
@@ -39,16 +53,19 @@ public static class TgSqlUtils
         {
             if (!xpLite.Session.InTransaction)
                 xpLite.Session.BeginTransaction();
+
             await xpLite.Session.SaveAsync(item);
             await xpLite.Session.CommitTransactionAsync();
             return true;
         }
 #if DEBUG
         catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
 #else
         catch (Exception)
-#endif
         {
+#endif
             xpLite.Session.RollbackTransaction();
             throw;
         }
@@ -93,10 +110,12 @@ public static class TgSqlUtils
         }
 #if DEBUG
         catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
 #else
         catch (Exception)
-#endif
         {
+#endif
             xpLite.Session.RollbackTransaction();
             throw;
         }
@@ -110,21 +129,19 @@ public static class TgSqlUtils
     {
         if (XpoDefault.DataLayer is null)
         {
-            string connectionString = SQLiteConnectionProvider.GetConnectionString(TgAppSettings.AppXml.FileStorage);
-            XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
+            //XpoDefault.DataLayer = XpoDefault.GetDataLayer(ConnectionString, AutoCreateOption.DatabaseAndSchema);
+            DataLayer = new(XpoDefault.GetConnectionProvider(ConnectionString, AutoCreateOption.DatabaseAndSchema));
+            XpoDefault.DataLayer = DataLayer;
         }
-    }
-
-    public static IDataLayer GetDataLayer()
-    {
-        string connectionString = SQLiteConnectionProvider.GetConnectionString(TgAppSettings.AppXml.FileStorage);
-        return XpoDefault.GetDataLayer(connectionString, AutoCreateOption.DatabaseAndSchema);
     }
 
     public static UnitOfWork CreateUnitOfWork()
     {
         SetXpoDefault();
-        return new UnitOfWork(XpoDefault.DataLayer)
+        //SimpleDataLayer.SuppressReentrancyAndThreadSafetyCheck = true;
+        
+        //var session = new UnitOfWork(XpoDefault.DataLayer)
+        var session = new UnitOfWork(DataLayer)
         {
             //Site = null,
             //TrackPropertiesModifications = false,
@@ -133,10 +150,11 @@ public static class TgSqlUtils
             //AutoCreateOption = AutoCreateOption.DatabaseAndSchema,
             //Connection = null,
             //ConnectionString = null,
-            LockingOption = LockingOption.None,
+            LockingOption = LockingOption.Optimistic,
             //OptimisticLockingReadBehavior = OptimisticLockingReadBehavior.Default,
             //IdentityMapBehavior = IdentityMapBehavior.Default
         };
+        return session;
     }
 
     #endregion
@@ -145,13 +163,13 @@ public static class TgSqlUtils
 
     public static void DeleteNewItems()
     {
-        TgSqlTableAppRepository.Instance.DeleteNew();
-        TgSqlTableDocumentRepository.Instance.DeleteNew();
-        TgSqlTableFilterRepository.Instance.DeleteNew();
-        TgSqlTableMessageRepository.Instance.DeleteNew();
-        TgSqlTableProxyRepository.Instance.DeleteNew();
-        TgSqlTableSourceRepository.Instance.DeleteNew();
-        TgSqlTableVersionRepository.Instance.DeleteNew();
+        TgSqlTableAppRepository.Instance.DeleteNewAsync();
+        TgSqlTableDocumentRepository.Instance.DeleteNewAsync();
+        TgSqlTableFilterRepository.Instance.DeleteNewAsync();
+        TgSqlTableMessageRepository.Instance.DeleteNewAsync();
+        TgSqlTableProxyRepository.Instance.DeleteNewAsync();
+        TgSqlTableSourceRepository.Instance.DeleteNewAsync();
+        TgSqlTableVersionRepository.Instance.DeleteNewAsync();
     }
 
     #endregion

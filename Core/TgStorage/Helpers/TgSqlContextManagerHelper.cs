@@ -126,10 +126,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableApps()
 	{
 		bool result = true;
-		TgSqlTableAppModel itemNew = AppRepository.GetNew();
-		if (!AppRepository.Save(itemNew))
+		TgSqlTableAppModel itemNew = AppRepository.GetNewAsync().GetAwaiter().GetResult();
+		if (!AppRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-		if (!AppRepository.Delete(itemNew))
+		if (!AppRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -137,10 +137,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableDocuments()
 	{
 		bool result = true;
-		TgSqlTableDocumentModel itemNew = DocumentRepository.GetNew();
-		if (!DocumentRepository.Save(itemNew))
+		TgSqlTableDocumentModel itemNew = DocumentRepository.GetNewAsync().Result;
+		if (!DocumentRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-		if (!DocumentRepository.Delete(itemNew))
+		if (!DocumentRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -148,10 +148,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableFilters()
 	{
 		bool result = true;
-		TgSqlTableFilterModel itemNew = FilterRepository.GetNew();
-		if (!FilterRepository.Save(itemNew))
+		TgSqlTableFilterModel itemNew = FilterRepository.GetNewAsync().Result;
+		if (!FilterRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
             result = false;
-		if (!FilterRepository.Delete(itemNew))
+		if (!FilterRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -159,10 +159,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableMessages()
 	{
 		bool result = true;
-		TgSqlTableMessageModel itemNew = MessageRepository.GetNew();
-		if (!MessageRepository.Save(itemNew))
+		TgSqlTableMessageModel itemNew = MessageRepository.GetNewAsync().Result;
+		if (!MessageRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-		if (!MessageRepository.Delete(itemNew))
+		if (!MessageRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -170,10 +170,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableProxies()
     {
         bool result = true;
-        TgSqlTableProxyModel itemNew = ProxyRepository.GetNew();
-		if (!ProxyRepository.Save(itemNew))
+        TgSqlTableProxyModel itemNew = ProxyRepository.GetNewAsync().Result;
+		if (!ProxyRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-        if (!ProxyRepository.Delete(itemNew))
+        if (!ProxyRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
             result = false;
 		return result;
 	}
@@ -181,10 +181,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableSources()
 	{
 		bool result = true;
-		TgSqlTableSourceModel itemNew = SourceRepository.GetNew();
-		if (!SourceRepository.Save(itemNew))
+		TgSqlTableSourceModel itemNew = SourceRepository.GetNewAsync().Result;
+		if (!SourceRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-		if (!SourceRepository.Delete(itemNew))
+		if (!SourceRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -192,10 +192,10 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableVersions()
 	{
 		bool result = true;
-		TgSqlTableVersionModel itemNew = VersionRepository.GetNew();
-		if (!VersionRepository.Save(itemNew))
+		TgSqlTableVersionModel itemNew = VersionRepository.GetNewAsync().GetAwaiter().GetResult();
+		if (!VersionRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
-		if (!VersionRepository.Delete(itemNew))
+		if (!VersionRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
 	}
@@ -205,82 +205,83 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 		bool isLast = false;
 		while (!isLast)
 		{
-			TgSqlTableVersionModel versionLast = !IsTableExists(TgSqlConstants.TableVersions) ? new() : VersionRepository.GetItemLast();
+			TgSqlTableVersionModel versionLast = !IsTableExists(TgSqlConstants.TableVersions) 
+                ? new() : VersionRepository.GetItemLastAsync().Result;
 			if (Equals(versionLast.Version, short.MaxValue))
 				versionLast.Version = 0;
 			switch (versionLast.Version)
 			{
 				case 0:
 					TgSqlTableVersionModel version1 = new() { Version = 1, Description = "Added versions table" };
-					VersionRepository.Save(version1);
+					VersionRepository.SaveAsync(version1).GetAwaiter().GetResult();
 					break;
 				case 1:
 					TgSqlTableVersionModel version2 = new() { Version = 2, Description = "Added apps table" };
-					VersionRepository.Save(version2);
+					VersionRepository.SaveAsync(version2).GetAwaiter().GetResult();
 					break;
 				case 2:
 					TgSqlTableVersionModel version3 = new() { Version = 3, Description = "Added documents table" };
-					VersionRepository.Save(version3);
+					VersionRepository.SaveAsync(version3).GetAwaiter().GetResult();
 					break;
 				case 3:
 					TgSqlTableVersionModel version4 = new() { Version = 4, Description = "Added filters table" };
-					VersionRepository.Save(version4);
+					VersionRepository.SaveAsync(version4).GetAwaiter().GetResult();
 					break;
 				case 4:
 					TgSqlTableVersionModel version5 = new() { Version = 5, Description = "Added messages table" };
-					VersionRepository.Save(version5);
+					VersionRepository.SaveAsync(version5).GetAwaiter().GetResult();
 					break;
 				case 5:
 					TgSqlTableVersionModel version6 = new() { Version = 6, Description = "Added proxies table" };
-					VersionRepository.Save(version6);
+					VersionRepository.SaveAsync(version6).GetAwaiter().GetResult();
 					break;
 				case 6:
 					TgSqlTableVersionModel version7 = new() { Version = 7, Description = "Added sources table" };
-					VersionRepository.Save(version7);
+					VersionRepository.SaveAsync(version7).GetAwaiter().GetResult();
 					break;
 				case 7:
 					TgSqlTableVersionModel version8 = new() { Version = 8, Description = "Added source settings table" };
-					VersionRepository.Save(version8);
+					VersionRepository.SaveAsync(version8).GetAwaiter().GetResult();
 					break;
 				case 8:
 					TgSqlTableVersionModel version9 = new() { Version = 9, Description = "Upgrade versions table" };
-					VersionRepository.Save(version9);
+					VersionRepository.SaveAsync(version9).GetAwaiter().GetResult();
 					break;
 				case 9:
 					TgSqlTableVersionModel version10 = new() { Version = 10, Description = "Upgrade apps table" };
-					VersionRepository.Save(version10);
+					VersionRepository.SaveAsync(version10).GetAwaiter().GetResult();
 					break;
 				case 10:
 					TgSqlTableVersionModel version11 = new() { Version = 11, Description = "Upgrade storage on XPO framework" };
-					VersionRepository.Save(version11);
+					VersionRepository.SaveAsync(version11).GetAwaiter().GetResult();
 					break;
 				case 11:
 					TgSqlTableVersionModel version12 = new() { Version = 12, Description = "Upgrade apps table" };
-					VersionRepository.Save(version12);
+					VersionRepository.SaveAsync(version12).GetAwaiter().GetResult();
 					break;
 				case 12:
 					TgSqlTableVersionModel version13 = new() { Version = 13, Description = "Upgrade documents table" };
-					VersionRepository.Save(version13);
+					VersionRepository.SaveAsync(version13).GetAwaiter().GetResult();
 					break;
 				case 13:
 					TgSqlTableVersionModel version14 = new() { Version = 14, Description = "Upgrade filters table" };
-					VersionRepository.Save(version14);
+					VersionRepository.SaveAsync(version14).GetAwaiter().GetResult();
 					break;
 				case 14:
 					TgSqlTableVersionModel version15 = new() { Version = 15, Description = "Upgrade messages table" };
-					VersionRepository.Save(version15);
+					VersionRepository.SaveAsync(version15).GetAwaiter().GetResult();
 					break;
 				case 15:
 					TgSqlTableVersionModel version16 = new() { Version = 16, Description = "Upgrade proxies table" };
-					VersionRepository.Save(version16);
+					VersionRepository.SaveAsync(version16).GetAwaiter().GetResult();
 					break;
 				case 16:
 					TgSqlTableVersionModel version17 = new() { Version = 17, Description = "Upgrade sources table" };
-					VersionRepository.Save(version17);
+					VersionRepository.SaveAsync(version17).GetAwaiter().GetResult();
 					break;
 				case 17:
 					TgSqlTableVersionModel version18 = new() { Version = 18, Description = "Upgrade sources table" };
-					VersionRepository.Save(version18);
+					VersionRepository.SaveAsync(version18).GetAwaiter().GetResult();
 					break;
 			}
 			if (versionLast.Version >= VersionRepository.LastVersion)
@@ -288,34 +289,34 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 		}
 	}
 
-	public void DeleteTables()
+	public async Task DeleteTablesAsync()
 	{
-		DeleteTable(TgSqlConstants.TableApps);
-		DeleteTable(TgSqlConstants.TableProxies);
-		DeleteTable(TgSqlConstants.TableFilters);
-		DeleteTable(TgSqlConstants.TableDocuments);
-		DeleteTable(TgSqlConstants.TableMessages);
-		DeleteTable(TgSqlConstants.TableSources);
-		DeleteTable(TgSqlConstants.TableVersions);
-		DeleteTable(TgSqlConstants.XPObjectType);
+        await DeleteTableAsync(TgSqlConstants.TableApps);
+        await DeleteTableAsync(TgSqlConstants.TableProxies);
+        await DeleteTableAsync(TgSqlConstants.TableFilters);
+        await DeleteTableAsync(TgSqlConstants.TableDocuments);
+        await DeleteTableAsync(TgSqlConstants.TableMessages);
+        await DeleteTableAsync(TgSqlConstants.TableSources);
+        await DeleteTableAsync(TgSqlConstants.TableVersions);
+        await DeleteTableAsync(TgSqlConstants.XPObjectType);
 	}
 
 	/// <summary>
 	/// Delete sql table by name.
 	/// </summary>
 	/// <param name="tableName"></param>
-	public bool DeleteTable(string tableName)
+	public async Task<bool> DeleteTableAsync(string tableName)
     {
-        return TgSqlUtils.TryExecute($"DROP TABLE IF EXISTS {tableName};");
+        return await TgSqlUtils.TryExecuteAsync($"DROP TABLE IF EXISTS {tableName};");
     }
 
     /// <summary>
 	/// Truncate table.
 	/// </summary>
 	/// <param name="tableName"></param>
-	public bool TruncateTable(string tableName)
+	public async Task<bool> TruncateTableAsync(string tableName)
     {
-        return TgSqlUtils.TryExecute($"TRUNCATE TABLE {tableName};");
+        return await TgSqlUtils.TryExecuteAsync($"TRUNCATE TABLE {tableName};");
     }
 
     /// <summary>

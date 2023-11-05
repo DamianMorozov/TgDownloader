@@ -12,10 +12,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     public TgPageViewModelBase? ViewModel { get; set; }
     private Guid SourceUid { get; set; }
 
-    public TgItemSourceViewModel()
-	{
-		//
-	}
+    public TgItemSourceViewModel() { }
 
 	#endregion
 
@@ -23,20 +20,16 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
 	public void OnNavigatedTo()
 	{
-		//if (!IsInitialized)
-		InitializeViewModel();
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
     }
 
-	public void OnNavigatedFrom()
-	{
-		//
-	}
+	public void OnNavigatedFrom() { }
 
-    protected override void InitializeViewModel()
+    protected override async Task InitializeViewModelAsync()
     {
-        base.InitializeViewModel();
+        await base.InitializeViewModelAsync();
 
-        OnGetSourceFromStorageAsync().ConfigureAwait(false);
+        await OnGetSourceFromStorageAsync();
     }
 
     public void SetItemSourceVm(TgSqlTableSourceViewModel itemSourceVm) => 
@@ -72,13 +65,13 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     [RelayCommand]
     public async Task OnGetSourceFromStorageAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
-            TgSqlTableSourceModel source = ContextManager.SourceRepository.Get(SourceUid);
+            TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetAsync(SourceUid);
             SetItemSourceVm(source, source.Uid);
-        }, true).ConfigureAwait(true);
+        }, true);
     }
 
     // UpdateSourceFromTelegramCommand
@@ -88,76 +81,79 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         if (!CheckClientReady())
             return;
 
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
             // Collect chats from Telegram.
             if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
-                TgDesktopUtils.TgClient.CollectAllChatsDesktopAsync(_ => { }, _ => { });
+                await TgDesktopUtils.TgClient.CollectAllChatsAsync();
             // Download settings.
             TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(ItemSourceVm);
             // Update source from Telegram.
-            TgDesktopUtils.TgClient.UpdateSourceDb(ItemSourceVm, tgDownloadSettings);
-            ContextManager.SourceRepository.Save(ItemSourceVm.Source);
+            await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
+            await ContextManager.SourceRepository.SaveAsync(ItemSourceVm.Source);
             // Message.
-            TgDesktopUtils.TgClient.UpdateStateMessage(TgDesktopUtils.TgLocale.SettingsSource);
-            TgDesktopUtils.TgClient.UpdateStateSource(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
-        }, false).ConfigureAwait(false);
+            await TgDesktopUtils.TgClient.UpdateStateMessageAsync(TgDesktopUtils.TgLocale.SettingsSource);
+            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+        }, false);
 
         await OnGetSourceFromStorageAsync();
     }
 
     // DownloadSourceCommand
     [RelayCommand]
-    public async Task OnDownloadSourceAsync()
+    public async Task<bool> OnDownloadSourceAsync()
     {
         if (!CheckClientReady())
-            return;
+            return false;
 
         await OnUpdateSourceFromTelegramAsync();
 
-        _ = Task.Run(async () =>
+        bool result = true;
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await TgDesktopUtils.RunAction2Async(ViewModel ?? this, () =>
+            // Check directory.
+            if (!Directory.Exists(ItemSourceVm.Source.Directory))
             {
-                // Check directory.
-                if (!Directory.Exists(ItemSourceVm.Source.Directory))
-                {
-                    TgDesktopUtils.TgClient.UpdateStateSource(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId,
-                        $"Directory is not exists! {ItemSourceVm.Source.Directory}");
-                    return;
-                }
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId,
+                    $"Directory is not exists! {ItemSourceVm.Source.Directory}");
+                result = false;
+                return;
+            }
 
-                // Download settings.
-                TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(ItemSourceVm);
-                // Job.
-                TgDesktopUtils.TgClient.DownloadAllData(tgDownloadSettings);
-                TgDesktopUtils.TgClient.UpdateStateMessage(TgDesktopUtils.TgLocale.SettingsSource);
-            }, true).ConfigureAwait(false);
-        }).ConfigureAwait(false);
+            // Download settings.
+            TgDownloadSettingsModel tgDownloadSettings = CreateDownloadSettings(ItemSourceVm);
+            // Job.
+            await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
+            await TgDesktopUtils.TgClient.UpdateStateMessageAsync(TgDesktopUtils.TgLocale.SettingsSource);
+        }, true);
+
+        await OnGetSourceFromStorageAsync();
+
+        return result;
     }
 
     // ClearViewCommand
     [RelayCommand]
     public async Task OnClearViewAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
-            ItemSourceVm.Source = ContextManager.SourceRepository.GetNew();
-        }, false).ConfigureAwait(true);
+            ItemSourceVm.Source = await ContextManager.SourceRepository.GetNewAsync();
+        }, false);
     }
 
     // SaveSourceCommand
     [RelayCommand]
     public async Task OnSaveSourceAsync()
     {
-        await TgDesktopUtils.RunActionAsync(ViewModel ?? this, () =>
+        await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            ContextManager.SourceRepository.Save(ItemSourceVm.Source, true);
-        }, false).ConfigureAwait(false);
+            await ContextManager.SourceRepository.SaveAsync(ItemSourceVm.Source, true);
+        }, false);
     }
 
     // ReturnToSectionSourcesCommand
@@ -171,7 +167,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
                 navigationWindow.ShowWindow();
                 navigationWindow.Navigate(typeof(TgSourcesPage));
             }
-        }, false).ConfigureAwait(false);
+        }, false);
     }
 
     #endregion

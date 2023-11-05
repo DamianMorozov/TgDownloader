@@ -4,7 +4,7 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.2.490.0</Version>
+		<Version>0.2.540.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
@@ -14,6 +14,8 @@
 	  <None Remove="TgLocale\**" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Include="..\..\GUIDE-SET-DESKTOP-RUS.md" Link="GUIDE-SET-DESKTOP-RUS.md" />
+		<None Include="..\..\GUIDE-SET-DESKTOP.md" Link="GUIDE-SET-DESKTOP.md" />
 		<None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -53,10 +55,11 @@
 			<PackagePath>\</PackagePath>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Include="..\..\SCREENSHOTS.md" Link="SCREENSHOTS.md" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Spectre.Console" Version="0.47.0" />
-		<PackageReference Include="WTelegramClient" Version="3.5.6" />
+		<PackageReference Include="WTelegramClient" Version="3.5.8" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />

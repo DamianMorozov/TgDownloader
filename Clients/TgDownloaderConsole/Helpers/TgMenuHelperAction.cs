@@ -24,7 +24,7 @@ internal partial class TgMenuHelper
         return result;
     }
 
-    public void RunAction(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel> action,
+    public void RunAction(TgDownloadSettingsModel tgDownloadSettings, Func<TgDownloadSettingsModel, Task> action,
         bool isSkipCheckTgSettings, bool isScanCount)
     {
         if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
@@ -39,10 +39,10 @@ internal partial class TgMenuHelper
                 statusContext.Spinner(Spinner.Known.Star);
                 statusContext.SpinnerStyle(Style.Parse("green"));
                 // Update Console Title
-                void UpdateConsoleTitle(string title) => Console.Title = string.IsNullOrEmpty(title) 
+                async Task UpdateConsoleTitleAsync(string title) => Console.Title = string.IsNullOrEmpty(title) 
                     ? $"{TgLocale.AppTitleConsoleShort}" : $"{TgLocale.AppTitleConsoleShort} {title}";
                 // Update status.
-                void UpdateStateMessage(string message)
+                async Task UpdateStateMessageAsync(string message)
                 {
                     if (!string.IsNullOrEmpty(message))
                     {
@@ -50,7 +50,7 @@ internal partial class TgMenuHelper
                         statusContext.Refresh();
                     }
                 }
-                void UpdateStateSource(long sourceId, int messageId, string message)
+                async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
                 {
                     if (isScanCount)
                         statusContext.Status(
@@ -62,16 +62,17 @@ internal partial class TgMenuHelper
                                 tgDownloadSettings.SourceVm.SourceFirstId)} | {message}"));
                     statusContext.Refresh();
                 }
-                TgClient.SetupActions(UpdateConsoleTitle, UpdateStateMessage, UpdateStateSource);
+                TgClient.SetupActions(UpdateConsoleTitleAsync, UpdateStateMessageAsync, UpdateStateSourceAsync);
                 // Action.
                 Stopwatch sw = new();
                 sw.Start();
-                action(tgDownloadSettings);
+                action(tgDownloadSettings).GetAwaiter().GetResult();
                 sw.Stop();
-                UpdateStateMessage(
+                UpdateStateMessageAsync(
                     isScanCount
                         ? $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceScanCount, tgDownloadSettings.SourceVm.SourceScanCurrent)}"
-                        : $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceLastId)}");
+                        : $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceLastId)}")
+                    .GetAwaiter().GetResult();
             });
         TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
         Console.ReadKey();

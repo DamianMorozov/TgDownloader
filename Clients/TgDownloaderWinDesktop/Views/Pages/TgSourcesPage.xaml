@@ -18,9 +18,7 @@
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
 
-	<Page.Resources>
-		<helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-	</Page.Resources>
+	<Page.Resources />
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -64,7 +62,7 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					Appearance="Primary"
-					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GetSourcesFromStorageCommand, Mode=OneWay, IsAsync=True}"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=LoadSourcesFromStorageCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}"
 					Icon="ArrowSync12"
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
@@ -135,91 +133,104 @@
 			</Grid>
 		</Border>
 		<!--  2 row | Grid Sources  -->
-		<DataGrid
+		<Border
 			Grid.Row="1"
 			Margin="2"
-			VerticalAlignment="Top"
-			AutoGenerateColumns="False"
-			Background="Transparent"
-			IsReadOnly="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsNotReady, Mode=OneWay, IsAsync=True}"
-			ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms, Mode=OneWay, IsAsync=True}"
-			Visibility="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GridVisibility, Mode=OneWay, IsAsync=True}">
-			<!--  Visibility="Hidden"  -->
-			<DataGrid.Columns>
-				<!--  Get from Storage  -->
-				<DataGridTemplateColumn Width="0.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldDb, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:Button
+			BorderBrush="DimGray"
+			BorderThickness="1"
+			CornerRadius="5"
+			UseLayoutRounding="True">
+			<!--<Border.Style>
+				<Style TargetType="Border">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms.Count, Mode=OneWay, IsAsync=True}" Value="0">
+							<Setter Property="IsEnabled" Value="False" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Border.Style>-->
+			<DataGrid
+				VerticalAlignment="Top"
+				AutoGenerateColumns="False"
+				Background="Transparent"
+				IsReadOnly="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsNotReady, Mode=OneWay, IsAsync=True}"
+				ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms, Mode=OneWay, IsAsync=True}">
+				<!--  Visibility="Hidden"  -->
+				<DataGrid.Columns>
+					<!--  Get from Storage  -->
+					<DataGridTemplateColumn Width="0.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Appearance="Primary"
-								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GetSourceFromStorageCommand, Mode=OneWay, IsAsync=True}"
-								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								Icon="ArrowUp28"
-								ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Update from TG  -->
-				<DataGridTemplateColumn Width="0.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUpd, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:Button
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldDb, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:Button
+									Margin="2"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Appearance="Primary"
+									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GetSourceFromStorageCommand, Mode=OneWay, IsAsync=True}"
+									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Icon="ArrowUp28"
+									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Update from TG  -->
+					<DataGridTemplateColumn Width="0.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Appearance="Primary"
-								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=UpdateSourceFromTelegramCommand, Mode=OneWay, IsAsync=True}"
-								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								Icon="ArrowSync12"
-								ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Edit  -->
-				<DataGridTemplateColumn Width="0.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:Button
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUpd, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:Button
+									Margin="2"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Appearance="Primary"
+									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=UpdateSourceFromTelegramCommand, Mode=OneWay, IsAsync=True}"
+									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Icon="ArrowSync12"
+									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Edit  -->
+					<DataGridTemplateColumn Width="0.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Appearance="Primary"
-								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=EditSourceCommand, Mode=OneWay, IsAsync=True}"
-								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								Icon="Edit48"
-								ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Download from TG  -->
-				<!--<DataGridTemplateColumn Width="0.5*">
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:Button
+									Margin="2"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Appearance="Primary"
+									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=EditSourceCommand, Mode=OneWay, IsAsync=True}"
+									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Icon="Edit48"
+									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Download from TG  -->
+					<!--<DataGridTemplateColumn Width="0.5*">
 					<DataGridTemplateColumn.Header>
 						<Label
 							Margin="2"
@@ -243,29 +254,29 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>-->
-				<!--  Complete all  -->
-				<DataGridTemplateColumn Width="0.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldAll, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<CheckBox
+					<!--  Complete all  -->
+					<DataGridTemplateColumn Width="0.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								IsChecked="{Binding IsComplete, Mode=OneWay, IsAsync=True}"
-								IsEnabled="False" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Auto-update  -->
-				<!--<DataGridTemplateColumn Width=".5*">
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldAll, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<CheckBox
+									Margin="2"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									IsChecked="{Binding IsComplete, Mode=OneWay, IsAsync=True}"
+									IsEnabled="False" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Auto-update  -->
+					<!--<DataGridTemplateColumn Width=".5*">
 					<DataGridTemplateColumn.Header>
 						<Label
 							Margin="2"
@@ -287,149 +298,150 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>-->
-				<!--  Source ID  -->
-				<DataGridTemplateColumn Width="1.0*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldId, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:TextBox
+					<!--  Source ID  -->
+					<DataGridTemplateColumn Width="1.0*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Center"
 								HorizontalContentAlignment="Center"
-								IsEnabled="False"
-								IsManipulationEnabled="False"
-								Text="{Binding Source.Id, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  User name  -->
-				<DataGridTemplateColumn Width="1.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUserName, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:TextBox
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldId, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:TextBox
+									Margin="2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									IsEnabled="False"
+									IsManipulationEnabled="False"
+									Text="{Binding Source.Id, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  User name  -->
+					<DataGridTemplateColumn Width="1.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Center"
 								HorizontalContentAlignment="Center"
-								IsEnabled="False"
-								IsManipulationEnabled="False"
-								Text="{Binding Source.UserName, Mode=OneWay, IsAsync=True}"
-								ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Title  -->
-				<DataGridTemplateColumn Width="3.0*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTitle, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:TextBox
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUserName, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:TextBox
+									Margin="2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									IsEnabled="False"
+									IsManipulationEnabled="False"
+									Text="{Binding Source.UserName, Mode=OneWay, IsAsync=True}"
+									ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Title  -->
+					<DataGridTemplateColumn Width="3.0*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Stretch"
-								HorizontalContentAlignment="Left"
-								IsEnabled="False"
-								IsManipulationEnabled="False"
-								Text="{Binding Source.Title, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  First ID  -->
-				<DataGridTemplateColumn Width="0.9*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldFirstId, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:TextBox
-								Margin="2"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Center"
 								HorizontalContentAlignment="Center"
-								IsEnabled="False"
-								Text="{Binding SourceFirstId, Mode=TwoWay, IsAsync=True}" />
-							<!--  IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"  -->
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Count  -->
-				<DataGridTemplateColumn Width="0.9*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldCount, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:TextBox
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTitle, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:TextBox
+									Margin="2"
+									HorizontalAlignment="Stretch"
+									HorizontalContentAlignment="Left"
+									IsEnabled="False"
+									IsManipulationEnabled="False"
+									Text="{Binding Source.Title, Mode=OneWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  First ID  -->
+					<DataGridTemplateColumn Width="0.9*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Center"
 								HorizontalContentAlignment="Center"
-								IsEnabled="False"
-								IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
-								Text="{Binding SourceLastId, Mode=TwoWay, IsAsync=True}" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  Progress  -->
-				<DataGridTemplateColumn Width="0.5*">
-					<DataGridTemplateColumn.Header>
-						<Label
-							Margin="2"
-							HorizontalContentAlignment="Center"
-							VerticalContentAlignment="Center"
-							Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldPercentSpec, Mode=OneWay, IsAsync=True}"
-							FontWeight="Bold" />
-					</DataGridTemplateColumn.Header>
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<ui:ProgressRing
-								Name="ProgressRingReload"
-								Width="30"
-								Height="30"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldFirstId, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:TextBox
+									Margin="2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									IsEnabled="False"
+									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
+									Text="{Binding SourceFirstId, Mode=TwoWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Count  -->
+					<DataGridTemplateColumn Width="0.9*">
+						<DataGridTemplateColumn.Header>
+							<Label
 								Margin="2"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								IsIndeterminate="{Binding IsLoad, Mode=OneWay, IsAsync=True}"
-								Progress="{Binding Progress, Mode=OneWay, IsAsync=True}"
-								ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}"
-								Visibility="Visible" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<!--  End  -->
-			</DataGrid.Columns>
-		</DataGrid>
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldCount, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:TextBox
+									Margin="2"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									HorizontalContentAlignment="Center"
+									IsEnabled="False"
+									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
+									Text="{Binding SourceLastId, Mode=TwoWay, IsAsync=True}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  Progress  -->
+					<DataGridTemplateColumn Width="0.5*">
+						<DataGridTemplateColumn.Header>
+							<Label
+								Margin="2"
+								HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldPercentSpec, Mode=OneWay, IsAsync=True}"
+								FontWeight="Bold" />
+						</DataGridTemplateColumn.Header>
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<ui:ProgressRing
+									Name="ProgressRingReload"
+									Width="30"
+									Height="30"
+									Margin="2"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									IsIndeterminate="{Binding IsLoad, Mode=OneWay, IsAsync=True}"
+									Progress="{Binding Progress, Mode=OneWay, IsAsync=True}"
+									ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}"
+									Visibility="Visible" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<!--  End  -->
+				</DataGrid.Columns>
+			</DataGrid>
+		</Border>
 	</Grid>
 </common:TgPageViewBase>

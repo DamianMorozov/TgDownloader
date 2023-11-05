@@ -49,7 +49,7 @@ public class TgExceptionModel : TgViewModelBase
 	}
 
 	private string GetInnerException(Exception ex) =>
-		ex.InnerException is null ? ex.Message : GetInnerException(ex.InnerException);
+		ex.InnerException is null ? ex.Message : ex.Message + Environment.NewLine + GetInnerException(ex.InnerException);
 
 	#endregion
 }

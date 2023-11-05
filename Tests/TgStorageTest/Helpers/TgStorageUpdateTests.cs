@@ -14,18 +14,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableAppRepository repository = TgSqlTableAppRepository.Instance;
-            TgSqlTableAppModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableAppModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             Guid proxyUid = item.ProxyUid;
             item.ProxyUid = Guid.Empty;
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.ProxyUid = proxyUid;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });
@@ -37,18 +37,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableDocumentRepository repository = TgSqlTableDocumentRepository.Instance;
-            TgSqlTableDocumentModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableDocumentModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             string fileName = item.FileName;
             item.FileName = "<Empty>";
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.FileName = fileName;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });
@@ -69,18 +69,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableMessageRepository repository = TgSqlTableMessageRepository.Instance;
-            TgSqlTableMessageModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableMessageModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             string message = item.Message;
             item.Message = "<Empty>";
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.Message = message;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });
@@ -92,18 +92,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableProxyRepository repository = TgSqlTableProxyRepository.Instance;
-            TgSqlTableProxyModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableProxyModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             string secret = item.Secret;
             item.Secret = "<Empty>";
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.Secret = secret;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });
@@ -115,18 +115,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableSourceRepository repository = TgSqlTableSourceRepository.Instance;
-            TgSqlTableSourceModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableSourceModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             string title = item.Title;
             item.Title = "<Empty>";
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.Title = title;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });
@@ -138,18 +138,18 @@ internal class TgStorageUpdateTests
         Assert.DoesNotThrow(() =>
         {
             TgSqlTableVersionRepository repository = TgSqlTableVersionRepository.Instance;
-            TgSqlTableVersionModel item = repository.GetFirst();
-            TestContext.WriteLine($"{nameof(repository.GetFirst)}: {item.ToDebugString()}");
+            TgSqlTableVersionModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
+            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
             Assert.IsTrue(item.IsExists);
 
             string description = item.Description;
             item.Description = "<Empty>";
-            bool isUpdate = repository.Save(item);
+            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
 
             item.Description = description;
-            isUpdate = repository.Save(item);
+            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
             TestContext.WriteLine($"Update: {item.ToDebugString()}");
             Assert.IsTrue(isUpdate);
         });

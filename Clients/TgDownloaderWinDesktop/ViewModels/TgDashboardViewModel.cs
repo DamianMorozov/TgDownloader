@@ -10,14 +10,10 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
 
 	public void OnNavigatedTo()
 	{
-		if (!IsInitialized)
-			InitializeViewModel();
-	}
+        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+    }
 
-	public void OnNavigatedFrom()
-	{
-		//
-	}
+	public void OnNavigatedFrom() { }
 
     #endregion
 

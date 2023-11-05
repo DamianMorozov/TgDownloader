@@ -122,7 +122,7 @@ internal partial class TgMenuHelper
 				break;
 		}
 
-		ContextManager.FilterRepository.Save(filter);
+		ContextManager.FilterRepository.SaveAsync(filter).GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 
@@ -134,7 +134,7 @@ internal partial class TgMenuHelper
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
 		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
-		ContextManager.FilterRepository.Save(filter);
+		ContextManager.FilterRepository.SaveAsync(filter).GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 
@@ -154,7 +154,7 @@ internal partial class TgMenuHelper
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
-		ContextManager.FilterRepository.Delete(filter);
+		ContextManager.FilterRepository.DeleteAsync(filter).GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 
@@ -162,7 +162,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset))
 			return;
-		ContextManager.FilterRepository.DeleteAllItems();
+		ContextManager.FilterRepository.DeleteAllItemsAsync().GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 

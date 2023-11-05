@@ -102,7 +102,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
 			return;
-		ContextManager.DeleteTables();
+        ContextManager.DeleteTablesAsync().GetAwaiter().GetResult();
 		ContextManager.CreateOrConnectDb(true);
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();

@@ -70,8 +70,8 @@ public partial class App
 	/// </summary>
 	private async void OnStartup(object sender, StartupEventArgs e)
 	{
-		TgAsyncUtils.SetAppType(TgEnumAppType.Async);
-		ContextManager.CreateOrConnectDb(true);
+        TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
+        ContextManager.CreateOrConnectDb(true);
 		await Host.StartAsync().ConfigureAwait(false);
 		TgDesktopUtils.SetupClient();
 	}

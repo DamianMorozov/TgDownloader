@@ -89,7 +89,7 @@ internal class TgStorageHelperGetEnumerableTests
 				}
                 else
                 {
-                    TgStorageTestsUtils.VersionRepository.Delete(item);
+                    TgStorageTestsUtils.VersionRepository.DeleteAsync(item).GetAwaiter().GetResult();
                 }
             }
 		});
@@ -100,12 +100,11 @@ internal class TgStorageHelperGetEnumerableTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			//TgStorageTestsUtils.DataCore.TgStorage.CheckTableVersions();
 			TgStorageTestsUtils.DataCore.ContextManager.FillTableVersions();
 			TgSqlTableVersionModel versionLast =
 				!TgStorageTestsUtils.DataCore.ContextManager.IsTableExists(TgSqlConstants.TableVersions)
-				? TgStorageTestsUtils.VersionRepository.GetNew()
-				: TgStorageTestsUtils.VersionRepository.GetItemLast();
+				? TgStorageTestsUtils.VersionRepository.GetNewAsync().GetAwaiter().GetResult()
+                : TgStorageTestsUtils.VersionRepository.GetItemLastAsync().GetAwaiter().GetResult();
 			TestContext.WriteLine(versionLast);
 			Assert.That(Equals(TgStorageTestsUtils.VersionRepository.LastVersion, versionLast.Version));
 		});
