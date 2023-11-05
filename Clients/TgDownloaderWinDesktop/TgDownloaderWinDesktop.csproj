@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.540.0</Version>
+    <Version>0.2.550.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="applicationIcon.ico" />

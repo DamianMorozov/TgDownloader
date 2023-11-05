@@ -87,6 +87,7 @@
 			VerticalAlignment="Top"
 			AutoGenerateColumns="False"
 			Background="Transparent"
+			CanUserAddRows="False"
 			ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgProxiesVm}, Path=ProxiesVms, Mode=OneWay, IsAsync=True}">
 			<DataGrid.Columns>
 				<!--  Connect  -->

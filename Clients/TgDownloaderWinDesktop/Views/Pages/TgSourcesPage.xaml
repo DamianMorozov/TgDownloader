@@ -18,7 +18,10 @@
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
 
-	<Page.Resources />
+	<Page.Resources>
+		<helpers:ExistsToValueConverter x:Key="ExistsToValueConverter" />
+	</Page.Resources>
+
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -153,7 +156,7 @@
 				VerticalAlignment="Top"
 				AutoGenerateColumns="False"
 				Background="Transparent"
-				IsReadOnly="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsNotReady, Mode=OneWay, IsAsync=True}"
+				CanUserAddRows="False"
 				ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms, Mode=OneWay, IsAsync=True}">
 				<!--  Visibility="Hidden"  -->
 				<DataGrid.Columns>
@@ -205,6 +208,7 @@
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
+					<!--  CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"  -->
 					<!--  Edit  -->
 					<DataGridTemplateColumn Width="0.5*">
 						<DataGridTemplateColumn.Header>
@@ -229,6 +233,7 @@
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
+					<!--  CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"  -->
 					<!--  Download from TG  -->
 					<!--<DataGridTemplateColumn Width="0.5*">
 					<DataGridTemplateColumn.Header>
@@ -247,7 +252,7 @@
 								VerticalAlignment="Center"
 								Appearance="Primary"
 								Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=DownloadCommand, Mode=OneWay, IsAsync=True}"
-								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+								CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
 								Icon="ArrowDownload48"
 								IsEnabled="{Binding Path=IsReady, Mode=OneWay, IsAsync=True}"
 								ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainDownload, Mode=OneWay, IsAsync=True}" />

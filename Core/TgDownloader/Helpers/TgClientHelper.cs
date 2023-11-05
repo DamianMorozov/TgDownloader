@@ -978,15 +978,15 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     private async Task UpdateSourceTgAsync(Channel channel, string about, int count)
     {
         TgSqlTableSourceModel itemFind = await ContextManager.SourceRepository.GetAsync(channel.id);
-        if (itemFind.IsExists)
-        {
-            itemFind.UserName = channel.username;
-            if (!string.IsNullOrEmpty(channel.title))
-                itemFind.Title = channel.title;
-            if (!string.IsNullOrEmpty(about))
-                itemFind.About = about;
-            itemFind.Count = count;
-        }
+
+        itemFind.Id = channel.id;
+        itemFind.UserName = channel.username;
+        if (!string.IsNullOrEmpty(channel.title))
+            itemFind.Title = channel.title;
+        if (!string.IsNullOrEmpty(about))
+            itemFind.About = about;
+        itemFind.Count = count;
+        
         await ContextManager.SourceRepository.SaveAsync(itemFind);
     }
 

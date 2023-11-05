@@ -93,7 +93,20 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            SetOrderSources(ContextManager.SourceRepository.GetEnumerable());
+            List<TgSqlTableSourceModel> sources = ContextManager.SourceRepository.GetEnumerable().ToList();
+            //if (!sources.Any())
+            //{
+            //    TgSqlTableSourceModel sourceDefault = ContextManager.SourceRepository.CreateNew(true);
+            //    sourceDefault.Id = 1710176740;
+            //    sourceDefault.UserName = "TgDownloader";
+            //    sourceDefault.Directory = Path.Combine(Environment.CurrentDirectory, sourceDefault.UserName);
+            //    sourceDefault.Title = "TgDownloader News";
+            //    sourceDefault.About = "Telegram Files Downloader";
+            //    await ContextManager.SourceRepository.SaveAsync(sourceDefault);
+            //    sources.Add(sourceDefault);
+            //}
+
+            SetOrderSources(sources);
         }, false);
     }
 
