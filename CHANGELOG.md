@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.2.540] - 2023-11-05
+## [0.2.550] - 2023-11-05
 ### Fixed in TgDownloaderConsole
 - Reading the number of the last message
 ### Fixed in TgDownloaderWinDesktop
@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Message when client connects to Telegram server
 - Correct loading of empty sources on first download
 - Reading sources from Telegram
+- Channel/dialogue scanning
 ### Added
 - Guide to setting up the desktop version
+- Channel/dialogue scanning
 
 ## [0.2.490] - 2023-11-02
 ### Fixed
