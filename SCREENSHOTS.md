@@ -1,30 +1,42 @@
 # Screenshots
 
+## [0.2.540] - 2023-11-05
+### TgDownloaderWinDesktop
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_Client_Error_ApiHash.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_Client_Success.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_ItemSource.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_Proxies.png"></p>
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop_Sources.png"></p>
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.2.540/TgDownloaderConsole.png"></p>
+
 ## [0.2.480] - 2023-11-01
-### Added in TgDownloaderWinDesktop
+### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.480/TgDownloaderWinDesktop_Proxies.png"></p>
 
 ## [0.2.460] - 2023-10-29
-### Added in TgDownloaderWinDesktop
+### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Client.png"></p>
 <p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/v0.2.460/TgDownloaderWinDesktop_Sources.png"></p>
 
 ## [0.2.300] - 2023-06-27
-### Added in TgDownloaderWinDesktop
+### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.300/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/v0.2.300/TgDownloaderWinDesktop_Client.png"></p>
 <p align="center"><img src="Assets/v0.2.300/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/v0.2.300/TgDownloaderWinDesktop_Sources.png"></p>
 
 ## [0.2.270] - 2023-06-22
-### Added in TgDownloaderWinDesktop
+### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderWinDesktop_Client.png"></p>
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderWinDesktop_Sources.png"></p>
-### Added in TgDownloaderConsole
+### TgDownloaderConsole
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderConsole_Main_menu.png"></p>
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderConsole_Application_settings.png"></p>
 <p align="center"><img src="Assets/v0.2.270/TgDownloaderConsole_Storage_settings.png"></p>
