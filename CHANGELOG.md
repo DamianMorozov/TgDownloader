@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.2.570] - 2023-11-09
+### Added in TgDownloaderWinDesktop
+- Auto update progress when downloading to the source page
+### Fixed in TgDownloaderConsole
+- Downloading a source that is not yet in the source table
+
 ## [0.2.550] - 2023-11-05
 ### Fixed in TgDownloaderConsole
 - Reading the number of the last message
