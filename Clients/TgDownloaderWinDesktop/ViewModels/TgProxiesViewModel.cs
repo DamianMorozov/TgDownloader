@@ -16,7 +16,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().ConfigureAwait(true);
     }
 
 	public void OnNavigatedFrom() { }
@@ -38,8 +38,9 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         ProxiesVms = new();
 
         proxies = listProxies.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
-        foreach (TgSqlTableProxyModel proxy in proxies)
-            ProxiesVms.Add(new(proxy));
+        if (proxies.Any())
+            foreach (TgSqlTableProxyModel proxy in proxies)
+                ProxiesVms.Add(new(proxy));
     }
 
     #endregion
@@ -52,6 +53,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
         }, false).ConfigureAwait(false);
 	}
@@ -62,6 +64,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             ProxiesVms = new();
         }, false).ConfigureAwait(true);
 	}
@@ -72,6 +75,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             await ContextManager.ProxyRepository.DeleteAsync(proxyVm.Proxy);
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
@@ -84,6 +88,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(proxyVm);
@@ -99,6 +104,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(new TgSqlTableProxyViewModel(new TgSqlTableProxyModel()));

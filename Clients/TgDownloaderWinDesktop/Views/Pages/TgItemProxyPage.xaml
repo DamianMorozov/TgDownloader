@@ -13,7 +13,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgItemProxyPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="450"
+	d:DesignHeight="550"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -204,13 +204,7 @@
 					IsEnabled="True"
 					ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgItemProxyVm}, Path=ProxyTypes, Mode=OneWay, IsAsync=True}"
 					SelectedIndex="0"
-					SelectedItem="{Binding Source={x:Static utils:TgDesktopUtils.TgItemProxyVm}, Path=ItemProxyVm.ProxyType, Mode=TwoWay, IsAsync=True}">
-					<!--<ComboBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Converter={StaticResource EnumToStringConverter}, Mode=OneWay, IsAsync=True}" />
-						</DataTemplate>
-					</ComboBox.ItemTemplate>-->
-				</ComboBox>
+					SelectedItem="{Binding Source={x:Static utils:TgDesktopUtils.TgItemProxyVm}, Path=ItemProxyVm.ProxyType, Mode=TwoWay, IsAsync=True}" />
 				<!--  HostName  -->
 				<Label
 					Grid.Row="5"

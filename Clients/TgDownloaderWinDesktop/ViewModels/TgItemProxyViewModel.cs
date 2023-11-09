@@ -24,7 +24,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
 
     public void OnNavigatedTo()
     {
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().GetAwaiter();
     }
 
     public void OnNavigatedFrom() { }
@@ -52,11 +52,12 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
             TgSqlTableProxyModel proxy = await ContextManager.ProxyRepository.GetAsync(ProxyUid);
             SetItemProxyVm(proxy, proxy.Uid);
-        }, true).ConfigureAwait(true);
+        }, true);
     }
 
     // ClearViewCommand
@@ -65,10 +66,11 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
             ItemProxyVm.Proxy = await ContextManager.ProxyRepository.GetNewAsync();
-        }, false).ConfigureAwait(true);
+        }, false);
     }
 
     // SaveProxyCommand
@@ -77,8 +79,9 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             await ContextManager.ProxyRepository.SaveAsync(ItemProxyVm.Proxy, true);
-        }, false).ConfigureAwait(false);
+        }, false);
     }
 
     // ReturnToSectionProxiesCommand
@@ -87,12 +90,13 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 navigationWindow.ShowWindow();
                 navigationWindow.Navigate(typeof(TgProxiesPage));
             }
-        }, false).ConfigureAwait(false);
+        }, false);
     }
 
     #endregion

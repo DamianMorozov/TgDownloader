@@ -8,10 +8,7 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase, INavigatio
 {
 	#region Public and private fields, properties, constructor
 
-	public TgFiltersViewModel()
-	{
-		//
-	}
+	public TgFiltersViewModel() { }
 
 	#endregion
 
@@ -19,10 +16,10 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase, INavigatio
 
 	public void OnNavigatedTo()
 	{
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().GetAwaiter();
     }
 
-	public void OnNavigatedFrom() { }
+    public void OnNavigatedFrom() { }
 
 	#endregion
 }

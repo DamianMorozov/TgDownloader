@@ -8,4 +8,6 @@ public enum TgEnumSourceType
 	Default = 0,
 	Chat = 1,
 	Dialog = 2,
+	ChatBase = 3,
+    Channel = 4,
 }

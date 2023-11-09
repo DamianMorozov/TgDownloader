@@ -46,7 +46,7 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
     public string IsReadySourceDirectoryDescription => IsReadySourceDirectory 
         ? $"{TgLocaleHelper.Instance.TgDirectoryIsExists}." : $"{TgLocaleHelper.Instance.TgDirectoryIsNotExists}!";
     public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
-    public bool IsReadySourceId => SourceId is not 0;
+    public bool IsReadySourceId => SourceId > 1;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
 
     public TgSqlTableSourceViewModel(TgSqlTableSourceModel source)
@@ -73,7 +73,7 @@ public sealed partial class TgSqlTableSourceViewModel : TgViewModelBase
 
     public override string ToString() => $"{Source} | {Progress}";
 
-    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsAutoUpdate(IsAutoUpdate)} | {SourceId} | {SourceFirstId}";
+    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsAutoUpdate(IsAutoUpdate)} | {SourceUserName} | {SourceId} | {SourceFirstId}";
 
     public static TgSqlTableSourceViewModel CreateNew() => new();
 

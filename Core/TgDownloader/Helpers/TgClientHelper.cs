@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgDownloader.Models;
+
 namespace TgDownloader.Helpers;
 
 /// <summary>
@@ -50,6 +52,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     public Func<string, int, string, string, Task> UpdateStateExceptionAsync { get; private set; }
     public Func<Task> AfterClientConnectAsync { get; private set; }
     public Func<string, string?> GetClientDesktopConfigAsync { get; private set; }
+    public Func<long, Task> UpdateStateItemSourceAsync { get; private set; }
 
     public TgClientHelper()
     {
@@ -74,6 +77,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         UpdateStateSourceAsync = async (_, _, _) => await Task.CompletedTask;
         AfterClientConnectAsync = async () => await Task.CompletedTask;
         GetClientDesktopConfigAsync = what => null;
+        UpdateStateItemSourceAsync = async _ => await Task.CompletedTask;
 
 #if DEBUG
         // TgLog to VS Output debugging pane in addition.
@@ -111,6 +115,16 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         UpdateStateProxyAsync = UpdateStateMessageAsync;
         UpdateStateMessageAsync = updateStateMessage;
         UpdateStateSourceAsync = updateStateSource;
+    }
+
+    public void SetupActionsForItemsSource(Func<long, Task> updateStateItemSourceAsync)
+    {
+        UpdateStateItemSourceAsync = updateStateItemSourceAsync;
+    }
+
+    public void DefaultActionsForItemsSource()
+    {
+        UpdateStateItemSourceAsync = async _ => await Task.CompletedTask;
     }
 
     public bool CheckClientIsReady()
@@ -225,6 +239,10 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public async Task<Channel?> GetChannelAsync(TgDownloadSettingsModel tgDownloadSettings)
     {
+        // Collect chats from Telegram.
+        if (!DicChatsAll.Any())
+            await CollectAllChatsAsync();
+
         if (tgDownloadSettings.SourceVm.IsReadySourceId)
         {
             tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
@@ -260,6 +278,10 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public async Task<ChatBase?> GetChatBaseAsync(TgDownloadSettingsModel tgDownloadSettings)
     {
+        // Collect chats from Telegram.
+        if (!DicChatsAll.Any())
+            await CollectAllChatsAsync();
+        
         if (tgDownloadSettings.SourceVm.IsReadySourceId)
         {
             tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
@@ -293,6 +315,116 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             }
 
         return null;
+    }
+
+    public async Task<TgDownloadSmartSource> GetSmartSourceAsync(TgDownloadSettingsModel tgDownloadSettings)
+    {
+        TgDownloadSmartSource smartSource = new();
+
+        // Collect chats from Telegram.
+        if (!DicChatsAll.Any())
+            await CollectAllChatsAsync();
+
+        if (tgDownloadSettings.SourceVm.IsReadySourceId)
+        {
+            tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
+            bool isFind = false;
+            foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
+            {
+                if (isFind)
+                    break;
+                switch (chat.Value)
+                {
+                    case Channel channel:
+                        if (Equals(channel.id, tgDownloadSettings.SourceVm.SourceId))
+                        {
+                            if (await IsChannelAccessAsync(channel))
+                            {
+                                smartSource.Channel = channel;
+                                isFind = true;
+                            }
+                        }
+                        break;
+                    case { } chatBase:
+                        if (Equals(chatBase.ID, tgDownloadSettings.SourceVm.SourceId))
+                        {
+                            if (await IsChannelAccessAsync(chatBase))
+                            {
+                                smartSource.ChatBase = chatBase;
+                                isFind = true;
+                            }
+                        }
+                        break;
+                }
+            }
+            if (isFind)
+                return smartSource;
+        }
+        else
+        {
+            bool isFind = false;
+            foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
+            {
+                if (isFind) break;
+                switch (chat.Value)
+                {
+                    case Channel channel:
+                        if (Equals(channel.username, tgDownloadSettings.SourceVm.SourceUserName))
+                        {
+                            if (await IsChannelAccessAsync(channel))
+                            {
+                                smartSource.Channel = channel;
+                                isFind = true;
+                            }
+                        }
+                        break;
+                    case { } chatBase:
+                        if (Equals(chatBase.MainUsername, tgDownloadSettings.SourceVm.SourceUserName))
+                        {
+                            if (await IsChannelAccessAsync(chatBase))
+                            {
+                                smartSource.ChatBase = chatBase;
+                                isFind = true;
+                            }
+                        }
+                        break;
+                }
+            }
+            if (isFind)
+                return smartSource;
+        }
+
+        tgDownloadSettings.SourceVm.SourceId = await GetPeerIdAsync(tgDownloadSettings.SourceVm.SourceUserName);
+        Messages_Chats? messagesChats = null;
+        if (Me is not null)
+            messagesChats = await Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceVm.SourceId, Me.access_hash));
+        if (messagesChats is not null)
+        {
+            bool isFind = false;
+            foreach (KeyValuePair<long, ChatBase> chat in messagesChats.chats)
+            {
+                if (isFind) break;
+                switch (chat.Value)
+                {
+                    case Channel channel:
+                        if (Equals(channel.ID, tgDownloadSettings.SourceVm.SourceId))
+                        {
+                            smartSource.Channel = channel;
+                            isFind = true;
+                        }
+                        break;
+                    case { } chatBase:
+                        if (Equals(chatBase.ID, tgDownloadSettings.SourceVm.SourceId))
+                        {
+                            smartSource.ChatBase = chatBase;
+                            isFind = true;
+                        }
+                        break;
+                }
+            }
+        }
+        
+        return smartSource;
     }
 
     public async Task<Bots_BotInfo?> GetBotInfoAsync(TgDownloadSettingsModel tgDownloadSettings)
@@ -905,47 +1037,48 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         return result;
     }
 
-    public async Task<Channel?> PrepareChannelDownloadMessagesAsync(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
+    public async Task<TgDownloadSmartSource> PrepareChannelDownloadMessagesAsync(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
     {
-        Channel? channel = null;
+        TgDownloadSmartSource smartSource = new();
         await TryCatchFuncAsync(async () =>
         {
-            channel = await GetChannelAsync(tgDownloadSettings);
-            if (channel is null)
+            smartSource = await GetSmartSourceAsync(tgDownloadSettings);
+            if (smartSource.Type is TgEnumSourceType.Default)
                 return;
-            if (! await IsChannelAccessAsync(channel))
+            if (! await IsChannelAccessAsync(smartSource.Channel))
                 return;
-            tgDownloadSettings.SourceVm.SourceUserName = !string.IsNullOrEmpty(channel.username) ? channel.username : string.Empty;
-            Messages_ChatFull? chatFull = await PrintChatsInfoChannelAsync(channel, true, isSilent, false);
-            tgDownloadSettings.SourceVm.SourceLastId = await GetChannelMessageIdLastAsync(tgDownloadSettings, channel);
+            tgDownloadSettings.SourceVm.SourceUserName = !string.IsNullOrEmpty(smartSource.Channel.username) ? smartSource.Channel.username : string.Empty;
+            Messages_ChatFull? chatFull = await PrintChatsInfoChannelAsync(smartSource.Channel, true, isSilent, false);
+            tgDownloadSettings.SourceVm.SourceLastId = await GetChannelMessageIdLastAsync(tgDownloadSettings, smartSource.Channel);
             if (chatFull?.full_chat is ChannelFull channelFull)
-                tgDownloadSettings.SourceVm.SetSource(channelFull.ID, channel.Title, channelFull.About);
+                tgDownloadSettings.SourceVm.SetSource(channelFull.ID, smartSource.Channel.Title, channelFull.About);
 
             // Save.
             TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId);
+            source.Id = tgDownloadSettings.SourceVm.SourceId;
             source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
             source.Title = tgDownloadSettings.SourceVm.SourceTitle;
             source.About = tgDownloadSettings.SourceVm.SourceAbout;
             source.Count = tgDownloadSettings.SourceVm.SourceLastId;
             await ContextManager.SourceRepository.SaveAsync(source);
         });
-        return channel;
+        return smartSource;
     }
 
-    public async Task<ChatBase?> PrepareChatBaseDownloadMessagesAsync(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
+    public async Task<TgDownloadSmartSource> PrepareChatBaseDownloadMessagesAsync(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
     {
-        ChatBase? chatBase = null;
+        TgDownloadSmartSource smartSource = new();
         await TryCatchFuncAsync(async () =>
         {
-            chatBase = await GetChatBaseAsync(tgDownloadSettings);
-            if (chatBase is null)
+            smartSource = await GetSmartSourceAsync(tgDownloadSettings);
+            if (smartSource.ChatBase is null)
                 return;
-            Messages_ChatFull? chatFull = await PrintChatsInfoChatBaseAsync(chatBase, true, isSilent);
-            tgDownloadSettings.SourceVm.SourceLastId = await GetChannelMessageIdLastAsync(tgDownloadSettings, chatBase);
+            Messages_ChatFull? chatFull = await PrintChatsInfoChatBaseAsync(smartSource.ChatBase, true, isSilent);
+            tgDownloadSettings.SourceVm.SourceLastId = await GetChannelMessageIdLastAsync(tgDownloadSettings, smartSource.ChatBase);
             if (chatFull?.full_chat is ChannelFull channelFull)
-                tgDownloadSettings.SourceVm.SetSource(channelFull.id, chatBase.Title, channelFull.About);
+                tgDownloadSettings.SourceVm.SetSource(channelFull.id, smartSource.ChatBase.Title, channelFull.About);
         });
-        return chatBase;
+        return smartSource;
     }
 
     /// <summary>
@@ -955,8 +1088,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     /// <param name="tgDownloadSettings"></param>
     public async Task UpdateSourceDbAsync(TgSqlTableSourceViewModel sourceVm, TgDownloadSettingsModel tgDownloadSettings)
     {
-        Channel? channel = await PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
-        if (channel is not null)
+        TgDownloadSmartSource smartSource = await PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
+        if (smartSource.Channel is not null)
         {
             sourceVm.Source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
             sourceVm.Source.Count = tgDownloadSettings.SourceVm.SourceLastId;
@@ -965,8 +1098,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             return;
         }
 
-        ChatBase? chat = await PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
-        if (chat is not null)
+        smartSource = await PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
+        if (smartSource.ChatBase is not null)
         {
             sourceVm.Source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
             sourceVm.Source.Count = tgDownloadSettings.SourceVm.SourceLastId;
@@ -1146,10 +1279,9 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public async Task DownloadAllDataAsync(TgDownloadSettingsModel tgDownloadSettings)
     {
-        Channel? channel = await PrepareChannelDownloadMessagesAsync(tgDownloadSettings, false);
-        ChatBase? chatBase = null;
-        if (channel is null || channel.id is 0)
-            chatBase = await PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
+        TgDownloadSmartSource smartSource = await PrepareChannelDownloadMessagesAsync(tgDownloadSettings, false);
+        if (smartSource.Channel is null || smartSource.Channel.id is 0)
+            smartSource = await PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
         await TryCatchFuncAsync(async () =>
         {
             // Set filters.
@@ -1174,22 +1306,37 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 await TryCatchFuncAsync(async () =>
                 {
                     bool isAccessToMessages = false;
-                    if (channel is not null)
-                        isAccessToMessages = await Client.Channels_ReadMessageContents(channel);
-                    else if (chatBase is not null)
-                        isAccessToMessages = true;
+                    switch (smartSource.Type)
+                    {
+                        case TgEnumSourceType.Default:
+                            break;
+                        case TgEnumSourceType.Chat:
+                            break;
+                        case TgEnumSourceType.Dialog:
+                            break;
+                        case TgEnumSourceType.ChatBase:
+                            isAccessToMessages = true;
+                            break;
+                        case TgEnumSourceType.Channel:
+                            isAccessToMessages = await Client.Channels_ReadMessageContents(smartSource.Channel);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                        
+                        
                     if (isAccessToMessages && Client is not null)
                     {
-                        Messages_MessagesBase messages = channel is not null
-                            ? await Client.Channels_GetMessages(channel, tgDownloadSettings.SourceVm.SourceFirstId)
-                            : await Client.GetMessages(chatBase, tgDownloadSettings.SourceVm.SourceFirstId);
+                        Messages_MessagesBase messages = smartSource.Channel is not null
+                            ? await Client.Channels_GetMessages(smartSource.Channel, tgDownloadSettings.SourceVm.SourceFirstId)
+                            : await Client.GetMessages(smartSource.ChatBase, tgDownloadSettings.SourceVm.SourceFirstId);
                         await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceLastId, tgDownloadSettings.SourceVm.SourceFirstId):#00.00} %");
                         foreach (MessageBase message in messages.Messages)
                         {
                             // Check message exists.
                             if (message.Date > DateTime.MinValue)
                             {
-                                DownloadDataAsync(tgDownloadSettings, message);
+                                await DownloadDataAsync(tgDownloadSettings, message);
                             }
                             else
                             {
@@ -1260,6 +1407,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 }
                 await UpdateStateMessageAsync("Read the message");
                 await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, message.ID, "Read the message");
+                await UpdateStateItemSourceAsync(tgDownloadSettings.SourceVm.SourceId);
             }
         });
     }

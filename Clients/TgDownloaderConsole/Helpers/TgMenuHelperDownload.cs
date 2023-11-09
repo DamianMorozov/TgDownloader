@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using TgDownloader.Models;
+
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -101,8 +103,8 @@ internal partial class TgMenuHelper
         TgDownloadSettingsModel tgDownloadSettings = TgDownloadSettingsModel.CreateNew();
 		//tgDownloadSettings.SourceVm.SourceFirstId = 1;
 		SetupDownloadSourceCore(id, tgDownloadSettings);
-        Channel? channel = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
-		if (channel is null)
+        TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
+		if (smartSource.Channel is null)
 			_ = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		LoadTgClientSettings(tgDownloadSettings, false, false);
         return tgDownloadSettings;
@@ -136,18 +138,18 @@ internal partial class TgMenuHelper
 
     private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		Channel? channel = await TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
-		if (channel is not null)
+		TgDownloadSmartSource smartSource = await TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
+		if (smartSource.Channel is not null)
 		{
-            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, channel);
+            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.Channel);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 			return;
 		}
 
-		ChatBase? chatBase = await TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
-		if (chatBase is not null)
+		smartSource = await TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
+		if (smartSource.ChatBase is not null)
 		{
-            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, chatBase);
+            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase);
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 		}
 	}
@@ -218,7 +220,8 @@ internal partial class TgMenuHelper
 	private async Task ManualDownloadAsync(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
-		await TgClient.DownloadAllDataAsync(tgDownloadSettings);
+        await TgClient.DownloadAllDataAsync(tgDownloadSettings);
+		// Don't move up.
         await UpdateSourceWithSettings(tgDownloadSettings);
 	}
 

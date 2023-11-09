@@ -8,7 +8,7 @@
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
 	xmlns:views="clr-namespace:TgDownloaderWinDesktop.Views"
-	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
+	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 	Width="1300"
 	Height="800"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -30,28 +30,39 @@
 		<!--  The title bar contains window navigation elements and some Tray related extras.  -->
 		<!--  You can put additional controls in the header, such as a search bar.  -->
 		<!--  <ui:TitleBar.Header />  -->
+		<!--  Title="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"  -->
 		<ui:TitleBar
 			x:Name="TgTitleBar"
-			Title="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 			Grid.Row="0"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
-			Icon="pack://application:,,,/Assets/applicationIcon-1024.png"
+			Icon="pack://application:,,,/Assets/applicationIcon-01-1024.png"
 			UseSnapLayout="True">
 			<ui:TitleBar.Header>
-				<ui:Hyperlink
-					Grid.Column="0"
-					Margin="2"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTgDownloader, Mode=OneWay, IsAsync=True}"
-					NavigateUri="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLinkTgDownloader, Mode=OneWay, IsAsync=True}" />
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="7*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+					<ui:Hyperlink
+						Grid.Column="0"
+						Margin="2"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTgDownloader, Mode=OneWay, IsAsync=True}"
+						NavigateUri="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLinkTgDownloader, Mode=OneWay, IsAsync=True}" />
+					<TextBlock
+						Grid.Column="1"
+						Margin="0,24,0,0"
+						Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionShort, Mode=OneWay, IsAsync=True}"
+						TextAlignment="Center" />
+				</Grid>
 			</ui:TitleBar.Header>
-			<ui:TitleBar.Tray>
+			<!--<ui:TitleBar.Tray>
 				<ui:NotifyIcon
 					FocusOnLeftClick="True"
-					Icon="pack://application:,,,/Assets/applicationIcon-1024.png"
+					Icon="pack://application:,,,/Assets/applicationIcon-01-1024.png"
 					MenuOnRightClick="True"
 					TooltipText="TgDownloaderWinDesktop">
 					<ui:NotifyIcon.Menu>
@@ -68,10 +79,13 @@
 						</ContextMenu>
 					</ui:NotifyIcon.Menu>
 				</ui:NotifyIcon>
-			</ui:TitleBar.Tray>
+			</ui:TitleBar.Tray>-->
 		</ui:TitleBar>
 		<!--  Grid  -->
-		<Grid Grid.Row="1" Margin="2">
+		<Grid
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="1*" />
 				<ColumnDefinition Width="8*" />
@@ -118,6 +132,7 @@
 		<!--  4 row | Client state  -->
 		<Border
 			Grid.Row="2"
+			Grid.Column="0"
 			Margin="2"
 			BorderBrush="DimGray"
 			BorderThickness="1"
@@ -128,6 +143,7 @@
 		<!--  5 row | Exception  -->
 		<Border
 			Grid.Row="3"
+			Grid.Column="0"
 			Margin="2"
 			BorderBrush="DimGray"
 			BorderThickness="1"

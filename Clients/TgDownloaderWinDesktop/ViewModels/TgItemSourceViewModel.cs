@@ -12,22 +12,28 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     public TgPageViewModelBase? ViewModel { get; set; }
     private Guid SourceUid { get; set; }
 
-    public TgItemSourceViewModel() { }
-
 	#endregion
 
 	#region Public and private methods
 
 	public void OnNavigatedTo()
 	{
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().GetAwaiter();
     }
 
 	public void OnNavigatedFrom() { }
 
     protected override async Task InitializeViewModelAsync()
     {
+        TgDesktopUtils.TgClient.SetupActionsForItemsSource(UpdateStateItemSourceAsync);
         await base.InitializeViewModelAsync();
+
+        await OnGetSourceFromStorageAsync();
+    }
+
+    private async Task UpdateStateItemSourceAsync(long sourceId)
+    {
+        if (!ItemSourceVm.SourceId.Equals(sourceId)) return;
 
         await OnGetSourceFromStorageAsync();
     }
@@ -67,6 +73,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
             TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetAsync(SourceUid);
@@ -83,6 +90,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
             // Collect chats from Telegram.
@@ -113,6 +121,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         bool result = true;
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             // Check directory.
             if (!Directory.Exists(ItemSourceVm.Source.Directory))
             {
@@ -140,6 +149,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemSourceVm.SourceUid != Guid.Empty)
                 SourceUid = ItemSourceVm.SourceUid;
             ItemSourceVm.Source = await ContextManager.SourceRepository.GetNewAsync();
@@ -152,16 +162,20 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             await ContextManager.SourceRepository.SaveAsync(ItemSourceVm.Source, true);
         }, false);
+
+        await OnGetSourceFromStorageAsync();
     }
 
     // ReturnToSectionSourcesCommand
     [RelayCommand]
     public async Task OnReturnToSectionSourcesAsync()
     {
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 navigationWindow.ShowWindow();

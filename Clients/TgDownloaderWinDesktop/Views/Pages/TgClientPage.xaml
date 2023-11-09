@@ -12,7 +12,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgClientPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="450"
+	d:DesignHeight="550"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -293,7 +293,7 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientProxy, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ComboBox
+				<!--<ComboBox
 					Grid.Row="5"
 					Grid.Column="2"
 					Margin="2"
@@ -309,7 +309,18 @@
 							<TextBlock Text="{Binding PrettyName, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
-				</ComboBox>
+				</ComboBox>-->
+				<ComboBox
+					Grid.Row="5"
+					Grid.Column="2"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=IsNotLoad, Mode=OneWay, IsAsync=True}"
+					ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ProxiesVms, Mode=OneWay, IsAsync=True}"
+					SelectedIndex="0"
+					SelectedItem="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ProxyVm, Mode=TwoWay, IsAsync=True}" />
 				<!--  TG query  -->
 				<Separator
 					Grid.Row="6"

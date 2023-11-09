@@ -12,7 +12,7 @@ public sealed partial class TgExceptionsUserControl : TgUserControlViewBase
 
 	public TgExceptionsUserControl()
 	{
-		TgDesktopUtils.TgClientVm.OnNavigatedTo();
+		//TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}
 

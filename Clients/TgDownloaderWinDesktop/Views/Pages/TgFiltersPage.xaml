@@ -11,7 +11,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgFiltersPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="150"
+	d:DesignHeight="550"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	Tag="Filters"

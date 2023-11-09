@@ -21,17 +21,5 @@ public static class TgAsyncUtils
         AppType = appType;
     }
 
-   // public static T GetFuncResult<T>(Func<Task<T>> job, TgEnumAppType appType = TgEnumAppType.Default)
-   // {
-   //     if (appType == TgEnumAppType.Default)
-			//appType = AppType;
-   //     return appType switch
-   //     {
-   //         TgEnumAppType.Desktop => Task.Run(job).Result,
-   //         TgEnumAppType.Console => job().Result,
-   //         _ => throw new ArgumentException(null, nameof(appType))
-   //     };
-   // }
-
     #endregion
 }

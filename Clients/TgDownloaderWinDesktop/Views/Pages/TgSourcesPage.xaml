@@ -13,7 +13,7 @@
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgSourcesPage,
 	                                 IsDesignTimeCreatable=True}"
-	d:DesignHeight="300"
+	d:DesignHeight="550"
 	d:DesignWidth="1300"
 	Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 	mc:Ignorable="d">
@@ -143,15 +143,6 @@
 			BorderThickness="1"
 			CornerRadius="5"
 			UseLayoutRounding="True">
-			<!--<Border.Style>
-				<Style TargetType="Border">
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms.Count, Mode=OneWay, IsAsync=True}" Value="0">
-							<Setter Property="IsEnabled" Value="False" />
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</Border.Style>-->
 			<DataGrid
 				VerticalAlignment="Top"
 				AutoGenerateColumns="False"

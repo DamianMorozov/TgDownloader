@@ -7,12 +7,10 @@ namespace TgDownloaderWinDesktop.ViewModels;
 public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigationAware
 {
     public static Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
-    public static string AppVersionTitle { get; set; } = string.Empty;
-    public static string AppVersionFull { get; set; } = string.Empty;
 	
     public void OnNavigatedTo()
 	{
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().GetAwaiter();
     }
 
 	public void OnNavigatedFrom() { }
@@ -22,21 +20,14 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
         await base.InitializeViewModelAsync();
 
         CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
-        AppVersionTitle = $"{TgDesktopUtils.TgLocale.AppTitleWinDesktop} " +
-                          $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
-        AppVersionFull = $"{TgDesktopUtils.TgLocale.AppVersion}: v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
     }
-
-	private string GetAssemblyVersion()
-	{
-		return Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
-	}
 
 	[RelayCommand]
 	public async Task OnChangeThemeAsync(string parameter)
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             switch (parameter)
             {
                 case "theme_light":

@@ -6,11 +6,27 @@ namespace TgDownloaderWinDesktop.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigationAware
 {
-	#region Public and private methods
+    #region Public and private fields, properties, constructor
 
-	public void OnNavigatedTo()
+    public static string AppVersionTitle { get; set; } = string.Empty;
+    public static string AppVersionShort { get; set; } = string.Empty;
+    public static string AppVersionFull { get; set; } = string.Empty;
+
+    #endregion
+
+    #region Public and private methods
+
+    public TgDashboardViewModel()
+    {
+        AppVersionTitle = $"{TgDesktopUtils.TgLocale.AppTitleWinDesktop} " +
+                          $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+        AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+        AppVersionFull = $"{TgDesktopUtils.TgLocale.AppVersion}: {AppVersionShort}";
+    }
+
+    public void OnNavigatedTo()
 	{
-        _ = Task.Run(InitializeViewModelAsync).ConfigureAwait(true);
+        InitializeViewModelAsync().GetAwaiter();
     }
 
 	public void OnNavigatedFrom() { }
@@ -23,8 +39,9 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
 	public async Task OnSettingsDefaultAsync()
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             TgAppSettings.DefaultXmlSettings();
         }, false).ConfigureAwait(false);
 	}
@@ -33,8 +50,9 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
     [RelayCommand]
 	public async Task OnSettingsSaveAsync()
 	{
-        await TgDesktopUtils.RunActionAsync(this, () =>
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
             TgAppSettings.StoreXmlSettingsUnsafe();
             TgAppSettings.LoadXmlSettings();
         }, false).ConfigureAwait(false);

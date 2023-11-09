@@ -12,7 +12,7 @@ public sealed partial class TgClientStateUserControl : TgUserControlViewBase
 
 	public TgClientStateUserControl()
 	{
-		TgDesktopUtils.TgClientVm.OnNavigatedTo();
+		//TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}
 
