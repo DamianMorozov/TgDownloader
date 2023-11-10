@@ -25,6 +25,7 @@
 Пожалуйста, нажмите на кнопку `звездочка`, если эта программа была вам полезна.
 
 ## Быстрые ссылки
+- [Шаблон проблемы](ISSUE-RUS.md)
 - [Сообщить об ошибке](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)

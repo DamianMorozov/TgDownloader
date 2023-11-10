@@ -43,6 +43,8 @@
     <None Include="..\..\GUIDES.md" Link="GUIDES.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\ISSUE-RUS.md" Link="ISSUE-RUS.md" />
+    <None Include="..\..\ISSUE.md" Link="ISSUE.md" />
     <None Include="..\..\LICENSE.md" Link="LICENSE.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

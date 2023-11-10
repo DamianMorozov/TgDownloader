@@ -25,6 +25,7 @@ Download files of the Telegram channels or groups you are a member of.
 Please click the `star` button if this tool was helpful to you.
 
 ## Quick links
+- [Issue template](ISSUE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
