@@ -14,7 +14,7 @@
 - [wiz0u](https://github.com/wiz0u) за [WTelegramClient](https://github.com/wiz0u/WTelegramClient) NuGet пакет.
 
 ## Требования к установке
-- [Установите .NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [Установите .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps/)
 - Сохраните значения полей "App api_id" и "App api_hash"
 
