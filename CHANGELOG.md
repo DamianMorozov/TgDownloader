@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.2.600] - 2023-11-25
+## [0.3.10] - 2023-12-09
 ### Added
 - NET 8 version updated
 - Updated version of NuGet packages
+### Added in TgDownloaderWinDesktop
+- Copying fields in the source
 
 ## [0.2.580] - 2023-11-10
 ### Added

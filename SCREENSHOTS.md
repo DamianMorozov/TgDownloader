@@ -1,5 +1,17 @@
 # Screenshots
 
+## [0.3.010] - 2023-12-09
+### TgDownloaderWinDesktop
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_Client_Error_ApiHash.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_Client_Success.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_ItemSource.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_Proxies.png"></p>
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderWinDesktop_Sources.png"></p>
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.3.010/TgDownloaderConsole.png"></p>
+
 ## [0.2.540] - 2023-11-05
 ### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.2.540/TgDownloaderWinDesktop.png"></p>
