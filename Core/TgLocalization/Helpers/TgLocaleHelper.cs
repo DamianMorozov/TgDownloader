@@ -214,6 +214,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string Save => "Save";
 	public string SaveToStorage=> "Save to Storage";
 	public string SettingCheck => "Check";
+	public string SettingCopy => "Copy";
 	public string SettingIsDisabled => "Setting is disabled";
 	public string SettingIsEnabled => "Setting is enabled";
 	public string SettingName => "Setting";

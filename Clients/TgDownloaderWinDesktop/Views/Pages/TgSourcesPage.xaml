@@ -170,6 +170,7 @@
 									Appearance="Primary"
 									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GetSourceFromStorageCommand, Mode=OneWay, IsAsync=True}"
 									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Cursor="Hand"
 									Icon="ArrowUp28"
 									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
@@ -194,6 +195,7 @@
 									Appearance="Primary"
 									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=UpdateSourceFromTelegramCommand, Mode=OneWay, IsAsync=True}"
 									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Cursor="Hand"
 									Icon="ArrowSync12"
 									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
@@ -219,6 +221,7 @@
 									Appearance="Primary"
 									Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=EditSourceCommand, Mode=OneWay, IsAsync=True}"
 									CommandParameter="{Binding DataContext, Mode=OneWay, IsAsync=True, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+									Cursor="Hand"
 									Icon="Edit48"
 									ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldEdit, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>

@@ -18,7 +18,7 @@ public sealed partial class MainWindow : INavigationWindow
         DataContext = this;
         InitializeComponent();
         SetPageService(pageService);
-        navigationService.SetNavigationControl(RootNavigation);
+		navigationService.SetNavigationControl(RootNavigation);
     }
 
     #endregion

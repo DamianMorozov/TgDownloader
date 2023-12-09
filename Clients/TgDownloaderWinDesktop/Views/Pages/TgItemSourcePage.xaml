@@ -151,6 +151,8 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="2*" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="0.3*" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="5*" />
 				</Grid.ColumnDefinitions>
 				<!--  Headers  -->
@@ -162,9 +164,33 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SettingName, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
+				<!--  Splitter  -->
+				<GridSplitter
+					Grid.Row="0"
+					Grid.RowSpan="17"
+					Grid.Column="1"
+					Width="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch" />
 				<Label
 					Grid.Row="0"
 					Grid.Column="2"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SettingCopy, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<!--  Splitter  -->
+				<GridSplitter
+					Grid.Row="0"
+					Grid.RowSpan="17"
+					Grid.Column="3"
+					Width="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch" />
+				<Label
+					Grid.Row="0"
+					Grid.Column="4"
 					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
@@ -174,18 +200,8 @@
 				<Separator
 					Grid.Row="1"
 					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Height="1"
-					Background="DimGray" />
-				<!--  Splitter  -->
-				<GridSplitter
-					Grid.Row="0"
-					Grid.RowSpan="17"
-					Grid.Column="1"
-					Width="1"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch"
-					Background="DimGray" />
+					Grid.ColumnSpan="5"
+					Height="1" />
 				<!--  ID  -->
 				<Label
 					Grid.Row="3"
@@ -195,14 +211,26 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldId, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="3"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceId"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="3"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="DimGray"
+					IsEnabled="False"
 					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceId, Mode=TwoWay, IsAsync=True}" />
 				<!--  User name  -->
 				<Label
@@ -213,15 +241,27 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldUserName, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="4"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceUserName"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="4"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="DimGray"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceUserName, Mode=TwoWay, IsAsync=True}" />
+					IsEnabled="False"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceUserName, Mode=OneWay, IsAsync=True}" />
 				<!--  Title  -->
 				<Label
 					Grid.Row="5"
@@ -231,15 +271,27 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTitle, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="5"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceTitle"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="5"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
 					IsEnabled="False"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceTitle, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceTitle, Mode=OneWay, IsAsync=True}" />
 				<!--  About  -->
 				<Label
 					Grid.Row="6"
@@ -249,15 +301,27 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldAbout, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="6"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceAbout"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="6"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
 					IsEnabled="False"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceAbout, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceAbout, Mode=OneWay, IsAsync=True}" />
 				<!--  First ID  -->
 				<Label
 					Grid.Row="7"
@@ -267,9 +331,21 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldFirstId, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="7"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceFirstId"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="7"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -285,9 +361,21 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLastId, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
-				<ui:TextBox
+				<ui:Button
 					Grid.Row="8"
 					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceLastId"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
+				<ui:TextBox
+					Grid.Row="8"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -303,9 +391,21 @@
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TgSettingDirectory, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
+				<ui:Button
+					Grid.Row="8"
+					Grid.Column="2"
+					Margin="5,5,5,5"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=CopyCommand, Mode=OneWay, IsAsync=True}"
+					CommandParameter="SourceDirectory"
+					CornerRadius="10"
+					Cursor="Hand"
+					Icon="Copy24" />
 				<ui:TextBox
 					Grid.Row="9"
-					Grid.Column="2"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -323,7 +423,7 @@
 					FontWeight="Bold" />
 				<Label
 					Grid.Row="10"
-					Grid.Column="2"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalContentAlignment="Left"
 					VerticalContentAlignment="Center"
@@ -339,12 +439,11 @@
 					FontWeight="Bold" />
 				<ui:ToggleSwitch
 					Grid.Row="11"
-					Grid.Column="2"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Background="DimGray"
 					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsAutoUpdate, Mode=TwoWay, IsAsync=True}" />
 				<!--  Dt changed  -->
 				<Label
@@ -357,20 +456,19 @@
 					FontWeight="Bold" />
 				<ui:TextBox
 					Grid.Row="12"
-					Grid.Column="2"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
 					IsEnabled="False"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceDtChanged, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.SourceDtChanged, Mode=OneWay, IsAsync=True}" />
 				<!--  Separator  -->
 				<Separator
 					Grid.Row="13"
 					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Height="1"
-					Background="DimGray" />
+					Grid.ColumnSpan="5"
+					Height="1" />
 				<!--  Is ready  -->
 				<Label
 					Grid.Row="14"
@@ -382,7 +480,7 @@
 					FontWeight="Bold" />
 				<CheckBox
 					Grid.Row="14"
-					Grid.Column="2"
+					Grid.Column="4"
 					Margin="10,2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
@@ -393,9 +491,8 @@
 				<Separator
 					Grid.Row="15"
 					Grid.Column="0"
-					Grid.ColumnSpan="3"
-					Height="1"
-					Background="DimGray" />
+					Grid.ColumnSpan="5"
+					Height="1" />
 				<!--  Progress  -->
 				<Label
 					Grid.Row="16"
@@ -407,7 +504,7 @@
 					FontWeight="Bold" />
 				<ProgressBar
 					Grid.Row="16"
-					Grid.Column=" 2"
+					Grid.Column="4"
 					Margin="10,2"
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.ProgressString, Mode=OneWay, IsAsync=True}"
 					Value="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Progress, Mode=OneWay, IsAsync=True}" />

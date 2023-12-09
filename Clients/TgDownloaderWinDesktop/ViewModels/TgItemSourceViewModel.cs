@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Clipboard = Wpf.Ui.Common.Clipboard;
+
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -184,5 +186,36 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         }, false);
     }
 
-    #endregion
+    // CopyCommand
+    [RelayCommand]
+    public async Task OnCopyAsync(string fieldName)
+    {
+	    await TgDesktopUtils.RunFuncAsync(this, async () =>
+	    {
+		    await Task.Delay(TimeSpan.FromMilliseconds(1));
+		    string value = fieldName switch
+		    {
+			    nameof(ItemSourceVm.SourceId) => ItemSourceVm.SourceId.ToString(),
+			    nameof(ItemSourceVm.SourceUserName) => ItemSourceVm.SourceUserName,
+			    nameof(ItemSourceVm.SourceTitle) => ItemSourceVm.SourceTitle,
+			    nameof(ItemSourceVm.SourceAbout) => ItemSourceVm.SourceAbout,
+			    nameof(ItemSourceVm.SourceFirstId) => ItemSourceVm.SourceFirstId.ToString(),
+			    nameof(ItemSourceVm.SourceLastId) => ItemSourceVm.SourceLastId.ToString(),
+			    nameof(ItemSourceVm.SourceDirectory) => ItemSourceVm.SourceDirectory,
+			    _ => string.Empty
+		    };
+		    Clipboard.SetText(value);
+		    var uiMessageBox = new Wpf.Ui.Controls.MessageBox
+		    {
+			    Title = "Value copied",
+			    Content = value,
+                ShowFooter = false,
+                Height = 100,
+                Width = 400,
+		    };
+		    uiMessageBox.ShowDialog();
+		}, false);
+    }
+
+	#endregion
 }

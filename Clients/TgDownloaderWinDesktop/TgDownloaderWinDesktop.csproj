@@ -7,7 +7,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>TgDownloaderAppIcon01.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.2.590.0</Version>
+    <Version>0.3.10.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="TgDownloaderAppIcon01.ico" />
@@ -17,7 +17,7 @@
     <PackageReference Include="WPF-UI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="WTelegramClient" Version="3.5.9" />
+    <PackageReference Include="WTelegramClient" Version="3.6.1" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\applicationIcon-1024.png" />

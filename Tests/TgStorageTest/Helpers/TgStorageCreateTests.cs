@@ -15,21 +15,21 @@ internal class TgStorageCreateTests
             TestContext.WriteLine($"{typeof(T)}");
             T item = repository.GetNewAsync().Result;
             TestContext.WriteLine($"{nameof(repository.GetNewAsync)}: {item.ToDebugString()}");
-            Assert.IsTrue(item.IsNotExists);
+            Assert.That(item.IsNotExists);
 
             bool isStore = repository.SaveAsync(item).Result;
             TestContext.WriteLine($"{nameof(repository.SaveAsync)}: {isStore}");
-            Assert.IsTrue(isStore);
+            Assert.That(isStore);
             item = repository.GetAsync(item).Result;
             TestContext.WriteLine($"{nameof(repository.GetAsync)}: {item.ToDebugString()}");
-            Assert.IsTrue(item.IsExists);
+            Assert.That(item.IsExists);
             bool isDelete = repository.DeleteAsync(item).Result;
             TestContext.WriteLine($"{nameof(repository.DeleteAsync)}: {isDelete}");
-            Assert.IsTrue(isDelete);
+            Assert.That(isDelete);
 
             item = repository.GetAsync(item).Result;
             TestContext.WriteLine($"{nameof(repository.GetAsync)}: {item.ToDebugString()}");
-            Assert.IsTrue(item.IsNotExists);
+            Assert.That(item.IsNotExists);
         });
     }
 

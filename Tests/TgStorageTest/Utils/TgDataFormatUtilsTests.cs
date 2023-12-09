@@ -15,15 +15,15 @@ public class TgDataFormatUtilsTests
 		{
 			string fileName = "RW-Kotlin-Cheatsheet-1.1.pdf";
 			bool result = TgDataFormatUtils.CheckFileAtMask(fileName, "kotlin");
-			Assert.True(result);
+			Assert.That(result);
 			result = TgDataFormatUtils.CheckFileAtMask(fileName, "PDF");
-			Assert.True(result);
+			Assert.That(result);
 
 			fileName = "C# Generics.ZIP";
 			result = TgDataFormatUtils.CheckFileAtMask(fileName, "c*#");
-			Assert.True(result);
+			Assert.That(result);
 			result = TgDataFormatUtils.CheckFileAtMask(fileName, "zip");
-			Assert.True(result);
+			Assert.That(result);
 		});
 	}
 

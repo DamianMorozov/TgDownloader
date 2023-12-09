@@ -11,6 +11,8 @@
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 	Width="1300"
 	Height="800"
+	MinWidth="1300"
+	MinHeight="800"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance views:MainWindow,
 	                                 IsDesignTimeCreatable=True}"

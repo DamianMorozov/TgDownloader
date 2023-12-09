@@ -13,8 +13,8 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableApps());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableApps());
 		});
 	}
 
@@ -23,7 +23,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableDocuments());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableDocuments());
 		});
 	}
 
@@ -32,7 +32,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableFilters());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableFilters());
 		});
 	}
 
@@ -41,7 +41,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableMessages());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableMessages());
 		});
 	}
 
@@ -50,7 +50,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
 		});
 	}
 
@@ -59,7 +59,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableSources());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableSources());
 		});
 	}
 
@@ -68,7 +68,7 @@ internal class TgStorageHelperCheckTablesTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			Assert.IsTrue(TgStorageTestsUtils.DataCore.ContextManager.CheckTableVersions());
+			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableVersions());
 		});
 	}
 
