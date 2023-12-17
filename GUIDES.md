@@ -1,5 +1,6 @@
-## Desktop version
-- [Guide to setting up the desktop version](GUIDE-SET-DESKTOP.md)
+## Guides
+- [Guide to setup the desktop version](GUIDE-SETUP-DESKTOP.md)
+- [Guide to setup the docker version](GUIDE-SETUP-DOCKER.md)
 
 ## Run under Windows OS
 - Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
