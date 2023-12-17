@@ -1,4 +1,4 @@
-# Guide to setting up the desktop version
+# Guide to setup the desktop version
 
 1. Start the software.
 Both checkboxes should be in the on position.

@@ -392,7 +392,7 @@
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TgSettingDirectory, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<ui:Button
-					Grid.Row="8"
+					Grid.Row="9"
 					Grid.Column="2"
 					Margin="5,5,5,5"
 					HorizontalAlignment="Stretch"

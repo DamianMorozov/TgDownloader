@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.3.20] - 2023-12-17
+### Added
+- Guide to setup the docker version
+
 ## [0.3.10] - 2023-12-09
 ### Added
 - NET 8 version updated
