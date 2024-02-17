@@ -32,10 +32,12 @@
 - [Новости TgDownloader](https://t.me/TgDownloader)
 - [Русскоязычный чат TgDownloader](https://t.me/TgDownloaderChatRus)
 
+
 ## Актуальные скриншоты
 
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>

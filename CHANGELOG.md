@@ -8,12 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.3.110] - 2024-02-17
+### Added in TgDownloaderConsole
+- Progressbar for downloading current file
+- Mark all messages as read
+### Added in TgDownloaderWinDesktop
+- Progressbar for downloading current file
+- Mark all messages as read
+### Changed in TgDownloaderWinDesktop
+- UI
+
 ## [0.3.20] - 2023-12-17
 ### Added
 - Guide to setup the docker version
 
 ## [0.3.10] - 2023-12-09
-### Added
+### Changed
 - NET 8 version updated
 - Updated version of NuGet packages
 ### Added in TgDownloaderWinDesktop
