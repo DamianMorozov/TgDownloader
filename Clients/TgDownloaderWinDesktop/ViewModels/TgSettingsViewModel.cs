@@ -6,25 +6,34 @@ namespace TgDownloaderWinDesktop.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigationAware
 {
-    public static Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
-	
-    public void OnNavigatedTo()
-	{
+	#region Public and private fields, properties, constructor
+
+	public Wpf.Ui.Appearance.ThemeType CurrentTheme { get; set; } = Wpf.Ui.Appearance.ThemeType.Unknown;
+	public Brush TextBrush { get; set; } = Brushes.White;
+	public Color TextColor { get; set; } = Color.White;
+
+	public void OnNavigatedTo()
+    {
         InitializeViewModelAsync().GetAwaiter();
     }
 
-	public void OnNavigatedFrom() { }
+    #endregion
+
+    #region Public and private methods
+
+    public void OnNavigatedFrom() { }
 
     protected override async Task InitializeViewModelAsync()
     {
         await base.InitializeViewModelAsync();
 
         CurrentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
-    }
+	}
 
+    // ChangeThemeCommand
 	[RelayCommand]
-	public async Task OnChangeThemeAsync(string parameter)
-	{
+    public async Task OnChangeThemeAsync(string parameter)
+    {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
@@ -35,14 +44,21 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
                         break;
                     Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
                     CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
-                    break;
+                    TextBrush = Brushes.Black;
+                    TextColor = Color.Black;
+					break;
                 default:
                     if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
                         break;
                     Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
                     CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
-                    break;
+                    TextBrush = Brushes.White;
+                    TextColor = Color.White;
+					break;
             }
+
         }, false).ConfigureAwait(false);
     }
+
+    #endregion
 }

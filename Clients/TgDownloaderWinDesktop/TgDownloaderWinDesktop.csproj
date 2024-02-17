@@ -5,28 +5,23 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>TgDownloaderAppIcon01.ico</ApplicationIcon>
+    <ApplicationIcon>applicationIcon.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>0.3.20.0</Version>
+    <Version>0.3.110.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="TgDownloaderAppIcon01.ico" />
+    <Content Include="applicationIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf.NetCore3" Version="0.9.8" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="WPF-UI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="WTelegramClient" Version="3.6.1" />
+    <PackageReference Include="WTelegramClient" Version="3.6.5" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Assets\applicationIcon-1024.png" />
-    <None Remove="Assets\applicationIcon-256.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\applicationIcon-01-1024.png" />
-    <Resource Include="Assets\applicationIcon-1024.png" />
-    <Resource Include="Assets\applicationIcon-256.png" />
+    <Resource Include="Assets\applicationIcon-191.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md">

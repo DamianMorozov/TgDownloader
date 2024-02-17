@@ -66,7 +66,7 @@ internal partial class TgMenuHelper
                     tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					RunAction(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, true, false);
+					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, true, false);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
 					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
@@ -89,10 +89,10 @@ internal partial class TgMenuHelper
 					SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SettingsSave:
-					RunAction(tgDownloadSettings, UpdateSourceWithSettings, true, false);
+					RunActionStatus(tgDownloadSettings, UpdateSourceWithSettings, true, false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					RunAction(tgDownloadSettings, ManualDownloadAsync, false, false);
+					RunActionProgress(tgDownloadSettings, ManualDownloadAsync, false, false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -202,7 +202,7 @@ internal partial class TgMenuHelper
     {
         await tgDownloadSettings.UpdateSourceWithSettingsAsync();
 		// Refresh.
-		await TgClient.UpdateStateMessageAsync(TgLocale.SettingsSource);
+		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource);
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
@@ -223,6 +223,13 @@ internal partial class TgMenuHelper
         await TgClient.DownloadAllDataAsync(tgDownloadSettings);
 		// Don't move up.
         await UpdateSourceWithSettings(tgDownloadSettings);
+	}
+
+	private async Task MarkHistoryReadAsync(TgDownloadSettingsModel tgDownloadSettings)
+	{
+		ShowTableMarkHistoryReadProgress(tgDownloadSettings);
+        await TgClient.MarkHistoryReadAsync();
+		ShowTableMarkHistoryReadComplete(tgDownloadSettings);
 	}
 
 	#endregion

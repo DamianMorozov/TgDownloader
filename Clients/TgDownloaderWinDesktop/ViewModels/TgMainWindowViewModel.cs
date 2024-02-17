@@ -67,6 +67,13 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
                 Icon = SymbolRegular.DataBarHorizontal24,
                 PageType = typeof(TgSourcesPage),
             },
+            //new NavigationItem
+            //{
+            //    Content = TgLocaleHelper.Instance.MenuMainDownloads,
+            //    PageTag = "page_downloads",
+            //    Icon = SymbolRegular.DataBarHorizontal24,
+            //    PageType = typeof(TgDownloadsPage),
+            //},
         };
 
         NavigationFooter = new()
@@ -86,6 +93,7 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
             new() { Header = "Client", Tag = "page_client" },
             new() { Header = "Proxies", Tag = "page_proxies" },
             new() { Header = "Sources", Tag = "page_sources" },
+            new() { Header = "Downloads", Tag = "page_downloads" },
             new() { Header = "Settings", Tag = "page_settings" },
         };
 

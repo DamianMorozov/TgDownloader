@@ -23,8 +23,6 @@ public partial class TgPageViewModelBase : TgViewModelBase
     public string StateConnectMsg { get; set; }
     public string StateExceptionDt { get; set; }
     public string StateExceptionMsg { get; set; }
-    public string StateMessageDt { get; set; }
-    public string StateMessageMsg { get; set; }
     public string StateProxyDt { get; set; }
     public string StateProxyMsg { get; set; }
     public string StateSourceDt { get; set; }
@@ -42,8 +40,6 @@ public partial class TgPageViewModelBase : TgViewModelBase
         StateConnectMsg = string.Empty;
         StateExceptionDt = string.Empty;
         StateExceptionMsg = string.Empty;
-        StateMessageDt = string.Empty;
-        StateMessageMsg = string.Empty;
         StateProxyDt = string.Empty;
         StateProxyMsg = string.Empty;
         StateSourceDt = string.Empty;
@@ -80,7 +76,8 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            StateConnectDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateConnectDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateConnectMsg = message;
         }, false);
     }
@@ -93,7 +90,8 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            StateProxyDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateProxyDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateProxyMsg = message;
         }, false);
     }
@@ -109,21 +107,23 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateExceptionMsg = $"Line {lineNumber} | Member {memberName} | {message}";
         }, false);
     }
 
     /// <summary>
-    /// Update state source message.
+    /// Update exception message.
     /// </summary>
     /// <param name="message"></param>
-    public virtual async Task UpdateStateMessageAsync(string message)
+    public virtual async Task UpdateStateExceptionShortAsync(string message)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            StateMessageDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-            StateMessageMsg = message;
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+            StateExceptionMsg = message;
         }, false);
     }
 
@@ -135,10 +135,30 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// <param name="message"></param>
     public virtual async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
     {
+	    if (sourceId == 0 && messageId == 0)
+	    {
+		    await UpdateStateMessageAsync(message);
+            return;
+	    }
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateSourceMsg = $"{sourceId} | {messageId} | {message}";
+        }, false);
+    }
+
+    /// <summary>
+    /// Update state message.
+    /// </summary>
+    /// <param name="message"></param>
+    public virtual async Task UpdateStateMessageAsync(string message)
+    {
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
+        {
+	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+            StateSourceMsg = message;
         }, false);
     }
 

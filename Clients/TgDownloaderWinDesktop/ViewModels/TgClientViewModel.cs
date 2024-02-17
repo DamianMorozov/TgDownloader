@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.Linq;
-
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -138,9 +136,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         }, false);
     }
 
-    public string? GetClientDesktopConfig(string what)
+    public string? ConfigClientDesktop(string what)
     {
-        TgDesktopUtils.TgClient.UpdateStateMessageAsync($"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
+        TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
 
         switch (what)
         {

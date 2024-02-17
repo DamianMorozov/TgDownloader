@@ -113,42 +113,6 @@ public sealed class TgSqlTableDocumentModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableDocumentModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		_sourceId = info.GetInt64(nameof(SourceId));
-		_id = info.GetInt64(nameof(Id));
-		_messageId = info.GetInt64(nameof(MessageId));
-		_fileName = info.GetString(nameof(FileName)) ?? this.GetPropertyDefaultValue(nameof(FileName));
-		_fileSize = info.GetInt64(nameof(FileSize));
-		_accessHash = info.GetInt64(nameof(AccessHash));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(SourceId), SourceId);
-		info.AddValue(nameof(Id), Id);
-		info.AddValue(nameof(MessageId), MessageId);
-		info.AddValue(nameof(FileName), FileName);
-		info.AddValue(nameof(FileSize), FileSize);
-		info.AddValue(nameof(AccessHash), AccessHash);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => $"{SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";

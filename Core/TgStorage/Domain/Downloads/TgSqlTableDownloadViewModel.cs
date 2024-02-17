@@ -1,20 +1,23 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Common;
+namespace TgStorage.Domain.Downloads;
 
+/// <summary>
+/// View for TgSqlTableSourceModel.
+/// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public abstract class TgCommonBase : ITgCommon
+public sealed partial class TgSqlTableDownloadViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+    public TgDownloadSettingsModel DownloadSetting { get; } = new();
 
     #endregion
-    
+
     #region Public and private methods
 
-    public virtual string ToDebugString() => throw new NotImplementedException(TgLocale.UseOverrideMethod);
+    public override string ToDebugString() => $"{base.ToDebugString()} | {DownloadSetting.ToDebugString()}";
 
     #endregion
 }

@@ -9,7 +9,7 @@ namespace TgStorage.Models;
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgAppXmlModel : ObservableObject, ITgSerializable
+public class TgAppXmlModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
@@ -42,30 +42,9 @@ public class TgAppXmlModel : ObservableObject, ITgSerializable
 		IsUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsUseProxy));
 	}
 
-	protected TgAppXmlModel(SerializationInfo info, StreamingContext context)
-	{
-		Version = info.GetString(nameof(Version)) ?? this.GetPropertyDefaultValue(nameof(Version));
-		FileSession = info.GetString(nameof(FileSession)) ?? this.GetPropertyDefaultValue(nameof(FileSession));
-		FileStorage = info.GetString(nameof(FileStorage)) ?? this.GetPropertyDefaultValue(nameof(FileStorage));
-		IsUseProxy = info.GetBoolean(nameof(IsUseProxy));
-	}
-
 	#endregion
 
 	#region Public and private methods
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Version), Version);
-		info.AddValue(nameof(FileSession), FileSession);
-		info.AddValue(nameof(FileStorage), FileStorage);
-		info.AddValue(nameof(IsUseProxy), IsUseProxy);
-	}
 
     public string ToDebugString() => $"{TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsUseProxy(IsUseProxy)}";
 

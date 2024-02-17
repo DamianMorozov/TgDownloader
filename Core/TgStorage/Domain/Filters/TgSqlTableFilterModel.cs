@@ -127,44 +127,6 @@ public sealed class TgSqlTableFilterModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableFilterModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		_isEnabled = info.GetBoolean(nameof(IsEnabled));
-		object? type = info.GetValue(nameof(FilterType), typeof(Type));
-		_filterType = type is TgEnumFilterType proxyTypeCast ? proxyTypeCast : TgEnumFilterType.None;
-		_name = info.GetString(nameof(Name)) ?? string.Empty;
-		_mask = info.GetString(nameof(Mask)) ?? string.Empty;
-		_size = info.GetInt64(nameof(Size));
-		object? sizeType = info.GetValue(nameof(SizeType), typeof(TgEnumFileSizeType));
-		_sizeType = sizeType is TgEnumFileSizeType sizeTypeCast ? sizeTypeCast : TgEnumFileSizeType.Bytes;
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(IsEnabled), IsEnabled);
-		info.AddValue(nameof(FilterType), FilterType);
-		info.AddValue(nameof(Name), Name);
-		info.AddValue(nameof(Mask), Mask);
-		info.AddValue(nameof(Size), Size);
-		info.AddValue(nameof(SizeType), SizeType);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => FilterType switch

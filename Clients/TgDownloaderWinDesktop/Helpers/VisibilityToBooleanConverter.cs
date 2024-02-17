@@ -12,10 +12,10 @@ public sealed class VisibilityToBooleanConverter : IValueConverter
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (parameter is not string enumString)
-			throw new ArgumentException($"Exception \tpublic {nameof(VisibilityToBooleanConverter)}()\r\n");
+			throw new ArgumentException($"{TgDesktopUtils.TgLocale.Exception} at {nameof(VisibilityToBooleanConverter)}");
 
 		if (!Enum.IsDefined(typeof(Visibility), value))
-			throw new ArgumentException($"Exception \tpublic {nameof(VisibilityToBooleanConverter)}()\r\n");
+			throw new ArgumentException($"{TgDesktopUtils.TgLocale.Exception} at {nameof(VisibilityToBooleanConverter)}");
 
 		object enumValue = Enum.Parse(typeof(Visibility), enumString);
 
@@ -25,7 +25,7 @@ public sealed class VisibilityToBooleanConverter : IValueConverter
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (parameter is not string enumString)
-			throw new ArgumentException($"Exception {nameof(VisibilityToBooleanConverter)}");
+			throw new ArgumentException($"{TgDesktopUtils.TgLocale.Exception} at {nameof(VisibilityToBooleanConverter)}");
 
 		return Enum.Parse(typeof(Visibility), enumString);
 	}

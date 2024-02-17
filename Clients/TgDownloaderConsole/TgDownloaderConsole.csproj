@@ -4,14 +4,18 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.3.20.0</Version>
+		<Version>0.3.110.0</Version>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<ApplicationIcon>applicationIcon.ico</ApplicationIcon>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="TgLocale\**" />
 	  <EmbeddedResource Remove="TgLocale\**" />
 	  <None Remove="TgLocale\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="applicationIcon.ico" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\GUIDE-SETUP-DESKTOP-RUS.md" Link="GUIDE-SETUP-DESKTOP-RUS.md" />
@@ -64,7 +68,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Spectre.Console" Version="0.48.0" />
-		<PackageReference Include="WTelegramClient" Version="3.6.1" />
+		<PackageReference Include="WTelegramClient" Version="3.6.5" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />

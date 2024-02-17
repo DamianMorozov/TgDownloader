@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System;
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -34,11 +33,11 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     /// </summary>
     private void SetOrderSources(IEnumerable<TgSqlTableSourceModel> sources)
     {
-        List<TgSqlTableSourceModel> listSources = sources.ToList();
-        if (!listSources.Any()) return;
+        List<TgSqlTableSourceModel> list = sources.ToList();
+        if (!list.Any()) return;
         SourcesVms = new();
 
-        sources = listSources.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
+        sources = list.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
         if (sources.Any())
             foreach (TgSqlTableSourceModel source in sources)
                 SourcesVms.Add(new(source));
@@ -80,12 +79,12 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         }
     }
 
-    #endregion
+	#endregion
 
-    #region Public and private methods - RelayCommand - All
+	#region Public and private methods - RelayCommand - All
 
-    // LoadSourcesFromStorageCommand
-    [RelayCommand]
+	// LoadSourcesFromStorageCommand
+	[RelayCommand]
     public async Task OnLoadSourcesFromStorageAsync()
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
@@ -138,6 +137,20 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         }, false);
     }
 
+	// MarkAllMessagesAsReadCommand
+	[RelayCommand]
+    public async Task OnMarkAllMessagesAsReadAsync()
+    {
+        if (!CheckClientReady())
+            return;
+
+        await TgDesktopUtils.RunFuncAsync(this, async () =>
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
+        }, false);
+    }
+
     // ClearViewCommand
     [RelayCommand]
     public async Task OnClearViewAsync()
@@ -148,8 +161,6 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             SourcesVms = new();
         }, false);
     }
-
-    // SortViewCommand
 
     // SortViewCommand
     [RelayCommand]

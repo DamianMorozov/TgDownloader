@@ -82,34 +82,6 @@ public sealed class TgSqlTableVersionModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableVersionModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		_version = info.GetInt16(nameof(Version));
-		_description = info.GetString(nameof(Description)) ?? string.Empty;
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(Version), Version);
-		info.AddValue(nameof(Description), Description);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => $"{Version} | {Description}";

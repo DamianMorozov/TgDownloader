@@ -7,6 +7,7 @@
 	xmlns:helpers="clr-namespace:TgDownloaderWinDesktop.Helpers"
 	xmlns:local="clr-namespace:TgDownloaderWinDesktop.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sources="clr-namespace:TgStorage.Domain.Sources;assembly=TgStorage"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=TableSources, Mode=OneWay, IsAsync=True}"
@@ -20,8 +21,17 @@
 
 	<Page.Resources>
 		<helpers:ExistsToValueConverter x:Key="ExistsToValueConverter" />
+		<!--<CollectionViewSource
+			x:Key="VmsSources"
+			CollectionViewType="sources:TgSqlTableSourceViewModel"
+			Filter="CollectionViewSource_Filter"
+			Source="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms, Mode=OneWay, IsAsync=True}">
+			<CollectionViewSource.GroupDescriptions>
+				<PropertyGroupDescription PropertyName="Username" />
+				<PropertyGroupDescription PropertyName="Title" />
+			</CollectionViewSource.GroupDescriptions>
+		</CollectionViewSource>-->
 	</Page.Resources>
-
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -39,6 +49,7 @@
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="0.5*" />
+					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
 					<ColumnDefinition Width="1.5*" />
@@ -67,6 +78,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=LoadSourcesFromStorageCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="ArrowSync12"
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromStorage, Mode=OneWay, IsAsync=True}" />
 				<!--  Update from Telegram  -->
@@ -78,6 +90,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=UpdateSourcesFromTelegramCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="ArrowSync12"
 					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}"
 					ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=UpdateFromTelegram, Mode=OneWay, IsAsync=True}" />
@@ -89,46 +102,61 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=GetSourcesFromTelegramCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=GetFromTelegram, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="ArrowSync12"
 					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}" />
-				<!--  Clear view  -->
+				<!--  Mark as read  -->
 				<ui:Button
 					Grid.Column="4"
-					Margin="2"
+					Margin="3,0,3,0"
 					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"
 					Appearance="Primary"
-					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=ClearViewCommand, Mode=OneWay, IsAsync=True}"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ClearView, Mode=OneWay, IsAsync=True}"
-					Icon="Recycle32" />
-				<!--  Sort view  -->
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=MarkAllMessagesAsReadCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMarkAsRead, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
+					Icon="ReadingModeMobile24"
+					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}" />
+				<!--  Clear view  -->
 				<ui:Button
 					Grid.Column="5"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					Appearance="Primary"
-					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SortViewCommand, Mode=OneWay, IsAsync=True}"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SortView, Mode=OneWay, IsAsync=True}"
-					Icon="ArrowSort28" />
-				<!--  Save  -->
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=ClearViewCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=ClearView, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
+					Icon="Recycle32" />
+				<!--  Sort view  -->
 				<ui:Button
 					Grid.Column="6"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					Appearance="Primary"
+					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SortViewCommand, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=SortView, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
+					Icon="ArrowSort28" />
+				<!--  Save  -->
+				<ui:Button
+					Grid.Column="7"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SaveSourcesCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Save, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Save28" />
 				<Label
-					Grid.Column="7"
+					Grid.Column="8"
 					Margin="2"
 					HorizontalContentAlignment="Right"
 					VerticalContentAlignment="Center"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldCount, Mode=OneWay, IsAsync=True}" />
 				<Label
-					Grid.Column="8"
+					Grid.Column="9"
 					Margin="2"
 					HorizontalContentAlignment="Left"
 					VerticalContentAlignment="Center"
@@ -149,6 +177,7 @@
 				Background="Transparent"
 				CanUserAddRows="False"
 				ItemsSource="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=SourcesVms, Mode=OneWay, IsAsync=True}">
+				<!--  ItemsSource="{Binding Source={StaticResource VmsSources}}"  -->
 				<!--  Visibility="Hidden"  -->
 				<DataGrid.Columns>
 					<!--  Get from Storage  -->
@@ -309,14 +338,15 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ui:TextBox
+								<ui:Button
 									Margin="2"
 									HorizontalAlignment="Stretch"
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
-									IsEnabled="False"
+									Appearance="Secondary"
+									Content="{Binding Source.Id, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
-									Text="{Binding Source.Id, Mode=OneWay, IsAsync=True}" />
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -332,15 +362,15 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ui:TextBox
+								<ui:Button
 									Margin="2"
 									HorizontalAlignment="Stretch"
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
-									IsEnabled="False"
+									Appearance="Secondary"
+									Content="{Binding Source.UserName, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
-									Text="{Binding Source.UserName, Mode=OneWay, IsAsync=True}"
-									ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}" />
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -356,13 +386,14 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ui:TextBox
+								<ui:Button
 									Margin="2"
 									HorizontalAlignment="Stretch"
 									HorizontalContentAlignment="Left"
-									IsEnabled="False"
+									Appearance="Secondary"
+									Content="{Binding Source.Title, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
-									Text="{Binding Source.Title, Mode=OneWay, IsAsync=True}" />
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -378,14 +409,15 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ui:TextBox
+								<ui:Button
 									Margin="2"
 									HorizontalAlignment="Stretch"
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
-									IsEnabled="False"
+									Appearance="Secondary"
+									Content="{Binding SourceFirstId, Mode=TwoWay, IsAsync=True}"
 									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
-									Text="{Binding SourceFirstId, Mode=TwoWay, IsAsync=True}" />
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -401,14 +433,15 @@
 						</DataGridTemplateColumn.Header>
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate>
-								<ui:TextBox
+								<ui:Button
 									Margin="2"
 									HorizontalAlignment="Stretch"
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
-									IsEnabled="False"
+									Appearance="Secondary"
+									Content="{Binding SourceLastId, Mode=TwoWay, IsAsync=True}"
 									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
-									Text="{Binding SourceLastId, Mode=TwoWay, IsAsync=True}" />
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -433,7 +466,7 @@
 									VerticalAlignment="Center"
 									IsIndeterminate="{Binding IsLoad, Mode=OneWay, IsAsync=True}"
 									Progress="{Binding Progress, Mode=OneWay, IsAsync=True}"
-									ToolTip="{Binding ProgressString, Mode=OneWay, IsAsync=True}"
+									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}"
 									Visibility="Visible" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>

@@ -17,16 +17,18 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#endregion
 
-	public override string ToString() => Language.ToString();
+	public override string ToString() => $"{Language}";
 
 	#region App
 
 	public string AppName => "Name";
 	public string AppTitle => "TG-Downloader";
-	public string AppTitleConsoleShort => "TG-DC";
+	public string AppTitleConsoleShort => "TGDC";
 	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
+	public string AppTitleWinDesktopShort => "TGWD";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
+	public string Exception => "Exception";
 	public string From => "from";
 	public string HomeLoadAllFromXml => "Load all from XML";
 	public string HomeResetToDefault => "Reset to default";
@@ -60,13 +62,17 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
     public string MenuClientMessage => "Message";
     public string MenuClientProxyIsUsage => "Proxy usage";
     public string MenuClientSource => "Source";
+    public string MenuClientSourceProgress => "Source progress";
 	public string MenuClientApiHash => "API hash";
 	public string MenuClientApiId => "API ID";
 	public string MenuClientClearSettings => "Clear settings";
+	public string MenuClientComplete => "Complete";
 	public string MenuClientConnect => "Connect the client to TG server";
 	public string MenuClientConnectStatus => "Connect status";
 	public string MenuClientDisconnect => "Disconnect the client from TG server";
 	public string MenuClientException => "Client exception";
+	public string MenuClientFileName => "File name";
+	public string MenuClientFileProgress => "File progress";
 	public string MenuClientFirstName => "First name";
 	public string MenuClientIsConnected => "Client is connected";
 	public string MenuClientIsDisconnected => "Client is disconnected";
@@ -78,10 +84,12 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuClientNotifications => "Notifications";
 	public string MenuClientPassword => "Password";
 	public string MenuClientPhoneNumber => "Phone number";
-	public string MenuClientProgressStatus => "Progress status";
+	public string MenuClientProgress => "Progress";
 	public string MenuClientProxy => "Proxy";
 	public string MenuClientProxyStatus => "Proxy status";
 	public string MenuClientSaveToStorage => "Save to storage";
+	public string MenuClientSpeed => "Speed";
+	public string MenuClientStatus => "Status";
 	public string MenuClientTelegramQuery => "Telegram query";
 	public string MenuClientVerificationCode => "Verification code";
 
@@ -91,7 +99,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
     public string MenuAutoDownload => "Auto download";
 	public string MenuAutoViewEvents => "Auto view events";
-	public string MenuManualDownload => "Manual download";
+	public string MenuDownloadException => "Download exception";
 	public string MenuDownloadSetFolder => "Setup download folder";
 	public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
 	public string MenuDownloadSetIsAutoUpdate => "Enable auto update";
@@ -100,17 +108,20 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuDownloadSetSource => "Setup source (ID/username)";
 	public string MenuDownloadSetSourceFirstIdAuto => "Setup first ID auto";
 	public string MenuDownloadSetSourceFirstIdManual => "Setup first ID manual";
+	public string MenuManualDownload => "Manual download";
+	public string MenuMarkAllMessagesAsRead => "Mark all messages as read";
+	public string MenuMarkAsRead => "Mark as read";
 	public string MenuSaveSettings => "Save settings";
 	public string MenuScanChats => "Scan my chats";
 	public string MenuScanDialogs => "Scan my dialogs";
 	public string MenuSetProxy => "Setup proxy";
 	public string MenuViewSources => "View sources";
 
-    #endregion
+	#endregion
 
-    #region Filters
+	#region Filters
 
-    public string MenuFiltersAdd => "Add filter";
+	public string MenuFiltersAdd => "Add filter";
 	public string MenuFiltersAllCount => "All filters count";
 	public string MenuFiltersEnabledCount => "Enabled filters count";
 	public string MenuFiltersEdit => "Edit filter";
@@ -141,12 +152,15 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuMainApp => "Application";
 	public string MenuMainClient => "Client";
 	public string MenuMainDownload => "Download";
+	public string MenuMainDownloads => "Downloads";
 	public string MenuMainExit => "Exit";
-	public string MenuMainProxies => "Proxies";
-	public string MenuMainSettings => "Settings";
 	public string MenuMainFilters => "Filters";
+	public string MenuMainJobs => "Jobs";
+	public string MenuMainProxies => "Proxies";
 	public string MenuMainReset => "Reset";
 	public string MenuMainReturn => "Return";
+	public string MenuMainSettings => "Settings";
+	public string MenuMainStop => "Stop";
 	public string MenuMainStorage => "Storage";
 
 	#endregion
@@ -238,6 +252,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string TablesSourcesException => "Table SOURCES exception!";
 	public string TablesVersionsException => "Table VERSIONS exception!";
 	public string TgClientException => "Client exception";
+	public string TgClientFix => "Client fix";
+	public string TgClientFixTryToDeleteSession => "Try to delete session file";
 	public string TgClientProxyException => "Proxy exception";
 	public string TgClientProxyHostName => "Proxy hostname";
 	public string TgClientProxyPort => "Proxy port";
@@ -277,6 +293,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string TypeTgSourceFirstId => "Type the source first ID";
 	public string Update => "Update";
 	public string UpdateFromTelegram => "Update from Telegram";
+	public string WaitDownloadComplete => "Wait download complete";
 
 	#endregion
 
@@ -322,6 +339,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldId => "ID";
 	public string FieldIsAutoUpdate => "Auto-update";
 	public string FieldIsCountComplete => "Count complete";
+	public string FieldIsDownload => "Is download";
 	public string FieldIsReady => "Is ready";
 	public string FieldLastId => "Last ID";
 	public string FieldLinkTelegramApps => "https://my.telegram.org/apps/";

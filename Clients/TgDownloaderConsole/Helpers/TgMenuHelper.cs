@@ -75,11 +75,16 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	internal void ShowTableAdvanced(TgDownloadSettingsModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsAdvanced);
 
-	internal void ShowTableScanSources(TgDownloadSettingsModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsScanDownloadedSources);
-
 	internal void ShowTableViewSources(TgDownloadSettingsModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSources);
+
+	internal void ShowTableMarkHistoryReadProgress(TgDownloadSettingsModel tgDownloadSettings) =>
+		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
+			FillTableRowsMarkHistoryReadProgress);
+
+	internal void ShowTableMarkHistoryReadComplete(TgDownloadSettingsModel tgDownloadSettings) =>
+		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
+			FillTableRowsMarkHistoryReadComplete);
 
 	internal void FillTableColumns(Table table)
 	{
@@ -259,6 +264,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		{
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientException)),
 				new Markup(TgLog.GetMarkupString(TgClient.ClientException.Message)));
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientFix)),
+				new Markup(TgLog.GetMarkupString(TgLocale.TgClientFixTryToDeleteSession)));
 		}
 	}
 
@@ -280,6 +287,28 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
 		}
+	}
+
+	/// <summary>
+	/// Mark history read.
+	/// </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
+	internal void FillTableRowsMarkHistoryReadProgress(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	{
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
+			new Markup($"{TgLocale.MenuClientProgress} ..."));
+	}
+
+	/// <summary>
+	/// Mark history read.
+	/// </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
+	internal void FillTableRowsMarkHistoryReadComplete(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	{
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
+			new Markup($"{TgLocale.MenuClientComplete} ..."));
 	}
 
 	internal void FillTableRowsDownload(TgDownloadSettingsModel tgDownloadSettings, Table table)
@@ -337,14 +366,6 @@ internal sealed partial class TgMenuHelper : ITgHelper
     /// </summary>
     /// <param name="tgDownloadSettings"></param>
     /// <param name="table"></param>
-    internal void FillTableRowsScanDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
-        FillTableRowsDownloadedSources(tgDownloadSettings, table);
-
-    /// <summary>
-    /// Source ID/username.
-    /// </summary>
-    /// <param name="tgDownloadSettings"></param>
-    /// <param name="table"></param>
     internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
         FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
@@ -364,8 +385,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 
 	public TgSqlTableSourceModel GetSourceFromEnumerable(string title, IEnumerable<TgSqlTableSourceModel> sources)
 	{
-		sources = sources.OrderBy(item => item.UserName).ThenBy(item => item.Id);
-		List<string> list = new() { TgLocale.MenuMainReturn };
+		sources = sources.OrderBy(x => x.UserName).ThenBy(x => x.Title);
+		List<string> list = [TgLocale.MenuMainReturn];
 		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
@@ -373,11 +394,14 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			.AddChoices(list));
         if (!Equals(sourceString, TgLocale.MenuMainReturn))
         {
-            int len = sourceString.IndexOf('|', 8) - 9;
-            string sourceId = sourceString.Substring(8, len).TrimEnd(' ');
-            if (long.TryParse(sourceId, out long id))
-                return ContextManager.SourceRepository.GetAsync(id).Result;
-        }
+	        string[] parts = sourceString.Split('|');
+	        if (parts.Length > 3)
+	        {
+		        string sourceId = parts[2].TrimEnd(' ');
+		        if (long.TryParse(sourceId, out long id))
+			        return ContextManager.SourceRepository.GetAsync(id).Result;
+			}
+		}
         return ContextManager.SourceRepository.GetNewAsync().Result;
 	}
 

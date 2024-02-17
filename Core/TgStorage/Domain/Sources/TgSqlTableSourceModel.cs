@@ -143,61 +143,29 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableSourceModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		_id = info.GetInt64(nameof(Id));
-		_dtChanged = info.GetDateTime(nameof(DtChanged));
-		_userName = info.GetString(nameof(UserName)) ?? this.GetPropertyDefaultValue(nameof(UserName));
-		_title = info.GetString(nameof(Title)) ?? this.GetPropertyDefaultValue(nameof(Title));
-		_about = info.GetString(nameof(About)) ?? this.GetPropertyDefaultValue(nameof(About));
-		_count = info.GetInt32(nameof(Count));
-		_directory = info.GetString(nameof(Directory)) ?? this.GetPropertyDefaultValue(nameof(Directory));
-		_firstId = info.GetInt32(nameof(FirstId));
-		_isAutoUpdate = info.GetBoolean(nameof(IsAutoUpdate));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(Id), Id);
-		info.AddValue(nameof(DtChanged), DtChanged);
-		info.AddValue(nameof(UserName), UserName);
-		info.AddValue(nameof(Title), Title);
-		info.AddValue(nameof(About), About);
-		info.AddValue(nameof(Count), Count);
-		info.AddValue(nameof(Directory), Directory);
-		info.AddValue(nameof(FirstId), FirstId);
-		info.AddValue(nameof(IsAutoUpdate), IsAutoUpdate);
-	}
-
-    #endregion
-
     #region Public and private methods
 
     public string ToConsoleStringShort() =>
-        $"{(Equals(FirstId, Count) ? "" : "x | ")}{(IsAutoUpdate ? "a | " : "")}{Id} | " +
+        $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} | " +
         $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
         $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +
         $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
     public string ToConsoleString() =>
-        $"{(Equals(FirstId, Count) ? " " : "x")} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
+        $"{GetPercentCountString()} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
         $"{TgDataFormatUtils.GetFormatString(UserName, 30)} | " +
         $"{TgDataFormatUtils.GetFormatString(Title, 30)} | " +
         $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+
+    public string GetPercentCountString()
+    {
+	    float percent = Count <= FirstId ? 100 : FirstId > 1 ? (float) FirstId * 100 / Count : 0;
+	    if (IsPercentCountAll())
+		    return "100.00 %";
+	    return percent > 9 ? $" {percent:00.00} %" : $"  {percent:0.00} %";
+    }
+
+    public bool IsPercentCountAll() => Count <= FirstId;
 
     public string ToDebugString() => 
 		$"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +

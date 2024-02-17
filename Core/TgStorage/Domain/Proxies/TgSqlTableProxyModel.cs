@@ -117,43 +117,6 @@ public sealed class TgSqlTableProxyModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableProxyModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		object? type = info.GetValue(nameof(Type), typeof(TgEnumProxyType));
-		_type = type is TgEnumProxyType proxyType ? proxyType : TgEnumProxyType.None;
-		_hostName = info.GetString(nameof(HostName)) ?? string.Empty;
-		_port = info.GetUInt16(nameof(Port));
-		_userName = info.GetString(nameof(UserName)) ?? string.Empty;
-		_password = info.GetString(nameof(Password)) ?? string.Empty;
-		_secret = info.GetString(nameof(Secret)) ?? string.Empty;
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(Type), Type);
-		info.AddValue(nameof(HostName), HostName);
-		info.AddValue(nameof(Port), Port);
-		info.AddValue(nameof(UserName), UserName);
-		info.AddValue(nameof(Password), Password);
-		info.AddValue(nameof(Secret), Secret);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => 

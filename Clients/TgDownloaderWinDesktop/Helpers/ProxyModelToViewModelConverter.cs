@@ -7,7 +7,7 @@ public sealed class ProxyModelToViewModelConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not TgSqlTableProxyModel proxy)
-            throw new ArgumentException("Exception ProxyModelToViewModelConverter");
+            throw new ArgumentException($"{TgDesktopUtils.TgLocale.Exception} at {nameof(ProxyModelToViewModelConverter)}");
 
         return new TgSqlTableProxyViewModel(proxy);
     }
@@ -15,7 +15,7 @@ public sealed class ProxyModelToViewModelConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (parameter is not TgSqlTableProxyViewModel proxyVm)
-            throw new ArgumentException("Exception ProxyModelToViewModelConverter");
+            throw new ArgumentException($"{TgDesktopUtils.TgLocale.Exception} at {nameof(ProxyModelToViewModelConverter)}");
 
         return proxyVm.Proxy;
     }

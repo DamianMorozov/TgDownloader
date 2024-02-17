@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TL.Methods;
+
 namespace TgDownloaderWinDesktop.Utils;
 
 /// <summary>
@@ -16,10 +18,11 @@ public static class TgDesktopUtils
     public static TgFiltersViewModel TgFiltersVm { get; } = new();
     public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
     public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
-    public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
     public static TgProxiesViewModel TgProxiesVm { get; } = new();
     public static TgSettingsViewModel TgSettingsVm { get; } = new();
     public static TgSourcesViewModel TgSourcesVm { get; } = new();
+    public static TgDownloadsViewModel TgDownloadsVm{ get; } = new();
 
     #endregion
 
@@ -30,9 +33,14 @@ public static class TgDesktopUtils
     /// </summary>
     public static void SetupClient()
     {
-        TgClient.SetupActions(message => TgClientVm.UpdateStateConnectAsync(message), message => TgClientVm.UpdateStateProxyAsync(message),
-            message => TgClientVm.UpdateStateMessageAsync(message), (sourceId, messageId, message) => TgClientVm.UpdateStateSourceAsync(sourceId, messageId, message), (filePath, lineNumber, memberName, message) => TgClientVm.UpdateStateExceptionAsync(filePath, lineNumber, memberName, message),
-            TgClientVm.AfterClientConnectAsync, TgClientVm.GetClientDesktopConfig);
+        TgClient.SetupUpdateStateConnect(TgClientVm.UpdateStateConnectAsync);
+        TgClient.SetupUpdateStateProxy(TgClientVm.UpdateStateProxyAsync);
+        TgClient.SetupUpdateStateSource(TgClientVm.UpdateStateSourceAsync);
+		TgClient.SetupUpdateStateMessage(TgClientVm.UpdateStateMessageAsync);
+        TgClient.SetupUpdateStateException(TgClientVm.UpdateStateExceptionAsync);
+        TgClient.SetupUpdateStateExceptionShort(TgClientVm.UpdateStateExceptionShortAsync);
+        TgClient.SetupAfterClientConnect(TgClientVm.AfterClientConnectAsync);
+        TgClient.SetupGetClientDesktopConfig(TgClientVm.ConfigClientDesktop);
     }
 
     #endregion

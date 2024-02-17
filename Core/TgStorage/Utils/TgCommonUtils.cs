@@ -23,6 +23,8 @@ public static class TgCommonUtils
 
     public static string GetIsReady(bool isReady) => $"{(isReady ? "<Ready>" : "<Not ready>")}";
 
+    public static string GetIsEmpty(bool isReady) => $"{(isReady ? "<Empty>" : "<Not empty>")}";
+
     public static double CalcSourceProgress(long count, long current) =>
         count is 0 ? 0 : (double)(current * 100) / count;
 

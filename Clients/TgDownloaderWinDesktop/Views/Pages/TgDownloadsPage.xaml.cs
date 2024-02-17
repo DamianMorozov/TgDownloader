@@ -1,18 +1,20 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Common;
+namespace TgDownloaderWinDesktop.Views.Pages;
 
 /// <summary>
-/// SQL table interface.
+/// Interaction logic for TgAdvancedView.xaml
 /// </summary>
-public interface ITgSqlTable : ITgCommon
+public partial class TgDownloadsPage
 {
 	#region Public and private fields, properties, constructor
 
-	public Guid Uid { get; set; }
-	public bool IsExists { get; }
-	public bool IsNotExists { get; }
+	public TgDownloadsPage()
+	{
+		TgDesktopUtils.TgDownloadsVm.OnNavigatedTo();
+		InitializeComponent();
+	}
 
-    #endregion
+	#endregion
 }

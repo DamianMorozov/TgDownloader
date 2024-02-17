@@ -96,40 +96,6 @@ public sealed class TgSqlTableAppModel : XPLiteObject, ITgSqlTable
 
     #endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableAppModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		object? apiHash = info.GetValue(nameof(ProxyUid), typeof(Guid));
-		_apiHash = apiHash is Guid apiHash2 ? apiHash2 : this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(ApiHash));
-		_apiId = info.GetInt32(nameof(ApiId));
-		_phoneNumber = info.GetString(nameof(PhoneNumber)) ?? this.GetPropertyDefaultValue(nameof(PhoneNumber));
-		object? proxy = info.GetValue(nameof(ProxyUid), typeof(Guid));
-		_proxyUid = proxy is Guid proxy2 ? proxy2 : this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(ApiHash));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(ApiHash), ApiHash);
-		info.AddValue(nameof(ApiId), ApiId);
-		info.AddValue(nameof(PhoneNumber), PhoneNumber);
-		info.AddValue(nameof(ProxyUid), ProxyUid);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => $"{ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";

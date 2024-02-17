@@ -126,7 +126,7 @@ internal partial class TgMenuHelper
 		//SetupClientProxyCore();
 	}
 
-	private string? GetConsoleConfig(string what)
+	private string? ConfigConsole(string what)
 	{
 		TgSqlTableAppModel appNew = TgSqlUtils.CreateNewApp();
 		TgSqlTableAppModel app = ContextManager.AppRepository.GetFirstAsync().Result;
@@ -177,6 +177,7 @@ internal partial class TgMenuHelper
 			//case "system_lang_code":
 			//case "lang_pack":
 			//case "lang_code":
+			//case "init_params":
 			default:
 				return null;
 		}
@@ -186,7 +187,7 @@ internal partial class TgMenuHelper
 	{
 		if (!TgSqlUtils.GetValidXpLite(ContextManager.AppRepository.GetFirstAsync().GetAwaiter().GetResult()).IsValid)
 			return;
-		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
+		TgClient.ConnectSessionConsole(ConfigConsole, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
 	}
 
 	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
@@ -205,7 +206,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsole(GetConsoleConfig, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
+		TgClient.ConnectSessionConsole(ConfigConsole, ContextManager.AppRepository.GetCurrentProxyAsync().GetAwaiter().GetResult());
 		if (TgClient.ClientException.IsExists || TgClient.ProxyException.IsExists)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

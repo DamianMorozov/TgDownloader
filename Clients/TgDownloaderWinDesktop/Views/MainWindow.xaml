@@ -38,12 +38,14 @@
 			Grid.Row="0"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
-			Icon="pack://application:,,,/Assets/applicationIcon-01-1024.png"
 			UseSnapLayout="True">
+			<!--  Icon="pack://application:,,,/Assets/applicationIcon-191.png"  -->
 			<ui:TitleBar.Header>
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="7*" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="1*" />
 					</Grid.ColumnDefinitions>
 					<ui:Hyperlink
@@ -53,18 +55,43 @@
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
 						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldTgDownloader, Mode=OneWay, IsAsync=True}"
+						Cursor="Hand"
 						NavigateUri="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLinkTgDownloader, Mode=OneWay, IsAsync=True}" />
-					<TextBlock
+					<ui:Button
 						Grid.Column="1"
-						Margin="0,24,0,0"
-						Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionShort, Mode=OneWay, IsAsync=True}"
-						TextAlignment="Center" />
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						Appearance="Light"
+						Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=ChangeThemeCommand, Mode=OneWay, IsAsync=True}"
+						CommandParameter="theme_light"
+						Content="Light"
+						Cursor="Hand"
+						Icon="Lightbulb48" />
+					<ui:Button
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						Appearance="Dark"
+						Command="{Binding Source={x:Static utils:TgDesktopUtils.TgSettingsVm}, Path=ChangeThemeCommand, Mode=OneWay, IsAsync=True}"
+						CommandParameter="theme_dark"
+						Content="Dark"
+						Cursor="Hand"
+						Icon="Lightbulb48" />
+					<ui:Button
+						Grid.Column="3"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						Appearance="Transparent"
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionShort, Mode=OneWay, IsAsync=True}" />
 				</Grid>
 			</ui:TitleBar.Header>
 			<!--<ui:TitleBar.Tray>
 				<ui:NotifyIcon
 					FocusOnLeftClick="True"
-					Icon="pack://application:,,,/Assets/applicationIcon-01-1024.png"
+					Icon="pack://application:,,,/Assets/applicationIcon-191.png"
 					MenuOnRightClick="True"
 					TooltipText="TgDownloaderWinDesktop">
 					<ui:NotifyIcon.Menu>

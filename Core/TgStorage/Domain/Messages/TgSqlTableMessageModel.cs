@@ -112,43 +112,6 @@ public sealed class TgSqlTableMessageModel : XPLiteObject, ITgSqlTable
 
 	#endregion
 
-	#region Public and private methods - ISerializable
-
-	/// <summary>
-	/// Constructor.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public TgSqlTableMessageModel(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-		_sourceId = info.GetInt64(nameof(SourceId));
-		_id = info.GetInt64(nameof(Id));
-		_dtCreated = info.GetDateTime(nameof(DtCreated));
-		object? type = info.GetValue(nameof(Type), typeof(TgEnumMessageType));
-		_type = type is TgEnumMessageType messageType ? messageType : TgEnumMessageType.Message;
-		_size = info.GetInt64(nameof(Size));
-		_message = info.GetString(nameof(Message)) ?? this.GetPropertyDefaultValue(nameof(Message));
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-		info.AddValue(nameof(SourceId), SourceId);
-		info.AddValue(nameof(Id), Id);
-		info.AddValue(nameof(DtCreated), DtCreated);
-		info.AddValue(nameof(Type), Type);
-		info.AddValue(nameof(Size), Size);
-		info.AddValue(nameof(Message), Message);
-	}
-
-	#endregion
-
 	#region Public and private methods
 
 	public override string ToString() => $"{SourceId} | {Id} | {Type} | {Size}";

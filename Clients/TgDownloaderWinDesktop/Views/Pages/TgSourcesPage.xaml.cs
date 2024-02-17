@@ -17,4 +17,22 @@ public partial class TgSourcesPage
 	}
 
 	#endregion
+
+	#region Public and private methods
+
+	private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+	{
+		TgSqlTableSourceViewModel t = e.Item as TgSqlTableSourceViewModel;
+		if (t != null)
+			// If filter is turned on, filter completed items.
+		{
+			//if (this.cbCompleteFilter.IsChecked == true && t.Complete == true)
+			//	e.Accepted = false;
+			//else
+			//	e.Accepted = true;
+			e.Accepted = true;
+		}
+	}
+
+	#endregion
 }

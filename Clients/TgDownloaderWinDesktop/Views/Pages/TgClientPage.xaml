@@ -57,6 +57,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ClientConnectCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientConnect, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Connector24"
 					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsNotReady, Mode=OneWay, IsAsync=True}" />
 				<!--  Button Disconnect  -->
@@ -68,6 +69,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=ClientDisconnectCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuClientDisconnect, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Connector24"
 					IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgClient}, Path=IsReady, Mode=OneWay, IsAsync=True}" />
 				<!--  Link  -->
@@ -131,6 +133,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppLoadCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Load, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="ArrowSync12"
 					IsEnabled="True" />
 				<!--  Save  -->
@@ -142,6 +145,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppSaveCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Save, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Save28"
 					IsEnabled="True" />
 				<!--  Clear  -->
@@ -153,6 +157,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppClearCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Clear, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Recycle32"
 					IsEnabled="True" />
 				<!--  Empty  -->
@@ -164,6 +169,7 @@
 					Appearance="Primary"
 					Command="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=AppEmptyCommand, Mode=OneWay, IsAsync=True}"
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=Empty, Mode=OneWay, IsAsync=True}"
+					Cursor="Hand"
 					Icon="Delete48"
 					IsEnabled="True" />
 			</Grid>

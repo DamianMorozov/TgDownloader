@@ -21,4 +21,5 @@ public enum TgEnumMenuDownload
 	ScanChats,
 	ScanDialogs,
 	ViewSources,
+	MarkHistoryRead,
 }

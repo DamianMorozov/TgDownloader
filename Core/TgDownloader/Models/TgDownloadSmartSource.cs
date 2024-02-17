@@ -3,39 +3,40 @@
 
 namespace TgDownloader.Models;
 
-[DebuggerDisplay("Type = {nameof(TgDownloadSmartSource)}")]
+[DebuggerDisplay("{ToDebugString()}")]
 public class TgDownloadSmartSource
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    public bool IsEmpty { get; set; } = true;
-    private ChatBase? _chatBase;
-    public ChatBase? ChatBase
-    {
-        get => _chatBase;
-        set
-        {
-            _chatBase = value;
-            Type = _chatBase is not null ? TgEnumSourceType.ChatBase : TgEnumSourceType.Default;
-        }
-    }
-    private Channel? _channel;
-    public Channel? Channel
-    {
-        get => _channel;
-        set
-        {
-            _channel = value;
-            Type = _channel is not null ? TgEnumSourceType.Channel : TgEnumSourceType.Default;
-        }
-    }
-    public TgEnumSourceType Type { get; set; }
+	private ChatBase? _chatBase;
+	public ChatBase? ChatBase
+	{
+		get => _chatBase;
+		set
+		{
+			_chatBase = value;
+			Type = _chatBase is not null ? TgEnumSourceType.ChatBase : TgEnumSourceType.Default;
+		}
+	}
+	private Channel? _channel;
+	public Channel? Channel
+	{
+		get => _channel;
+		set
+		{
+			_channel = value;
+			Type = _channel is not null ? TgEnumSourceType.Channel : TgEnumSourceType.Default;
+		}
+	}
+	public TgEnumSourceType Type { get; set; }
+	public string Value => ChatBase is not null ? $"{ChatBase.ID} | {(!string.IsNullOrEmpty(ChatBase.MainUsername) ? ChatBase.MainUsername : ChatBase.Title)}" : 
+		Channel is not null ? $"{Channel.ID} | {(!string.IsNullOrEmpty(Channel.MainUsername) ? Channel.MainUsername : Channel.Title)}" : "";
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public string ToDebugString() => $"{(IsEmpty ? "Is empty" : "Not empty")}";
+	public string ToDebugString() => $"{Value}";
 
-    #endregion
+	#endregion
 }

@@ -37,30 +37,6 @@ public class TgSqlTableEmpty : XPLiteObject, ITgSqlTable
 
     #endregion
 
-    #region Public and private methods - ISerializable
-
-    /// <summary>
-    /// Constructor.
-    /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
-    public TgSqlTableEmpty(SerializationInfo info, StreamingContext context)
-	{
-		_uid = info.GetValue(nameof(Uid), typeof(Guid)) is Guid uid ? uid : Guid.Empty;
-	}
-
-	/// <summary>
-	/// Get object data for serialization info.
-	/// </summary>
-	/// <param name="info"></param>
-	/// <param name="context"></param>
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		info.AddValue(nameof(Uid), Uid);
-    }
-
-    #endregion
-
     #region Public and private methods
 
 	public override string ToString() => $"{Uid}";

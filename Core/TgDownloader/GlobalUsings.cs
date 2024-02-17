@@ -5,6 +5,7 @@ global using System.Diagnostics;
 global using System.Runtime.CompilerServices;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using ProxyLib.Proxy;
+global using TgDownloader.Models;
 global using TgLocalization.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Domain.Apps;

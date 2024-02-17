@@ -33,11 +33,11 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     /// </summary>
     private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
 	{
-        List<TgSqlTableProxyModel> listProxies = proxies.ToList();
-        if (!listProxies.Any()) return;
+        List<TgSqlTableProxyModel> list = proxies.ToList();
+        if (!list.Any()) return;
         ProxiesVms = new();
 
-        proxies = listProxies.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
+        proxies = list.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
         if (proxies.Any())
             foreach (TgSqlTableProxyModel proxy in proxies)
                 ProxiesVms.Add(new(proxy));
