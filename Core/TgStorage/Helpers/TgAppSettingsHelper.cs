@@ -40,8 +40,9 @@ public sealed class TgAppSettingsHelper : ITgHelper
 
 	public void LoadXmlSettings(Encoding? encoding = null)
 	{
-		if (!File.Exists(AppXml.LocalFilePath))
+        if (!File.Exists(TgFileUtils.AppXmlSettings))
 			return;
+		
 		using StreamReader streamReader = new(TgFileUtils.AppXmlSettings, encoding ?? Encoding.Unicode);
 		string xml = streamReader.ReadToEnd();
 		if (!string.IsNullOrEmpty(xml))

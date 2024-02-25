@@ -9,5 +9,6 @@ public enum TgEnumMenuAppSettings
 	Reset,
 	SetFileSession,
 	SetFileStorage,
+	SetTestStorage,
 	SetUseProxy,
 }

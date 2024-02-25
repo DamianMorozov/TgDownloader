@@ -1,0 +1,36 @@
+﻿@page "/apps"
+@inject IDbContextFactory<TgEfContext> DbFactory
+@inherits TgPageComponent
+
+<PageTitle>Apps</PageTitle>
+
+<h1>Apps</h1>
+
+@if (!Apps.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@TgLocale.MenuClientApiHash</th>
+                <th>@TgLocale.MenuClientApiId</th>
+                <th>@TgLocale.MenuClientPhoneNumber</th>
+                <th>@TgLocale.MenuClientProxy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Apps)
+            {
+                <tr>
+                    <td>@app.ApiHash</td>
+                    <td>@app.ApiId</td>
+                    <td>@app.PhoneNumber</td>
+                    @* <td>@app.Proxy.ToDebugString()</td> *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}

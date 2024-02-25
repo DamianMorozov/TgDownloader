@@ -48,11 +48,11 @@ public abstract class TgSqlRepositoryBase<T> : TgCommonBase where T : ITgSqlTabl
             TgSqlEnumTableTopRecords.Top10000 => GetEnumerable(10_000),
             TgSqlEnumTableTopRecords.Top100000 => GetEnumerable(100_000),
             TgSqlEnumTableTopRecords.Top1000000 => GetEnumerable(1_000_000),
-            _ => TgSqlUtils.CreateUnitOfWork().Query<T>().Select(i => i),
+            _ => GetEnumerable(0),
         };
 
     public virtual IEnumerable<T> GetEnumerable(int count) =>
-        TgSqlUtils.CreateUnitOfWork().Query<T>().Select(i => i).Take(count);
+        count > 0 ? TgSqlUtils.CreateUnitOfWork().Query<T>().Select(i => i).Take(count) : TgSqlUtils.CreateUnitOfWork().Query<T>().Select(i => i);
 
     public virtual async Task<T> GetFirstAsync() => 
         await TgSqlUtils.CreateUnitOfWork()
