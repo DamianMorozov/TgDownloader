@@ -1,5 +1,11 @@
 # Screenshots
 
+## [0.4.010] - 2024-02-25
+### TgDownloaderBlazor
+<p align="center"><img src="Assets/v0.4.010/TgDownloaderBlazor_Home.png"></p>
+<p align="center"><img src="Assets/v0.4.010/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/v0.4.010/TgDownloaderBlazor_Proxies.png"></p>
+
 ## [0.3.110] - 2024-02-17
 ### TgDownloaderWinDesktop
 <p align="center"><img src="Assets/v0.3.110/TgDownloaderWinDesktop.png"></p>

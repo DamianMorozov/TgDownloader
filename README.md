@@ -14,7 +14,7 @@ Download files of the Telegram channels or groups you are a member of.
 - [wiz0u](https://github.com/wiz0u) for [WTelegramClient](https://github.com/wiz0u/WTelegramClient) NuGet Package.
 
 ## Install Requirements
-- [Install .NET 7.0](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Install .NET 8](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Register Telegram app](https://my.telegram.org/apps/)
 - Save the values of the "App api_id" and "App api_hash" fields
 
@@ -34,6 +34,10 @@ Please click the `star` button if this tool was helpful to you.
 
 
 ## Actual screenshots
+
+<p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
 
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>

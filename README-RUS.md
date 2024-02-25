@@ -35,6 +35,10 @@
 
 ## Актуальные скриншоты
 
+<p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
+
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
