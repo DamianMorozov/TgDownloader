@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TypeScriptTarget>ES2021</TypeScriptTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TypeScriptTarget>ES2021</TypeScriptTarget>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.4.10.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md" />
+    <None Include="..\..\CHANGELOG.md" Link="CHANGELOG.md" />
+    <None Include="..\..\GUIDE-SETUP-DESKTOP-RUS.md" Link="GUIDE-SETUP-DESKTOP-RUS.md" />
+    <None Include="..\..\GUIDE-SETUP-DESKTOP.md" Link="GUIDE-SETUP-DESKTOP.md" />
+    <None Include="..\..\GUIDE-SETUP-DOCKER-RUS.md" Link="GUIDE-SETUP-DOCKER-RUS.md" />
+    <None Include="..\..\GUIDE-SETUP-DOCKER.md" Link="GUIDE-SETUP-DOCKER.md" />
+    <None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md" />
+    <None Include="..\..\GUIDES.md" Link="GUIDES.md" />
+    <None Include="..\..\ISSUE-RUS.md" Link="ISSUE-RUS.md" />
+    <None Include="..\..\ISSUE.md" Link="ISSUE.md" />
+    <None Include="..\..\LICENSE.md" Link="LICENSE.md" />
+    <None Include="..\..\README-RUS.md" Link="README-RUS.md" />
+    <None Include="..\..\README.md" Link="README.md" />
+    <None Include="..\..\RELEASE.md" Link="RELEASE.md" />
+    <None Include="..\..\RESOURCES-RUS.md" Link="RESOURCES-RUS.md" />
+    <None Include="..\..\RESOURCES.md" Link="RESOURCES.md" />
+    <None Include="..\..\SCREENSHOTS.md" Link="SCREENSHOTS.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Radzen.Blazor" Version="4.25.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\TgEfCore\TgEfCore.csproj" />
+    <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
+    <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Wpf.Ui;
+
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -62,7 +64,7 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
             },
             new NavigationItem
             {
-                Content = TgLocaleHelper.Instance.TableSources,
+                Content = TgLocaleHelper.Instance.MenuMainSources,
                 PageTag = "page_sources",
                 Icon = SymbolRegular.DataBarHorizontal24,
                 PageType = typeof(TgSourcesPage),

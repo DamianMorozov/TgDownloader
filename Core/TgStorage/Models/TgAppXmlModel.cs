@@ -13,8 +13,6 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	[XmlIgnore]
-	public string LocalFilePath => TgFileUtils.AppXmlSettings;
 	[DefaultValue("")]
 	[XmlIgnore]
 	public string Version { get; set; }
@@ -28,7 +26,13 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 	public string FileStorage { get; set; }
 	[XmlIgnore]
 	public bool IsExistsFileStorage => File.Exists(FileStorage);
-	[XmlIgnore] public bool IsReady => IsExistsFileSession && IsExistsFileStorage;
+	[DefaultValue("")]
+	[XmlElement]
+	public string TestStorage { get; set; }
+	[XmlIgnore]
+	public bool IsExistsTestStorage => File.Exists(TestStorage);
+	[XmlIgnore] 
+	public bool IsReady => IsExistsFileSession && IsExistsFileStorage;
 	[DefaultValue(false)]
 	[XmlElement]
 	public bool IsUseProxy { get; set; }
@@ -39,6 +43,7 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 			Version = this.GetPropertyDefaultValue(nameof(Version));
 		FileSession = this.GetPropertyDefaultValue(nameof(FileSession));
 		FileStorage = this.GetPropertyDefaultValue(nameof(FileStorage));
+		TestStorage = this.GetPropertyDefaultValue(nameof(TestStorage));
 		IsUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsUseProxy));
 	}
 
@@ -99,8 +104,23 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 		}
 	}
 
+	/// <summary>
+	/// Set path for test storage.
+	/// </summary>
+	/// <param name="path"></param>
+	public void SetTestStoragePath(string path)
+	{
+		TestStorage = !File.Exists(path) && Directory.Exists(path)
+			? Path.Combine(path, TgFileUtils.Storage)
+			: path;
+		if (!IsExistsTestStorage)
+		{
+			TestStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Storage);
+		}
+	}
+
 	public override string ToString() =>
-		$"{nameof(TgAppXmlModel)} | {FileSession} | {FileStorage} | {IsUseProxy}";
+		$"{nameof(TgAppXmlModel)} | {FileSession} | {FileStorage} | {TestStorage} | {IsUseProxy}";
 
 	#endregion
 }

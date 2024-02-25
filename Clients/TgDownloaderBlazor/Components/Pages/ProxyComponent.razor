@@ -1,0 +1,40 @@
+﻿@page "/proxies"
+@inject IDbContextFactory<TgEfContext> DbFactory
+@inherits TgPageComponent
+
+<PageTitle>Apps</PageTitle>
+
+<h1>Apps</h1>
+
+@if (!Proxies.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@TgLocale.FieldType</th>
+                <th>@TgLocale.FieldHostname</th>
+                <th>@TgLocale.FieldPort</th>
+                <th>@TgLocale.FieldUserName</th>
+                <th>@TgLocale.ProxiesUserPassword</th>
+                <th>@TgLocale.ProxiesUserSecret</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Proxies)
+            {
+                <tr>
+                    <td>@app.Type</td>
+                    <td>@app.HostName</td>
+                    <td>@app.Port</td>
+                    <td>@app.UserName</td>
+                    <td>@app.Password</td>
+                    <td>@app.Secret</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

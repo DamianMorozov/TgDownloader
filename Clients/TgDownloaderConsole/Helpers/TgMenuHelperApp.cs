@@ -20,6 +20,7 @@ internal partial class TgMenuHelper
 					TgLocale.MenuMainReset,
 					TgLocale.MenuAppFileSession,
 					TgLocale.MenuAppFileStorage,
+					TgLocale.MenuAppTestStorage,
 					TgLocale.MenuAppUseProxy
 			));
 		if (prompt.Equals(TgLocale.MenuMainReset))
@@ -28,6 +29,8 @@ internal partial class TgMenuHelper
 			return TgEnumMenuAppSettings.SetFileSession;
 		if (prompt.Equals(TgLocale.MenuAppFileStorage))
 			return TgEnumMenuAppSettings.SetFileStorage;
+		if (prompt.Equals(TgLocale.MenuAppTestStorage))
+			return TgEnumMenuAppSettings.SetTestStorage;
 		if (prompt.Equals(TgLocale.MenuAppUseProxy))
 			return TgEnumMenuAppSettings.SetUseProxy;
 		return TgEnumMenuAppSettings.Return;
@@ -50,6 +53,9 @@ internal partial class TgMenuHelper
 					break;
 				case TgEnumMenuAppSettings.SetFileStorage:
 					SetFileStorage();
+					break;
+				case TgEnumMenuAppSettings.SetTestStorage:
+					SetTestStorage();
 					break;
 				case TgEnumMenuAppSettings.SetUseProxy:
 					SetUseProxy();
@@ -81,6 +87,13 @@ internal partial class TgMenuHelper
 	private void SetFileStorage()
 	{
 		TgAppSettings.AppXml.SetFileStoragePath(AnsiConsole.Ask<string>(
+			TgLog.GetLineStampInfo($"{TgLocale.MenuAppFileStorage}:")));
+		SetFileAppSettings();
+	}
+
+	private void SetTestStorage()
+	{
+		TgAppSettings.AppXml.SetTestStoragePath(AnsiConsole.Ask<string>(
 			TgLog.GetLineStampInfo($"{TgLocale.MenuAppFileStorage}:")));
 		SetFileAppSettings();
 	}

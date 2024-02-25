@@ -23,6 +23,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	public string AppName => "Name";
 	public string AppTitle => "TG-Downloader";
+	public string AppTitleBlazor => "TG-Downloader Blazor";
 	public string AppTitleConsoleShort => "TGDC";
 	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
 	public string AppTitleWinDesktopShort => "TGWD";
@@ -36,6 +37,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string InDevelopment => "In development";
 	public string MenuAppFileSession => "Setting the path to the session file";
 	public string MenuAppFileStorage => "Setting the path to the storage file";
+	public string MenuAppTestStorage => "Setting the path to the test storage file";
 	public string MenuAppUseProxy => "Usage proxy";
 	public string MenuAppUseProxyDisable => "Disable proxy";
 	public string MenuAppUseProxyEnable => "Enable proxy";
@@ -44,6 +46,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuState => "State";
 	public string Messages => "messages";
 	public string ServerMessage => "Server message";
+	public string SqliteDataSource => "Data Source";
 	public string StorageVersion => "Storage version";
 
 	#endregion
@@ -146,6 +149,9 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Main menu
 
+    public string MenuMainApps => "Apps";
+    public string MenuMainProxies => "Proxies";
+    public string MenuMainSources => "Sources";
 	public string MenuMain => "Main menu";
 	public string MenuMainAbout => "About";
 	public string MenuMainAdvanced => "Advanced";
@@ -156,7 +162,6 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuMainExit => "Exit";
 	public string MenuMainFilters => "Filters";
 	public string MenuMainJobs => "Jobs";
-	public string MenuMainProxies => "Proxies";
 	public string MenuMainReset => "Reset";
 	public string MenuMainReturn => "Return";
 	public string MenuMainSettings => "Settings";
@@ -316,17 +321,14 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuStorageDbIsZeroSize(string fileName) => $"Storage is zero size: {fileName}!";
 	public string MenuStorageDeleteExistsInfo(string fileName) => $"Manual delete the file: {fileName}";
 
-	#endregion
-
-	#region Public and private methods
-
-	public string TableSources => "Sources";
-	public string TableSource => "Item source";
-
-	#endregion
+    #endregion
 
 	#region Fields
 
+    public string FieldHostname=> "Host name";
+    public string FieldPort => "Port";
+    public string FieldType => "Type";
+    public string FieldUserName => "Username";
 	public string FieldAbout => "About";
 	public string FieldAll => "All";
 	public string FieldChanged => "Changed";
@@ -353,13 +355,12 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldTitle => "Title";
 	public string FieldUid => "UID";
 	public string FieldUpd => "Upd";
-	public string FieldUserName => "Username";
 
-	#endregion
-	
-	#region Public and private methods
+    #endregion
 
-	public string ActionReloadAllFromStorage => "Reload all from Storage";
+    #region Public and private methods
+
+    public string ActionReloadAllFromStorage => "Reload all from Storage";
 
 	#endregion
 
