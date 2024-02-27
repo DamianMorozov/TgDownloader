@@ -33,11 +33,14 @@
 - [Русскоязычный чат TgDownloader](https://t.me/TgDownloaderChatRus)
 
 
-## Актуальные скриншоты
+## Актуальные скриншоты TgDownloaderBlazor
 
 <p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
+
+## Актуальные скриншоты TgDownloaderWinDesktop
 
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
@@ -45,5 +48,7 @@
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
+
+## Актуальные скриншоты TgDownloaderConsole
 
 <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>

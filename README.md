@@ -33,11 +33,14 @@ Please click the `star` button if this tool was helpful to you.
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
 
 
-## Actual screenshots
+## Actual screenshots TgDownloaderBlazor
 
 <p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
+
+## Actual screenshots TgDownloaderWinDesktop
 
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
@@ -45,5 +48,7 @@ Please click the `star` button if this tool was helpful to you.
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
+
+## Actual screenshots TgDownloaderConsole
 
 <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>

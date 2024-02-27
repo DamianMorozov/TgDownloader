@@ -8,10 +8,29 @@
 - Справочное меню
 - Русская локализация
 
+## [0.4.30] - 2024-02-27
+### Added to TgEfCore
+- Application table support
+- Filter table support
+- Proxy table support
+### Added to TgDownloaderBlazor
+- Homepage
+- Application section
+- Filters section
+- Proxy section
+- Поддержка таблицы приложений
+- Поддержка таблицы фильтров
+- Поддержка таблицы прокси
+### Добавлено в TgDownloaderBlazor
+- Домашняя страница
+- Раздел приложений
+- Раздел фильтров
+- Раздел прокси
+
 ## [0.4.10] - 2024-02-25
-### Added TgDownloaderBlazor приложение (веб приложение)
-### Added TgEfCore библиотека (библиотека доступа к хранилищу)
-### Added TgEfCoreTests (тесты библиотеки доступа к хранилищу)
+- Добавлено приложение TgDownloaderBlazor (веб приложение)
+- Добавлена библиотека TgEfCore (библиотека доступа к хранилищу)
+- Добавлены тесты TgEfCoreTests (тесты библиотеки доступа к хранилищу)
 
 ## [0.3.110] - 2024-02-17
 ### Добавлено в TgDownloaderConsole
