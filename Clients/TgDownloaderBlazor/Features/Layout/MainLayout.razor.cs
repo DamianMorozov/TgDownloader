@@ -1,6 +1,6 @@
-﻿namespace TgDownloaderBlazor.Components.Layout;
+﻿namespace TgDownloaderBlazor.Features.Layout;
 
-public sealed partial class MainLayout
+public sealed partial class MainLayout : LayoutComponentBase
 {
     #region Public and private fields, properties, constructor
 

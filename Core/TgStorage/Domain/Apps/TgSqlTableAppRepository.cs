@@ -21,10 +21,10 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
 
     public TgSqlTableAppModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableAppModel app = isCreateSession
+        TgSqlTableAppModel item = isCreateSession
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        app.PhoneNumber = "+00000000000";
-        return app;
+        item.PhoneNumber = "+00000000000";
+        return item;
     }
 
     public override async Task<bool> DeleteAsync(TgSqlTableAppModel item)

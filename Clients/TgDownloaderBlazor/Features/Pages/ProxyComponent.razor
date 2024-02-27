@@ -2,11 +2,11 @@
 @inject IDbContextFactory<TgEfContext> DbFactory
 @inherits TgPageComponent
 
-<PageTitle>Apps</PageTitle>
+<PageTitle>@TgLocale.MenuMainProxies</PageTitle>
 
-<h1>Apps</h1>
+<h1>@TgLocale.MenuMainProxies</h1>
 
-@if (!Proxies.Any())
+@if (!Items.Any())
 {
     <p><em>Loading...</em></p>
 }
@@ -24,15 +24,15 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var app in Proxies)
+            @foreach (var item in Items)
             {
                 <tr>
-                    <td>@app.Type</td>
-                    <td>@app.HostName</td>
-                    <td>@app.Port</td>
-                    <td>@app.UserName</td>
-                    <td>@app.Password</td>
-                    <td>@app.Secret</td>
+                    <td>@item.Type</td>
+                    <td>@item.HostName</td>
+                    <td>@item.Port</td>
+                    <td>@item.UserName</td>
+                    <td>@item.Password</td>
+                    <td>@item.Secret</td>
                 </tr>
             }
         </tbody>

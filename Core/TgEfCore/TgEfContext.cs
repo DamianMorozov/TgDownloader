@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgEfCore.Domain.Filters;
+
 namespace TgEfCore;
 
 public class TgEfContext : DbContext
@@ -9,11 +11,15 @@ public class TgEfContext : DbContext
 
 	/// <summary> App queries </summary>
 	public DbSet<TgEfAppEntity> Apps { get; set; }
+	/// <summary> Filter queries </summary>
+	public DbSet<TgEfFilterEntity> Filters { get; set; }
 	/// <summary> Proxy queries </summary>
 	public DbSet<TgEfProxyEntity> Proxies { get; set; }
 
 	/// <summary> App repository </summary>
 	public TgEfAppRepository AppsRepo { get; set; }
+    /// <summary> Filter repository </summary>
+    public TgEfFilterRepository FilterRepo { get; set; }
 	/// <summary> Proxy repository </summary>
 	public TgEfProxyRepository ProxyRepo { get; set; }
 
@@ -39,21 +45,22 @@ public class TgEfContext : DbContext
 		Debug.WriteLine($"{nameof(ContextId)} {ContextId}: init repositories");
 #endif
 		AppsRepo = new(this);
+		FilterRepo = new(this);
 		ProxyRepo = new(this);
 	}
 
+#if DEBUG
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 		optionsBuilder
 			//.UseSqlite($"Data Source={TgAppSettings.AppXml.FileStorage}")
-#if DEBUG
 			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}"), LogLevel.Information)
 	        .EnableThreadSafetyChecks()
 	        .EnableDetailedErrors()
 	        .EnableSensitiveDataLogging()
-#endif
-			;
+		;
 	}
+#endif
 
 	// Magic string.
 	//public static readonly string RowVersion = nameof(RowVersion);

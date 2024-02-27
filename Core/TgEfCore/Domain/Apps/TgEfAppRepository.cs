@@ -5,14 +5,30 @@ namespace TgEfCore.Domain.Apps;
 
 [Table(TgSqlConstants.TableApps)]
 public sealed class TgEfAppRepository(TgEfContext context) : TgEfRepositoryBase(context),
-    ITgSqlCreateRepository<TgEfAppEntity>, ITgEfRepository<TgEfAppEntity>
+    ITgEfRepository<TgEfAppEntity>
 {
     #region Public and private methods
 
 
-    public TgEfAppEntity CreateNew(bool isCreateSession)
+    public TgEfAppEntity CreateNew()
     {
-        throw new NotImplementedException();
+        using IDbContextTransaction transaction = Context.Database.BeginTransaction();
+        try
+        {
+            TgEfAppEntity app = new()
+            {
+                PhoneNumber = "+00000000000"
+            };
+            Context.Add(app);
+            Context.SaveChanges();
+            transaction.Commit();
+            return app;
+        }
+        catch (Exception)
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 
     public Task<bool> DeleteAsync(TgEfAppEntity item)

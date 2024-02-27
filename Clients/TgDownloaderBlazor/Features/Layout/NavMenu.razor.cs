@@ -1,4 +1,4 @@
-﻿namespace TgDownloaderBlazor.Components.Layout;
+﻿namespace TgDownloaderBlazor.Features.Layout;
 
 public sealed partial class NavMenu : TgPageComponent
 {

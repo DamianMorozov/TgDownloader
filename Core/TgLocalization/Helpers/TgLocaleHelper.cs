@@ -325,8 +325,14 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Fields
 
+    public string FieldFilterType => "Filter type";
     public string FieldHostname=> "Host name";
+    public string FieldIsEnabled => "Enabled";
+    public string FieldMask => "Mask";
+    public string FieldName => "Name";
     public string FieldPort => "Port";
+    public string FieldSize=> "Size";
+    public string FieldSizeType => "Size type";
     public string FieldType => "Type";
     public string FieldUserName => "Username";
 	public string FieldAbout => "About";

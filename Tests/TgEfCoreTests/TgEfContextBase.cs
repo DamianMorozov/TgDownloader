@@ -7,9 +7,12 @@ internal class TgEfContextBase
 {
 	#region Public and private fields, properties, constructor
 
-	protected TgEfContext DbProdContext { get; set; }
-	protected TgEfContext DbTestContext { get; set; }
+	/// <summary> Memory DB context </summary>
     protected TgEfContext MemoryContext { get; set; }
+    /// <summary> Product DB context </summary>
+    protected TgEfContext DbProdContext { get; set; }
+    /// <summary> Test DB context </summary>
+    protected TgEfContext DbTestContext { get; set; }
 
     public TgEfContextBase()
     {
@@ -32,8 +35,11 @@ internal class TgEfContextBase
 		// Memory context.
 		DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()
 			.UseLoggerFactory(factory)
-			.UseInMemoryDatabase(databaseName: "TgDownloaderMemory");
+            //.UseInMemoryDatabase(databaseName: "TgDownloaderMemory")
+            .UseSqlite("DataSource=:memory:")
+            ;
 		MemoryContext = new(builderMemory.Options);
+        TestContext.WriteLine(MemoryContext.Database.GetConnectionString());
     }
 
 	~TgEfContextBase()

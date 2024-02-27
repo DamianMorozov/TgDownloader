@@ -12,35 +12,41 @@ public sealed class TgEfProxyEntity : TgEfEntityBase
     [DefaultValue(TgEnumProxyType.None)]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnType)]
+    [SQLite.Indexed]
     public TgEnumProxyType Type { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
     [Column(TgSqlConstants.ColumnHostName)]
+    [SQLite.Indexed]
     public string HostName { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnPort)]
+    [SQLite.Indexed]
     public ushort Port { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
     [Column(TgSqlConstants.ColumnUserName)]
+    [SQLite.Indexed]
     public string UserName { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
     [Column(TgSqlConstants.ColumnPassword)]
+    [SQLite.Indexed]
     public string Password { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
     [Column(TgSqlConstants.ColumnSecret)]
+    [SQLite.Indexed]
     public string Secret { get; set; }
 
     public TgEfProxyEntity() : base()

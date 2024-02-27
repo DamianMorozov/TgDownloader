@@ -52,7 +52,6 @@ public sealed class TgSqlTableFilterModel : XPLiteObject, ITgSqlTable
 	private long _size;
 	[DefaultValue(0)]
 	[Persistent(TgSqlConstants.ColumnSize)]
-	[Size(128)]
 	[Indexed]
 	public long Size { get => _size; set => SetPropertyValue(nameof(_size), ref _size, value); }
 	public long SizeAtBytes => SizeType switch

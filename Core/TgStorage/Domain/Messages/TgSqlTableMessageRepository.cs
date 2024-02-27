@@ -21,16 +21,16 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
 
     public TgSqlTableMessageModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableMessageModel message = isCreateSession
+        TgSqlTableMessageModel item = isCreateSession
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        message.Id = 0;
-        message.SourceId = 0;
-        message.DtCreated = DateTime.Now;
-        message.Type = TgEnumMessageType.Message;
-        message.Size = 0;
-        message.Message = string.Empty;
+        item.Id = 0;
+        item.SourceId = 0;
+        item.DtCreated = DateTime.Now;
+        item.Type = TgEnumMessageType.Message;
+        item.Size = 0;
+        item.Message = string.Empty;
 
-        return message;
+        return item;
     }
 
     public override async Task<bool> DeleteAsync(TgSqlTableMessageModel item)

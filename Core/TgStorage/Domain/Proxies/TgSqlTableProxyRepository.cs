@@ -21,15 +21,15 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
 
     public TgSqlTableProxyModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableProxyModel proxy = isCreateSession
+        TgSqlTableProxyModel item = isCreateSession
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        proxy.Type = TgEnumProxyType.None;
-        proxy.HostName = "No proxy";
-        proxy.Port = 404;
-        proxy.UserName = "No user";
-        proxy.Password = "No password";
-        proxy.Secret = string.Empty;
-        return proxy;
+        item.Type = TgEnumProxyType.None;
+        item.HostName = "No proxy";
+        item.Port = 404;
+        item.UserName = "No user";
+        item.Password = "No password";
+        item.Secret = string.Empty;
+        return item;
     }
 
     public override async Task<bool> DeleteAsync(TgSqlTableProxyModel item)

@@ -12,22 +12,26 @@ public sealed class TgEfAppEntity : TgEfEntityBase
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnApiHash)]
+    [SQLite.Indexed]
     public Guid ApiHash { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnApiId)]
+    [SQLite.Indexed]
     public int ApiId { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(16)]
     [Column(TgSqlConstants.ColumnPhoneNumber)]
+    [SQLite.Indexed]
     public string PhoneNumber { get; set; }
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnProxyUid)]
+    [SQLite.Indexed]
     public Guid ProxyUid { get; set; }
 
     public TgEfProxyEntity Proxy { get; set; }

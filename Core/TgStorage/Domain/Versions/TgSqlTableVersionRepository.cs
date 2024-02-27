@@ -21,11 +21,11 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
 
     public TgSqlTableVersionModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableVersionModel version = isCreateSession 
+        TgSqlTableVersionModel item = isCreateSession 
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        version.Version = short.MaxValue;
-        version.Description = "New version";
-        return version;
+        item.Version = short.MaxValue;
+        item.Description = "New version";
+        return item;
     }
 
     public override async Task<bool> DeleteAsync(TgSqlTableVersionModel item)

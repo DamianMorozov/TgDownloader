@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.4.10.0</Version>
+    <Version>0.4.30.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +27,6 @@
   <ItemGroup>
     <Folder Include="Domain\Documents\" />
     <Folder Include="Domain\Downloads\" />
-    <Folder Include="Domain\Filters\" />
     <Folder Include="Domain\Messages\" />
     <Folder Include="Domain\Versions\" />
     <Folder Include="Domain\Sources\" />

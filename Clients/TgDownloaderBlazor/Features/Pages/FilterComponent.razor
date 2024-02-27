@@ -1,0 +1,40 @@
+﻿@page "/filters"
+@inject IDbContextFactory<TgEfContext> DbFactory
+@inherits TgPageComponent
+
+<PageTitle>@TgLocale.MenuMainFilters</PageTitle>
+
+<h1>@TgLocale.MenuMainFilters</h1>
+
+@if (!Items.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@TgLocale.FieldIsEnabled</th>
+                <th>@TgLocale.FieldFilterType</th>
+                <th>@TgLocale.FieldName</th>
+                <th>@TgLocale.FieldMask</th>
+                <th>@TgLocale.FieldSize</th>
+                <th>@TgLocale.FieldSizeType</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Items)
+            {
+                <tr>
+                    <td>@item.IsEnabled</td>
+                    <td>@item.FilterType</td>
+                    <td>@item.Name</td>
+                    <td>@item.Mask</td>
+                    <td>@item.Size</td>
+                    <td>@item.SizeType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

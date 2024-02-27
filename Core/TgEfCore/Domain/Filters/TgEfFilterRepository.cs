@@ -1,27 +1,26 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgEfCore.Domain.Proxies;
+namespace TgEfCore.Domain.Filters;
 
 [Table(TgSqlConstants.TableApps)]
-public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBase(context),
-    ITgEfRepository<TgEfProxyEntity>
+public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBase(context),
+    ITgEfRepository<TgEfFilterEntity>
 {
     #region Public and private methods
 
-    public TgEfProxyEntity CreateNew()
+    public TgEfFilterEntity CreateNew()
     {
         using IDbContextTransaction transaction = Context.Database.BeginTransaction();
         try
         {
-            TgEfProxyEntity item = new()
+            TgEfFilterEntity item = new()
             {
-                Type = TgEnumProxyType.None,
-                HostName = "No proxy",
-                Port = 404,
-                UserName = "No user",
-                Password = "No password",
-                Secret = string.Empty
+                IsEnabled = true,
+                FilterType = TgEnumFilterType.SingleName,
+                Name = "Any",
+                Mask = "*",
+                SizeType = TgEnumFileSizeType.Bytes
             };
             Context.Add(item);
             Context.SaveChanges();
@@ -35,7 +34,7 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
         }
     }
 
-    public Task<bool> DeleteAsync(TgEfProxyEntity item)
+    public Task<bool> DeleteAsync(TgEfFilterEntity item)
     {
         throw new NotImplementedException();
     }
@@ -45,27 +44,27 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
         throw new NotImplementedException();
     }
 
-    public Task<bool> SaveAsync(TgEfProxyEntity item, bool isGetByUid = false)
+    public Task<bool> SaveAsync(TgEfFilterEntity item, bool isGetByUid = false)
     {
         throw new NotImplementedException();
     }
 
-    public Task<TgEfProxyEntity> GetAsync(TgEfProxyEntity item)
+    public Task<TgEfFilterEntity> GetAsync(TgEfFilterEntity item)
     {
         throw new NotImplementedException();
     }
 
-    public Task<TgEfProxyEntity> GetNewAsync()
+    public Task<TgEfFilterEntity> GetNewAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<TgEfProxyEntity> GetFirstAsync()
+    public Task<TgEfFilterEntity> GetFirstAsync()
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<TgEfProxyEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
+    public IEnumerable<TgEfFilterEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
             TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
@@ -76,12 +75,12 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
             _ => GetEnumerable(0),
         };
 
-    public IEnumerable<TgEfProxyEntity> GetEnumerable(int count) =>
-        count > 0 ? Context.Proxies.AsNoTracking().Select(x => x).Take(count) : Context.Proxies.AsNoTracking().Select(x => x);
+    public IEnumerable<TgEfFilterEntity> GetEnumerable(int count) =>
+        count > 0 ? Context.Filters.AsNoTracking().Select(x => x).Take(count) : Context.Filters.AsNoTracking().Select(x => x);
 
-    public TgEfProxyEntity GetSingle(Guid uid) => Context.Proxies.AsNoTracking().Single(x => x.Uid.ToString() == uid.ToString());
+    public TgEfFilterEntity GetSingle(Guid uid) => Context.Filters.AsNoTracking().Single(x => x.Uid.ToString() == uid.ToString());
 
-    public async Task<TgEfProxyEntity> GetSingleAsync(Guid uid) => await Context.Proxies.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
+    public async Task<TgEfFilterEntity> GetSingleAsync(Guid uid) => await Context.Filters.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
 
     #endregion
 }

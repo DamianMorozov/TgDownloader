@@ -5,6 +5,7 @@ namespace TgStorage.Common;
 
 public interface ITgEfRepository<T> : ITgSqlRepository<T> where T : ITgSqlTable, new()
 {
+    public T CreateNew();
 	public T GetSingle(Guid uid);
 	public Task<T> GetSingleAsync(Guid uid);
 }

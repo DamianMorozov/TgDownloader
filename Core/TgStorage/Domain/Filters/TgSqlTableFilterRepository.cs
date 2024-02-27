@@ -21,14 +21,14 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
 
     public TgSqlTableFilterModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableFilterModel source = isCreateSession
+        TgSqlTableFilterModel item = isCreateSession
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        source.IsEnabled = true;
-        source.FilterType = TgEnumFilterType.SingleName;
-        source.Name = "Any";
-        source.Mask = "*";
-        source.SizeType = TgEnumFileSizeType.Bytes;
-        return source;
+        item.IsEnabled = true;
+        item.FilterType = TgEnumFilterType.SingleName;
+        item.Name = "Any";
+        item.Mask = "*";
+        item.SizeType = TgEnumFileSizeType.Bytes;
+        return item;
     }
 
     public override async Task<bool> DeleteAsync(TgSqlTableFilterModel item)

@@ -21,18 +21,18 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
 
     public TgSqlTableSourceModel CreateNew(bool isCreateSession)
     {
-        TgSqlTableSourceModel source = isCreateSession
+        TgSqlTableSourceModel item = isCreateSession
             ? new(TgSqlUtils.CreateUnitOfWork()) : new();
-        source.Id = 1;
-        source.Count = 1;
-        source.About = "Test";
-        source.Directory = TgFileUtils.GetDefaultDirectory();
-        source.DtChanged = DateTime.Now;
-        source.FirstId = 1;
-        source.IsAutoUpdate = false;
-        source.Title = "Test";
-        source.UserName = "Test";
-        return source;
+        item.Id = 1;
+        item.Count = 1;
+        item.About = "Test";
+        item.Directory = TgFileUtils.GetDefaultDirectory();
+        item.DtChanged = DateTime.Now;
+        item.FirstId = 1;
+        item.IsAutoUpdate = false;
+        item.Title = "Test";
+        item.UserName = "Test";
+        return item;
     }
 
     public TgSqlTableSourceModel CreateNew(long id) => new() { Id = id };
