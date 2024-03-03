@@ -4,70 +4,29 @@
 namespace TgEfCore.Domain.Filters;
 
 [Table(TgSqlConstants.TableApps)]
-public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBase(context),
-    ITgEfRepository<TgEfFilterEntity>
+public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBase<TgEfFilterEntity>(context), ITgEfRepository<TgEfFilterEntity>
 {
     #region Public and private methods
 
     public TgEfFilterEntity CreateNew()
     {
-        using IDbContextTransaction transaction = Context.Database.BeginTransaction();
-        try
-        {
-            TgEfFilterEntity item = new()
-            {
-                IsEnabled = true,
-                FilterType = TgEnumFilterType.SingleName,
-                Name = "Any",
-                Mask = "*",
-                SizeType = TgEnumFileSizeType.Bytes
-            };
-            Context.Add(item);
-            Context.SaveChanges();
-            transaction.Commit();
-            return item;
-        }
-        catch (Exception)
-        {
-            transaction.Rollback();
-            throw;
-        }
-    }
-
-    public Task<bool> DeleteAsync(TgEfFilterEntity item)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> DeleteNewAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> SaveAsync(TgEfFilterEntity item, bool isGetByUid = false)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfFilterEntity> GetAsync(TgEfFilterEntity item)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfFilterEntity> GetNewAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfFilterEntity> GetFirstAsync()
-    {
-        throw new NotImplementedException();
+	    TgEfFilterEntity item = new()
+	    {
+		    IsEnabled = true,
+		    FilterType = TgEnumFilterType.SingleName,
+		    Name = "Any",
+		    Mask = "*",
+		    SizeType = TgEnumFileSizeType.Bytes
+	    };
+	    CreateNew(item);
+	    return item;
     }
 
     public IEnumerable<TgEfFilterEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
-            TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
+	        TgSqlEnumTableTopRecords.Top20 => GetEnumerable(20),
+			TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
             TgSqlEnumTableTopRecords.Top1000 => GetEnumerable(1_000),
             TgSqlEnumTableTopRecords.Top10000 => GetEnumerable(10_000),
             TgSqlEnumTableTopRecords.Top100000 => GetEnumerable(100_000),
@@ -82,5 +41,7 @@ public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBa
 
     public async Task<TgEfFilterEntity> GetSingleAsync(Guid uid) => await Context.Filters.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
 
+    public int GetCount() => Context.Filters.AsNoTracking().Count();
+    
     #endregion
 }

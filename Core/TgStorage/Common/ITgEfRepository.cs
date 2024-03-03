@@ -3,9 +3,12 @@
 
 namespace TgStorage.Common;
 
-public interface ITgEfRepository<T> : ITgSqlRepository<T> where T : ITgSqlTable, new()
+public interface ITgEfRepository<TEntity> where TEntity : ITgSqlTable, new()
 {
-    public T CreateNew();
-	public T GetSingle(Guid uid);
-	public Task<T> GetSingleAsync(Guid uid);
+	public TEntity CreateNew();
+	public IEnumerable<TEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All);
+	public IEnumerable<TEntity> GetEnumerable(int count);
+	public TEntity GetSingle(Guid uid);
+	public Task<TEntity> GetSingleAsync(Guid uid);
+    public int GetCount();
 }

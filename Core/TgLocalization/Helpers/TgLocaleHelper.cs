@@ -30,6 +30,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
 	public string Exception => "Exception";
+	public string FoundRows => "Found rows";
 	public string From => "from";
 	public string HomeLoadAllFromXml => "Load all from XML";
 	public string HomeResetToDefault => "Reset to default";
@@ -152,6 +153,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
     public string MenuMainApps => "Apps";
     public string MenuMainProxies => "Proxies";
     public string MenuMainSources => "Sources";
+    public string MenuMainVersions => "Versions";
 	public string MenuMain => "Main menu";
 	public string MenuMainAbout => "About";
 	public string MenuMainAdvanced => "Advanced";
@@ -325,6 +327,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Fields
 
+    public string FieldDescription => "Description";
     public string FieldFilterType => "Filter type";
     public string FieldHostname=> "Host name";
     public string FieldIsEnabled => "Enabled";
@@ -335,6 +338,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
     public string FieldSizeType => "Size type";
     public string FieldType => "Type";
     public string FieldUserName => "Username";
+    public string FieldVersion => "Version";
 	public string FieldAbout => "About";
 	public string FieldAll => "All";
 	public string FieldChanged => "Changed";

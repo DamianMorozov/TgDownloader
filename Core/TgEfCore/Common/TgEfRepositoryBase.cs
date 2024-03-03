@@ -4,11 +4,32 @@
 namespace TgEfCore.Common;
 
 [Table(TgSqlConstants.TableApps)]
-public class TgEfRepositoryBase(TgEfContext context) : TgCommonBase
+public abstract class TgEfRepositoryBase<TEntity>(TgEfContext context) : TgCommonBase where TEntity : ITgSqlTable, new()
 {
     #region Public and private fields, properties, constructor
 
-    protected TgEfContext Context { get; private set; } = context;
+    protected TgEfContext Context { get; } = context;
 
-    #endregion
+	#endregion
+
+	#region Public and private methods
+
+	public TEntity CreateNew(TEntity item)
+	{
+		using IDbContextTransaction transaction = Context.Database.BeginTransaction();
+		try
+		{
+			Context.Add(item);
+			Context.SaveChanges();
+			transaction.Commit();
+			return item;
+		}
+		catch (Exception)
+		{
+			transaction.Rollback();
+			throw;
+		}
+	}
+
+	#endregion
 }

@@ -13,13 +13,28 @@ public abstract class TgEfEntityBase : ITgSqlTable
     [Required]
     [Column(TgSqlConstants.ColumnUid)]
     public Guid Uid { get; set; }
+    [NotMapped]
+    public string UidString
+    {
+		get => Uid.ToString();
+		set => Uid = Guid.TryParse(value, out Guid uid) ? uid : Guid.Empty;
+    }
 
     [NotMapped]
 	public bool IsNotExists => Equals(Uid, Guid.Empty);
 	[NotMapped]
 	public bool IsExists => !IsNotExists;
 
-    protected TgEfEntityBase()
+	[NotMapped]
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	[JsonPropertyName("@odata.etag")]
+	public string ETag
+	{
+		get;
+		set;
+	}
+
+	protected TgEfEntityBase()
     {
         Uid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(Uid));
     }

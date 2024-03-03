@@ -6,9 +6,10 @@ namespace TgStorage.Common;
 public enum TgSqlEnumTableTopRecords
 {
 	All = 0,
-	Top200 = 1,
-	Top1000 = 2,
-	Top10000 = 3,
-	Top100000 = 4,
-	Top1000000 = 5,
+	Top20 = 1,
+	Top200 = 2,
+	Top1000 = 3,
+	Top10000 = 4,
+	Top100000 = 5,
+	Top1000000 = 6,
 }

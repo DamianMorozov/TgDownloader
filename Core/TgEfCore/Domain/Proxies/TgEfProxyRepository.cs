@@ -3,72 +3,30 @@
 
 namespace TgEfCore.Domain.Proxies;
 
-[Table(TgSqlConstants.TableApps)]
-public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBase(context),
-    ITgEfRepository<TgEfProxyEntity>
+public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBase<TgEfProxyEntity>(context), ITgEfRepository<TgEfProxyEntity>
 {
     #region Public and private methods
 
     public TgEfProxyEntity CreateNew()
     {
-        using IDbContextTransaction transaction = Context.Database.BeginTransaction();
-        try
-        {
-            TgEfProxyEntity item = new()
-            {
-                Type = TgEnumProxyType.None,
-                HostName = "No proxy",
-                Port = 404,
-                UserName = "No user",
-                Password = "No password",
-                Secret = string.Empty
-            };
-            Context.Add(item);
-            Context.SaveChanges();
-            transaction.Commit();
-            return item;
-        }
-        catch (Exception)
-        {
-            transaction.Rollback();
-            throw;
-        }
-    }
-
-    public Task<bool> DeleteAsync(TgEfProxyEntity item)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> DeleteNewAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> SaveAsync(TgEfProxyEntity item, bool isGetByUid = false)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfProxyEntity> GetAsync(TgEfProxyEntity item)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfProxyEntity> GetNewAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<TgEfProxyEntity> GetFirstAsync()
-    {
-        throw new NotImplementedException();
+	    TgEfProxyEntity item = new()
+	    {
+		    Type = TgEnumProxyType.None,
+		    HostName = "No proxy",
+		    Port = 404,
+		    UserName = "No user",
+		    Password = "No password",
+		    Secret = string.Empty
+	    };
+	    CreateNew(item);
+	    return item;
     }
 
     public IEnumerable<TgEfProxyEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
-            TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
+	        TgSqlEnumTableTopRecords.Top20 => GetEnumerable(20),
+			TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
             TgSqlEnumTableTopRecords.Top1000 => GetEnumerable(1_000),
             TgSqlEnumTableTopRecords.Top10000 => GetEnumerable(10_000),
             TgSqlEnumTableTopRecords.Top100000 => GetEnumerable(100_000),
@@ -81,7 +39,10 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
 
     public TgEfProxyEntity GetSingle(Guid uid) => Context.Proxies.AsNoTracking().Single(x => x.Uid.ToString() == uid.ToString());
 
-    public async Task<TgEfProxyEntity> GetSingleAsync(Guid uid) => await Context.Proxies.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
+    public async Task<TgEfProxyEntity> GetSingleAsync(Guid uid) => 
+        await Context.Proxies.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
+
+    public int GetCount() => Context.Proxies.AsNoTracking().Count();
 
     #endregion
 }

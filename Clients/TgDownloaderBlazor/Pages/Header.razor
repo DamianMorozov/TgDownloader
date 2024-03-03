@@ -1,0 +1,10 @@
+﻿@page "/Header"
+@inherits RadzenHeader
+
+<div class="rz-p-12 rz-text-align-center">
+	<RadzenLink Style="margin: 10px; 0px; 10px; 0px;" Target="_blank" class="rz-ripple"
+	            Path="@TgLocaleHelper.Instance.FieldLinkTgDownloader" Text="@TgLocaleHelper.Instance.FieldTgDownloader" />
+</div>
+<div class="rz-color-success-dark rz-ripple rz-text-align-center rz-p-12">
+	<RadzenButton Disabled="true" Text="@AppUtils.AppVersionShort"></RadzenButton>
+</div>

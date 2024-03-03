@@ -13,7 +13,7 @@ internal class TgStorageHelperGetEnumerableTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-            IEnumerable<TgSqlTableAppModel> items = TgStorageTestsUtils.AppRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
+            IEnumerable<TgSqlTableAppModel> items = TgStorageTestsUtils.AppRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top20);
 			foreach (TgSqlTableAppModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -26,7 +26,7 @@ internal class TgStorageHelperGetEnumerableTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			IEnumerable<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DocumentRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableDocumentModel> items = TgStorageTestsUtils.DocumentRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top20);
 			foreach (TgSqlTableDocumentModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -39,7 +39,7 @@ internal class TgStorageHelperGetEnumerableTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			IEnumerable<TgSqlTableFilterModel> items = TgStorageTestsUtils.FilterRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableFilterModel> items = TgStorageTestsUtils.FilterRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top20);
 			foreach (TgSqlTableFilterModel item in items)
 			{
 				TestContext.WriteLine(item);
@@ -52,7 +52,7 @@ internal class TgStorageHelperGetEnumerableTests
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			IEnumerable<TgSqlTableProxyModel> items = TgStorageTestsUtils.ProxyRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top200);
+			IEnumerable<TgSqlTableProxyModel> items = TgStorageTestsUtils.ProxyRepository.GetEnumerable(TgSqlEnumTableTopRecords.Top20);
 			foreach (TgSqlTableProxyModel item in items)
 			{
 				TestContext.WriteLine(item);

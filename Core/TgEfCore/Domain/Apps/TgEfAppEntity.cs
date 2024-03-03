@@ -14,8 +14,14 @@ public sealed class TgEfAppEntity : TgEfEntityBase
     [Column(TgSqlConstants.ColumnApiHash)]
     [SQLite.Indexed]
     public Guid ApiHash { get; set; }
+    [NotMapped]
+    public string ApiHashString
+	{
+	    get => ApiHash.ToString();
+	    set => ApiHash = Guid.TryParse(value, out Guid apiHash) ? apiHash : Guid.Empty;
+    }
 
-    [DefaultValue(0)]
+	[DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgSqlConstants.ColumnApiId)]
     [SQLite.Indexed]
@@ -33,8 +39,14 @@ public sealed class TgEfAppEntity : TgEfEntityBase
     [Column(TgSqlConstants.ColumnProxyUid)]
     [SQLite.Indexed]
     public Guid ProxyUid { get; set; }
+	[NotMapped]
+	public string ProxyUidString
+	{
+		get => ProxyUid.ToString();
+		set => ProxyUid = Guid.TryParse(value, out Guid proxyUid) ? proxyUid : Guid.Empty;
+	}
 
-    public TgEfProxyEntity Proxy { get; set; }
+	public TgEfProxyEntity? Proxy { get; set; }
 
     public TgEfAppEntity() : base()
     {

@@ -1,0 +1,21 @@
+﻿@page "/versions"
+@inherits TgDownloaderBlazor.Common.TgPageComponentEnumerable<TgEfVersionEntity>
+
+<PageTitle>@TgLocale.MenuMainVersions</PageTitle>
+
+<h1>@TgLocale.MenuMainVersions</h1>
+
+@if (IsLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
+	<RadzenDataGrid Data="@Items" TItem="TgEfVersionEntity">
+		<Columns>
+			<RadzenDataGridColumn TItem="TgEfVersionEntity" Property="Version" Title="@TgLocale.FieldVersion"  />
+			<RadzenDataGridColumn TItem="TgEfVersionEntity" Property="Description" Title="@TgLocale.FieldDescription" />
+		</Columns>
+	</RadzenDataGrid>
+}

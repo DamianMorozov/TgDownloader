@@ -29,22 +29,18 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 	[Indexed]
 	public long Id { get => _id; set => SetPropertyValue(nameof(_id), ref _id, value); }
 
-	private DateTime _dtChanged;
-	[DefaultValue("0001-01-01 00:00:00")]
-	[Persistent(TgSqlConstants.ColumnDtChanged)]
-	[Indexed]
-	public DateTime DtChanged { get => _dtChanged; set => SetPropertyValue(nameof(_dtChanged), ref _dtChanged, value); }
-
 	private string _userName;
 	[DefaultValue("")]
 	[Persistent(TgSqlConstants.ColumnUserName)]
-	[Indexed]
+    [Size(256)]
+    [Indexed]
 	public string UserName { get => _userName; set => SetPropertyValue(nameof(_userName), ref _userName, value); }
 
 	private string _title;
 	[DefaultValue("")]
 	[Persistent(TgSqlConstants.ColumnTitle)]
-	[Indexed]
+    [Size(1024)]
+    [Indexed]
 	public string Title { get => _title; set => SetPropertyValue(nameof(_title), ref _title, value); }
 
 	private string _about;
@@ -54,7 +50,7 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 	public string About { get => _about; set => SetPropertyValue(nameof(_about), ref _about, value); }
 
 	private int _count;
-	[DefaultValue("")]
+	[DefaultValue(0)]
 	[Persistent(TgSqlConstants.ColumnCount)]
 	[Indexed]
 	public int Count { get => _count; set => SetPropertyValue(nameof(_count), ref _count, value); }
@@ -62,7 +58,8 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 	private string _directory;
 	[DefaultValue("")]
 	[Persistent(TgSqlConstants.ColumnDirectory)]
-	[Indexed]
+    [Size(1024)]
+    [Indexed]
 	public string Directory { get => _directory; set => SetPropertyValue(nameof(_directory), ref _directory, value); }
 
 	private int _firstId;
@@ -77,14 +74,19 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 	[Indexed]
 	public bool IsAutoUpdate { get => _isAutoUpdate; set => SetPropertyValue(nameof(_isAutoUpdate), ref _isAutoUpdate, value); }
 
+    private DateTime _dtChanged;
+    [DefaultValue("0001-01-01 00:00:00")]
+    [Persistent(TgSqlConstants.ColumnDtChanged)]
+    [Indexed]
+    public DateTime DtChanged { get => _dtChanged; set => SetPropertyValue(nameof(_dtChanged), ref _dtChanged, value); }
+
 	/// <summary>
-	/// Default constructor.
-	/// </summary>
-	public TgSqlTableSourceModel()
+    /// Default constructor.
+    /// </summary>
+    public TgSqlTableSourceModel()
 	{
 		_uid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(Uid));
 		_id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-		_dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
 		_userName = this.GetPropertyDefaultValue(nameof(UserName));
 		_title = this.GetPropertyDefaultValue(nameof(Title));
 		_about = this.GetPropertyDefaultValue(nameof(About));
@@ -92,6 +94,7 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 		_directory = this.GetPropertyDefaultValue(nameof(Directory));
 		_firstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
 		_isAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
+        _dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
 	}
 
     /// <summary>
@@ -102,7 +105,6 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 	{
 		_uid = this.GetPropertyDefaultValueAsGeneric<Guid>(nameof(Uid));
 		_id = this.GetPropertyDefaultValueAsGeneric<long>(nameof(Id));
-		_dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
 		_userName = this.GetPropertyDefaultValue(nameof(UserName));
 		_title = this.GetPropertyDefaultValue(nameof(Title));
 		_about = this.GetPropertyDefaultValue(nameof(About));
@@ -110,6 +112,7 @@ public sealed class TgSqlTableSourceModel : XPLiteObject, ITgSqlTable
 		_directory = this.GetPropertyDefaultValue(nameof(Directory));
 		_firstId = this.GetPropertyDefaultValueAsGeneric<int>(nameof(FirstId));
 		_isAutoUpdate = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsAutoUpdate));
+        _dtChanged = this.GetPropertyDefaultValueAsGeneric<DateTime>(nameof(DtChanged));
 	}
 
     public void Fill(TgSqlTableSourceModel item, Guid? uid = null)

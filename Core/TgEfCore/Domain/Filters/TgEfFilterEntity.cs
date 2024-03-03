@@ -64,8 +64,8 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
     public override string ToDebugString() => FilterType switch
     {
         TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
-        $"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
-        _ => $"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
+        $"{base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
+        _ => $"{base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
     };
 
     private string GetStringForFilterType() => FilterType switch

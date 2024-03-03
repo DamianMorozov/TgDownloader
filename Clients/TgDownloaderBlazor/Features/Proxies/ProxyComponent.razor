@@ -1,0 +1,25 @@
+﻿@page "/proxies"
+@inherits TgPageComponentEnumerable<TgEfProxyEntity>
+
+<PageTitle>@TgLocale.MenuMainProxies</PageTitle>
+
+<h1>@TgLocale.MenuMainProxies</h1>
+
+@if (IsLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
+	<RadzenDataGrid Data="@Items" TItem="TgEfProxyEntity">
+		<Columns>
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Type" Title="@TgLocale.FieldType"  />
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="HostName" Title="@TgLocale.FieldHostname" />
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Port" Title="@TgLocale.FieldPort" />
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="UserName" Title="@TgLocale.FieldUserName" />
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Password" Title="@TgLocale.ProxiesUserPassword" />
+			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Secret" Title="@TgLocale.ProxiesUserSecret" />
+		</Columns>
+	</RadzenDataGrid>
+}

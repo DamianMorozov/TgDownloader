@@ -43,7 +43,8 @@ public abstract class TgSqlRepositoryBase<T> : TgCommonBase where T : ITgSqlTabl
     public virtual IEnumerable<T> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
-            TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
+	        TgSqlEnumTableTopRecords.Top20 => GetEnumerable(20),
+			TgSqlEnumTableTopRecords.Top200 => GetEnumerable(200),
             TgSqlEnumTableTopRecords.Top1000 => GetEnumerable(1_000),
             TgSqlEnumTableTopRecords.Top10000 => GetEnumerable(10_000),
             TgSqlEnumTableTopRecords.Top100000 => GetEnumerable(100_000),

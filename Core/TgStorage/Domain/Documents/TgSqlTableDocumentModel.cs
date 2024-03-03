@@ -117,7 +117,8 @@ public sealed class TgSqlTableDocumentModel : XPLiteObject, ITgSqlTable
 
 	public override string ToString() => $"{SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
-	public string ToDebugString() => $"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
+	public string ToDebugString() => 
+		$"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
     public override int GetHashCode()
     {

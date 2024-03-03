@@ -41,7 +41,7 @@ public sealed class TgSqlTableMessageModel : XPLiteObject, ITgSqlTable
 	public DateTime DtCreated { get => _dtCreated; set => SetPropertyValue(nameof(_dtCreated), ref _dtCreated, value); }
 
 	private TgEnumMessageType _type;
-	[DefaultValue("")]
+	[DefaultValue(0)]
 	[Persistent(TgSqlConstants.ColumnType)]
 	[Indexed]
 	public TgEnumMessageType Type { get => _type; set => SetPropertyValue(nameof(_type), ref _type, value); }
@@ -116,7 +116,8 @@ public sealed class TgSqlTableMessageModel : XPLiteObject, ITgSqlTable
 
 	public override string ToString() => $"{SourceId} | {Id} | {Type} | {Size}";
 
-	public string ToDebugString() => $"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
+	public string ToDebugString() => 
+		$"{TgCommonUtils.GetIsExists(IsExists)} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
 
     public override int GetHashCode()
     {
