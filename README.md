@@ -39,6 +39,8 @@ Please click the `star` button if this tool was helpful to you.
 <p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Sources.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Versions.png"></p>
 
 ## Actual screenshots TgDownloaderWinDesktop
 

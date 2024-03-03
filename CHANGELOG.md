@@ -8,30 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.4.30] - 2024-02-27
-### Added to TgEfCore
-- Application table support
-- Filter table support
-- Proxy table support
-### Added to TgDownloaderBlazor
-- Homepage
-- Application section
-- Filter section
-- Proxy section
-
-## [0.4.10] - 2024-02-25
+## [0.4.100] - 2024-03-03
+## Added projects
 - Added TgDownloaderBlazor app (web app)
 - Added TgEfCore library (EF Core storage access library)
 - Added TgEfCoreTests (EF Core storage access tests)
+### Added into TgEfCore
+- Application table support
+- Document table support
+- Filter table support
+- Message table support
+- Proxy table support
+- Source table support
+- Version table support
+### Added into TgDownloaderBlazor
+- Home page
+- Application page
+- Filter page
+- Proxy page
+- Source page
+- Version page
+- RadzenDataGrid for tables
 
 ## [0.3.110] - 2024-02-17
-### Added in TgDownloaderConsole
+### Added into TgDownloaderConsole
 - Progressbar for downloading current file
 - Mark all messages as read
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Progressbar for downloading current file
 - Mark all messages as read
-### Changed in TgDownloaderWinDesktop
+### Changed into TgDownloaderWinDesktop
 - UI
 
 ## [0.3.20] - 2023-12-17
@@ -42,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - NET 8 version updated
 - Updated version of NuGet packages
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Copying fields in the source
 
 ## [0.2.580] - 2023-11-10
@@ -50,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Issue template](ISSUE.md)
 
 ## [0.2.570] - 2023-11-09
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Auto update progress when downloading to the source page
 ### Fixed in TgDownloaderConsole
 - Downloading a source that is not yet in the source table
@@ -73,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Creating a new storage
 
 ## [0.2.480] - 2023-11-01
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Add new proxy
 - Edit proxy
 - Return to proxies section
@@ -84,11 +90,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.460] - 2023-10-29
 ### Fixed in TgDownloaderConsole
 - Refactoring and tests
-### Added in TgDownloaderConsole
+### Added into TgDownloaderConsole
 - The progress of the download in the console title
 ### Fixed in TgDownloaderWinDesktop
 - Refactoring and tests
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Connecting a client via proxy
 - Disconnecting a client via proxy
 - Saving settings
@@ -101,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed errors with file TgDownloader.session
 ### Fixed in Tests
 - Fixed errors in tests
-### Added in TgDownloaderWinDesktop
+### Added into TgDownloaderWinDesktop
 - Edit app settings
 - View/edit client settings
 - Client
@@ -123,7 +129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-update after configuring the download directory
 ### Added
 - TgDownloaderWinDesktop project (WPF UI - Fluent Navigation (MVVM | DI))
-### Added in TgDownloaderConsole
+### Added into TgDownloaderConsole
 - Menu Advanced -> Auto view events
 - Auto-update last message ID at Advanced -> Auto view events
 
