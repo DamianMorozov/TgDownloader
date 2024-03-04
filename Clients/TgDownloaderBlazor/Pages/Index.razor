@@ -3,10 +3,49 @@
 
 <PageTitle>@TgLocale.AppTitleBlazor</PageTitle>
 
-<h1>@AppUtils.AppVersionTitle</h1>
-
-@* 
-	<p role="status">Current count: @currentCount</p>
-	<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-	<RadzenButton Click="ButtonIncrement" Text="Click me"></RadzenButton> 
-*@
+<RadzenStack>
+	@* Buttons *@
+	<RadzenRow AlignItems="AlignItems.Center">
+		<RadzenColumn Size="12" SizeMD="6">
+			<RadzenButton style="width: 100%; " Icon="refresh" Click="ResetToDefault" Text="@TgLocale.HomeResetToDefault"></RadzenButton>
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="6">
+			<RadzenButton style="width: 100%; " Icon="save" Click="SaveToXml" Text="@TgLocale.HomeSaveToXml"></RadzenButton>
+		</RadzenColumn>
+	</RadzenRow>
+	@* Titles *@
+	<RadzenRow AlignItems="AlignItems.Center">
+		<RadzenColumn Size="12" SizeMD="2">
+			<RadzenText Text="@TgLocale.SettingName" TextStyle="TextStyle.DisplayH6" style="margin: 0"/>
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="1">
+			<RadzenText Text="@TgLocale.SettingCheck" TextStyle="TextStyle.DisplayH6" style="margin: 0" />
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="9">
+			<RadzenText Text="@TgLocale.SettingValue" TextStyle="TextStyle.DisplayH6" style="margin: 0" />
+		</RadzenColumn>
+	</RadzenRow>
+	@* Values *@
+	<RadzenRow AlignItems="AlignItems.Center">
+		<RadzenColumn Size="12" SizeMD="2">
+			<RadzenText Text="@TgLocale.FileSession" TextStyle="TextStyle.Body1" style="margin: 0" />
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="1">
+			<RadzenCheckBox Value="@TgAppSettings.AppXml.IsExistsFileSession" Disabled="true"/>
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="9">
+			<RadzenTextBox @bind-Value="@TgAppSettings.AppXml.FileSession" style="width: 100%; " />
+		</RadzenColumn>
+	</RadzenRow>
+	<RadzenRow AlignItems="AlignItems.Center">
+		<RadzenColumn Size="12" SizeMD="2">
+			<RadzenText Text="@TgLocale.FileStorage" TextStyle="TextStyle.Body1" style="margin: 0" />
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="1">
+			<RadzenCheckBox Value="@TgAppSettings.AppXml.IsExistsFileStorage" Disabled="true"/>
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="9">
+			<RadzenTextBox @bind-Value="@TgAppSettings.AppXml.FileStorage" style="width: 100%; " />
+		</RadzenColumn>
+	</RadzenRow>
+</RadzenStack>
