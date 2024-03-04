@@ -4,6 +4,17 @@
 ## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
 
 - GitHub all releases       	![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+- GitHub release v0.4.100		![GitHub release v0.4.100](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.4.100/total?style=social)
+- GitHub release v0.4.030		![GitHub release v0.4.030](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.4.030/total?style=social)
+- GitHub release v0.4.010		![GitHub release v0.4.010](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.4.010/total?style=social)
+- GitHub release v0.3.110		![GitHub release v0.3.110](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.3.110/total?style=social)
+- GitHub release v0.3.010		![GitHub release v0.3.010](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.3.010/total?style=social)
+- GitHub release v0.2.570		![GitHub release v0.2.570](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.570/total?style=social)
+- GitHub release v0.2.550		![GitHub release v0.2.550](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.550/total?style=social)
+- GitHub release v0.2.540		![GitHub release v0.2.540](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.540/total?style=social)
+- GitHub release v0.2.490		![GitHub release v0.2.490](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.490/total?style=social)
+- GitHub release v0.2.480		![GitHub release v0.2.480](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.480/total?style=social)
+- GitHub release v0.2.460		![GitHub release v0.2.460](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.460/total?style=social)
 - GitHub release v0.2.300		![GitHub release v0.2.300](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.300/total?style=social)
 - GitHub release v0.2.270		![GitHub release v0.2.270](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.270/total?style=social)
 - GitHub release v0.2.230		![GitHub release v0.2.230](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.2.230/total?style=social)

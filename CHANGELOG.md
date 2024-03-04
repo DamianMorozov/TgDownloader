@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.4.100] - 2024-03-03
+## [0.4.110] - 2024-03-04
 ## Added projects
 - Added TgDownloaderBlazor app (web app)
 - Added TgEfCore library (EF Core storage access library)
