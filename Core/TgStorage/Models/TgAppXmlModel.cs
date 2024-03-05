@@ -25,7 +25,7 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 	[XmlElement]
 	public string FileStorage { get; set; }
 	[XmlIgnore]
-	public bool IsExistsFileStorage => File.Exists(FileStorage);
+	public bool IsExistsFileStorage => File.Exists(FileStorage) && new FileInfo(FileStorage).Length > 0;
 	[DefaultValue("")]
 	[XmlElement]
 	public string TestStorage { get; set; }

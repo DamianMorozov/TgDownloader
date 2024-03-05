@@ -15,10 +15,18 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 
 	protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+	    await base.OnInitializedAsync();
+	    if (!IsLoading)
+		    return;
 
-		await using var dbContext = await DbFactory.CreateDbContextAsync();
-		Items = dbContext.SourceRepo.GetEnumerable(0).OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
+	    await using var dbContext = await DbFactory.CreateDbContextAsync();
+	    if (!AppSettings.AppXml.IsExistsFileStorage)
+	    {
+		    IsLoading = false;
+		    return;
+	    }
+
+	    Items = dbContext.SourceRepo.GetEnumerable(0).OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
         ItemsCount = dbContext.SourceRepo.GetCount();
 
         IsLoading = false;

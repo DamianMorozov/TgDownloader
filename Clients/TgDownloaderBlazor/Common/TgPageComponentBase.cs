@@ -15,8 +15,9 @@ public abstract class TgPageComponentBase : ComponentBase
     [Inject] protected NotificationService NotificationService { get; set; } = default!;
     [Inject] public IDbContextFactory<TgEfContext> DbFactory { get; set; } = default!;
 
-    protected virtual TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    protected virtual bool IsLoading { get; set; } = true;
+    protected TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+    protected TgAppSettingsHelper AppSettings => TgAppSettingsHelper.Instance;
+	protected virtual bool IsLoading { get; set; } = true;
 
     #endregion
 }

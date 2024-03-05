@@ -15,10 +15,18 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+	    await base.OnInitializedAsync();
+	    if (!IsLoading)
+		    return;
 
-        await using var dbContext = await DbFactory.CreateDbContextAsync();
-        Items = dbContext.FilterRepo.GetEnumerable(0).ToList();
+	    await using var dbContext = await DbFactory.CreateDbContextAsync();
+	    if (!AppSettings.AppXml.IsExistsFileStorage)
+	    {
+		    IsLoading = false;
+		    return;
+	    }
+
+		Items = dbContext.FilterRepo.GetEnumerable(0).ToList();
         ItemsCount = dbContext.FilterRepo.GetCount();
 
         IsLoading = false;

@@ -77,7 +77,7 @@ bool Setup()
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
 	// Storage.
-	if (!contextManager.IsExistsDb)
+	if (!tgAppSettings.AppXml.IsExistsFileStorage)
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))

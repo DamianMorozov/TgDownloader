@@ -47,14 +47,11 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 
     public bool IsNotReady => !IsReady;
 
-    public bool IsExistsDb => File.Exists(TgAppSettings.AppXml.FileStorage);
-
-
     #endregion
 
     #region Public and private methods
 
-    public string ToDebugString() => $"{TgCommonUtils.GetIsExistsDb(IsExistsDb)} | {TgCommonUtils.GetIsReady(IsReady)}";
+    public string ToDebugString() => $"{TgCommonUtils.GetIsReady(IsReady)}";
 
     public (bool IsSuccess, string FileName) BackupDb()
 	{

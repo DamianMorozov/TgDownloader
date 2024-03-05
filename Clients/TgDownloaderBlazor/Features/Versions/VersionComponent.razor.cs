@@ -15,10 +15,18 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 
 	protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+	    await base.OnInitializedAsync();
+	    if (!IsLoading)
+		    return;
 
-		await using var dbContext = await DbFactory.CreateDbContextAsync();
-		Items = dbContext.VersionRepo.GetEnumerable(0).OrderByDescending(x => x.Version).ToList();
+	    await using var dbContext = await DbFactory.CreateDbContextAsync();
+	    if (!AppSettings.AppXml.IsExistsFileStorage)
+	    {
+		    IsLoading = false;
+		    return;
+	    }
+
+	    Items = dbContext.VersionRepo.GetEnumerable(0).OrderByDescending(x => x.Version).ToList();
         ItemsCount = dbContext.VersionRepo.GetCount();
 
         IsLoading = false;

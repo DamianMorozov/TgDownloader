@@ -16,10 +16,17 @@ public sealed partial class AppComponent : TgPageComponentEnumerable<TgEfAppEnti
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (!IsLoading) return;
+        if (!IsLoading)
+	        return;
 
-        await using var dbContext = await DbFactory.CreateDbContextAsync();
-        Items = dbContext.AppsRepo.GetEnumerable(0).ToList();
+		await using var dbContext = await DbFactory.CreateDbContextAsync();
+        if (!AppSettings.AppXml.IsExistsFileStorage)
+        {
+	        IsLoading = false;
+	        return;
+		}
+
+		Items = dbContext.AppsRepo.GetEnumerable(0).ToList();
         ItemsCount = dbContext.AppsRepo.GetCount();
         
         IsLoading = false;
