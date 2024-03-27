@@ -23,6 +23,10 @@ public sealed class TgEfMessageRepository(TgEfContext context) : TgEfRepositoryB
 	    return item;
     }
 
+	public TgEfMessageEntity GetFirst() => Context.Messages.FirstOrDefault() ?? CreateNew();
+
+	public async Task<TgEfMessageEntity> GetFirstAsync() => await Context.Messages.FirstOrDefaultAsync() ?? CreateNew();
+
     public IEnumerable<TgEfMessageEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
@@ -50,5 +54,9 @@ public sealed class TgEfMessageRepository(TgEfContext context) : TgEfRepositoryB
 
     public int GetCount() => Context.Messages.AsNoTracking().Count();
 
-    #endregion
+    public void DeleteAllItems() => Context.Messages.ExecuteDelete();
+
+    public async Task DeleteAllItemsAsync() => await Context.Messages.ExecuteDeleteAsync();
+
+	#endregion
 }

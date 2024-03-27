@@ -18,6 +18,10 @@ public sealed class TgEfVersionRepository(TgEfContext context) : TgEfRepositoryB
         return item;
     }
 
+    public TgEfVersionEntity GetFirst() => Context.Versions.FirstOrDefault() ?? CreateNew();
+
+    public async Task<TgEfVersionEntity> GetFirstAsync() => await Context.Versions.FirstOrDefaultAsync() ?? CreateNew();
+
 	public IEnumerable<TgEfVersionEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
@@ -40,5 +44,9 @@ public sealed class TgEfVersionRepository(TgEfContext context) : TgEfRepositoryB
 
     public int GetCount() => Context.Versions.AsNoTracking().Count();
 
-    #endregion
+    public void DeleteAllItems() => Context.Versions.ExecuteDelete();
+
+    public async Task DeleteAllItemsAsync() => await Context.Versions.ExecuteDeleteAsync();
+
+	#endregion
 }

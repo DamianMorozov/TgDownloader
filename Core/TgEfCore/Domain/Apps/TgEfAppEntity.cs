@@ -27,7 +27,14 @@ public sealed class TgEfAppEntity : TgEfEntityBase
     [SQLite.Indexed]
     public int ApiId { get; set; }
 
-    [DefaultValue("")]
+	[NotMapped]
+	public string ApiIdString
+	{
+		get => ApiId.ToString();
+		set => ApiId = int.TryParse(value, out int apiId) ? apiId : 0;
+	}
+
+	[DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(16)]
     [Column(TgSqlConstants.ColumnPhoneNumber)]

@@ -134,34 +134,9 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch"
 					Background="DimGray" />
-				<!--  FileSession  -->
-				<Label
-					Grid.Row="2"
-					Grid.Column="0"
-					Margin="2"
-					HorizontalContentAlignment="Center"
-					VerticalContentAlignment="Center"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FileSession, Mode=OneWay, IsAsync=True}"
-					FontWeight="Bold" />
-				<CheckBox
-					Grid.Row="2"
-					Grid.Column="2"
-					Margin="2"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.IsExistsFileSession, Mode=OneWay, IsAsync=True}"
-					IsEnabled="False" />
-				<ui:TextBox
-					Grid.Row="2"
-					Grid.Column="4"
-					Margin="2"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
 				<!--  FileStorage  -->
 				<Label
-					Grid.Row="3"
+					Grid.Row="2"
 					Grid.Column="0"
 					Margin="2"
 					HorizontalContentAlignment="Center"
@@ -169,12 +144,37 @@
 					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FileStorage, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<CheckBox
-					Grid.Row="3"
+					Grid.Row="2"
 					Grid.Column="2"
 					Margin="2"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.IsExistsFileStorage, Mode=OneWay, IsAsync=True}"
+					IsEnabled="False" />
+				<ui:TextBox
+					Grid.Row="2"
+					Grid.Column="4"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileStorage, Mode=TwoWay, IsAsync=True}" />
+				<!--  FileSession  -->
+				<Label
+					Grid.Row="3"
+					Grid.Column="0"
+					Margin="2"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FileSession, Mode=OneWay, IsAsync=True}"
+					FontWeight="Bold" />
+				<CheckBox
+					Grid.Row="3"
+					Grid.Column="2"
+					Margin="2"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.IsExistsFileSession, Mode=OneWay, IsAsync=True}"
 					IsEnabled="False" />
 				<ui:TextBox
 					Grid.Row="3"
@@ -183,7 +183,7 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileStorage, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
 			</Grid>
 		</Border>
 	</Grid>

@@ -22,6 +22,10 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
 	    return item;
     }
 
+	public TgEfProxyEntity GetFirst() => Context.Proxies.FirstOrDefault() ?? CreateNew();
+
+	public async Task<TgEfProxyEntity> GetFirstAsync() => await Context.Proxies.FirstOrDefaultAsync() ?? CreateNew();
+
     public IEnumerable<TgEfProxyEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
@@ -44,5 +48,9 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
 
     public int GetCount() => Context.Proxies.AsNoTracking().Count();
 
-    #endregion
+    public void DeleteAllItems() => Context.Proxies.ExecuteDelete();
+
+    public async Task DeleteAllItemsAsync() => await Context.Proxies.ExecuteDeleteAsync();
+
+	#endregion
 }

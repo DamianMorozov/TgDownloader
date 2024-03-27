@@ -5,10 +5,9 @@ namespace TgEfCore.Domain.Apps;
 
 public sealed class TgEfAppRepository(TgEfContext context) : TgEfRepositoryBase<TgEfAppEntity>(context), ITgEfRepository<TgEfAppEntity>
 {
-    #region Public and private methods
+	#region Public and private methods
 
-
-    public TgEfAppEntity CreateNew()
+	public TgEfAppEntity CreateNew()
     {
 	    TgEfAppEntity item = new()
 	    {
@@ -18,7 +17,11 @@ public sealed class TgEfAppRepository(TgEfContext context) : TgEfRepositoryBase<
 	    return item;
     }
 
-    public IEnumerable<TgEfAppEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
+	public TgEfAppEntity GetFirst() => Context.Apps.FirstOrDefault() ?? CreateNew();
+
+	public async Task<TgEfAppEntity> GetFirstAsync() => await Context.Apps.FirstOrDefaultAsync() ?? CreateNew();
+    
+	public IEnumerable<TgEfAppEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
 	        TgSqlEnumTableTopRecords.Top20 => GetEnumerable(20),
@@ -49,5 +52,9 @@ public sealed class TgEfAppRepository(TgEfContext context) : TgEfRepositoryBase<
 
     public int GetCount() => Context.Apps.AsNoTracking().Count();
 
-    #endregion
+    public void DeleteAllItems() => Context.Apps.ExecuteDelete();
+
+    public async Task DeleteAllItemsAsync() => await Context.Apps.ExecuteDeleteAsync();
+
+	#endregion
 }

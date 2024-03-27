@@ -19,7 +19,7 @@ internal class TgDbRepositoryGetSingleTests : TgEfContextBase
             foreach (TEntity item in items)
 			{
 				TEntity itemFind = repo.GetSingle(item.Uid);
-				Assert.IsNotNull(itemFind);
+				Assert.That(itemFind, Is.Not.Null);
 				
                 TestContext.WriteLine(itemFind.ToDebugString());
 			}

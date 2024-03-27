@@ -1,10 +1,21 @@
 ﻿@page "/Header"
 @inherits RadzenHeader
 
-<div class="rz-p-12 rz-text-align-center">
-	<RadzenLink Style="margin: 10px; 0px; 10px; 0px;" Target="_blank" class="rz-ripple"
-	            Path="@TgLocaleHelper.Instance.FieldLinkTgDownloader" Text="@TgLocaleHelper.Instance.FieldTgDownloader" />
-</div>
-<div class="rz-color-success-dark rz-ripple rz-text-align-center rz-p-12">
-	<RadzenButton Disabled="true" Text="@AppUtils.AppVersionShort"></RadzenButton>
-</div>
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+	<RadzenButton class="rz-border-radius-4"
+	              Click=@(args => JsService.OpenLink(TgConstants.LinkTelegramApps))
+	              Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary"
+	              Text=@TgConstants.LinkTelegramAppsTitle />
+	<RadzenButton class="rz-border-radius-4"
+				  Click=@(args => JsService.OpenLink(TgConstants.LinkGitHub))
+				  Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary"
+				  Text=@TgConstants.LinkGitHubTitle />
+	<RadzenButton class="rz-border-radius-4"
+				  Click=@(args => JsService.OpenLink(TgConstants.LinkDockerHub))
+	              Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary"
+				  Text=@TgConstants.LinkDockerHubTitle />
+	<RadzenButton class="rz-border-radius-4"
+	              Click=@(args => ShowAppInfo())
+	              Shade="Shade.Lighter" ButtonStyle="ButtonStyle.Secondary"
+	              Text="@TgAppUtils.AppVersionShort" />
+</RadzenStack>

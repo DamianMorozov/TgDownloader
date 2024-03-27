@@ -13,44 +13,18 @@ public partial class TgPageViewModelBase : TgViewModelBase
 
     public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
     protected bool IsInitialized;
-    public Action<Action> UpdateApplication { get; private set; }
-    public Action<Action> UpdateMainWindow { get; private set; }
-    public Action<Action> UpdateUserControl { get; private set; }
-    public Action<Action> UpdateWindow { get; private set; }
     public bool IsFileSession { get; set; }
-    public EnumToBooleanConverter EnumToBooleanConverter { get; private set; }
-    public string StateConnectDt { get; set; }
-    public string StateConnectMsg { get; set; }
-    public string StateExceptionDt { get; set; }
-    public string StateExceptionMsg { get; set; }
-    public string StateProxyDt { get; set; }
-    public string StateProxyMsg { get; set; }
-    public string StateSourceDt { get; set; }
-    public string StateSourceMsg { get; set; }
+    public string StateConnectDt { get; set; } = string.Empty;
+    public string StateConnectMsg { get; set; } = string.Empty;
+    public string StateExceptionDt { get; set; } = string.Empty;
+    public string StateExceptionMsg { get; set; } = string.Empty;
+    public string StateProxyDt { get; set; } = string.Empty;
+    public string StateProxyMsg { get; set; } = string.Empty;
+    public string StateSourceDt { get; set; } = string.Empty;
+    public string StateSourceMsg { get; set; } = string.Empty;
     public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
-    public TgExceptionModel Exception { get; set; }
-    public Dispatcher Dispatcher { get; set; }
-
-    public TgPageViewModelBase()
-    {
-        EnumToBooleanConverter = new();
-        Exception = new();
-
-        StateConnectDt = string.Empty;
-        StateConnectMsg = string.Empty;
-        StateExceptionDt = string.Empty;
-        StateExceptionMsg = string.Empty;
-        StateProxyDt = string.Empty;
-        StateProxyMsg = string.Empty;
-        StateSourceDt = string.Empty;
-        StateSourceMsg = string.Empty;
-        Dispatcher = Dispatcher.CurrentDispatcher;
-
-        UpdateUserControl = _ => { };
-        UpdateWindow = _ => { };
-        UpdateMainWindow = _ => { };
-        UpdateApplication = _ => { };
-    }
+    public TgExceptionModel Exception { get; set; } = new();
+    public Dispatcher Dispatcher { get; set; } = Dispatcher.CurrentDispatcher;
 
     #endregion
 

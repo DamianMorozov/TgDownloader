@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktop.Utils"
+	xmlns:helpers="clr-namespace:TgLocalization.Helpers;assembly=TgLocalization"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainClient, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgClientPage,
@@ -79,8 +80,8 @@
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLinkTelegramApps, Mode=OneWay, IsAsync=True}"
-					NavigateUri="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FieldLinkTelegramApps, Mode=OneWay, IsAsync=True}" />
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgConst}, Path=LinkTelegramAppsTitle, Mode=OneWay, IsAsync=True}"
+					NavigateUri="{Binding Source={x:Static utils:TgDesktopUtils.TgConst}, Path=LinkTelegramApps, Mode=OneWay, IsAsync=True}" />
 			</Grid>
 		</Border>
 		<!--  2 row | File session  -->

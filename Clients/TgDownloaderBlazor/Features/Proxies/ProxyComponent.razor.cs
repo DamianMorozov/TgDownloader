@@ -16,20 +16,20 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 	protected override async Task OnInitializedAsync()
     {
 	    await base.OnInitializedAsync();
-	    if (!IsLoading)
+	    if (!IsBlazorLoading)
 		    return;
 
 	    await using var dbContext = await DbFactory.CreateDbContextAsync();
 	    if (!AppSettings.AppXml.IsExistsFileStorage)
 	    {
-		    IsLoading = false;
+		    IsBlazorLoading = false;
 		    return;
 	    }
 
 	    Items = dbContext.ProxyRepo.GetEnumerable(0).ToList();
         ItemsCount = dbContext.ProxyRepo.GetCount();
 
-        IsLoading = false;
+        IsBlazorLoading = false;
 	}
 
     #endregion

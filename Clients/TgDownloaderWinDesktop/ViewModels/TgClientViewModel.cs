@@ -206,7 +206,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid)
                 return;
-            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm ?? ProxyVm);
+            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Proxy ?? ProxyVm.Proxy);
         }, true);
 
         ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExists 
@@ -224,8 +224,19 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         }, false).ConfigureAwait(false);
     }
 
-    // AppSaveCommand
+    // AppLoadCommand
     [RelayCommand]
+    public async Task OnAppLoadAsync()
+    {
+	    await TgDesktopUtils.RunFuncAsync(this, async () =>
+	    {
+		    await Task.Delay(TimeSpan.FromMilliseconds(1));
+		    AppVm.App = await ContextManager.AppRepository.GetFirstAsync();
+	    }, false).ConfigureAwait(false);
+    }
+
+    // AppSaveCommand
+	[RelayCommand]
     public async Task OnAppSaveAsync()
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
@@ -247,17 +258,6 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         }, false).ConfigureAwait(true);
     }
 
-    // AppLoadCommand
-    [RelayCommand]
-    public async Task OnAppLoadAsync()
-    {
-        await TgDesktopUtils.RunFuncAsync(this, async () =>
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
-            AppVm.App = await ContextManager.AppRepository.GetFirstAsync();
-        }, false).ConfigureAwait(false);
-    }
-    
     // AppEmptyCommand
     [RelayCommand]
     public async Task OnAppEmptyAsync()

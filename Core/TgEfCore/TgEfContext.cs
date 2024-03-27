@@ -1,9 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgEfCore.Domain.Documents;
-using TgEfCore.Domain.Messages;
-
 namespace TgEfCore;
 
 public class TgEfContext : DbContext
@@ -11,34 +8,34 @@ public class TgEfContext : DbContext
 	#region Public and private fields, properties, constructor
 
 	/// <summary> App queries </summary>
-	public DbSet<TgEfAppEntity> Apps { get; set; }
+	public DbSet<TgEfAppEntity> Apps { get; set; } = default!;
 	/// <summary> Document queries </summary>
-	public DbSet<TgEfDocumentEntity> Documents { get; set; }
+	public DbSet<TgEfDocumentEntity> Documents { get; set; } = default!;
 	/// <summary> Filter queries </summary>
-	public DbSet<TgEfFilterEntity> Filters { get; set; }
+	public DbSet<TgEfFilterEntity> Filters { get; set; } = default!;
 	/// <summary> Message queries </summary>
-	public DbSet<TgEfMessageEntity> Messages { get; set; }
+	public DbSet<TgEfMessageEntity> Messages { get; set; } = default!;
 	/// <summary> Proxy queries </summary>
-	public DbSet<TgEfProxyEntity> Proxies { get; set; }
+	public DbSet<TgEfProxyEntity> Proxies { get; set; } = default!;
 	/// <summary> Source queries </summary>
-	public DbSet<TgEfSourceEntity> Sources { get; set; }
+	public DbSet<TgEfSourceEntity> Sources { get; set; } = default!;
 	/// <summary> Version queries </summary>
-	public DbSet<TgEfVersionEntity> Versions { get; set; }
+	public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
 
 	/// <summary> App repository </summary>
-	public ITgEfRepository<TgEfAppEntity> AppsRepo { get; set; }
+	public ITgEfRepository<TgEfAppEntity> AppsRepo { get; set; } = default!;
 	/// <summary> Document repository </summary>
-	public ITgEfRepository<TgEfDocumentEntity> DocuemntRepo { get; set; }
-    /// <summary> Filter repository </summary>
-    public ITgEfRepository<TgEfFilterEntity> FilterRepo { get; set; }
+	public ITgEfRepository<TgEfDocumentEntity> DocuemntRepo { get; set; } = default!;
+	/// <summary> Filter repository </summary>
+	public ITgEfRepository<TgEfFilterEntity> FilterRepo { get; set; } = default!;
 	/// <summary> Message repository </summary>
-	public ITgEfRepository<TgEfMessageEntity> MessageRepo { get; set; }
+	public ITgEfRepository<TgEfMessageEntity> MessageRepo { get; set; } = default!;
 	/// <summary> Proxy repository </summary>
-	public ITgEfRepository<TgEfProxyEntity> ProxyRepo { get; set; }
+	public ITgEfRepository<TgEfProxyEntity> ProxyRepo { get; set; } = default!;
 	/// <summary> Source repository </summary>
-	public ITgEfRepository<TgEfSourceEntity> SourceRepo { get; set; }
+	public ITgEfRepository<TgEfSourceEntity> SourceRepo { get; set; } = default!;
 	/// <summary> Version repository </summary>
-	public ITgEfRepository<TgEfVersionEntity> VersionRepo { get; set; }
+	public ITgEfRepository<TgEfVersionEntity> VersionRepo { get; set; } = default!;
 
 	// Inject options.
 	// options: The DbContextOptions{TgEfContext} for the context.

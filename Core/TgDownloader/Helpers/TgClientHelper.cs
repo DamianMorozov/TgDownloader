@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using System.ComponentModel;
+using TgEfCore.Domain.Proxies;
 
 namespace TgDownloader.Helpers;
 
@@ -175,20 +176,20 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         LoginUserConsole(true);
     }
 
-    public async Task ConnectSessionAsync(TgSqlTableProxyViewModel proxyVm)
+    public async Task ConnectSessionAsync(ITgSqlProxy proxy)
     {
         if (IsReady) return;
         Disconnect();
 
         Client = new(ConfigClientDesktop);
-        await ConnectThroughProxyAsync(proxyVm.Proxy, true);
+        await ConnectThroughProxyAsync(proxy, true);
         Client.OnUpdate += OnUpdateClientAsync;
         Client.OnOther += OnClientOtherAsync;
 
         await LoginUserDesktopAsync(true);
     }
 
-    public async Task ConnectThroughProxyAsync(TgSqlTableProxyModel proxy, bool isDesktop)
+    public async Task ConnectThroughProxyAsync(ITgSqlProxy proxy, bool isDesktop)
     {
         IsProxyUsage = false;
         if (!CheckClientIsReady()) return;

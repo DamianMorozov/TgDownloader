@@ -3,18 +3,21 @@
 
 namespace TgDownloaderBlazor.Utils;
 
-public static class AppUtils
+public static class TgAppUtils
 {
+    #region Public and private fields, properties, constructor
 
     public static string AppVersionTitle { get; set; }
     public static string AppVersionShort { get; set; }
     public static string AppVersionFull { get; set; }
 
-    static AppUtils()
+    static TgAppUtils()
     {
-        AppVersionTitle = 
-            $"{TgLocaleHelper.Instance.AppTitleBlazor} v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+        AppVersionTitle =
+            $"{TgConstants.AppTitleBlazor} v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
         AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
         AppVersionFull = $"{TgLocaleHelper.Instance.AppVersion}: {AppVersionShort}";
     }
+
+    #endregion
 }

@@ -193,7 +193,7 @@ public static class TgSqlUtils
     public static ValidationResult GetValidXpLite(TgSqlTableFilterModel item) => new TgSqlTableFilterValidator().Validate(item);
     public static ValidationResult GetValidXpLite(TgSqlTableMessageModel item) => new TgSqlTableMessageValidator().Validate(item);
     public static ValidationResult GetValidXpLite(TgSqlTableSourceModel item) => new TgSqlTableSourceValidator().Validate(item);
-    public static ValidationResult GetValidXpLite(TgSqlTableProxyModel item) => new TgSqlTableProxyValidator().Validate(item);
+    public static ValidationResult GetValidXpLite(ITgSqlProxy item) => new TgSqlTableProxyValidator().Validate(item);
     public static ValidationResult GetValidXpLite(TgSqlTableVersionModel item) => new TgSqlTableVersionValidator().Validate(item);
 
     #endregion

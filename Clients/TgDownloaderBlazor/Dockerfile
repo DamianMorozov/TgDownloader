@@ -1,24 +1,15 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and 
+# how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+# Docker base image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+# Image setup
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 7682/tcp
+ENV ASPNETCORE_URLS=http://0.0.0.0:7682
+USER app
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["Clients/TgDownloaderBlazor/TgDownloaderBlazor.csproj", "Clients/TgDownloaderBlazor/"]
-RUN dotnet restore "./Clients/TgDownloaderBlazor/TgDownloaderBlazor.csproj"
-COPY . .
-WORKDIR "/src/Clients/TgDownloaderBlazor"
-RUN dotnet build "./TgDownloaderBlazor.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TgDownloaderBlazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+# App
+COPY "/app" "/app"
 ENTRYPOINT ["dotnet", "TgDownloaderBlazor.dll"]

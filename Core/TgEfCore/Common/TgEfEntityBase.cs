@@ -4,7 +4,7 @@
 namespace TgEfCore.Common;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public abstract class TgEfEntityBase : ITgSqlTable
+public abstract class TgEfEntityBase : ITgEfEntity
 {
     #region Public and private fields, properties, constructor
 
@@ -25,14 +25,14 @@ public abstract class TgEfEntityBase : ITgSqlTable
 	[NotMapped]
 	public bool IsExists => !IsNotExists;
 
-	[NotMapped]
-	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-	[JsonPropertyName("@odata.etag")]
-	public string ETag
-	{
-		get;
-		set;
-	}
+	//[NotMapped]
+	//[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	//[JsonPropertyName("@odata.etag")]
+	//public string ETag
+	//{
+	//	get;
+	//	set;
+	//}
 
 	protected TgEfEntityBase()
     {

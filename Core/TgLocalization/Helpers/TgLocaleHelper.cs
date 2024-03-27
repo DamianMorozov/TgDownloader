@@ -21,12 +21,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region App
 
+	public string AppInfo => "App info";
 	public string AppName => "Name";
-	public string AppTitle => "TG-Downloader";
-	public string AppTitleBlazor => "TG-Downloader Blazor";
-	public string AppTitleConsoleShort => "TGDC";
-	public string AppTitleWinDesktop => "TG-Downloader Win Desktop";
-	public string AppTitleWinDesktopShort => "TGWD";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
 	public string Exception => "Exception";
@@ -49,6 +45,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string ServerMessage => "Server message";
 	public string SqliteDataSource => "Data Source";
 	public string StorageVersion => "Storage version";
+	public string UrlOpened => "URL opened";
 
 	#endregion
 
@@ -63,7 +60,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 
 	#region Client
 
-    public string MenuClientMessage => "Message";
+    public string MenuClientMessage => "Client message";
     public string MenuClientProxyIsUsage => "Proxy usage";
     public string MenuClientSource => "Source";
     public string MenuClientSourceProgress => "Source progress";
@@ -354,14 +351,11 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string FieldIsDownload => "Is download";
 	public string FieldIsReady => "Is ready";
 	public string FieldLastId => "Last ID";
-	public string FieldLinkTelegramApps => "https://my.telegram.org/apps/";
-	public string FieldLinkTgDownloader => "https://github.com/DamianMorozov/TgDownloader";
 	public string FieldLoad => "Load";
 	public string FieldPercent => "Percent";
 	public string FieldPercentSpec => "%";
 	public string FieldSetting => "Setting";
 	public string FieldSourceId => "Source ID";
-	public string FieldTgDownloader => "TgDownloader on GitHub";
 	public string FieldTitle => "Title";
 	public string FieldUid => "UID";
 	public string FieldUpd => "Upd";

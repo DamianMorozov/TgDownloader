@@ -5,7 +5,7 @@
 
 <h1>@TgLocale.MenuMainSources</h1>
 
-@if (IsLoading)
+@if (IsBlazorLoading)
 {
     <p><em>Loading...</em></p>
 }
@@ -14,11 +14,11 @@ else
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
 	<RadzenDataGrid Data="@Items" TItem="TgEfSourceEntity" AllowSorting="true">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Id" Title="@TgLocale.FieldId" SortProperty="Id" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="UserName" Title="@TgLocale.FieldUserName" SortProperty="UserName" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Title" Title="@TgLocale.FieldTitle" SortProperty="Title" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="FirstId" Title="@TgLocale.FieldFirstId" SortProperty="FirstId" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Count" Title="@TgLocale.FieldCount" SortProperty="Count" />
+			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Id" Title=@TgLocale.FieldId SortProperty="Id" />
+			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="UserName" Title=@TgLocale.FieldUserName SortProperty="UserName" />
+			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Title" Title=@TgLocale.FieldTitle SortProperty="Title" />
+			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="FirstId" Title=@TgLocale.FieldFirstId SortProperty="FirstId" />
+			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Count" Title=@TgLocale.FieldCount SortProperty="Count" />
 		</Columns>
 	</RadzenDataGrid>
 }

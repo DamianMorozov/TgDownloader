@@ -22,6 +22,10 @@ public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBa
 	    return item;
     }
 
+    public TgEfFilterEntity GetFirst() => Context.Filters.FirstOrDefault() ?? CreateNew();
+
+    public async Task<TgEfFilterEntity> GetFirstAsync() => await Context.Filters.FirstOrDefaultAsync() ?? CreateNew();
+
     public IEnumerable<TgEfFilterEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
@@ -42,6 +46,10 @@ public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBa
     public async Task<TgEfFilterEntity> GetSingleAsync(Guid uid) => await Context.Filters.AsNoTracking().SingleAsync(x => x.Uid.ToString() == uid.ToString());
 
     public int GetCount() => Context.Filters.AsNoTracking().Count();
-    
-    #endregion
+
+	public void DeleteAllItems() => Context.Filters.ExecuteDelete();
+
+	public async Task DeleteAllItemsAsync() => await Context.Filters.ExecuteDeleteAsync();
+
+	#endregion
 }

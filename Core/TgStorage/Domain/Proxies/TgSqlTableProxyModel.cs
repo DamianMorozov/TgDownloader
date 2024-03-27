@@ -10,7 +10,7 @@ namespace TgStorage.Domain.Proxies;
 [Persistent(TgSqlConstants.TableProxies)]
 [DoNotNotify]
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgSqlTableProxyModel : XPLiteObject, ITgSqlTable
+public sealed class TgSqlTableProxyModel : XPLiteObject, ITgSqlTable, ITgSqlProxy
 {
 	#region Public and private fields, properties, constructor
 

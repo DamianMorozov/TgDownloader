@@ -6,13 +6,12 @@ namespace TgDownloaderWinDesktop.Views.Controls;
 /// <summary>
 /// UserControl Client state.
 /// </summary>
-public sealed partial class TgClientStateUserControl : TgUserControlViewBase
+public sealed partial class TgClientStateUserControl
 {
 	#region Public and private fields, properties, constructor
 
 	public TgClientStateUserControl()
 	{
-		//TgDesktopUtils.TgClientVm.OnNavigatedTo();
 		InitializeComponent();
 	}
 

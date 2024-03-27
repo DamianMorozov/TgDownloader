@@ -16,7 +16,8 @@
     <link rel="icon" type="image/png" href="favicon.png" />
     @* Radzen *@
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css" />
-    <script src="_content/Radzen.Blazor/Radzen.Blazor.js" ></script>
+    @* <script src="_content/Radzen.Blazor/Radzen.Blazor.js" ></script> *@
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>

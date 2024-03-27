@@ -16,6 +16,8 @@ do
 	try
 	{
 		menu.ShowTableMain(tgDownloadSettings);
+		tgLog.MarkupLine(tgLocale.TypeAnyKeyForReturn);
+		Console.ReadKey();
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")
@@ -73,7 +75,7 @@ bool Setup()
 	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
 	// Console.
 	Console.OutputEncoding = Encoding.UTF8;
-	Console.Title = tgLocale.AppTitleConsoleShort;
+	Console.Title = TgConstants.AppTitleConsoleShort;
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
 	// Storage.

@@ -1,4 +1,4 @@
-﻿<common:TgUserControlViewBase
+﻿<UserControl
 	x:Class="TgDownloaderWinDesktop.Views.Controls.TgClientStateUserControl"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -141,4 +141,4 @@
 			IsReadOnly="True"
 			Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=StateSourceMsg, Mode=OneWay, IsAsync=True}" />
 	</Grid>
-</common:TgUserControlViewBase>
+</UserControl>

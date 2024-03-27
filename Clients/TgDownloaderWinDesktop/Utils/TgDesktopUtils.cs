@@ -17,7 +17,8 @@ public static class TgDesktopUtils
     public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
     public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
 	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public static TgProxiesViewModel TgProxiesVm { get; } = new();
+	public static TgConstants TgConst => TgConstants.CreateInstance();
+	public static TgProxiesViewModel TgProxiesVm { get; } = new();
     public static TgSettingsViewModel TgSettingsVm { get; } = new();
     public static TgSourcesViewModel TgSourcesVm { get; } = new();
     public static TgDownloadsViewModel TgDownloadsVm{ get; } = new();

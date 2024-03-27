@@ -64,7 +64,7 @@ internal partial class TgMenuHelper
 				async Task UpdateConsoleTitleAsync(string title)
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(1));
-					Console.Title = string.IsNullOrEmpty(title) ? $"{TgLocale.AppTitleConsoleShort}" : $"{TgLocale.AppTitleConsoleShort} {title}";
+					Console.Title = string.IsNullOrEmpty(title) ? $"{TgConstants.AppTitleConsoleShort}" : $"{TgConstants.AppTitleConsoleShort} {title}";
 				}
 				// Update source.
 				async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
@@ -161,7 +161,7 @@ internal partial class TgMenuHelper
 				async Task UpdateConsoleTitleAsync(string title)
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(1));
-					Console.Title = string.IsNullOrEmpty(title) ? $"{TgLocale.AppTitleConsoleShort}" : $"{TgLocale.AppTitleConsoleShort} {title}";
+					Console.Title = string.IsNullOrEmpty(title) ? $"{TgConstants.AppTitleConsoleShort}" : $"{TgConstants.AppTitleConsoleShort} {title}";
 				}
 				string GetFileStatus(string message = "") =>
 					string.IsNullOrEmpty(message)

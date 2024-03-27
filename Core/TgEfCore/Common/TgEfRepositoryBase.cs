@@ -4,7 +4,7 @@
 namespace TgEfCore.Common;
 
 [Table(TgSqlConstants.TableApps)]
-public abstract class TgEfRepositoryBase<TEntity>(TgEfContext context) : TgCommonBase where TEntity : ITgSqlTable, new()
+public abstract class TgEfRepositoryBase<TEntity>(TgEfContext context) : TgCommonBase where TEntity : ITgEfEntity, new()
 {
     #region Public and private fields, properties, constructor
 

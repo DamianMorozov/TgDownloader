@@ -5,7 +5,7 @@
 
 <h1>@TgLocale.MenuMainFilters</h1>
 
-@if (IsLoading)
+@if (IsBlazorLoading)
 {
     <p><em>Loading...</em></p>
 }
@@ -14,12 +14,12 @@ else
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
 	<RadzenDataGrid Data="@Items" TItem="TgEfFilterEntity">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="IsEnabled" Title="@TgLocale.FieldIsEnabled"  />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="FilterType" Title="@TgLocale.FieldFilterType" />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Name" Title="@TgLocale.FieldName" />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Mask" Title="@TgLocale.FieldMask" />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Size" Title="@TgLocale.FieldSize" />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="SizeType" Title="@TgLocale.FieldSizeType" />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="IsEnabled" Title=@TgLocale.FieldIsEnabled  />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="FilterType" Title=@TgLocale.FieldFilterType />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Name" Title=@TgLocale.FieldName />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Mask" Title=@TgLocale.FieldMask />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Size" Title=@TgLocale.FieldSize />
+			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="SizeType" Title=@TgLocale.FieldSizeType />
 		</Columns>
 	</RadzenDataGrid>
 }

@@ -15,6 +15,10 @@ public sealed class TgEfDocumentRepository(TgEfContext context) : TgEfRepository
 	    return item;
     }
 
+    public TgEfDocumentEntity GetFirst() => Context.Documents.FirstOrDefault() ?? CreateNew();
+
+    public async Task<TgEfDocumentEntity> GetFirstAsync() => await Context.Documents.FirstOrDefaultAsync() ?? CreateNew();
+    
     public IEnumerable<TgEfDocumentEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch
         {
@@ -42,5 +46,9 @@ public sealed class TgEfDocumentRepository(TgEfContext context) : TgEfRepository
 
     public int GetCount() => Context.Documents.AsNoTracking().Count();
 
-    #endregion
+    public void DeleteAllItems() => Context.Documents.ExecuteDelete();
+
+    public async Task DeleteAllItemsAsync() => await Context.Documents.ExecuteDeleteAsync();
+
+	#endregion
 }

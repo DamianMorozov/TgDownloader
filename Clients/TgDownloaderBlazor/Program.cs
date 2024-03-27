@@ -7,7 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 // Radzen.
+// https://blazor.radzen.com/get-started
 builder.Services.AddRadzenComponents();
+builder.Services.AddScoped<TgJsService>();
+// Inject.
+builder.Services.AddHttpClient();
 
 // EF Core.
 builder.Services

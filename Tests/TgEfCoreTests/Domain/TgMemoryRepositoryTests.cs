@@ -15,7 +15,7 @@ internal class TgMemoryRepositoryTests : TgEfContextBase
 			TEntity item = repo.CreateNew();
             TEntity itemFind = repo.GetSingle(item.Uid);
 
-			Assert.IsNotNull(itemFind);
+			Assert.That(itemFind, Is.Not.Null);
 			TestContext.WriteLine(itemFind.ToDebugString());
 		});
 	}
