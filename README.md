@@ -21,22 +21,28 @@ Download files of the Telegram channels or groups you are a member of.
 ## Status
 ![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 
-## Support
+## Product support
 Please click the `star` button if this tool was helpful to you.
 
-## Quick links
+## GitHub
 - [Issue template](ISSUE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+
+## Telegram support
 - [TgDownloader News](https://t.me/TgDownloader)
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
+
+## Docker images
+- [TgDownloader Console Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
+- [TgDownloader Blazor Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)
 
 
 ## Actual screenshots TgDownloaderBlazor
 
 <p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Apps.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Client.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
 <p align="center"><img src="Assets/TgDownloaderBlazor_Sources.png"></p>

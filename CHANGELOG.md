@@ -8,11 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.4.110] - 2024-03-04
+## [0.4.150] - 2024-03-27
 ## Added projects
 - Added TgDownloaderBlazor app (web app)
 - Added TgEfCore library (EF Core storage access library)
 - Added TgEfCoreTests (EF Core storage access tests)
+- Added Docker-container TgDownloaderConsole
 ### Added into TgEfCore
 - Application table support
 - Document table support
@@ -21,9 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxy table support
 - Source table support
 - Version table support
+### Added into TgDownloaderConsole
+- Docker support
 ### Added into TgDownloaderBlazor
+- Docker support
 - Home page
-- Application page
+- Header component
+- Client page
 - Filter page
 - Proxy page
 - Source page
