@@ -1,7 +1,7 @@
 ﻿# TgDownloader Release history
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
+## <div align="center"><b><a href="../README.md">Readme</a> | <a href="../CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a></b></div>
+## <div align="center"><b><a href="../README-RUS.md">Прочти меня</a> | <a href="../CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
 
 - GitHub all releases       	![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 - GitHub release v0.4.150		![GitHub release v0.4.150](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.4.150/total?style=social)

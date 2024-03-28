@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
+## [0.4.160] - 2024-03-28
+### Fixed
+- Creating EF Core entities
+- Test execution
+
 ## [0.4.150] - 2024-03-27
 ## Added projects
 - Added TgDownloaderBlazor app (web app)

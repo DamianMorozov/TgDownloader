@@ -1,13 +1,13 @@
 ﻿# TgDownloader - Загрузчик файлов Telegram
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="Docs/RELEASE.md">Releases</a> | <a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASE.md">Релизы</a> | <a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
-## Обзор
+## Описание продукта
 Скачайте файлы каналов или групп Telegram, в которых вы состоите.
 
 ### Особая благодарность
@@ -25,7 +25,7 @@
 Пожалуйста, нажмите на кнопку `звездочка`, если эта программа была вам полезна.
 
 ## GitHub
-- [Шаблон проблемы](ISSUE-RUS.md)
+- [Шаблон проблемы](Docs/ISSUE-RUS.md)
 - [Сообщить об ошибке](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
@@ -37,26 +37,3 @@
 ## Docker образы
 - [TgDownloader Console Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
 - [TgDownloader Blazor Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)
-
-
-## Актуальные скриншоты TgDownloaderBlazor
-
-<p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Client.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Sources.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Versions.png"></p>
-
-## Актуальные скриншоты TgDownloaderWinDesktop
-
-<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
-
-## Актуальные скриншоты TgDownloaderConsole
-
-<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>

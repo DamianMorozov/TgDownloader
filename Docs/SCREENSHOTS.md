@@ -1,5 +1,28 @@
 # Screenshots
 
+## Actual screenshots TgDownloaderBlazor
+
+<p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Client.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Sources.png"></p>
+<p align="center"><img src="Assets/TgDownloaderBlazor_Versions.png"></p>
+
+## Actual screenshots TgDownloaderWinDesktop
+
+<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
+<p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
+
+## Actual screenshots TgDownloaderConsole
+
+<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
+
+
 ## [0.4.150] - 2024-03-27
 ### TgDownloaderBlazor
 <p align="center"><img src="Assets/v0.4.150/TgDownloaderBlazor_Home.png"></p>
