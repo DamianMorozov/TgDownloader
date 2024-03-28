@@ -5,7 +5,7 @@ namespace TgEfCore.Common;
 
 public interface ITgEfRepository<TEntity> where TEntity : ITgEfEntity, new()
 {
-	public TEntity CreateNew();
+	public TEntity CreateNew(bool isSave);
 	public TEntity GetFirst();
 	public Task<TEntity> GetFirstAsync();
 	public IEnumerable<TEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All);

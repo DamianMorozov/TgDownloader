@@ -13,7 +13,7 @@ internal class TgStorageCreateTests
         Assert.DoesNotThrow(() =>
         {
             TestContext.WriteLine($"{typeof(T)}");
-            T item = repository.GetNewAsync().Result;
+            T item = repository.GetNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(repository.GetNewAsync)}: {item.ToDebugString()}");
             Assert.That(item.IsNotExists);
 
@@ -38,25 +38,25 @@ internal class TgStorageCreateTests
     {
         Assert.DoesNotThrow(() =>
         {
-            bool isDelete = TgSqlTableAppRepository.Instance.DeleteNewAsync().Result;
+            bool isDelete = TgSqlTableAppRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableAppRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableDocumentRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableDocumentRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableDocumentRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableFilterRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableFilterRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableFilterRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableMessageRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableMessageRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableMessageRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableProxyRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableProxyRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableProxyRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableSourceRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableSourceRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableSourceRepository)}: {isDelete}");
 
-            isDelete = TgSqlTableVersionRepository.Instance.DeleteNewAsync().Result;
+            isDelete = TgSqlTableVersionRepository.Instance.DeleteNewAsync(true).Result;
             TestContext.WriteLine($"{nameof(TgSqlTableVersionRepository)}: {isDelete}");
         });
     }

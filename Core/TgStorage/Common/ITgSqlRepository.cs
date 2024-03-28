@@ -6,10 +6,10 @@ namespace TgStorage.Common;
 public interface ITgSqlRepository<T> where T : ITgSqlTable, new()
 {
     public Task<bool> DeleteAsync(T item);
-    public Task<bool> DeleteNewAsync();
+    public Task<bool> DeleteNewAsync(bool isCreateSession);
     public Task<bool> SaveAsync(T item, bool isGetByUid = false);
     public Task<T> GetAsync(T item);
-    public Task<T> GetNewAsync();
+    public Task<T> GetNewAsync(bool isCreateSession);
     public Task<T> GetFirstAsync();
     public IEnumerable<T> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All);
     public IEnumerable<T> GetEnumerable(int count);

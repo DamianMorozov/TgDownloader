@@ -402,7 +402,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			        return ContextManager.SourceRepository.GetAsync(id).Result;
 			}
 		}
-        return ContextManager.SourceRepository.GetNewAsync().Result;
+        return ContextManager.SourceRepository.GetNewAsync(true).Result;
 	}
 
     #endregion

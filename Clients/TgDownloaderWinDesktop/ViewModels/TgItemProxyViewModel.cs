@@ -69,7 +69,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Proxy = await ContextManager.ProxyRepository.GetNewAsync();
+            ItemProxyVm.Proxy = await ContextManager.ProxyRepository.GetNewAsync(true);
         }, false);
     }
 

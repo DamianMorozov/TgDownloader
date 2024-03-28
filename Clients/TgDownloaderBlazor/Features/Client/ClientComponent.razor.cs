@@ -248,7 +248,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			Item = dbContext.AppsRepo.CreateNew();
+			Item = dbContext.AppsRepo.CreateNew(false);
 		}, () =>
 		{
 			NotificationService.Notify(new NotificationMessage

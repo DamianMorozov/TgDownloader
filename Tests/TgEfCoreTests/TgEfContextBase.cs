@@ -44,9 +44,9 @@ internal class TgEfContextBase
 
 	~TgEfContextBase()
 	{
-		DbProdContext.Dispose();
-		DbTestContext.Dispose();
-		MemoryContext.Dispose();
+		DbProdContext?.Dispose();
+		DbTestContext?.Dispose();
+		MemoryContext?.Dispose();
 	}
 
 	#endregion

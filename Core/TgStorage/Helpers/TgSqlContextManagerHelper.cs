@@ -123,7 +123,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableApps()
 	{
 		bool result = true;
-		TgSqlTableAppModel itemNew = AppRepository.GetNewAsync().GetAwaiter().GetResult();
+		TgSqlTableAppModel itemNew = AppRepository.GetNewAsync(true).GetAwaiter().GetResult();
 		if (!AppRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		if (!AppRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
@@ -134,7 +134,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableDocuments()
 	{
 		bool result = true;
-		TgSqlTableDocumentModel itemNew = DocumentRepository.GetNewAsync().Result;
+		TgSqlTableDocumentModel itemNew = DocumentRepository.GetNewAsync(true).Result;
 		if (!DocumentRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		if (!DocumentRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
@@ -145,9 +145,9 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableFilters()
 	{
 		bool result = true;
-		TgSqlTableFilterModel itemNew = FilterRepository.GetNewAsync().Result;
+		TgSqlTableFilterModel itemNew = FilterRepository.GetNewAsync(false).Result;
 		if (!FilterRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
-            result = false;
+		    result = false;
 		if (!FilterRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		return result;
@@ -156,7 +156,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableMessages()
 	{
 		bool result = true;
-		TgSqlTableMessageModel itemNew = MessageRepository.GetNewAsync().Result;
+		TgSqlTableMessageModel itemNew = MessageRepository.GetNewAsync(true).Result;
 		if (!MessageRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		if (!MessageRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
@@ -167,7 +167,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableProxies()
     {
         bool result = true;
-        TgSqlTableProxyModel itemNew = ProxyRepository.GetNewAsync().Result;
+        TgSqlTableProxyModel itemNew = ProxyRepository.GetNewAsync(true).Result;
 		if (!ProxyRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
         if (!ProxyRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
@@ -178,7 +178,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableSources()
 	{
 		bool result = true;
-		TgSqlTableSourceModel itemNew = SourceRepository.GetNewAsync().Result;
+		TgSqlTableSourceModel itemNew = SourceRepository.GetNewAsync(true).Result;
 		if (!SourceRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		if (!SourceRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())
@@ -189,7 +189,7 @@ public sealed class TgSqlContextManagerHelper : ITgHelper
 	public bool CheckTableVersions()
 	{
 		bool result = true;
-		TgSqlTableVersionModel itemNew = VersionRepository.GetNewAsync().GetAwaiter().GetResult();
+		TgSqlTableVersionModel itemNew = VersionRepository.GetNewAsync(true).GetAwaiter().GetResult();
 		if (!VersionRepository.SaveAsync(itemNew).GetAwaiter().GetResult())
 			result = false;
 		if (!VersionRepository.DeleteAsync(itemNew).GetAwaiter().GetResult())

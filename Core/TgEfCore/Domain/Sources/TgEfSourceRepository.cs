@@ -7,7 +7,7 @@ public sealed class TgEfSourceRepository(TgEfContext context) : TgEfRepositoryBa
 {
     #region Public and private methods
 
-    public TgEfSourceEntity CreateNew()
+    public TgEfSourceEntity CreateNew(bool isSave)
     {
 	    TgEfSourceEntity item = new()
 	    {
@@ -21,13 +21,14 @@ public sealed class TgEfSourceRepository(TgEfContext context) : TgEfRepositoryBa
 		    Title = "Test",
 		    UserName = "Test",
 	    };
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
         return item;
     }
 
-    public TgEfSourceEntity GetFirst() => Context.Sources.FirstOrDefault() ?? CreateNew();
+    public TgEfSourceEntity GetFirst() => Context.Sources.FirstOrDefault() ?? CreateNew(false);
 
-    public async Task<TgEfSourceEntity> GetFirstAsync() => await Context.Sources.FirstOrDefaultAsync() ?? CreateNew();
+    public async Task<TgEfSourceEntity> GetFirstAsync() => await Context.Sources.FirstOrDefaultAsync() ?? CreateNew(false);
 
 	public IEnumerable<TgEfSourceEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

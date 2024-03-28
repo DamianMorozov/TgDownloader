@@ -3,12 +3,11 @@
 
 namespace TgEfCore.Domain.Filters;
 
-[Table(TgSqlConstants.TableApps)]
 public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBase<TgEfFilterEntity>(context), ITgEfRepository<TgEfFilterEntity>
 {
     #region Public and private methods
 
-    public TgEfFilterEntity CreateNew()
+    public TgEfFilterEntity CreateNew(bool isSave)
     {
 	    TgEfFilterEntity item = new()
 	    {
@@ -18,13 +17,14 @@ public sealed class TgEfFilterRepository(TgEfContext context) : TgEfRepositoryBa
 		    Mask = "*",
 		    SizeType = TgEnumFileSizeType.Bytes
 	    };
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
 	    return item;
     }
 
-    public TgEfFilterEntity GetFirst() => Context.Filters.FirstOrDefault() ?? CreateNew();
+    public TgEfFilterEntity GetFirst() => Context.Filters.FirstOrDefault() ?? CreateNew(false);
 
-    public async Task<TgEfFilterEntity> GetFirstAsync() => await Context.Filters.FirstOrDefaultAsync() ?? CreateNew();
+    public async Task<TgEfFilterEntity> GetFirstAsync() => await Context.Filters.FirstOrDefaultAsync() ?? CreateNew(false);
 
     public IEnumerable<TgEfFilterEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

@@ -33,7 +33,7 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableAppModel item, bool isGetByUid = false)
     {
@@ -61,9 +61,9 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
             $"{nameof(TgSqlTableAppModel.ApiHash)}='{apiHash}'")) 
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableAppModel> GetNewAsync()
+    public async Task<TgSqlTableAppModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableAppModel itemNew = CreateNew(true);
+        TgSqlTableAppModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableAppModel>()
                    .Select(i => i)
@@ -83,7 +83,7 @@ public sealed class TgSqlTableAppRepository : TgSqlRepositoryBase<TgSqlTableAppM
     public async Task<TgSqlTableProxyModel> GetCurrentProxyAsync()
     {
         var proxyUid = await GetFirstProxyUidAsync();
-        return await TgSqlTableProxyRepository.Instance.GetAsync(proxyUid) ?? await TgSqlTableProxyRepository.Instance.GetNewAsync();
+        return await TgSqlTableProxyRepository.Instance.GetAsync(proxyUid);
     }
 
 

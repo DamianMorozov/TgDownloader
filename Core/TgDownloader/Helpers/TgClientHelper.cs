@@ -155,7 +155,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         if (!(!TgAppSettings.AppXml.IsUseProxy ||
               (TgAppSettings.AppXml.IsUseProxy &&
                (ContextManager.ProxyRepository.GetAsync(proxyUid) ??
-                ContextManager.ProxyRepository.GetNewAsync()).Result.IsExists)))
+                ContextManager.ProxyRepository.GetNewAsync(true)).GetAwaiter().GetResult().IsExists)))
             return ResultDisconnected();
         if (ProxyException.IsExists || ClientException.IsExists)
             return ResultDisconnected();

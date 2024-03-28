@@ -7,7 +7,7 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
 {
     #region Public and private methods
 
-    public TgEfProxyEntity CreateNew()
+    public TgEfProxyEntity CreateNew(bool isSave)
     {
 	    TgEfProxyEntity item = new()
 	    {
@@ -18,13 +18,14 @@ public sealed class TgEfProxyRepository(TgEfContext context) : TgEfRepositoryBas
 		    Password = "No password",
 		    Secret = string.Empty
 	    };
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
 	    return item;
     }
 
-	public TgEfProxyEntity GetFirst() => Context.Proxies.FirstOrDefault() ?? CreateNew();
+	public TgEfProxyEntity GetFirst() => Context.Proxies.FirstOrDefault() ?? CreateNew(false);
 
-	public async Task<TgEfProxyEntity> GetFirstAsync() => await Context.Proxies.FirstOrDefaultAsync() ?? CreateNew();
+	public async Task<TgEfProxyEntity> GetFirstAsync() => await Context.Proxies.FirstOrDefaultAsync() ?? CreateNew(false);
 
     public IEnumerable<TgEfProxyEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

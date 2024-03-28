@@ -29,7 +29,7 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableDocumentModel item, bool isGetByUid = false)
     {
@@ -73,9 +73,9 @@ public sealed class TgSqlTableDocumentRepository : TgSqlRepositoryBase<TgSqlTabl
             $"{nameof(TgSqlTableDocumentModel.MessageId)}={messageId}")) 
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableDocumentModel> GetNewAsync()
+    public async Task<TgSqlTableDocumentModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableDocumentModel itemNew = CreateNew(true);
+        TgSqlTableDocumentModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableDocumentModel>().Select(i => i)
                    .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.MessageId, itemNew.MessageId))

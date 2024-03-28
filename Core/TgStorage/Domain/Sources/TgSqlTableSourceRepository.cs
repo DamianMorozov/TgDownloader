@@ -43,7 +43,7 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableSourceModel item, bool isGetByUid = false)
     {
@@ -88,9 +88,9 @@ public sealed class TgSqlTableSourceRepository : TgSqlRepositoryBase<TgSqlTableS
             .FindObjectAsync<TgSqlTableSourceModel>(CriteriaOperator.Parse($"{nameof(TgSqlTableSourceModel.Id)}={id}"))
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableSourceModel> GetNewAsync()
+    public async Task<TgSqlTableSourceModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableSourceModel itemNew = CreateNew(true);
+        TgSqlTableSourceModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableSourceModel>().Select(i => i)
                    .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id)

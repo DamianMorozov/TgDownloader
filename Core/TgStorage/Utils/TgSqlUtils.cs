@@ -163,14 +163,14 @@ public static class TgSqlUtils
 
     public static void DeleteNewItems()
     {
-        TgSqlTableAppRepository.Instance.DeleteNewAsync();
-        TgSqlTableDocumentRepository.Instance.DeleteNewAsync();
-        TgSqlTableFilterRepository.Instance.DeleteNewAsync();
-        TgSqlTableMessageRepository.Instance.DeleteNewAsync();
-        TgSqlTableProxyRepository.Instance.DeleteNewAsync();
-        TgSqlTableSourceRepository.Instance.DeleteNewAsync();
-        TgSqlTableVersionRepository.Instance.DeleteNewAsync();
-    }
+        TgSqlTableAppRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+        TgSqlTableDocumentRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+		TgSqlTableFilterRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+		TgSqlTableMessageRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+		TgSqlTableProxyRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+		TgSqlTableSourceRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+		TgSqlTableVersionRepository.Instance.DeleteNewAsync(true).GetAwaiter().GetResult();
+	}
 
     #endregion
 

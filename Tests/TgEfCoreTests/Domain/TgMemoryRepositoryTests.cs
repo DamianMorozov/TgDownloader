@@ -12,7 +12,7 @@ internal class TgMemoryRepositoryTests : TgEfContextBase
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			TEntity item = repo.CreateNew();
+			TEntity item = repo.CreateNew(false);
             TEntity itemFind = repo.GetSingle(item.Uid);
 
 			Assert.That(itemFind, Is.Not.Null);

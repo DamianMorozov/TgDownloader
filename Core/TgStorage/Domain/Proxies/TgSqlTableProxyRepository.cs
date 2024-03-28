@@ -38,7 +38,7 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableProxyModel item, bool isGetByUid = false)
     {
@@ -72,9 +72,9 @@ public sealed class TgSqlTableProxyRepository : TgSqlRepositoryBase<TgSqlTablePr
             $"{nameof(TgSqlTableProxyModel.Port)}={port}")) 
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableProxyModel> GetNewAsync()
+    public async Task<TgSqlTableProxyModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableProxyModel itemNew = CreateNew(true);
+        TgSqlTableProxyModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableProxyModel>().Select(i => i)
                    .FirstOrDefaultAsync(i => Equals(i.Type, itemNew.Type) &&

@@ -103,7 +103,7 @@ internal class TgStorageHelperGetEnumerableTests
 			TgStorageTestsUtils.DataCore.ContextManager.FillTableVersions();
 			TgSqlTableVersionModel versionLast =
 				!TgStorageTestsUtils.DataCore.ContextManager.IsTableExists(TgSqlConstants.TableVersions)
-				? TgStorageTestsUtils.VersionRepository.GetNewAsync().GetAwaiter().GetResult()
+				? TgStorageTestsUtils.VersionRepository.GetNewAsync(true).GetAwaiter().GetResult()
                 : TgStorageTestsUtils.VersionRepository.GetItemLastAsync().GetAwaiter().GetResult();
 			TestContext.WriteLine(versionLast);
 			Assert.That(Equals(TgStorageTestsUtils.VersionRepository.LastVersion, versionLast.Version));

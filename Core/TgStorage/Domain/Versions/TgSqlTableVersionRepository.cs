@@ -34,7 +34,7 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableVersionModel item, bool isGetByUid = false)
     {
@@ -75,9 +75,9 @@ public sealed class TgSqlTableVersionRepository : TgSqlRepositoryBase<TgSqlTable
             .FirstOrDefaultAsync() 
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableVersionModel> GetNewAsync()
+    public async Task<TgSqlTableVersionModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableVersionModel itemNew = CreateNew(true);
+        TgSqlTableVersionModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableVersionModel>()
                    .Select(i => i)

@@ -7,19 +7,20 @@ public sealed class TgEfAppRepository(TgEfContext context) : TgEfRepositoryBase<
 {
 	#region Public and private methods
 
-	public TgEfAppEntity CreateNew()
+	public TgEfAppEntity CreateNew(bool isSave)
     {
 	    TgEfAppEntity item = new()
 	    {
 		    PhoneNumber = "+00000000000"
 	    };
-	    CreateNew(item);
+		if (isSave)
+			CreateNew(item);
 	    return item;
     }
 
-	public TgEfAppEntity GetFirst() => Context.Apps.FirstOrDefault() ?? CreateNew();
+	public TgEfAppEntity GetFirst() => Context.Apps.FirstOrDefault() ?? CreateNew(false);
 
-	public async Task<TgEfAppEntity> GetFirstAsync() => await Context.Apps.FirstOrDefaultAsync() ?? CreateNew();
+	public async Task<TgEfAppEntity> GetFirstAsync() => await Context.Apps.FirstOrDefaultAsync() ?? CreateNew(false);
     
 	public IEnumerable<TgEfAppEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

@@ -9,7 +9,7 @@
 		<UserSecretsId>acec7ca6-caa9-470e-96aa-3f14f080d6bd</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>..\..</DockerfileContext>
-		<Version>0.4.150.0</Version>
+		<Version>0.4.160.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -37,21 +37,9 @@
 	<ItemGroup>
 		<None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md" />
 		<None Include="..\..\CHANGELOG.md" Link="CHANGELOG.md" />
-		<None Include="..\..\GUIDE-SETUP-DESKTOP-RUS.md" Link="GUIDE-SETUP-DESKTOP-RUS.md" />
-		<None Include="..\..\GUIDE-SETUP-DESKTOP.md" Link="GUIDE-SETUP-DESKTOP.md" />
-		<None Include="..\..\GUIDE-SETUP-DOCKER-RUS.md" Link="GUIDE-SETUP-DOCKER-RUS.md" />
-		<None Include="..\..\GUIDE-SETUP-DOCKER.md" Link="GUIDE-SETUP-DOCKER.md" />
-		<None Include="..\..\GUIDES-RUS.md" Link="GUIDES-RUS.md" />
-		<None Include="..\..\GUIDES.md" Link="GUIDES.md" />
-		<None Include="..\..\ISSUE-RUS.md" Link="ISSUE-RUS.md" />
-		<None Include="..\..\ISSUE.md" Link="ISSUE.md" />
 		<None Include="..\..\LICENSE.md" Link="LICENSE.md" />
 		<None Include="..\..\README-RUS.md" Link="README-RUS.md" />
 		<None Include="..\..\README.md" Link="README.md" />
-		<None Include="..\..\RELEASE.md" Link="RELEASE.md" />
-		<None Include="..\..\RESOURCES-RUS.md" Link="RESOURCES-RUS.md" />
-		<None Include="..\..\RESOURCES.md" Link="RESOURCES.md" />
-		<None Include="..\..\SCREENSHOTS.md" Link="SCREENSHOTS.md" />
 	</ItemGroup>
 
 	<ItemGroup>

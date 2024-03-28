@@ -8,7 +8,7 @@ public sealed class TgEfMessageRepository(TgEfContext context) : TgEfRepositoryB
     #region Public and private methods
 
 
-    public TgEfMessageEntity CreateNew()
+    public TgEfMessageEntity CreateNew(bool isSave)
     {
 	    TgEfMessageEntity item = new()
 	    {
@@ -19,13 +19,14 @@ public sealed class TgEfMessageRepository(TgEfContext context) : TgEfRepositoryB
 		    Size = 0,
 		    Message = string.Empty
 	    };
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
 	    return item;
     }
 
-	public TgEfMessageEntity GetFirst() => Context.Messages.FirstOrDefault() ?? CreateNew();
+	public TgEfMessageEntity GetFirst() => Context.Messages.FirstOrDefault() ?? CreateNew(false);
 
-	public async Task<TgEfMessageEntity> GetFirstAsync() => await Context.Messages.FirstOrDefaultAsync() ?? CreateNew();
+	public async Task<TgEfMessageEntity> GetFirstAsync() => await Context.Messages.FirstOrDefaultAsync() ?? CreateNew(false);
 
     public IEnumerable<TgEfMessageEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

@@ -9,21 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CHANGELOG.md = CHANGELOG.md
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		GUIDE-SETUP-DESKTOP-RUS.md = GUIDE-SETUP-DESKTOP-RUS.md
-		GUIDE-SETUP-DESKTOP.md = GUIDE-SETUP-DESKTOP.md
-		GUIDE-SETUP-DOCKER-RUS.md = GUIDE-SETUP-DOCKER-RUS.md
-		GUIDE-SETUP-DOCKER.md = GUIDE-SETUP-DOCKER.md
-		GUIDES-RUS.md = GUIDES-RUS.md
-		GUIDES.md = GUIDES.md
-		ISSUE-RUS.md = ISSUE-RUS.md
-		ISSUE.md = ISSUE.md
 		LICENSE.md = LICENSE.md
 		README-RUS.md = README-RUS.md
 		README.md = README.md
-		RELEASE.md = RELEASE.md
-		RESOURCES-RUS.md = RESOURCES-RUS.md
-		RESOURCES.md = RESOURCES.md
-		SCREENSHOTS.md = SCREENSHOTS.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{BC2545B1-7D32-4DBC-BA36-C49AF2536B82}"
@@ -54,7 +42,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgEfCore", "Core\TgEfCore\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgEfCoreTests", "Tests\TgEfCoreTests\TgEfCoreTests.csproj", "{350F1246-2A11-49E5-BE3F-95543BD876AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgDownloaderBlazor", "Clients\TgDownloaderBlazor\TgDownloaderBlazor.csproj", "{2CEEB42C-BE70-4D2C-811F-17648FB742F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderBlazor", "Clients\TgDownloaderBlazor\TgDownloaderBlazor.csproj", "{2CEEB42C-BE70-4D2C-811F-17648FB742F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{49FCA776-C63B-4C0C-B2B2-E9CA0E5949ED}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\GUIDE-SETUP-DESKTOP-RUS.md = Docs\GUIDE-SETUP-DESKTOP-RUS.md
+		Docs\GUIDE-SETUP-DESKTOP.md = Docs\GUIDE-SETUP-DESKTOP.md
+		Docs\GUIDE-SETUP-DOCKER-RUS.md = Docs\GUIDE-SETUP-DOCKER-RUS.md
+		Docs\GUIDE-SETUP-DOCKER.md = Docs\GUIDE-SETUP-DOCKER.md
+		Docs\GUIDES-RUS.md = Docs\GUIDES-RUS.md
+		Docs\GUIDES.md = Docs\GUIDES.md
+		Docs\ISSUE-RUS.md = Docs\ISSUE-RUS.md
+		Docs\ISSUE.md = Docs\ISSUE.md
+		Docs\RELEASE.md = Docs\RELEASE.md
+		Docs\RESOURCES-RUS.md = Docs\RESOURCES-RUS.md
+		Docs\RESOURCES.md = Docs\RESOURCES.md
+		Docs\SCREENSHOTS.md = Docs\SCREENSHOTS.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

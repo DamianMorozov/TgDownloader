@@ -244,7 +244,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
-            ItemSourceVm.Source = await ContextManager.SourceRepository.GetNewAsync();
+            ItemSourceVm.Source = await ContextManager.SourceRepository.GetNewAsync(true);
         }, false);
     }
 

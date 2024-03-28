@@ -7,20 +7,21 @@ public sealed class TgEfVersionRepository(TgEfContext context) : TgEfRepositoryB
 {
     #region Public and private methods
 
-    public TgEfVersionEntity CreateNew()
+    public TgEfVersionEntity CreateNew(bool isSave)
     {
 	    TgEfVersionEntity item = new()
 	    {
 		    Version = short.MaxValue,
 		    Description = "New version",
 	    };
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
         return item;
     }
 
-    public TgEfVersionEntity GetFirst() => Context.Versions.FirstOrDefault() ?? CreateNew();
+    public TgEfVersionEntity GetFirst() => Context.Versions.FirstOrDefault() ?? CreateNew(false);
 
-    public async Task<TgEfVersionEntity> GetFirstAsync() => await Context.Versions.FirstOrDefaultAsync() ?? CreateNew();
+    public async Task<TgEfVersionEntity> GetFirstAsync() => await Context.Versions.FirstOrDefaultAsync() ?? CreateNew(false);
 
 	public IEnumerable<TgEfVersionEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

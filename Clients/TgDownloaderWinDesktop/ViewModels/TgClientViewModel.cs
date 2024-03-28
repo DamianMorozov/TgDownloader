@@ -254,7 +254,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            AppVm.App = await ContextManager.AppRepository.GetNewAsync();
+            AppVm.App = await ContextManager.AppRepository.GetNewAsync(true);
         }, false).ConfigureAwait(true);
     }
 

@@ -39,7 +39,7 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
     
     public async Task<bool> SaveAsync(TgSqlTableMessageModel item, bool isGetByUid = false)
     {
@@ -85,9 +85,9 @@ public sealed class TgSqlTableMessageRepository : TgSqlRepositoryBase<TgSqlTable
     public async Task<bool> GetExistsAsync(long id, long sourceId) =>
         (await GetAsync(sourceId, id)).IsExists;
 
-    public async Task<TgSqlTableMessageModel> GetNewAsync()
+    public async Task<TgSqlTableMessageModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableMessageModel itemNew = CreateNew(true);
+        TgSqlTableMessageModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableMessageModel>().Select(i => i)
                    .FirstOrDefaultAsync(i => Equals(i.Id, itemNew.Id) && Equals(i.SourceId, itemNew.SourceId) && Equals(i.Type, itemNew.Type) &&

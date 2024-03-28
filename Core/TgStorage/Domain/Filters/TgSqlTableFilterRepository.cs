@@ -37,7 +37,7 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
         return itemFind.IsExists && await base.DeleteAsync(itemFind);
     }
 
-    public async Task<bool> DeleteNewAsync() => await DeleteAsync(await GetNewAsync());
+    public async Task<bool> DeleteNewAsync(bool isCreateSession) => await DeleteAsync(await GetNewAsync(isCreateSession));
 
     public async Task<bool> SaveAsync(TgSqlTableFilterModel item, bool isGetByUid = false)
     {
@@ -71,9 +71,9 @@ public sealed class TgSqlTableFilterRepository : TgSqlRepositoryBase<TgSqlTableF
             $"{nameof(TgSqlTableFilterModel.Name)}='{name}'")) 
         ?? CreateNew(true);
 
-    public async Task<TgSqlTableFilterModel> GetNewAsync()
+    public async Task<TgSqlTableFilterModel> GetNewAsync(bool isCreateSession)
     {
-        TgSqlTableFilterModel itemNew = CreateNew(true);
+        TgSqlTableFilterModel itemNew = CreateNew(isCreateSession);
         return await new UnitOfWork()
                    .Query<TgSqlTableFilterModel>().Select(i => i)
                    .FirstOrDefaultAsync(i => Equals(i.IsEnabled, itemNew.IsEnabled) &&

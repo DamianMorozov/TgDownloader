@@ -8,16 +8,17 @@ public sealed class TgEfDocumentRepository(TgEfContext context) : TgEfRepository
     #region Public and private methods
 
 
-    public TgEfDocumentEntity CreateNew()
+    public TgEfDocumentEntity CreateNew(bool isSave)
     {
 	    TgEfDocumentEntity item = new();
-	    CreateNew(item);
+        if (isSave)
+			CreateNew(item);
 	    return item;
     }
 
-    public TgEfDocumentEntity GetFirst() => Context.Documents.FirstOrDefault() ?? CreateNew();
+    public TgEfDocumentEntity GetFirst() => Context.Documents.FirstOrDefault() ?? CreateNew(false);
 
-    public async Task<TgEfDocumentEntity> GetFirstAsync() => await Context.Documents.FirstOrDefaultAsync() ?? CreateNew();
+    public async Task<TgEfDocumentEntity> GetFirstAsync() => await Context.Documents.FirstOrDefaultAsync() ?? CreateNew(false);
     
     public IEnumerable<TgEfDocumentEntity> GetEnumerable(TgSqlEnumTableTopRecords topRecords = TgSqlEnumTableTopRecords.All) =>
         topRecords switch

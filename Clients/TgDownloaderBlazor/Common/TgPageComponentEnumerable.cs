@@ -17,7 +17,10 @@ public abstract class TgPageComponentEnumerable<TEntity> : TgPageComponentBase w
 
 	#region Public and private methods
 
-    //
+	~TgPageComponentEnumerable()
+	{
+		Grid?.Dispose();
+	}
 
     #endregion
 }
