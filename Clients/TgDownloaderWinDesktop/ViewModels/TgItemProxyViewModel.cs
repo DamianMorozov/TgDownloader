@@ -8,14 +8,15 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
 {
     #region Public and private fields, properties, constructor
 
-    public TgSqlTableProxyViewModel ItemProxyVm { get; private set; } = new(TgSqlUtils.CreateNewProxy());
+    public TgXpoProxyViewModel ItemProxyVm { get; private set; }
     public IReadOnlyList<TgEnumProxyType> ProxyTypes { get; }
     public TgPageViewModelBase? ViewModel { get; set; }
     private Guid ProxyUid { get; set; }
 
-    public TgItemProxyViewModel()
-    {
-        ProxyTypes = ContextManager.ProxyRepository.GetProxyTypes();
+    public TgItemProxyViewModel(TgXpoProxyRepository proxyRepository)
+	{
+        ProxyTypes = XpoContext.ProxyRepository.GetProxyTypes();
+        ItemProxyVm = new (proxyRepository.CreateNewAsync().GetAwaiter().GetResult().Item);
     }
 
     #endregion
@@ -36,13 +37,13 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await OnGetProxyFromStorageAsync();
     }
 
-    public void SetItemProxyVm(TgSqlTableProxyViewModel itemProxyVm) =>
-        SetItemProxyVm(itemProxyVm.Proxy, itemProxyVm.Proxy.Uid);
+    public void SetItemProxyVm(TgXpoProxyViewModel itemProxyVm) =>
+        SetItemProxyVm(itemProxyVm.Proxy);
 
-    public void SetItemProxyVm(TgSqlTableProxyModel proxy, Guid? uid = null)
+    public void SetItemProxyVm(TgXpoProxyEntity proxy)
     {
-        ItemProxyVm.Proxy.Fill(proxy, uid);
-        TgSqlTableProxyViewModel itemBackup = ItemProxyVm;
+        ItemProxyVm.Proxy.Fill(proxy);
+        TgXpoProxyViewModel itemBackup = ItemProxyVm;
         ItemProxyVm = new(itemBackup.Proxy);
     }
 
@@ -55,8 +56,8 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            TgSqlTableProxyModel proxy = await ContextManager.ProxyRepository.GetAsync(ProxyUid);
-            SetItemProxyVm(proxy, proxy.Uid);
+            TgXpoProxyEntity proxy = (await XpoContext.ProxyRepository.GetAsync(ProxyUid)).Item;
+            SetItemProxyVm(proxy);
         }, true);
     }
 
@@ -69,7 +70,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Proxy = await ContextManager.ProxyRepository.GetNewAsync(true);
+            ItemProxyVm.Proxy = (await XpoContext.ProxyRepository.GetNewAsync()).Item;
         }, false);
     }
 
@@ -80,7 +81,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ContextManager.ProxyRepository.SaveAsync(ItemProxyVm.Proxy, true);
+            await XpoContext.ProxyRepository.SaveAsync(ItemProxyVm.Proxy);
         }, false);
     }
 

@@ -22,6 +22,7 @@ internal partial class TgMenuHelper
 					TgLocale.MenuScanChats,
 					TgLocale.MenuScanDialogs,
 					TgLocale.MenuMarkAllMessagesAsRead,
+					TgLocale.MenuViewVersions, 
 					TgLocale.MenuViewSources
 				));
 		if (prompt.Equals(TgLocale.MenuAutoDownload))
@@ -34,6 +35,8 @@ internal partial class TgMenuHelper
 			return TgEnumMenuDownload.ScanDialogs;
 		if (prompt.Equals(TgLocale.MenuMarkAllMessagesAsRead))
 			return TgEnumMenuDownload.MarkHistoryRead;
+		if (prompt.Equals(TgLocale.MenuViewVersions))
+			return TgEnumMenuDownload.ViewVersions;
 		if (prompt.Equals(TgLocale.MenuViewSources))
 			return TgEnumMenuDownload.ViewSources;
 		return TgEnumMenuDownload.Return;
@@ -60,11 +63,14 @@ internal partial class TgMenuHelper
 				case TgEnumMenuDownload.ScanDialogs:
 					ScanSources(tgDownloadSettings, TgEnumSourceType.Dialog);
 					break;
+				case TgEnumMenuDownload.MarkHistoryRead:
+					MarkHistoryRead(tgDownloadSettings);
+					break;
 				case TgEnumMenuDownload.ViewSources:
                     ViewSources(tgDownloadSettings);
 					break;
-				case TgEnumMenuDownload.MarkHistoryRead:
-					MarkHistoryRead(tgDownloadSettings);
+				case TgEnumMenuDownload.ViewVersions:
+                    ViewVersions(tgDownloadSettings);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -100,14 +106,21 @@ internal partial class TgMenuHelper
 	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgSqlTableSourceModel source = GetSourceFromEnumerable(TgLocale.MenuViewSources,
-			ContextManager.SourceRepository.GetEnumerable());
-		if (source.IsExists)
+		TgEfSourceEntity source = GetSourceFromEnumerable(TgLocale.MenuViewSources, 
+			EfContext.SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items);
+		if (source.IsExist)
 		{
 			Value = TgEnumMenuMain.Download;
             tgDownloadSettings = SetupDownloadSource(source.Id);
 			SetupDownload(tgDownloadSettings);
 		}
+	}
+
+	private void ViewVersions(TgDownloadSettingsModel tgDownloadSettings)
+	{
+		ShowTableViewVersions(tgDownloadSettings);
+		GetVersionFromEnumerable(TgLocale.MenuViewSources, 
+			EfContext.VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items);
 	}
 
 	private void MarkHistoryRead(TgDownloadSettingsModel tgDownloadSettings)
@@ -117,8 +130,9 @@ internal partial class TgMenuHelper
 
 	private async Task AutoDownloadAsync(TgDownloadSettingsModel _)
 	{
-		IEnumerable<TgSqlTableSourceModel> sources = ContextManager.SourceRepository.GetEnumerable();
-		foreach (TgSqlTableSourceModel source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
+		IEnumerable<TgEfSourceEntity> sources = 
+			(await EfContext.SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)).Items;
+		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
             TgDownloadSettingsModel tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";

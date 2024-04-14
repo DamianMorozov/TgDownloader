@@ -11,9 +11,12 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
+	public TgEfContext EfContext { get; } = default!;
 
-	public TgSqlTableSourceViewModel SourceVm { get; set; }
+	public TgEfSourceViewModel SourceVm { get; set; }
+	
+	public TgEfVersionViewModel VersionVm { get; set; }
+	
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
 	[DefaultValue(false)]
@@ -23,10 +26,11 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 
 	public TgDownloadSettingsModel()
 	{
-		SourceVm = TgSqlTableSourceViewModel.CreateNew();
-		IsJoinFileNameWithMessageId = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsJoinFileNameWithMessageId));
-		IsRewriteFiles = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteFiles));
-		IsRewriteMessages = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsRewriteMessages));
+		EfContext = TgStorageUtils.GetEfContextProd();
+		SourceVm = new TgEfSourceViewModel(EfContext);
+		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
+		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
+		IsRewriteMessages = this.GetDefaultPropertyBool(nameof(IsRewriteMessages));
 	}
 
 	#endregion
@@ -41,8 +45,9 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
     {
         if (!SourceVm.IsReadySourceId)
             return;
-        if (await ContextManager.SourceRepository.SaveByViewModelAsync(SourceVm))
-            SourceVm.Source = await ContextManager.SourceRepository.GetAsync(SourceVm.Source.Id);
+        TgEfOperResult<TgEfSourceEntity> operResult = await EfContext.SourceRepository.SaveAsync(SourceVm.Item);
+        if (operResult.IsExist) 
+	        SourceVm.Item = operResult.Item;
     }
 
     #endregion

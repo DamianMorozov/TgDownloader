@@ -141,7 +141,7 @@
 									HorizontalContentAlignment="Center"
 									IsEnabled="False"
 									IsManipulationEnabled="False"
-									Text="{Binding DownloadSetting.SourceVm.Source.UserName, Mode=OneWay, IsAsync=True}"
+									Text="{Binding DownloadSetting.SourceVm.Item.UserName, Mode=OneWay, IsAsync=True}"
 									ToolTip="{Binding DownloadSetting.SourceVm.ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
@@ -164,7 +164,7 @@
 									HorizontalContentAlignment="Left"
 									IsEnabled="False"
 									IsManipulationEnabled="False"
-									Text="{Binding DownloadSetting.SourceVm.Source.Title, Mode=OneWay, IsAsync=True}" />
+									Text="{Binding DownloadSetting.SourceVm.Item.Title, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -187,7 +187,7 @@
 									HorizontalContentAlignment="Center"
 									IsEnabled="False"
 									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
-									Text="{Binding DownloadSetting.SourceVm.Source.FirstId, Mode=TwoWay, IsAsync=True}" />
+									Text="{Binding DownloadSetting.SourceVm.Item.FirstId, Mode=TwoWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
@@ -210,7 +210,7 @@
 									HorizontalContentAlignment="Center"
 									IsEnabled="False"
 									IsManipulationEnabled="{Binding IsNotLoad, Mode=OneWay, IsAsync=True}"
-									Text="{Binding DownloadSetting.SourceVm.Source.Count, Mode=TwoWay, IsAsync=True}" />
+									Text="{Binding DownloadSetting.SourceVm.Item.Count, Mode=TwoWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>

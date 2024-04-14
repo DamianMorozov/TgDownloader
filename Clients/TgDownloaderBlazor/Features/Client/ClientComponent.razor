@@ -1,5 +1,5 @@
 ﻿@page "/client"
-@inherits TgPageComponentEnumerable<TgEfAppEntity>
+@inherits TgPageComponentEnumerable<TgStorage.Domain.Apps.TgEfAppEntity>
 
 <PageTitle>@TgLocale.MenuMainApps</PageTitle>
 
@@ -35,7 +35,6 @@ else
 			</RadzenColumn>
 			<RadzenColumn Size="2" SizeMD="2">
 				<RadzenButton class="rz-border-radius-4" Variant="Variant.Flat" Shade="Shade.Light" ButtonStyle="ButtonStyle.Primary"
-				              Disabled="true"
 				              Click=@(args => OnClientSave(true)) Text=@TgLocale.Save
 							  Style="width: 100%; " />
 			</RadzenColumn>

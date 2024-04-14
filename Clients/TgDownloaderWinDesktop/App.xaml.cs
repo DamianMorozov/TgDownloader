@@ -8,8 +8,6 @@ namespace TgDownloaderWinDesktop;
 /// </summary>
 public partial class App
 {
-	private TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-
 	// The.NET Generic Host provides dependency injection, configuration, logging, and other services.
 	// https://docs.microsoft.com/dotnet/core/extensions/generic-host
 	// https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
@@ -72,7 +70,6 @@ public partial class App
 	private async void OnStartup(object sender, StartupEventArgs e)
 	{
         TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
-        ContextManager.CreateOrConnectDb(true);
 		await Host.StartAsync().ConfigureAwait(false);
 		TgDesktopUtils.SetupClient();
 	}

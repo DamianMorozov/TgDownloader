@@ -23,7 +23,7 @@ public class TgExceptionModel : TgViewModelBase
 			SetProperty(ref _exception, value);
 		}
 	}
-	public bool IsExists => Exception is not null;
+	public bool IsExist => Exception is not null;
 	public string Message { get; private set; }
 
 	public TgExceptionModel()

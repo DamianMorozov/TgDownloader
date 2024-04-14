@@ -4,83 +4,96 @@
 namespace TgStorageTest.Helpers;
 
 [TestFixture]
-internal class TgStorageCreateTests
+internal class TgStorageCreateTests : TgDbContextTestsBase
 {
-    #region Public and private methods
 
-    public void CreateAndDeleteItem<T>(ITgSqlRepository<T> repository) where T : ITgSqlTable, new()
+	#region Public and private methods
+
+	[Test, Order(0)]
+	public void Delete_new_items()
+	{
+		Assert.DoesNotThrowAsync(async () =>
+		{
+			bool isDelete = (await XpoProdContext.AppRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoAppRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.DocumentRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoDocumentRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.FilterRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoFilterRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.MessageRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoMessageRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.ProxyRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoProxyRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.SourceRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoSourceRepository)}: {isDelete}");
+
+			isDelete = (await XpoProdContext.VersionRepository.DeleteNewAsync()).NotExist;
+			TestContext.WriteLine($"{nameof(TgXpoVersionRepository)}: {isDelete}");
+		});
+	}
+
+	public void CreateAndDeleteItem<T>(ITgXpoRepository<T> repository, Action<T> action) where T : XPLiteObject, ITgDbEntity, new()
     {
-        Assert.DoesNotThrow(() =>
+        Assert.DoesNotThrowAsync(async () =>
         {
             TestContext.WriteLine($"{typeof(T)}");
-            T item = repository.GetNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(repository.GetNewAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsNotExists);
+            T item = (await repository.GetNewAsync()).Item;
+            TestContext.WriteLine($"{item.ToDebugString()}");
+            Assert.That(item.NotExist);
 
-            bool isStore = repository.SaveAsync(item).Result;
-            TestContext.WriteLine($"{nameof(repository.SaveAsync)}: {isStore}");
-            Assert.That(isStore);
-            item = repository.GetAsync(item).Result;
-            TestContext.WriteLine($"{nameof(repository.GetAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
-            bool isDelete = repository.DeleteAsync(item).Result;
-            TestContext.WriteLine($"{nameof(repository.DeleteAsync)}: {isDelete}");
+            bool isSave = (await repository.SaveAsync(item)).IsExist;
+            Assert.That(isSave);
+            item = (await repository.GetAsync(item)).Item;
+            TestContext.WriteLine($"{item.ToDebugString()}");
+            Assert.That(item.IsExist);
+
+            action(item);
+			isSave = (await repository.SaveAsync(item)).IsExist;
+            Assert.That(isSave);
+            item = (await repository.GetAsync(item)).Item;
+            TestContext.WriteLine($"{item.ToDebugString()}");
+            Assert.That(item.IsExist);
+            
+            bool isDelete = (await repository.DeleteAsync(item, isSkipFind: false)).NotExist;
             Assert.That(isDelete);
 
-            item = repository.GetAsync(item).Result;
-            TestContext.WriteLine($"{nameof(repository.GetAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsNotExists);
-        });
-    }
-
-    [Test, Order(0)]
-    public void Delete_new_items()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            bool isDelete = TgSqlTableAppRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableAppRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableDocumentRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableDocumentRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableFilterRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableFilterRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableMessageRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableMessageRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableProxyRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableProxyRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableSourceRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableSourceRepository)}: {isDelete}");
-
-            isDelete = TgSqlTableVersionRepository.Instance.DeleteNewAsync(true).Result;
-            TestContext.WriteLine($"{nameof(TgSqlTableVersionRepository)}: {isDelete}");
+            var operResult = await repository.GetAsync(item);
+            Assert.That(operResult.NotExist);
         });
     }
 
     [Test]
-    public void Create_and_delete_new_app() => CreateAndDeleteItem(TgSqlTableAppRepository.Instance);
+    public void Create_and_delete_new_app() => CreateAndDeleteItem(XpoProdContext.AppRepository,
+	    item => { item.PhoneNumber = "Changed"; });
 
     [Test]
-    public void Create_and_delete_new_document() => CreateAndDeleteItem(TgSqlTableDocumentRepository.Instance);
+    public void Create_and_delete_new_document() => CreateAndDeleteItem(XpoProdContext.DocumentRepository,
+	    item => { item.FileName = "Changed"; });
 
     [Test]
-    public void Create_and_delete_new_filter() => CreateAndDeleteItem(TgSqlTableFilterRepository.Instance);
+    public void Create_and_delete_new_filter() => CreateAndDeleteItem(XpoProdContext.FilterRepository,
+	    item => { item.Name = "Changed"; });
 
-    [Test]
-    public void Create_and_delete_new_message() => CreateAndDeleteItem(TgSqlTableMessageRepository.Instance);
+	[Test]
+    public void Create_and_delete_new_message() => CreateAndDeleteItem(XpoProdContext.MessageRepository,
+	    item => { item.Message = "Changed"; });
 
-    [Test]
-    public void Create_and_delete_new_proxy() => CreateAndDeleteItem(TgSqlTableProxyRepository.Instance);
+	[Test]
+    public void Create_and_delete_new_proxy() => CreateAndDeleteItem(XpoProdContext.ProxyRepository,
+	    item => { item.HostName = "Changed"; });
 
-    [Test]
-    public void Create_and_delete_new_source() => CreateAndDeleteItem(TgSqlTableSourceRepository.Instance);
+	[Test]
+    public void Create_and_delete_new_source() => CreateAndDeleteItem(XpoProdContext.SourceRepository,
+	    item => { item.About = "Changed"; });
 
-    [Test]
-    public void Create_and_delete_new_version() => CreateAndDeleteItem(TgSqlTableVersionRepository.Instance);
+	[Test]
+    public void Create_and_delete_new_version() => CreateAndDeleteItem(XpoProdContext.VersionRepository,
+	    item => { item.Description = "Changed"; });
 
 	#endregion
 }

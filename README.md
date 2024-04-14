@@ -35,5 +35,5 @@ Please click the `star` button if this tool was helpful to you.
 - [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
 
 ## Docker images
-- [TgDownloader Console Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
-- [TgDownloader Blazor Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)
+- [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
+- [TgDownloader-Blazor Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)

@@ -10,7 +10,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 {
     #region Public and private fields, properties, constructor
 
-    public ObservableCollection<TgSqlTableDownloadViewModel> DownloadVms { get; set; } = new();
+    public ObservableCollection<TgEfTableDownloadViewModel> DownloadVms { get; set; } = new();
 
     #endregion
 
@@ -33,16 +33,16 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     /// <summary>
     /// Sort.
     /// </summary>
-    private void SetOrderJobs(IEnumerable<TgSqlTableDownloadViewModel> downloadVms)
+    private void SetOrderJobs(IEnumerable<TgEfTableDownloadViewModel> downloadVms)
     {
-	    List<TgSqlTableDownloadViewModel> list = downloadVms.ToList();
+	    List<TgEfTableDownloadViewModel> list = downloadVms.ToList();
 	    if (!list.Any()) return;
 	    DownloadVms = new();
 
 	    downloadVms = list.OrderBy(x => x.DownloadSetting.SourceVm.SourceUserName)
 		    .ThenBy(x => x.DownloadSetting.SourceVm.SourceTitle).ToList();
 	    if (downloadVms.Any())
-		    foreach (TgSqlTableDownloadViewModel downloadVm in downloadVms)
+		    foreach (TgEfTableDownloadViewModel downloadVm in downloadVms)
 			    DownloadVms.Add(downloadVm);
     }
 
@@ -51,15 +51,15 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 	/// </summary>
 	/// <param name="sourceVm"></param>
 	/// <returns></returns>
-	public TgDownloadSettingsModel CreateDownloadSettings(TgSqlTableSourceViewModel sourceVm)
+	public TgDownloadSettingsModel CreateDownloadSettings(TgEfSourceViewModel sourceVm)
 	{
-		TgDownloadSettingsModel downloadSettings = new TgDownloadSettingsModel
+		TgDownloadSettingsModel downloadSettings = new()
 		{
-			SourceVm = new TgSqlTableSourceViewModel()
+			SourceVm = new TgEfSourceViewModel(EfContext)
 			{
-				SourceId = sourceVm.Source.Id,
-				SourceFirstId = sourceVm.Source.FirstId,
-				SourceDirectory = sourceVm.Source.Directory
+				SourceId = sourceVm.Item.Id,
+				SourceFirstId = sourceVm.Item.FirstId,
+				SourceDirectory = sourceVm.Item.Directory
 			}
 		};
         if (!DownloadVms.Any())
@@ -86,12 +86,12 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 
     // StartCommand
     [RelayCommand]
-    public async Task OnStartAsync(TgSqlTableDownloadViewModel jobVm)
+    public async Task OnStartAsync(TgEfTableDownloadViewModel jobVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgSqlTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
+            TgEfTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
 	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
             if (findJobVm is not null)
             {
@@ -102,12 +102,12 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 
     // StopCommand
     [RelayCommand]
-    public async Task OnStopAsync(TgSqlTableDownloadViewModel jobVm)
+    public async Task OnStopAsync(TgEfTableDownloadViewModel jobVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgSqlTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
+            TgEfTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
 	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
             if (findJobVm is not null)
             {

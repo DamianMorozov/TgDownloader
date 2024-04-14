@@ -8,7 +8,7 @@ namespace TgStorage.Utils;
 /// </summary>
 public static class TgCommonExtensions
 {
-	#region Public and private methods - Core
+	#region Private methods
 
 	private static object? GetPropertyDefaultValueCore<T>(this T item, string name)
 	{
@@ -21,30 +21,64 @@ public static class TgCommonExtensions
 		return null;
 	}
 
-	private static string GetPropertyDefaultValueAsStringCore<T>(this T item, string name) =>
-		GetPropertyDefaultValueCore(item, name)?.ToString() ?? string.Empty;
+	#endregion
 
-	private static int GetPropertyDefaultValueAsIntCore<T>(this T item, string name) =>
-		GetPropertyDefaultValueCore(item, name) is int value ? value : default;
+	#region Public methods
 
-	private static long GetPropertyDefaultValueAsLongCore<T>(this T item, string name) =>
-		GetPropertyDefaultValueCore(item, name) is long value ? value : default;
-
-	private static bool GetPropertyDefaultValueAsBoolCore<T>(this T item, string name) =>
-		GetPropertyDefaultValueCore(item, name) is bool value ? value : default;
-
-	private static TResult? GetPropertyDefaultValueAsGenericCore<TResult, T>(this T item, string name) =>
+	public static TResult? GetDefaultPropertyGeneric<TResult>(this object item, string name) =>
 		GetPropertyDefaultValueCore(item, name) is TResult value ? value : default;
 
 	#endregion
 
-	#region Public and private methods - IBase
+	#region Public methods - Checked
 
-	public static string GetPropertyDefaultValue(this ITgCommon item, string name) =>
-		GetPropertyDefaultValueAsStringCore(item, name);
+	public static Guid GetDefaultPropertyGuid(this object item, string name) => 
+		GetPropertyDefaultValueCore(item, name) is Guid value ? value : Guid.Empty;
 
-	public static TResult? GetPropertyDefaultValueAsGeneric<TResult>(this ITgCommon item, string name) =>
-		GetPropertyDefaultValueAsGenericCore<TResult, ITgCommon>(item, name);
+	public static bool GetDefaultPropertyBool(this object item, string name)
+	{
+		return GetPropertyDefaultValueCore(item, name) is bool value ? value : default;
+	}
+
+	public static string GetDefaultPropertyString(this object item, string name) => 
+		GetPropertyDefaultValueCore(item, name)?.ToString() ?? string.Empty;
+
+	public static short GetDefaultPropertyShort(this object item, string name)
+	{
+		object? value = GetPropertyDefaultValueCore(item, name);
+		return value is not null ? Convert.ToInt16(value) : default;
+	}
+
+	public static ushort GetDefaultPropertyUshort(this object item, string name)
+	{
+		object? value = GetPropertyDefaultValueCore(item, name);
+		return value is not null ? Convert.ToUInt16(value) : default;
+	}
+
+	public static int GetDefaultPropertyInt(this object item, string name)
+	{
+		return GetPropertyDefaultValueCore(item, name) is int value ? value : default;
+	}
+
+	public static uint GetDefaultPropertyUint(this object item, string name)
+	{
+		return GetPropertyDefaultValueCore(item, name) is int value ? (uint)value : default;
+	}
+
+	public static long GetDefaultPropertyLong(this object item, string name)
+	{
+		return GetPropertyDefaultValueCore(item, name) is int value ? (long)value : default;
+	}
+
+	public static ulong GetDefaultPropertyUlong(this object item, string name)
+	{
+		return GetPropertyDefaultValueCore(item, name) is int value ? (ulong)value : default;
+	}
+
+	public static DateTime GetDefaultPropertyDateTime(this object item, string name) =>
+		GetPropertyDefaultValueCore(item, name) is string value
+			? DateTime.ParseExact(value, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
+			: DateTime.MinValue;
 
 	#endregion
 }

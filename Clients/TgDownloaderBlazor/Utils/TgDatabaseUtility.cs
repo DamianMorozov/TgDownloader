@@ -18,17 +18,17 @@ public static class TgDatabaseUtility
         DbContextOptionsBuilder<TgEfContext> builder = new DbContextOptionsBuilder<TgEfContext>()
             .UseLoggerFactory(factory)
             .UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
-        await using var dbContext = new TgEfContext(builder.Options);
+        await using var efContext = new TgEfContext(builder.Options);
 #if DEBUG
-        Console.WriteLine(dbContext.Database.GetConnectionString());
+        Console.WriteLine(efContext.Database.GetConnectionString());
 #endif
 
-        // Result is true if the database had to be created.
-        //if (await dbContext.Database.EnsureCreatedAsync())
-        //{
-        //	//var seed = new SeedContacts();
-        //	//await seed.SeedDatabaseWithContactCountOfAsync(context, count);
-        //	List<TgEfProxyEntity> proxies = dbContext.Proxies.Select(x => x).Take(1).ToList();
-        //}
-    }
+		// Result is true if the database had to be created.
+		//if (await efContext.Database.EnsureCreatedAsync())
+		//{
+		//	//var seed = new SeedContacts();
+		//	//await seed.SeedDatabaseWithContactCountOfAsync(context, count);
+		//	List<TgEfProxyEntity> proxies = efContext.Proxies.Select(x => x).Take(1).ToList();
+		//}
+	}
 }

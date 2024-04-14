@@ -13,7 +13,7 @@ public static class TgCommonUtils
 
 	public static string GetIsEnabled(bool isEnabled) => $"{(isEnabled ? "<Enabled>" : "<Disabled>")}";
 
-    public static string GetIsExists(bool isExists) => $"{(isExists ? "<Exist>" : "<Non-existent>")}";
+    public static string GetIsExists(bool isExists) => $"{(isExists ? "<Exist>" : "<Not exist>")}";
 
     public static string GetIsExistsDb(bool isExistsDb) => $"{(isExistsDb ? "<Exist DB>" : "<Non-existent DB>")}";
 

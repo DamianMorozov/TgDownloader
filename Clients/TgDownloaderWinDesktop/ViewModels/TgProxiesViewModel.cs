@@ -8,7 +8,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 {
 	#region Public and private fields, properties, constructor
 
-	public ObservableCollection<TgSqlTableProxyViewModel> ProxiesVms { get; set; } = new();
+	public ObservableCollection<TgXpoProxyViewModel> ProxiesVms { get; set; } = new();
 
     #endregion
 
@@ -31,15 +31,15 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     /// <summary>
     /// Sort proxies.
     /// </summary>
-    private void SetOrderProxies(IEnumerable<TgSqlTableProxyModel> proxies)
+    private void SetOrderProxies(IEnumerable<TgXpoProxyEntity> proxies)
 	{
-        List<TgSqlTableProxyModel> list = proxies.ToList();
+        List<TgXpoProxyEntity> list = proxies.ToList();
         if (!list.Any()) return;
         ProxiesVms = new();
 
         proxies = list.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
         if (proxies.Any())
-            foreach (TgSqlTableProxyModel proxy in proxies)
+            foreach (TgXpoProxyEntity proxy in proxies)
                 ProxiesVms.Add(new(proxy));
     }
 
@@ -54,7 +54,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            SetOrderProxies(ContextManager.ProxyRepository.GetEnumerable());
+            SetOrderProxies((await XpoContext.ProxyRepository.GetEnumerableAsync()).Items);
         }, false).ConfigureAwait(false);
 	}
 
@@ -71,12 +71,12 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 
     // DeleteProxyCommand
     [RelayCommand]
-	public async Task OnDeleteProxyAsync(TgSqlTableProxyViewModel proxyVm)
+	public async Task OnDeleteProxyAsync(TgXpoProxyViewModel proxyVm)
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ContextManager.ProxyRepository.DeleteAsync(proxyVm.Proxy);
+            await XpoContext.ProxyRepository.DeleteAsync(proxyVm.Proxy, isSkipFind: false);
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
         }, false).ConfigureAwait(false);
@@ -84,7 +84,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 
     // EditProxyCommand
     [RelayCommand]
-    public async Task OnEditProxyAsync(TgSqlTableProxyViewModel proxyVm)
+    public async Task OnEditProxyAsync(TgXpoProxyViewModel proxyVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
@@ -107,7 +107,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
-                TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(new TgSqlTableProxyViewModel(new TgSqlTableProxyModel()));
+                TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(new TgXpoProxyViewModel(new TgXpoProxyEntity()));
                 navigationWindow.ShowWindow();
                 navigationWindow.Navigate(typeof(TgItemProxyPage));
             }

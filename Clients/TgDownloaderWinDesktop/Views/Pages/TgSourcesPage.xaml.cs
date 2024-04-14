@@ -22,7 +22,7 @@ public partial class TgSourcesPage
 
 	private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
 	{
-		TgSqlTableSourceViewModel t = e.Item as TgSqlTableSourceViewModel;
+		TgXpoSourceViewModel t = e.Item as TgXpoSourceViewModel;
 		if (t != null)
 			// If filter is turned on, filter completed items.
 		{

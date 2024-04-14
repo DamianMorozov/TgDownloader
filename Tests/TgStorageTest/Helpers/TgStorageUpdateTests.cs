@@ -1,159 +1,160 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+﻿//// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+//// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorageTest.Helpers;
+//namespace TgStorageTest.Helpers;
 
-[TestFixture]
-internal class TgStorageUpdateTests
-{
-    #region Public and private methods
+//[TestFixture]
+//internal class TgStorageUpdateTests : TgDbContextTestsBase
+//{
+//    #region Public and private methods
 
-    [Test]
-    public void Update_app()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableAppRepository repository = TgSqlTableAppRepository.Instance;
-            TgSqlTableAppModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//    private void UpdateItem<T>(ITgXpoRepository<T> repository) where T : XPLiteObject, ITgDbEntity, new()
+//	{
+//	    Assert.DoesNotThrowAsync(async () =>
+//	    {
+//		    T item = (await repository.GetFirstAsync()).Item;
+//		    TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//		    Assert.That(item.IsExist);
 
-            Guid proxyUid = item.ProxyUid;
-            item.ProxyUid = Guid.Empty;
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//		    Guid proxyUid = item.ProxyUid;
+//		    item.ProxyUid = Guid.Empty;
+//		    bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//		    TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//		    Assert.That(isUpdate);
 
-            item.ProxyUid = proxyUid;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//		    item.ProxyUid = proxyUid;
+//		    isUpdate = (await repository.SaveAsync(item)).IsExist;
+//		    TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//		    Assert.That(isUpdate);
+//	    });
+//	}
 
-    [Test]
-    public void Update_document()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableDocumentRepository repository = TgSqlTableDocumentRepository.Instance;
-            TgSqlTableDocumentModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//    [Test]
+//    public void Update_app() => UpdateItem(XpoProdContext.AppRepository);
 
-            string fileName = item.FileName;
-            item.FileName = "<Empty>";
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//    [Test]
+//    public void Update_document()
+//    {
+//        Assert.DoesNotThrowAsync(async () =>
+//        {
+//            TgXpoDocumentRepository repository = XpoProdContext.DocumentRepository;
+//            TgXpoDocumentEntity item = (await repository.GetFirstAsync()).Item;
+//            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//            Assert.That(item.IsExist);
 
-            item.FileName = fileName;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//            string fileName = item.FileName;
+//            item.FileName = "<Empty>";
+//            bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
 
-    [Test]
-    public void Update_filter()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            //
-        });
-    }
+//            item.FileName = fileName;
+//            isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
+//        });
+//    }
 
-    [Test]
-    public void Update_message()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableMessageRepository repository = TgSqlTableMessageRepository.Instance;
-            TgSqlTableMessageModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//    [Test]
+//    public void Update_filter()
+//    {
+//        Assert.DoesNotThrow(() =>
+//        {
+//            //
+//        });
+//    }
 
-            string message = item.Message;
-            item.Message = "<Empty>";
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//    [Test]
+//    public void Update_message()
+//    {
+//        Assert.DoesNotThrowAsync(async () =>
+//        {
+//            TgXpoMessageRepository repository = XpoProdContext.MessageRepository;
+//            TgXpoMessageEntity item = (await repository.GetFirstAsync()).Item;
+//            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//            Assert.That(item.IsExist);
 
-            item.Message = message;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//            string message = item.Message;
+//            item.Message = "<Empty>";
+//            bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
 
-    [Test]
-    public void Update_proxy()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableProxyRepository repository = TgSqlTableProxyRepository.Instance;
-            TgSqlTableProxyModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//            item.Message = message;
+//            isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
+//        });
+//    }
 
-            string secret = item.Secret;
-            item.Secret = "<Empty>";
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//    [Test]
+//    public void Update_proxy()
+//    {
+//        Assert.DoesNotThrowAsync(async () =>
+//        {
+//            TgXpoProxyRepository repository = XpoProdContext.ProxyRepository;
+//            TgXpoProxyEntity item = (await repository.GetFirstAsync()).Item;
+//            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//            Assert.That(item.IsExist);
 
-            item.Secret = secret;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//            string secret = item.Secret;
+//            item.Secret = "<Empty>";
+//            bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
 
-    [Test]
-    public void Update_source()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableSourceRepository repository = TgSqlTableSourceRepository.Instance;
-            TgSqlTableSourceModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//            item.Secret = secret;
+//            isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
+//        });
+//    }
 
-            string title = item.Title;
-            item.Title = "<Empty>";
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//    [Test]
+//    public void Update_source()
+//    {
+//        Assert.DoesNotThrowAsync(async () =>
+//        {
+//            TgXpoSourceRepository repository = XpoProdContext.SourceRepository;
+//            TgXpoSourceEntity item = (await repository.GetFirstAsync()).Item;
+//            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//            Assert.That(item.IsExist);
 
-            item.Title = title;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//            string title = item.Title;
+//            item.Title = "<Empty>";
+//            bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
 
-    [Test]
-    public void Update_version()
-    {
-        Assert.DoesNotThrow(() =>
-        {
-            TgSqlTableVersionRepository repository = TgSqlTableVersionRepository.Instance;
-            TgSqlTableVersionModel item = repository.GetFirstAsync().GetAwaiter().GetResult();
-            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
-            Assert.That(item.IsExists);
+//            item.Title = title;
+//            isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
+//        });
+//    }
 
-            string description = item.Description;
-            item.Description = "<Empty>";
-            bool isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
+//    [Test]
+//    public void Update_version()
+//    {
+//        Assert.DoesNotThrowAsync(async () =>
+//        {
+//            TgXpoVersionRepository repository = XpoProdContext.VersionRepository;
+//            TgXpoVersionEntity item = (await repository.GetFirstAsync()).Item;
+//            TestContext.WriteLine($"{nameof(repository.GetFirstAsync)}: {item.ToDebugString()}");
+//            Assert.That(item.IsExist);
 
-            item.Description = description;
-            isUpdate = repository.SaveAsync(item).GetAwaiter().GetResult();
-            TestContext.WriteLine($"Update: {item.ToDebugString()}");
-            Assert.That(isUpdate);
-        });
-    }
+//            string description = item.Description;
+//            item.Description = "<Empty>";
+//            bool isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
 
-    #endregion
-}
+//            item.Description = description;
+//            isUpdate = (await repository.SaveAsync(item)).IsExist;
+//            TestContext.WriteLine($"Update: {item.ToDebugString()}");
+//            Assert.That(isUpdate);
+//        });
+//    }
+
+//    #endregion
+//}

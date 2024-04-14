@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.4.160] - 2024-03-28
+## [0.5.100] - 2024-04-14
 ### Fixed
-- Creating EF Core entities
+- Created EF Core entities
 - Test execution
 
 ## [0.4.150] - 2024-03-27

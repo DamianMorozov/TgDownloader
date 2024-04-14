@@ -19,22 +19,21 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
         if (!IsBlazorLoading)
 	        return;
 
-		await using var dbContext = await DbFactory.CreateDbContextAsync();
+		await using var efContext = await EfFactory.CreateDbContextAsync();
         if (!AppSettings.AppXml.IsExistsFileStorage)
         {
 	        IsBlazorLoading = false;
 	        return;
 		}
 
-		Items = dbContext.AppsRepo.GetEnumerable(0).ToList();
-        ItemsCount = dbContext.AppsRepo.GetCount();
+		Items = (await efContext.AppRepository.GetEnumerableAsync(0, isNoTracking: false)).Items.ToList();
+        ItemsCount = efContext.AppRepository.GetCount();
         
-        IsBlazorLoading = false;
-
         await OnClientLoad();
+        IsBlazorLoading = false;
     }
 
-    private async Task GridLoadData(LoadDataArgs args)
+	private async Task GridLoadData(LoadDataArgs args)
     {
 	    await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		try
@@ -43,10 +42,10 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
             //switch (typeof(TEntity))
             //{
             //    case var cls when cls == typeof(TgEfAppEntity):
-            //Items = dbContext.AppsRepo.GetEnumerable(0).Cast<TEntity>();
-            //ItemsCount = dbContext.AppsRepo.GetCount();
+            //Items = efContext.AppsRepo.GetEnumerable(0).Cast<TEntity>();
+            //ItemsCount = efContext.AppsRepo.GetCount();
 
-            //var query = dbContext.Apps.AsNoTracking().AsQueryable();
+            //var query = efContext.Apps.AsNoTracking().AsQueryable();
             //// Filter via the Where method
             //if (!string.IsNullOrEmpty(args.Filter))
             //{
@@ -63,24 +62,24 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 
             //        break;
             //    case var cls when cls == typeof(TgEfFilterEntity):
-            //        Items = dbContext.FilterRepo.GetEnumerable(0).Cast<TEntity>();
-            //        ItemsCount = dbContext.FilterRepo.GetCount();
+            //        Items = efContext.FilterRepo.GetEnumerable(0).Cast<TEntity>();
+            //        ItemsCount = efContext.FilterRepo.GetCount();
             //        break;
             //    case var cls when cls == typeof(TgEfMessageEntity):
-            //        Items = dbContext.MessageRepo.GetEnumerable(0).Cast<TEntity>();
-            //        ItemsCount = dbContext.MessageRepo.GetCount();
+            //        Items = efContext.MessageRepo.GetEnumerable(0).Cast<TEntity>();
+            //        ItemsCount = efContext.MessageRepo.GetCount();
             //        break;
             //    case var cls when cls == typeof(TgEfProxyEntity):
-            //        Items = dbContext.ProxyRepo.GetEnumerable(0).Cast<TEntity>();
-            //        ItemsCount = dbContext.ProxyRepo.GetCount();
+            //        Items = efContext.ProxyRepo.GetEnumerable(0).Cast<TEntity>();
+            //        ItemsCount = efContext.ProxyRepo.GetCount();
             //        break;
             //    case var cls when cls == typeof(TgEfSourceEntity):
-            //        Items = dbContext.SourceRepo.GetEnumerable(0).Cast<TEntity>();
-            //        ItemsCount = dbContext.SourceRepo.GetCount();
+            //        Items = efContext.SourceRepo.GetEnumerable(0).Cast<TEntity>();
+            //        ItemsCount = efContext.SourceRepo.GetCount();
             //        break;
             //    case var cls when cls == typeof(TgEfVersionEntity):
-            //        Items = dbContext.VersionRepo.GetEnumerable(0).Cast<TEntity>();
-            //        ItemsCount = dbContext.VersionRepo.GetCount();
+            //        Items = efContext.VersionRepo.GetEnumerable(0).Cast<TEntity>();
+            //        ItemsCount = efContext.VersionRepo.GetCount();
             //        break;
             //}
             IsBlazorLoading = false;
@@ -165,26 +164,33 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
         await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 
-        await OnClientSave(false);
+		await OnClientSave(false);
 
-        await TgBlazorUtils.RunFuncAsync(async () =>
-        {
-
+		await TgBlazorUtils.RunFuncAsync(async () =>
+		{
 			//if (!TgSqlUtils.GetValidXpLite(Item).IsValid)
 			// return;
 			//await TgClient.ConnectSessionAsync(proxyVm ?? ProxyVm);
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			//await TgClient.ConnectSessionAsync(dbContext.ProxyRepo.CreateNew());
-        }, () =>
-        {
+			await using var efContext = await EfFactory.CreateDbContextAsync();
+			//await TgClient.ConnectSessionAsync(efContext.ProxyRepo.CreateNew());
+		}, message =>
+		{
 			NotificationService.Notify(new NotificationMessage
-	        {
-		        Severity = NotificationSeverity.Info,
-		        Summary = TgLocale.MenuClientMessage,
-		        Detail = TgLocale.MenuClientConnect
-	        });
-        });
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
+		}, () =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Info,
+				Summary = TgLocale.MenuClientMessage,
+				Detail = TgLocale.MenuClientConnect
+			});
+		});
 	}
 
 	private async Task ClientDisconnect()
@@ -193,6 +199,14 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 			TgClient.Disconnect();
+		}, message =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
 		}, () =>
 		{
 			NotificationService.Notify(new NotificationMessage
@@ -209,8 +223,16 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			Item = await dbContext.AppsRepo.GetFirstAsync();
+			await using var efContext = await EfFactory.CreateDbContextAsync();
+			Item = (await efContext.AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		}, message =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
 		}, () =>
 		{
 			NotificationService.Notify(new NotificationMessage
@@ -227,9 +249,19 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			await dbContext.AppsRepo.DeleteAllItemsAsync();
-			//await dbContext.AppsRepo.SaveAsync(Item);
+			await using var efContext = await EfFactory.CreateDbContextAsync();
+			if (Item is not null)
+			{
+				await efContext.AppRepository.SaveAsync(Item);
+			}
+		}, message =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
 		}, () =>
 		{
 			if (isNotificationService)
@@ -240,6 +272,8 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 					Detail = TgLocale.Save
 				});
 		});
+
+		await OnClientLoad();
 	}
 
 	public async Task OnClientClear()
@@ -247,8 +281,16 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			Item = dbContext.AppsRepo.CreateNew(false);
+			await using var efContext = await EfFactory.CreateDbContextAsync();
+			Item = new TgEfAppEntity();
+		}, message =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
 		}, () =>
 		{
 			NotificationService.Notify(new NotificationMessage
@@ -265,8 +307,16 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var dbContext = await DbFactory.CreateDbContextAsync();
-			//await dbContext.AppsRepo.DeleteAllItemsAsync();
+			await using var efContext = await EfFactory.CreateDbContextAsync();
+			//await efContext.AppsRepo.DeleteAllItemsAsync();
+		}, message =>
+		{
+			NotificationService.Notify(new NotificationMessage
+			{
+				Severity = NotificationSeverity.Error,
+				Summary = message,
+				Detail = TgLocale.Exception
+			});
 		}, () =>
 		{
 			NotificationService.Notify(new NotificationMessage

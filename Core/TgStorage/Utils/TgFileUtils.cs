@@ -158,35 +158,20 @@ public static class TgFileUtils
     public static string GetDefaultDirectory()
     {
         string os = Environment.OSVersion.Platform.ToString();
-        string defaultDirectory;
-
         // Windows
         if (os == "Win32NT" || os == "Win32S" || os == "Win32Windows" || os == "WinCE")
-        {
-            defaultDirectory = "C:";
-        }
+	        return "C:";
         // Linux or Mac OS
-        else if (os == "Unix" || os == "X11")
-        {
-            defaultDirectory = "/home/username";
-        }
+        if (os == "Unix" || os == "X11")
+	        return "/home/username";
         // Android
-        else if (os.Contains("Android"))
-        {
-            defaultDirectory = "/sdcard";
-        }
+        if (os.Contains("Android"))
+	        return "/sdcard";
         // WebAssembly
-        else if (os.Contains("WebAssembly"))
-        {
-            defaultDirectory = "/";
-        }
+        if (os.Contains("WebAssembly"))
+	        return "/";
 		// Other.
-        else
-        {
-            defaultDirectory = Environment.CurrentDirectory;
-        }
-
-        return defaultDirectory;
+		return Environment.CurrentDirectory;
     }
 
     #endregion

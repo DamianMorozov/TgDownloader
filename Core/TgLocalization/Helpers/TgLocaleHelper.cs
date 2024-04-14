@@ -107,6 +107,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuDownloadSetIsRewriteFiles => "Enable rewrite exists files";
 	public string MenuDownloadSetIsRewriteMessages => "Enable rewrite exists messages";
 	public string MenuDownloadSetSource => "Setup source (ID/username)";
+	public string MenuDownloadSetVersion => "Veiew versions";
 	public string MenuDownloadSetSourceFirstIdAuto => "Setup first ID auto";
 	public string MenuDownloadSetSourceFirstIdManual => "Setup first ID manual";
 	public string MenuManualDownload => "Manual download";
@@ -117,6 +118,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuScanDialogs => "Scan my dialogs";
 	public string MenuSetProxy => "Setup proxy";
 	public string MenuViewSources => "View sources";
+	public string MenuViewVersions => "View versions";
 
 	#endregion
 

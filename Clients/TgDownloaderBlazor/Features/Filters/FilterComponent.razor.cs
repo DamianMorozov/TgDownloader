@@ -19,15 +19,15 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 	    if (!IsBlazorLoading)
 		    return;
 
-	    await using var dbContext = await DbFactory.CreateDbContextAsync();
+	    await using var efContext = await EfFactory.CreateDbContextAsync();
 	    if (!AppSettings.AppXml.IsExistsFileStorage)
 	    {
 		    IsBlazorLoading = false;
 		    return;
 	    }
 
-		Items = dbContext.FilterRepo.GetEnumerable(0).ToList();
-        ItemsCount = dbContext.FilterRepo.GetCount();
+		Items = (await efContext.FilterRepository.GetEnumerableAsync(0, isNoTracking: false)).Items;
+        ItemsCount = efContext.FilterRepository.GetCount();
 
         IsBlazorLoading = false;
     }

@@ -40,11 +40,11 @@ public class TgAppXmlModel : ObservableObject, ITgCommon
 	public TgAppXmlModel()
 	{
 		if (string.IsNullOrEmpty(Version))
-			Version = this.GetPropertyDefaultValue(nameof(Version));
-		FileSession = this.GetPropertyDefaultValue(nameof(FileSession));
-		FileStorage = this.GetPropertyDefaultValue(nameof(FileStorage));
-		TestStorage = this.GetPropertyDefaultValue(nameof(TestStorage));
-		IsUseProxy = this.GetPropertyDefaultValueAsGeneric<bool>(nameof(IsUseProxy));
+			Version = this.GetDefaultPropertyString(nameof(Version));
+		FileSession = this.GetDefaultPropertyString(nameof(FileSession));
+		FileStorage = this.GetDefaultPropertyString(nameof(FileStorage));
+		TestStorage = this.GetDefaultPropertyString(nameof(TestStorage));
+		IsUseProxy = this.GetDefaultPropertyBool(nameof(IsUseProxy));
 	}
 
 	#endregion

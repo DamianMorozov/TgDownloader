@@ -5,13 +5,13 @@ namespace TgDownloaderWinDesktop.Helpers;
 
 public sealed class NullValueConverter : IValueConverter
 {
+    private TgLocaleHelper TgLocale { get; } = TgLocaleHelper.Instance;
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         return value ?? DependencyProperty.UnsetValue;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+	    => throw new NotImplementedException(TgLocale.UseOverrideMethod);
 }

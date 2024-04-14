@@ -35,5 +35,5 @@
 - [Русскоязычный чат TgDownloader](https://t.me/TgDownloaderChatRus)
 
 ## Docker образы
-- [TgDownloader Console Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
-- [TgDownloader Blazor Docker](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)
+- [TgDownloader-Console Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
+- [TgDownloader-Blazor Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)

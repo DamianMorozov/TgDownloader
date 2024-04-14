@@ -8,7 +8,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 {
     #region Public and private fields, properties, constructor
 
-    public TgSqlTableSourceViewModel ItemSourceVm { get; } = new();
+    public TgEfSourceViewModel ItemSourceVm { get; }
     public Visibility ChartVisibility { get; private set; } = Visibility.Hidden;
     private LineSeries LineSerie { get; set; } = new()
     {
@@ -24,6 +24,11 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	public TgPageViewModelBase? ViewModel { get; set; }
     private Guid SourceUid { get; set; }
     private long FileSizeMinSizeMonitoring => 52_428_800; // 50 * 1024 * 1024;
+
+    public TgItemSourceViewModel()
+    {
+		ItemSourceVm = new(EfContext);
+	}
 
     #endregion
 
@@ -62,21 +67,11 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         //}
     }
 
-    public void SetItemSourceVm(TgSqlTableSourceViewModel itemSourceVm) => 
-        SetItemSourceVm(itemSourceVm.Source, itemSourceVm.Source.Uid);
+    public void SetItemSourceVm(TgEfSourceViewModel itemSourceVm) => SetItemSourceVm(itemSourceVm.Item);
 
-    public void SetItemSourceVm(TgSqlTableSourceModel source, Guid? uid = null)
+    public void SetItemSourceVm(TgEfSourceEntity source)
     {
-        ItemSourceVm.Source.Fill(source, uid);
-        //TgSqlTableSourceViewModel itemBackup = ItemSourceVm;
-  //      ItemSourceVm = new()
-  //      {
-  //          Source = itemBackup.Source,
-  //          CurrentFileName = itemBackup.CurrentFileName,
-  //          CurrentFileSize = itemBackup.CurrentFileSize,
-  //          CurrentFileTransmitted = itemBackup.CurrentFileTransmitted,
-		//};
-        //ItemSourceVm.SetIsDownload(itemBackup.IsDownload);
+        ItemSourceVm.Item.Fill(source);
     }
 
     // GetSourceFromStorageCommand
@@ -88,8 +83,8 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemSourceVm.SourceUid != SourceUid)
                 SourceUid = ItemSourceVm.SourceUid;
-            TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetAsync(SourceUid);
-			SetItemSourceVm(source, source.Uid);
+            TgEfSourceEntity source = (await EfContext.SourceRepository.GetAsync(new TgEfSourceEntity() { Uid = SourceUid }, isNoTracking: false)).Item;
+			SetItemSourceVm(source);
         }, true);
     }
 
@@ -176,9 +171,9 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             TgDownloadSettingsModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
 			// Update source from Telegram.
 			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
-            await ContextManager.SourceRepository.SaveAsync(ItemSourceVm.Source);
+            await EfContext.SourceRepository.SaveAsync(ItemSourceVm.Item);
             // Message.
-            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, false);
 
         await OnGetSourceFromStorageAsync();
@@ -198,10 +193,10 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             // Check directory.
-            if (!Directory.Exists(ItemSourceVm.Source.Directory))
+            if (!Directory.Exists(ItemSourceVm.Item.Directory))
             {
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId,
-                    $"Directory is not exists! {ItemSourceVm.Source.Directory}");
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId,
+                    $"Directory is not exists! {ItemSourceVm.Item.Directory}");
                 result = false;
                 return;
             }
@@ -211,7 +206,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             SwDownloadChart = Stopwatch.StartNew();
 			// Job.
 			await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Source.Id, ItemSourceVm.Source.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, true);
 
         await OnGetSourceFromStorageAsync();
@@ -244,7 +239,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
-            ItemSourceVm.Source = await ContextManager.SourceRepository.GetNewAsync(true);
+            ItemSourceVm.Item = (await EfContext.SourceRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false);
     }
 
@@ -255,7 +250,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ContextManager.SourceRepository.SaveAsync(ItemSourceVm.Source, true);
+            await EfContext.SourceRepository.SaveAsync(ItemSourceVm.Item);
         }, false);
 
         await OnGetSourceFromStorageAsync();

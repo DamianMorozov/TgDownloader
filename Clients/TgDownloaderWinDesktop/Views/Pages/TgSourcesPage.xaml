@@ -344,7 +344,7 @@
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
 									Appearance="Secondary"
-									Content="{Binding Source.Id, Mode=OneWay, IsAsync=True}"
+									Content="{Binding Item.Id, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
 									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
@@ -368,7 +368,7 @@
 									VerticalAlignment="Center"
 									HorizontalContentAlignment="Center"
 									Appearance="Secondary"
-									Content="{Binding Source.UserName, Mode=OneWay, IsAsync=True}"
+									Content="{Binding Item.UserName, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
 									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
@@ -391,7 +391,7 @@
 									HorizontalAlignment="Stretch"
 									HorizontalContentAlignment="Left"
 									Appearance="Secondary"
-									Content="{Binding Source.Title, Mode=OneWay, IsAsync=True}"
+									Content="{Binding Item.Title, Mode=OneWay, IsAsync=True}"
 									IsManipulationEnabled="False"
 									ToolTip="{Binding ProgressPercentString, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>

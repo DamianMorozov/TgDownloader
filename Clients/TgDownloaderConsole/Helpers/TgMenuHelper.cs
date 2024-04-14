@@ -2,6 +2,10 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using TgStorage.Contracts;
+
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -23,14 +27,20 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	internal TgLogHelper TgLog => TgLogHelper.Instance;
 	internal TgClientHelper TgClient => TgClientHelper.Instance;
 	internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
-	internal TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
+	internal TgEfContext EfContext { get; } = default!;
+	internal TgXpoContext XpoContext { get; } = new(TgEnumStorageType.Prod);
 	internal TgEnumMenuMain Value { get; set; }
+
+	public TgMenuHelper()
+	{
+		EfContext = TgStorageUtils.GetEfContextProd();
+	}
 
 	#endregion
 
 	#region Public and internal methods
 
-    public string ToDebugString() => TgLocale.UseOverrideMethod;
+	public string ToDebugString() => TgLocale.UseOverrideMethod;
 
 	internal void ShowTableCore(TgDownloadSettingsModel tgDownloadSettings, string title, Action<Table> fillTableColumns,
 		Action<TgDownloadSettingsModel, Table> fillTableRows)
@@ -78,6 +88,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	internal void ShowTableViewSources(TgDownloadSettingsModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSources);
 
+	internal void ShowTableViewVersions(TgDownloadSettingsModel tgDownloadSettings) =>
+		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedVersions);
+
 	internal void ShowTableMarkHistoryReadProgress(TgDownloadSettingsModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
 			FillTableRowsMarkHistoryReadProgress);
@@ -103,8 +116,10 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	{
 		// App version.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppXml.Version));
-		TgSqlTableVersionModel version = !ContextManager.IsTableExists(TgSqlConstants.TableVersions) 
-            ? new() : ContextManager.VersionRepository.GetItemLastAsync().Result;
+		TgEfVersionEntity version = !EfContext.IsTableExists(TgStorageConstants.TableVersions) 
+            ? new() 
+			: EfContext.VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).
+	            Items.Single(x => x.Version == TgEfContext.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
 		// App settings.
@@ -113,9 +128,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			new Markup(TgAppSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Storage settings.
-		table.AddRow(new Markup(ContextManager.IsReady
+		table.AddRow(new Markup(XpoContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(ContextManager.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(XpoContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// TG client settings.
 		table.AddRow(new Markup(TgClient.IsReady ?
@@ -168,9 +183,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsStorage(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
-		table.AddRow(new Markup(ContextManager.IsReady
+		table.AddRow(new Markup(XpoContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(ContextManager.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(XpoContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 	}
 
 	/// <summary>
@@ -180,7 +195,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsFilters(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerable();
+		IEnumerable<TgXpoFilterEntity> filters = XpoContext.FilterRepository.GetEnumerableAsync().GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
 	}
@@ -212,7 +227,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		}
 
 		// Proxy setup.
-		if (Equals(ContextManager.AppRepository.GetFirstProxyUidAsync(), Guid.Empty))
+		if (Equals(EfContext.GetCurrentProxyUid(), Guid.Empty))
 		{
 			if (TgAppSettings.AppXml.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
@@ -224,7 +239,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (ContextManager.AppRepository.GetCurrentProxyAsync().Result.IsNotExists || TgClient.Me is null)
+			if (EfContext.GetCurrentProxy().NotExist || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
@@ -243,24 +258,24 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Type.ToString())));
+					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Type.ToString())));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.HostName)));
+					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.HostName)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
-					new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Port.ToString())));
-				if (Equals(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Type, TgEnumProxyType.MtProto))
+					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Port.ToString())));
+				if (Equals(EfContext.GetCurrentProxy().Item.Type, TgEnumProxyType.MtProto))
 					table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
-						new Markup(TgLog.GetMarkupString(ContextManager.AppRepository.GetCurrentProxyAsync().Result.Secret)));
+						new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Secret)));
 			}
 		}
 
 		// Exceptions.
-		if (TgClient.ProxyException.IsExists)
+		if (TgClient.ProxyException.IsExist)
 		{
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyException)),
 				new Markup(TgLog.GetMarkupString(TgClient.ProxyException.Message)));
 		}
-		if (TgClient.ClientException.IsExists)
+		if (TgClient.ClientException.IsExist)
 		{
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientException)),
 				new Markup(TgLog.GetMarkupString(TgClient.ClientException.Message)));
@@ -269,9 +284,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		}
 	}
 
-	/// <summary>
-	/// Source info.
-	/// </summary>
+	/// <summary> Source info </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
 	internal void FillTableRowsDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
@@ -281,7 +294,27 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgSqlTableSourceModel source = ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId).Result;
+			TgXpoSourceEntity source = XpoContext.SourceRepository.GetAsync(new TgXpoSourceEntity
+				{ Id = tgDownloadSettings.SourceVm.SourceId }).GetAwaiter().GetResult().Item;
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
+				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
+				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
+		}
+	}
+
+	/// <summary> Version info </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
+	internal void FillTableRowsDownloadedVersions(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	{
+		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
+				new Markup(TgLocale.SettingsIsNeedSetup));
+		else
+		{
+			TgXpoSourceEntity source = XpoContext.SourceRepository.GetAsync(new TgXpoSourceEntity
+				{ Id = tgDownloadSettings.SourceVm.SourceId }).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -350,7 +383,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
-        IEnumerable<TgSqlTableFilterModel> filters = ContextManager.FilterRepository.GetEnumerableEnabled();
+        IEnumerable<TgXpoFilterEntity> filters = XpoContext.FilterRepository.GetEnumerableEnabledAsync().GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 	}
 
@@ -361,13 +394,17 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 	}
 
-    /// <summary>
-    /// Source ID/username.
-    /// </summary>
+    /// <summary> Source ID/username </summary>
     /// <param name="tgDownloadSettings"></param>
     /// <param name="table"></param>
     internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
         FillTableRowsDownloadedSources(tgDownloadSettings, table);
+
+    /// <summary> Version ID/username </summary>
+    /// <param name="tgDownloadSettings"></param>
+    /// <param name="table"></param>
+    internal void FillTableRowsViewDownloadedVersions(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
+        FillTableRowsDownloadedVersions(tgDownloadSettings, table);
 
     public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
 	{
@@ -383,27 +420,38 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	public bool AskQuestionReturnNegative(string question, bool isTrueFirst = false) =>
 		!AskQuestionReturnPositive(question, isTrueFirst);
 
-	public TgSqlTableSourceModel GetSourceFromEnumerable(string title, IEnumerable<TgSqlTableSourceModel> sources)
+	public TgEfSourceEntity GetSourceFromEnumerable(string title, IEnumerable<TgEfSourceEntity> sources)
 	{
 		sources = sources.OrderBy(x => x.UserName).ThenBy(x => x.Title);
 		List<string> list = [TgLocale.MenuMainReturn];
-		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToConsoleString())));
+		list.AddRange(sources.Select(source => TgLog.GetMarkupString(EfContext.ToConsoleString(source))));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(list));
-        if (!Equals(sourceString, TgLocale.MenuMainReturn))
-        {
-	        string[] parts = sourceString.Split('|');
-	        if (parts.Length > 3)
-	        {
-		        string sourceId = parts[2].TrimEnd(' ');
-		        if (long.TryParse(sourceId, out long id))
-			        return ContextManager.SourceRepository.GetAsync(id).Result;
+		if (!Equals(sourceString, TgLocale.MenuMainReturn))
+		{
+			string[] parts = sourceString.Split('|');
+			if (parts.Length > 3)
+			{
+				string sourceId = parts[2].TrimEnd(' ');
+				if (long.TryParse(sourceId, out long id))
+					return EfContext.SourceRepository.Get(new TgEfSourceEntity { Id = id }, isNoTracking: true).Item;
 			}
 		}
-        return ContextManager.SourceRepository.GetNewAsync(true).Result;
+		return EfContext.SourceRepository.GetNew(isNoTracking: true).Item;
 	}
 
-    #endregion
+	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)
+	{
+		List<TgEfVersionEntity> versionsList = versions.OrderBy(x => x.Version).ToList();
+		List<string> list = [TgLocale.MenuMainReturn];
+		list.AddRange(versionsList.Select(version => TgLog.GetMarkupString(EfContext.ToConsoleString(version))));
+		AnsiConsole.Prompt(new SelectionPrompt<string>()
+			.Title(title)
+			.PageSize(Console.WindowHeight - 17)
+			.AddChoices(list));
+	}
+
+	#endregion
 }

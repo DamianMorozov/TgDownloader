@@ -3,9 +3,10 @@
 
 // Global using directives
 
+global using DevExpress.Xpo;
 global using NUnit.Framework;
-global using TgAssertCoreTests.Helpers;
 global using TgStorage.Common;
+global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;
 global using TgStorage.Domain.Documents;
 global using TgStorage.Domain.Filters;
@@ -13,5 +14,9 @@ global using TgStorage.Domain.Messages;
 global using TgStorage.Domain.Proxies;
 global using TgStorage.Domain.Sources;
 global using TgStorage.Domain.Versions;
+global using TgStorage.Helpers;
 global using TgStorage.Utils;
-global using TgStorageTest.Utils;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
+global using TgStorage;
+global using TgStorageTest.Common;

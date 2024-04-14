@@ -6,7 +6,6 @@ TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
 TgMenuHelper menu = TgMenuHelper.Instance;
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
 TgLogHelper tgLog = TgLogHelper.Instance;
-TgSqlContextManagerHelper contextManager = TgSqlContextManagerHelper.Instance;
 TgDownloadSettingsModel tgDownloadSettings = new();
 
 if (!Setup()) return;
@@ -78,21 +77,21 @@ bool Setup()
 	Console.Title = TgConstants.AppTitleConsoleShort;
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
-	// Storage.
+	// Create new storage?
 	if (!tgAppSettings.AppXml.IsExistsFileStorage)
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}
+	// Storage is exist.
 	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.FileStorage), (long)0))
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.FileStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}
-	contextManager.CreateOrConnectDb(true);
 	// Client.
-	menu.ClientConnectExists();
+	menu.ClientConnectConsole();
 	return true;
 }

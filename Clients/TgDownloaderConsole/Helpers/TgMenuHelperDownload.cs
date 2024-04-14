@@ -101,7 +101,6 @@ internal partial class TgMenuHelper
 	private TgDownloadSettingsModel SetupDownloadSource(long? id = null)
 	{
         TgDownloadSettingsModel tgDownloadSettings = TgDownloadSettingsModel.CreateNew();
-		//tgDownloadSettings.SourceVm.SourceFirstId = 1;
 		SetupDownloadSourceCore(id, tgDownloadSettings);
         TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.Channel is null)
@@ -209,8 +208,9 @@ internal partial class TgMenuHelper
     {
         int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
         string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-        TgSqlTableSourceModel source = ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId).GetAwaiter().GetResult();
-        tgDownloadSettings.SourceVm.Source = source;
+        TgEfSourceEntity source = EfContext.SourceRepository.Get(new TgEfSourceEntity
+	        { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false).Item;
+        tgDownloadSettings.SourceVm.Item = source;
 		if (isSkipLoadFirstId)
 			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;
 		if (isSkipLoadDirectory)

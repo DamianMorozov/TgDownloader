@@ -4,71 +4,71 @@
 namespace TgStorageTest.Helpers;
 
 [TestFixture]
-internal class TgStorageHelperCheckTablesTests
+internal class TgStorageHelperCheckTablesTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
 	[Test]
 	public void Check_table_apps()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableApps());
+			Assert.That(await XpoProdContext.CheckTableProxiesAsync());
+			Assert.That(await XpoProdContext.CheckTableAppsAsync());
 		});
 	}
 
     [Test]
 	public void Check_table_documents()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableDocuments());
+			Assert.That(await XpoProdContext.CheckTableDocumentsAsync());
 		});
 	}
 
 	[Test]
 	public void Check_table_filters()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableFilters());
+			Assert.That(await XpoProdContext.CheckTableFiltersAsync());
 		});
 	}
 
 	[Test]
 	public void Check_table_messages()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableMessages());
+			Assert.That(await XpoProdContext.CheckTableMessagesAsync());
 		});
 	}
 
 	[Test]
 	public void Check_table_proxies()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableProxies());
+			Assert.That(await XpoProdContext.CheckTableProxiesAsync());
 		});
 	}
 
 	[Test]
 	public void Check_table_sources()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableSources());
+			Assert.That(await XpoProdContext.CheckTableSourcesAsync());
 		});
 	}
 
 	[Test]
 	public void Check_table_versions()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgStorageTestsUtils.DataCore.ContextManager.CheckTableVersions());
+			Assert.That(await XpoProdContext.CheckTableVersionsAsync());
 		});
 	}
 

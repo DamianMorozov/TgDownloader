@@ -11,9 +11,8 @@ public partial class TgPageViewModelBase : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    public TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-    protected bool IsInitialized;
-    public bool IsFileSession { get; set; }
+	protected bool IsInitialized { get; set; }
+	public bool IsFileSession { get; set; }
     public string StateConnectDt { get; set; } = string.Empty;
     public string StateConnectMsg { get; set; } = string.Empty;
     public string StateExceptionDt { get; set; } = string.Empty;
@@ -30,7 +29,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 
     #region Public and private methods
 
-    public override string ToString() => $"{TgDesktopUtils.TgLocale} | {ContextManager}";
+    public override string ToString() => $"{TgDesktopUtils.TgLocale} | {EfContext}";
 
     protected virtual void InitializeViewModel()
     {

@@ -12,7 +12,7 @@ public abstract class TgPageComponentBase : ComponentBase
     [Inject] protected TooltipService TooltipService { get; set; } = default!;
     [Inject] protected ContextMenuService ContextMenuService { get; set; } = default!;
     [Inject] protected NotificationService NotificationService { get; set; } = default!;
-    [Inject] protected IDbContextFactory<TgEfContext> DbFactory { get; set; } = default!;
+    [Inject] protected IDbContextFactory<TgEfContext> EfFactory { get; set; } = default!;
 	[Inject] protected TgJsService JsService { get; set; } = default!;
 
     protected TgLocaleHelper TgLocale => TgLocaleHelper.Instance;

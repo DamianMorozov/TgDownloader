@@ -11,8 +11,15 @@ public abstract class TgViewModelBase : ObservableObject, ITgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    public bool IsLoad { get; set; }
+    protected TgEfContext EfContext { get; } = default!;
+    protected TgXpoContext XpoContext { get; } = new(TgEnumStorageType.Prod);
+	public bool IsLoad { get; set; }
     public bool IsNotLoad => !IsLoad;
+
+    protected TgViewModelBase()
+    {
+		EfContext = TgStorageUtils.GetEfContextProd();
+	}
 
     #endregion
 

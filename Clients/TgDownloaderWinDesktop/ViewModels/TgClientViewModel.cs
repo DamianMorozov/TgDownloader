@@ -8,9 +8,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 {
     #region Public and private fields, properties, constructor
 
-    public TgMvvmAppModel AppVm { get; }
-    public TgSqlTableProxyViewModel ProxyVm { get; set; }
-    public ObservableCollection<TgSqlTableProxyViewModel> ProxiesVms { get; private set; }
+    public TgXpoAppViewModel AppVm { get; }
+    public TgXpoProxyViewModel ProxyVm { get; set; }
+    public ObservableCollection<TgXpoProxyViewModel> ProxiesVms { get; private set; }
 
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -66,7 +66,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public TgClientViewModel()
     {
-        AppVm = new(ContextManager.AppRepository.GetFirstAsync().GetAwaiter().GetResult());
+        AppVm = new(XpoContext.AppRepository.GetFirstAsync().GetAwaiter().GetResult().Item);
         ProxyVm = new(new());
         ProxiesVms = new();
 
@@ -108,9 +108,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgSqlTableProxyModel proxyNew = await ContextManager.ProxyRepository.GetAsync(AppVm.App.ProxyUid);
+            TgXpoProxyEntity proxyNew = (await XpoContext.ProxyRepository.GetAsync(AppVm.App.ProxyUid)).Item;
             ProxiesVms = new();
-            foreach (TgSqlTableProxyModel proxy in ContextManager.ProxyRepository.GetEnumerable())
+            foreach (TgXpoProxyEntity proxy in (await XpoContext.ProxyRepository.GetEnumerableAsync()).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }
@@ -197,19 +197,19 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     // ClientConnectCommand
     [RelayCommand]
-    public async Task OnClientConnectAsync(TgSqlTableProxyViewModel? proxyVm = null)
+    public async Task OnClientConnectAsync(TgXpoProxyViewModel? proxyVm = null)
     {
         await OnAppSaveAsync();
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            if (!TgSqlUtils.GetValidXpLite(AppVm.App).IsValid)
+            if (!TgStorageUtils.GetXpValid(AppVm.App).IsValid)
                 return;
             await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Proxy ?? ProxyVm.Proxy);
         }, true);
 
-        ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExists 
+        ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExist 
             ? TgDesktopUtils.TgClientVm.Exception.Message : string.Empty;
     }
 
@@ -231,7 +231,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
 		    await Task.Delay(TimeSpan.FromMilliseconds(1));
-		    AppVm.App = await ContextManager.AppRepository.GetFirstAsync();
+		    AppVm.App = (await XpoContext.AppRepository.GetFirstAsync()).Item;
 	    }, false).ConfigureAwait(false);
     }
 
@@ -242,8 +242,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ContextManager.AppRepository.DeleteAllItemsAsync();
-            await ContextManager.AppRepository.SaveAsync(AppVm.App);
+            await XpoContext.AppRepository.DeleteAllAsync();
+            await XpoContext.AppRepository.SaveAsync(AppVm.App);
         }, false).ConfigureAwait(false);
     }
 
@@ -254,7 +254,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            AppVm.App = await ContextManager.AppRepository.GetNewAsync(true);
+            AppVm.App = (await XpoContext.AppRepository.GetNewAsync()).Item;
         }, false).ConfigureAwait(true);
     }
 
@@ -265,7 +265,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ContextManager.AppRepository.DeleteAllItemsAsync();
+            await XpoContext.AppRepository.DeleteAllAsync();
         }, false).ConfigureAwait(true);
 
         await OnAppLoadAsync();

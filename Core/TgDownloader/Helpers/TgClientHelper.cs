@@ -1,8 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using System.ComponentModel;
-using TgEfCore.Domain.Proxies;
+using Microsoft.EntityFrameworkCore;
 
 namespace TgDownloader.Helpers;
 
@@ -24,8 +23,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     private static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
     private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    private static TgSqlContextManagerHelper ContextManager => TgSqlContextManagerHelper.Instance;
-    private static TgLogHelper TgLog => TgLogHelper.Instance;
+    public TgEfContext EfContext { get; } = default!;
+	private static TgLogHelper TgLog => TgLogHelper.Instance;
     public Client? Client { get; set; }
     public TgExceptionModel ClientException { get; private set; }
     public TgExceptionModel ProxyException { get; private set; }
@@ -41,7 +40,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     public IEnumerable<ChatBase> EnumerableChats { get; set; }
     public IEnumerable<ChatBase> EnumerableSmallGroups { get; set; }
     public bool IsUpdateStatus { get; set; }
-    private IEnumerable<TgSqlTableFilterModel> Filters { get; set; }
+    private IEnumerable<TgEfFilterEntity> Filters { get; set; }
     public Func<string, Task> UpdateTitleAsync { get; private set; }
     public Func<string, Task> UpdateStateConnectAsync { get; private set; }
     public Func<string, Task> UpdateStateProxyAsync { get; private set; }
@@ -65,7 +64,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         EnumerableSmallGroups = Enumerable.Empty<ChatBase>();
         ClientException = new();
         ProxyException = new();
-        Filters = Enumerable.Empty<TgSqlTableFilterModel>();
+        Filters = Enumerable.Empty<TgEfFilterEntity>();
 
         UpdateTitleAsync = _ => Task.CompletedTask;
         UpdateStateConnectAsync = _ => Task.CompletedTask;
@@ -78,6 +77,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         UpdateStateItemSourceAsync = _ => Task.CompletedTask;
         UpdateStateFileAsync = (_, _, _, _, _, _, _) => Task.CompletedTask;
         UpdateStateMessageAsync = _ => Task.CompletedTask;
+
+        EfContext = TgStorageUtils.GetEfContextProd();
 
 #if DEBUG
 		// TgLog to VS Output debugging pane in addition.
@@ -150,19 +151,16 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         //if (!(!TgAppSettings.AppXml.IsUseProxy ||
         //      (TgAppSettings.AppXml.IsUseProxy &&
         //       (ContextManager.ProxyRepository.Get(ContextManager.AppRepository.GetFirstProxyUid) ??
-        //        ContextManager.ProxyRepository.GetNew()).IsExists)))
-        Guid proxyUid = ContextManager.AppRepository.GetFirstProxyUidAsync().Result;
-        if (!(!TgAppSettings.AppXml.IsUseProxy ||
-              (TgAppSettings.AppXml.IsUseProxy &&
-               (ContextManager.ProxyRepository.GetAsync(proxyUid) ??
-                ContextManager.ProxyRepository.GetNewAsync(true)).GetAwaiter().GetResult().IsExists)))
+        //        ContextManager.ProxyRepository.GetNew()).IsExist)))
+        TgEfOperResult<TgEfProxyEntity> operResult = EfContext.GetCurrentProxy();
+		if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExist)))
             return ResultDisconnected();
-        if (ProxyException.IsExists || ClientException.IsExists)
+        if (ProxyException.IsExist || ClientException.IsExist)
             return ResultDisconnected();
         return ResultConnected();
     }
 
-    public void ConnectSessionConsole(Func<string, string?>? config, TgSqlTableProxyModel proxy)
+    public void ConnectSessionConsole(Func<string, string?>? config, TgEfProxyEntity proxy)
     {
         if (IsReady)
             return;
@@ -176,7 +174,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         LoginUserConsole(true);
     }
 
-    public async Task ConnectSessionAsync(ITgSqlProxy proxy)
+    public async Task ConnectSessionAsync(ITgDbProxy proxy)
     {
         if (IsReady) return;
         Disconnect();
@@ -189,18 +187,21 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         await LoginUserDesktopAsync(true);
     }
 
-    public async Task ConnectThroughProxyAsync(ITgSqlProxy proxy, bool isDesktop)
+    public async Task ConnectThroughProxyAsync(ITgDbProxy proxy, bool isDesktop)
     {
         IsProxyUsage = false;
         if (!CheckClientIsReady()) return;
         if (Client is null) return;
-        if (proxy.IsNotExists) return;
+        if (proxy.NotExist) return;
         if (!isDesktop && !TgAppSettings.AppXml.IsUseProxy) return;
         if (Equals(proxy.Type, TgEnumProxyType.None)) return;
-        if (!TgSqlUtils.GetValidXpLite(proxy).IsValid) return;
+        if (proxy is TgXpoProxyEntity xpoProxy)
+			if (!TgStorageUtils.GetXpValid(xpoProxy).IsValid) return;
+        else if (proxy is TgEfProxyEntity efProxy)
+	        if (!TgStorageUtils.GetEfValid(efProxy).IsValid) return;
 
-        try
-        {
+		try
+		{
             ProxyException = new();
             IsProxyUsage = true;
             switch (proxy.Type)
@@ -772,7 +773,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             chatFull = await Client.Channels_GetFullChannel(channel);
             if (isSave)
-                await ContextManager.SourceRepository.SaveAsync(new() { Id = channel.id, UserName = channel.username, Title = channel.title });
+                await EfContext.SourceRepository.SaveAsync(new() { Id = channel.id, UserName = channel.username, Title = channel.title });
             if (!isSilent)
             {
                 if (chatFull is not null)
@@ -800,7 +801,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             chatFull = await Client.GetFullChat(chatBase);
             if (isSave)
-	            await ContextManager.SourceRepository.SaveAsync(new() { Id = chatBase.ID, UserName = chatBase.MainUsername, Title = chatBase.Title });
+	            await EfContext.SourceRepository.SaveAsync(new() { Id = chatBase.ID, UserName = chatBase.MainUsername, Title = chatBase.Title });
             if (!isSilent)
             {
                 if (chatFull.full_chat is ChannelFull channelFull)
@@ -1012,13 +1013,14 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             }
 
             // Save.
-            TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetAsync(tgDownloadSettings.SourceVm.SourceId);
+            TgEfSourceEntity source = (await EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+	            { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
             source.Id = tgDownloadSettings.SourceVm.SourceId;
             source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
             source.Title = tgDownloadSettings.SourceVm.SourceTitle;
             source.About = tgDownloadSettings.SourceVm.SourceAbout;
             source.Count = tgDownloadSettings.SourceVm.SourceLastId;
-            await ContextManager.SourceRepository.SaveAsync(source);
+            await EfContext.SourceRepository.SaveAsync(source);
         });
         return smartSource;
     }
@@ -1044,31 +1046,32 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
     /// </summary>
     /// <param name="sourceVm"></param>
     /// <param name="tgDownloadSettings"></param>
-    public async Task UpdateSourceDbAsync(TgSqlTableSourceViewModel sourceVm, TgDownloadSettingsModel tgDownloadSettings)
+    public async Task UpdateSourceDbAsync(TgEfSourceViewModel sourceVm, TgDownloadSettingsModel tgDownloadSettings)
     {
         TgDownloadSmartSource smartSource = await PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
         if (smartSource.Channel is not null)
         {
-            sourceVm.Source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
-            sourceVm.Source.Count = tgDownloadSettings.SourceVm.SourceLastId;
-            sourceVm.Source.Title = tgDownloadSettings.SourceVm.SourceTitle;
-            sourceVm.Source.About = tgDownloadSettings.SourceVm.SourceAbout;
+            sourceVm.Item.UserName = tgDownloadSettings.SourceVm.SourceUserName;
+            sourceVm.Item.Count = tgDownloadSettings.SourceVm.SourceLastId;
+            sourceVm.Item.Title = tgDownloadSettings.SourceVm.SourceTitle;
+            sourceVm.Item.About = tgDownloadSettings.SourceVm.SourceAbout;
             return;
         }
 
         smartSource = await PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
         if (smartSource.ChatBase is not null)
         {
-            sourceVm.Source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
-            sourceVm.Source.Count = tgDownloadSettings.SourceVm.SourceLastId;
-            sourceVm.Source.Title = tgDownloadSettings.SourceVm.SourceTitle;
-            sourceVm.Source.About = tgDownloadSettings.SourceVm.SourceAbout;
+            sourceVm.Item.UserName = tgDownloadSettings.SourceVm.SourceUserName;
+            sourceVm.Item.Count = tgDownloadSettings.SourceVm.SourceLastId;
+            sourceVm.Item.Title = tgDownloadSettings.SourceVm.SourceTitle;
+            sourceVm.Item.About = tgDownloadSettings.SourceVm.SourceAbout;
         }
     }
 
     private async Task UpdateSourceTgAsync(Channel channel, string about, int count)
     {
-        TgSqlTableSourceModel itemFind = await ContextManager.SourceRepository.GetAsync(channel.id);
+        TgEfSourceEntity itemFind = (await EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+	        { Id = channel.id }, isNoTracking: false)).Item;
 
         itemFind.Id = channel.id;
         itemFind.UserName = channel.username;
@@ -1078,7 +1081,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             itemFind.About = about;
         itemFind.Count = count;
         
-        await ContextManager.SourceRepository.SaveAsync(itemFind);
+        await EfContext.SourceRepository.SaveAsync(itemFind);
     }
 
     private async Task UpdateSourceTgAsync(Channel channel, int count) => 
@@ -1148,7 +1151,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         await UpdateTitleAsync(string.Empty);
     }
 
-    public async Task ScanSourcesTgDesktopAsync(TgEnumSourceType sourceType, Func<TgSqlTableSourceViewModel, Task> afterScanAsync)
+    public async Task ScanSourcesTgDesktopAsync(TgEnumSourceType sourceType, Func<TgEfSourceViewModel, Task> afterScanAsync)
     {
         await TryCatchFuncAsync(async () =>
         {
@@ -1181,7 +1184,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         });
     }
 
-    private async Task AfterCollectSourcesAsync(Func<TgSqlTableSourceViewModel, Task> afterScanAsync)
+    private async Task AfterCollectSourcesAsync(Func<TgEfSourceViewModel, Task> afterScanAsync)
     {
         // ListChannels.
         int i = 0;
@@ -1192,7 +1195,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             {
                 await TryCatchFuncAsync(async () =>
                 {
-                    TgSqlTableSourceModel source = new() { Id = channel.ID };
+                    TgEfSourceEntity source = new() { Id = channel.ID };
                     int messagesCount = await GetChannelMessageIdLastAsync(new(), channel);
                     source.Count = messagesCount;
                     if (channel.IsChannel)
@@ -1219,7 +1222,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             await TryCatchFuncAsync(async () =>
             {
-                TgSqlTableSourceModel source = new() { Id = group.ID };
+                TgEfSourceEntity source = new() { Id = group.ID };
                 if (group.IsActive)
                 {
                     int messagesCount = await GetChannelMessageIdLastAsync(new(), group);
@@ -1240,7 +1243,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         await TryCatchFuncAsync(async () =>
         {
             // Set filters.
-            Filters = ContextManager.FilterRepository.GetEnumerableEnabled();
+            Filters = (await EfContext.FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false))
+	            .Items.Where(x => x.IsEnabled);
 
             switch (TgAsyncUtils.AppType)
             {
@@ -1368,11 +1372,18 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         {
             await tgDownloadSettings.UpdateSourceWithSettingsAsync();
             // Store message.
-            bool isExistsMessage = await ContextManager.MessageRepository.GetExistsAsync(
-	            tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceId);
-            if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
-	            await ContextManager.MessageRepository.SaveAsync(
-		            message.ID, tgDownloadSettings.SourceVm.SourceId, message.Date, TgEnumMessageType.Message, 0, message.message);
+            TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
+	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
+            if ((operResult.IsExist && tgDownloadSettings.IsRewriteMessages) || operResult.NotExist)
+	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
+	            {
+					Id = message.ID,
+					SourceId = tgDownloadSettings.SourceVm.SourceId,
+					DtCreated = message.Date,
+					Type = TgEnumMessageType.Message,
+					Size = 0,
+					Message = message.message,
+				});
             // Parse documents and photos.
             if ((message.flags & Message.Flags.has_media) is not 0)
             {
@@ -1434,7 +1445,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public bool CheckFileAtFilter(string fileName, string extensionName, long size)
     {
-        foreach (TgSqlTableFilterModel filter in Filters)
+        foreach (TgEfFilterEntity filter in Filters)
         {
             if (!filter.IsEnabled)
                 continue;
@@ -1576,8 +1587,16 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 	                        {
 		                        await Client.DownloadFileAsync(document, localFileStream, null,
 			                        CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, files[i].Join));
-		                        await ContextManager.DocumentRepository.SaveAsync(document.ID, tgDownloadSettings.SourceVm.SourceId, messageBase.ID, fileName,
-			                        files[i].Size, accessHash);
+		                        TgEfDocumentEntity doc = new()
+		                        {
+			                        Id = document.ID,
+			                        SourceId = tgDownloadSettings.SourceVm.SourceId,
+			                        MessageId = messageBase.ID,
+			                        FileName = fileName,
+			                        FileSize = files[i].Size,
+			                        AccessHash = accessHash
+								};
+		                        await EfContext.DocumentRepository.SaveAsync(doc);
 	                        }
 							break;
                         case MessageMediaPhoto mediaPhoto:
@@ -1595,11 +1614,19 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             }
 			// Store message.
 			await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, string.Empty, 0, 0, 0, false);
-            bool isExistsMessage = await ContextManager.MessageRepository.GetExistsAsync(tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceId);
-            if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
+            TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
+	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
+            if ((operResult.IsExist && tgDownloadSettings.IsRewriteMessages) || operResult.NotExist)
             {
-	            await ContextManager.MessageRepository.SaveAsync(messageBase.ID, tgDownloadSettings.SourceVm.SourceId, files[i].DtCreate,
-					TgEnumMessageType.Document, files[i].Size, files[i].Remote);
+	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
+	            {
+		            Id = messageBase.ID,
+		            SourceId = tgDownloadSettings.SourceVm.SourceId,
+		            DtCreated = files[i].DtCreate,
+		            Type = TgEnumMessageType.Document,
+		            Size = files[i].Size,
+		            Message = files[i].Remote,
+	            });
             }
 			//switch (messageMedia)
    //         {
@@ -1719,7 +1746,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
         try
         {
-            Me = Client.LoginUserIfNeeded().Result;
+            Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
             UpdateStateSourceAsync(0, 0, string.Empty);
         }
         catch (Exception ex)
@@ -1732,9 +1759,9 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             CheckClientIsReady();
             if (isProxyUpdate && IsReady)
             {
-                TgSqlTableAppModel app = ContextManager.AppRepository.GetFirstAsync().Result;
-                app.ProxyUid = ContextManager.AppRepository.GetCurrentProxyAsync().Result.Uid;
-                ContextManager.AppRepository.SaveAsync(app).GetAwaiter().GetResult();
+                TgEfAppEntity app = EfContext.AppRepository.GetFirst(isNoTracking: false).Item;
+                app.ProxyUid = EfContext.GetCurrentProxyUid();
+                EfContext.AppRepository.Save(app);
             }
         }
     }
@@ -1760,9 +1787,9 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             CheckClientIsReady();
             if (isProxyUpdate && IsReady)
             {
-                TgSqlTableAppModel app = await ContextManager.AppRepository.GetFirstAsync();
-                app.ProxyUid = (await ContextManager.AppRepository.GetCurrentProxyAsync()).Uid;
-                await ContextManager.AppRepository.SaveAsync(app);
+                TgEfAppEntity app = (await EfContext.AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+					app.ProxyUid = await EfContext.GetCurrentProxyUidAsync();
+                await EfContext.AppRepository.SaveAsync(app);
             }
             await AfterClientConnectAsync();
         }

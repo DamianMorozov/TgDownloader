@@ -21,7 +21,7 @@ public static class TgBlazorUtils
 		}
 	}
 
-	public static async Task RunFuncAsync(Func<Task> action, Action actionFinally)
+	public static async Task RunFuncAsync(Func<Task> action, Action<string> actionException, Action actionFinally)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 
@@ -31,7 +31,14 @@ public static class TgBlazorUtils
 		}
 		catch (Exception ex)
 		{
+#if DEBUG
+			Debug.WriteLine(ex);
 			Console.WriteLine(ex);
+#endif
+			if (ex.InnerException is null)
+				actionException(ex.Message);
+			else
+				actionException(ex.Message + Environment.NewLine + ex.InnerException.Message);
 		}
 		finally
 		{
