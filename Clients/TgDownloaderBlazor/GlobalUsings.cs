@@ -7,7 +7,6 @@ global using Microsoft.EntityFrameworkCore;
 global using System.Diagnostics;
 global using System.Reflection;
 global using System.Reflection.Metadata;
-global using System.ServiceModel.Channels;
 global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Web;

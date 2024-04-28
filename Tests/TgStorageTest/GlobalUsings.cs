@@ -3,7 +3,6 @@
 
 // Global using directives
 
-global using DevExpress.Xpo;
 global using NUnit.Framework;
 global using TgStorage.Common;
 global using TgStorage.Contracts;

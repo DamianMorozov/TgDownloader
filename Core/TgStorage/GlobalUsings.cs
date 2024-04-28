@@ -20,6 +20,7 @@ global using System.Text.RegularExpressions;
 global using System.Xml;
 global using System.Xml.Linq;
 global using System.Xml.Serialization;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Storage;
 global using TgLocalization.Helpers;
 global using TgStorage.Common;

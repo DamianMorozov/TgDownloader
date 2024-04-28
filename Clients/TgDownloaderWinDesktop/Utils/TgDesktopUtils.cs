@@ -11,8 +11,8 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-    private static TgEfContext EfContext { get; } = new();
-    public static TgClientViewModel TgClientVm { get; } = new();
+    private static TgEfContext EfContext { get; } = TgStorageUtils.GetEfContextProd();
+	public static TgClientViewModel TgClientVm { get; } = new();
     public static TgDashboardViewModel TgDashboardVm { get; } = new();
     public static TgFiltersViewModel TgFiltersVm { get; } = new();
     public static TgItemProxyViewModel TgItemProxyVm { get; } = new(EfContext);

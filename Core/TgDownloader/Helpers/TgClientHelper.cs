@@ -193,8 +193,6 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         if (proxy.NotExist) return;
         if (!isDesktop && !TgAppSettings.AppXml.IsUseProxy) return;
         if (Equals(proxy.Type, TgEnumProxyType.None)) return;
-        if (proxy is TgXpoProxyEntity xpoProxy)
-			if (!TgStorageUtils.GetXpValid(xpoProxy).IsValid) return;
         else if (proxy is TgEfProxyEntity efProxy)
 	        if (!TgStorageUtils.GetEfValid(efProxy).IsValid) return;
 

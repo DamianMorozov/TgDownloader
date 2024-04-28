@@ -13,10 +13,6 @@ internal class TgDbContextTestsBase
     protected TgEfContext EfTestContext { get; }
 	/// <summary> Product EF DB context </summary>
 	protected TgEfContext EfProdContext { get; }
-	/// <summary> Test XPO DB context </summary>
-	protected TgXpoContext XpoTestContext { get; }
-	/// <summary> Product XPO DB context </summary>
-	protected TgXpoContext XpoProdContext { get; }
 
 	public TgDbContextTestsBase()
     {
@@ -40,15 +36,6 @@ internal class TgDbContextTestsBase
 	        .UseSqlite($"{TgLocalization.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
         EfProdContext = new(builderDbProd.Options);
         TestContext.WriteLine(EfProdContext.Database.GetConnectionString());
-        
-        // Test DB Context.
-        XpoTestContext = new(TgEnumStorageType.Test);
-        TestContext.WriteLine(XpoTestContext.ConnectionStringLowerCase);
-        TestContext.WriteLine(XpoTestContext.ConnectionStringUpperCase);
-		// Product DB Context.
-		XpoProdContext = new(TgEnumStorageType.Prod);
-		TestContext.WriteLine(XpoProdContext.ConnectionStringLowerCase);
-		TestContext.WriteLine(XpoProdContext.ConnectionStringUpperCase);
 	}
 
 	~TgDbContextTestsBase()
