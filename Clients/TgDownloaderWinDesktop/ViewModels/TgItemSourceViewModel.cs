@@ -8,7 +8,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 {
     #region Public and private fields, properties, constructor
 
-    public TgEfSourceViewModel ItemSourceVm { get; }
+    public TgEfSourceViewModel ItemSourceVm { get; } = new();
     public Visibility ChartVisibility { get; private set; } = Visibility.Hidden;
     private LineSeries LineSerie { get; set; } = new()
     {
@@ -24,11 +24,6 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	public TgPageViewModelBase? ViewModel { get; set; }
     private Guid SourceUid { get; set; }
     private long FileSizeMinSizeMonitoring => 52_428_800; // 50 * 1024 * 1024;
-
-    public TgItemSourceViewModel()
-    {
-		ItemSourceVm = new(EfContext);
-	}
 
     #endregion
 

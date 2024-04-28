@@ -3,9 +3,7 @@
 
 namespace TgStorage.Domain.Messages;
 
-/// <summary>
-/// View for TgSqlTableSourceModel.
-/// </summary>
+/// <summary> View for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgEfMessageViewModel(TgEfMessageEntity message, Action<TgEfMessageViewModel> updateAction) : TgViewModelBase
 {
@@ -15,9 +13,7 @@ public sealed partial class TgEfMessageViewModel(TgEfMessageEntity message, Acti
 
 	public Action<TgEfMessageViewModel> UpdateAction { get; set; } = updateAction;
 
-	public TgEfMessageViewModel() : this(new(), _ => { })
-	{
-	}
+	public TgEfMessageViewModel() : this(new(), _ => { }) { }
 
 	#endregion
 

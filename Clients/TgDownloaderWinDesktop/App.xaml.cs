@@ -25,6 +25,10 @@ public partial class App
 		{
 			// App Host
 			services.AddHostedService<ApplicationHostService>();
+			// Register TgEfContext as the DbContext for EF Core
+			//services.AddDbContext<TgEfContext>(options => options
+			//	.UseSqlite(b => b.MigrationsAssembly(nameof(TgDownloaderWinDesktop))));
+			services.AddDbContextFactory<TgEfContext>();
 			// Page resolver service
 			services.AddSingleton<IPageService, PageService>();
 			// Theme manipulation
@@ -69,7 +73,11 @@ public partial class App
 	/// </summary>
 	private async void OnStartup(object sender, StartupEventArgs e)
 	{
-        TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
+		// Register TgEfContext as the DbContext for EF Core
+		TgEfContext efContext = TgEfContext.Instance;
+		await efContext.Database.MigrateAsync();
+
+		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
 		await Host.StartAsync().ConfigureAwait(false);
 		TgDesktopUtils.SetupClient();
 	}

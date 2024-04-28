@@ -12,7 +12,7 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
 
 	public ObservableCollection<MenuItem> TrayMenuItems { get; set; } = new();
 
-	public TgMainWindowViewModel(INavigationService navigationService)
+	public TgMainWindowViewModel(INavigationService navigationService) : base()
 	{
 		if (!IsInitialized)
 			InitializeViewModel();

@@ -1,9 +1,14 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+// Register TgEfContext as the DbContext for EF Core
+
+TgEfContext efContext = TgEfContext.Instance;
+efContext.Database.Migrate();
+
 TgAsyncUtils.SetAppType(TgEnumAppType.Console);
 TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
-TgMenuHelper menu = TgMenuHelper.Instance;
+TgMenuHelper menu = new();
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
 TgLogHelper tgLog = TgLogHelper.Instance;
 TgDownloadSettingsModel tgDownloadSettings = new();

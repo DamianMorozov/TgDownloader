@@ -27,7 +27,7 @@
     <PackageReference Include="WPF-UI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="WTelegramClient" Version="4.0.1" />
+    <PackageReference Include="WTelegramClient" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\applicationIcon-191.png" />

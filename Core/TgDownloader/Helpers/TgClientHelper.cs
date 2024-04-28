@@ -21,7 +21,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     private static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
     private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public TgEfContext EfContext { get; } = default!;
+	public TgEfContext EfContext { get; } = TgEfContext.Instance;
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
     public Client? Client { get; set; }
     public TgExceptionModel ClientException { get; private set; }
@@ -53,7 +53,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 
     public TgClientHelper()
     {
-        DicChatsAll = new();
+	    DicChatsAll = new();
         DicChatsUpdated = new();
         DicUsersUpdated = new();
         EnumerableChannels = Enumerable.Empty<Channel>();
@@ -75,8 +75,6 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         UpdateStateItemSourceAsync = _ => Task.CompletedTask;
         UpdateStateFileAsync = (_, _, _, _, _, _, _) => Task.CompletedTask;
         UpdateStateMessageAsync = _ => Task.CompletedTask;
-
-        EfContext = TgStorageUtils.GetEfContextProd();
 
 #if DEBUG
 		// TgLog to VS Output debugging pane in addition.
@@ -1367,19 +1365,8 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         await TryCatchFuncAsync(async () =>
         {
             await tgDownloadSettings.UpdateSourceWithSettingsAsync();
-            // Store message.
-            TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
-	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
-            if ((operResult.IsExists && tgDownloadSettings.IsRewriteMessages) || !operResult.IsExists)
-	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
-	            {
-					Id = message.ID,
-					SourceId = tgDownloadSettings.SourceVm.SourceId,
-					DtCreated = message.Date,
-					Type = TgEnumMessageType.Message,
-					Size = 0,
-					Message = message.message,
-				});
+			// Store message.
+			await MessageSaveAsync(tgDownloadSettings, message.ID, message.Date, 0, message.message, TgEnumMessageType.Message);
             // Parse documents and photos.
             if ((message.flags & Message.Flags.has_media) is not 0)
             {
@@ -1609,21 +1596,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 localFileStream.Close();
             }
 			// Store message.
-			await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, string.Empty, 0, 0, 0, false);
-            TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
-	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
-            if ((operResult.IsExists && tgDownloadSettings.IsRewriteMessages) || !operResult.IsExists)
-            {
-	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
-	            {
-		            Id = messageBase.ID,
-		            SourceId = tgDownloadSettings.SourceVm.SourceId,
-		            DtCreated = files[i].DtCreate,
-		            Type = TgEnumMessageType.Document,
-		            Size = files[i].Size,
-		            Message = files[i].Remote,
-	            });
-            }
+			await MessageSaveAsync(tgDownloadSettings, messageBase.ID, files[i].DtCreate, files[i].Size, files[i].Remote, TgEnumMessageType.Document);
 			//switch (messageMedia)
    //         {
 			//	case MessageMediaDocument:
@@ -1652,7 +1625,44 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         }
     }
 
-    private bool IsFileLocked(string filePath)
+    private async Task MessageSaveAsync(TgDownloadSettingsModel tgDownloadSettings, int messageId, DateTime dtCreated, long size, string message,
+	    TgEnumMessageType messageType)
+    {
+		//await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, string.Empty, 0, 0, 0, false);
+		//TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
+		// { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
+		//if ((operResult.IsExists && tgDownloadSettings.IsRewriteMessages) || !operResult.IsExists)
+		//{
+		// await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
+		// {
+		//  Id = messageBase.ID,
+		//  SourceId = tgDownloadSettings.SourceVm.SourceId,
+		//  DtCreated = files[i].DtCreate,
+		//  Type = TgEnumMessageType.Document,
+		//  Size = files[i].Size,
+		//  Message = files[i].Remote,
+		// });
+		//}
+	    TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(
+		    new TgEfMessageEntity { SourceId = tgDownloadSettings.SourceVm.SourceId, Id = tgDownloadSettings.SourceVm.SourceFirstId }, isNoTracking: false);
+	    if (!operResult.IsExists || (operResult.IsExists && tgDownloadSettings.IsRewriteMessages))
+	    {
+		    await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
+		    {
+			    Id = messageId,
+			    SourceId = tgDownloadSettings.SourceVm.SourceId,
+			    DtCreated = dtCreated,
+			    Type = messageType,
+			    Size = size,
+			    Message = message,
+		    });
+	    }
+	    if (messageType == TgEnumMessageType.Document)
+		    await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageId, string.Empty, 0, 0, 0, false);
+	}
+
+
+	private bool IsFileLocked(string filePath)
     {
 	    bool isLocked = false;
 	    FileStream? fileStream = null;
@@ -1869,6 +1879,47 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
                 else
 		            await SetClientExceptionAsync(ex);
             }
+		}
+    }
+
+    private void TryCatchAction(Action action)
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception ex)
+        {
+            // CHANNEL_INVALID | BadMsgNotification 48
+            if (ClientException.Message.Contains("You must connect to Telegram first"))
+            {
+	            SetClientExceptionShortAsync(ex).GetAwaiter().GetResult();
+	            UpdateStateMessageAsync("Reconnect client ...");
+	            LoginUserDesktopAsync().GetAwaiter().GetResult();
+            }
+            else
+            {
+	            if (!string.IsNullOrEmpty(ex.Source) && ex.Source.Equals("WTelegramClient"))
+	            {
+		            switch (ex.Message)
+		            {
+                        case "PEER_ID_INVALID":
+	                        UpdateStateExceptionShortAsync("The source is invalid!").GetAwaiter().GetResult();
+							break;
+                        case "CHANNEL_PRIVATE":
+	                        UpdateStateExceptionShortAsync("The channel is private!").GetAwaiter().GetResult();
+							break;
+                        case "CHANNEL_INVALID":
+	                        UpdateStateExceptionShortAsync("The channel is invalid!").GetAwaiter().GetResult();
+							break;
+                        default:
+	                        SetClientExceptionShortAsync(ex).GetAwaiter().GetResult();
+							break;
+					}
+				}
+                else
+		            SetClientExceptionAsync(ex).GetAwaiter().GetResult();
+			}
 		}
     }
 

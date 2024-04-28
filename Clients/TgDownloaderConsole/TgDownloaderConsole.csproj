@@ -73,8 +73,17 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Spectre.Console" Version="0.49.1" />
-		<PackageReference Include="WTelegramClient" Version="4.0.1" />
+		<PackageReference Include="WTelegramClient" Version="4.1.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />

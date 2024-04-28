@@ -103,10 +103,10 @@ public static class TgDataFormatUtils
 	public static string ParseGuidToString(Guid uid) => uid.ToString().Replace("-", "");
 
 	public static string TrimStringEnd(string value, int len = 30) =>
-		value.Length <= len ? value : value.Substring(0, len);
+		string.IsNullOrEmpty(value) ? string.Empty : value.Length <= len ? value : value.Substring(0, len);
 
 	public static string GetFormatString(string value, int len = 30) =>
-        value.PadRight(len).Substring(0, len);
+        string.IsNullOrEmpty(value) ? string.Empty : value.PadRight(len).Substring(0, len);
 
 	public static string GetDtFormat(DateTime dt) => $"{dt:yyyy-MM-dd HH:mm:ss}";
 

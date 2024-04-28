@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Versions;
 
-public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfVersionEntity>(efContext)
+public sealed class TgEfVersionRepository : TgEfRepositoryBase<TgEfVersionEntity>
 {
 	#region Public and private methods
 

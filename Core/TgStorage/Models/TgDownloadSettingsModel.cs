@@ -7,11 +7,11 @@ namespace TgStorage.Models;
 /// Download settings.
 /// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgDownloadSettingsModel : ObservableObject, ITgCommon
+public sealed class TgDownloadSettingsModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	public TgEfContext EfContext { get; } = default!;
+	private TgEfContext EfContext { get; } = TgEfContext.Instance;
 
 	public TgEfSourceViewModel SourceVm { get; set; }
 	
@@ -26,8 +26,8 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 
 	public TgDownloadSettingsModel()
 	{
-		EfContext = TgStorageUtils.GetEfContextProd();
-		SourceVm = new TgEfSourceViewModel(EfContext);
+		SourceVm = new();
+		VersionVm = new();
 		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
 		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
 		IsRewriteMessages = this.GetDefaultPropertyBool(nameof(IsRewriteMessages));
@@ -38,8 +38,6 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
 	#region Public and private methods
 
     public string ToDebugString() => $"{SourceVm.ToDebugString()}";
-
-    public static TgDownloadSettingsModel CreateNew() => new();
 
     public async Task UpdateSourceWithSettingsAsync()
     {

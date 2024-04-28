@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using TgDownloader.Models;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -63,7 +61,7 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.SetSource:
-                    tgDownloadSettings = SetupDownloadSource();
+					tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
 					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, true, false);
@@ -92,7 +90,7 @@ internal partial class TgMenuHelper
 					RunActionStatus(tgDownloadSettings, UpdateSourceWithSettings, true, false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					RunActionProgress(tgDownloadSettings, ManualDownloadAsync, false, false);
+					RunActionProgress(tgDownloadSettings, ManualDownload, false, false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -100,55 +98,55 @@ internal partial class TgMenuHelper
 
 	private TgDownloadSettingsModel SetupDownloadSource(long? id = null)
 	{
-        TgDownloadSettingsModel tgDownloadSettings = TgDownloadSettingsModel.CreateNew();
+		TgDownloadSettingsModel tgDownloadSettings = new();
 		SetupDownloadSourceCore(id, tgDownloadSettings);
-        TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
+		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.Channel is null)
 			_ = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		LoadTgClientSettings(tgDownloadSettings, false, false);
-        return tgDownloadSettings;
-    }
+		return tgDownloadSettings;
+	}
 
-    private void SetupDownloadSourceCore(long? id, TgDownloadSettingsModel tgDownloadSettings)
-    {
-        bool isCheck = false;
-        do
-        {
-            string source = id is { } lid
-                ? lid.ToString()
-                : AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetSource}:"));
-            if (!string.IsNullOrEmpty(source))
-            {
-                if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
-                {
-                    tgDownloadSettings.SourceVm.SourceId = sourceId;
-                    isCheck = tgDownloadSettings.SourceVm.IsReadySourceId;
-                }
-                else
-                {
-                    tgDownloadSettings.SourceVm.SourceUserName = source.StartsWith("https://t.me/")
-                        ? source.Replace("https://t.me/", string.Empty)
-                        : source;
-                    isCheck = !string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceUserName);
-                }
-            }
-        } while (!isCheck);
-    }
-
-    private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsModel tgDownloadSettings)
+	private void SetupDownloadSourceCore(long? id, TgDownloadSettingsModel tgDownloadSettings)
 	{
-		TgDownloadSmartSource smartSource = await TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true);
+		bool isCheck = false;
+		do
+		{
+			string source = id is { } lid
+				? lid.ToString()
+				: AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetSource}:"));
+			if (!string.IsNullOrEmpty(source))
+			{
+				if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
+				{
+					tgDownloadSettings.SourceVm.SourceId = sourceId;
+					isCheck = tgDownloadSettings.SourceVm.IsReadySourceId;
+				}
+				else
+				{
+					tgDownloadSettings.SourceVm.SourceUserName = source.StartsWith("https://t.me/")
+						? source.Replace("https://t.me/", string.Empty)
+						: source;
+					isCheck = !string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceUserName);
+				}
+			}
+		} while (!isCheck);
+	}
+
+	private void SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsModel tgDownloadSettings)
+	{
+		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.Channel is not null)
 		{
-            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.Channel);
+			TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.Channel).GetAwaiter().GetResult();
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 			return;
 		}
 
-		smartSource = await TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true);
+		smartSource = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.ChatBase is not null)
 		{
-            await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase);
+			TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase).GetAwaiter().GetResult();
 			LoadTgClientSettings(tgDownloadSettings, true, false);
 		}
 	}
@@ -197,38 +195,39 @@ internal partial class TgMenuHelper
 	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings) =>
 		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
-    private async Task UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
-    {
-        await tgDownloadSettings.UpdateSourceWithSettingsAsync();
+	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
+	{
+		tgDownloadSettings.UpdateSourceWithSettingsAsync().GetAwaiter().GetResult();
 		// Refresh.
-		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource);
+		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource)
+			.GetAwaiter().GetResult();
 	}
 
 	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
-    {
-        int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
-        string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-        TgEfSourceEntity source = EfContext.SourceRepository.Get(new TgEfSourceEntity
-	        { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false).Item;
-        tgDownloadSettings.SourceVm.Item = source;
+	{
+		int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
+		string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
+		TgEfSourceEntity source = EfContext.SourceRepository.Get(new TgEfSourceEntity
+		{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false).Item;
+		tgDownloadSettings.SourceVm.Item = source;
 		if (isSkipLoadFirstId)
 			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;
 		if (isSkipLoadDirectory)
 			tgDownloadSettings.SourceVm.SourceDirectory = sourceDirectory;
 	}
 
-	private async Task ManualDownloadAsync(TgDownloadSettingsModel tgDownloadSettings)
+	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
-        await TgClient.DownloadAllDataAsync(tgDownloadSettings);
+		TgClient.DownloadAllDataAsync(tgDownloadSettings).GetAwaiter().GetResult();
 		// Don't move up.
-        await UpdateSourceWithSettings(tgDownloadSettings);
+		UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
-	private async Task MarkHistoryReadAsync(TgDownloadSettingsModel tgDownloadSettings)
+	private void MarkHistoryReadCore(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		ShowTableMarkHistoryReadProgress(tgDownloadSettings);
-        await TgClient.MarkHistoryReadAsync();
+		TgClient.MarkHistoryReadAsync().GetAwaiter().GetResult();
 		ShowTableMarkHistoryReadComplete(tgDownloadSettings);
 	}
 

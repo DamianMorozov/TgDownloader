@@ -3,24 +3,26 @@
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-// Radzen.
+// Radzen
 // https://blazor.radzen.com/get-started
 builder.Services.AddRadzenComponents();
 builder.Services.AddScoped<TgJsService>();
-// Inject.
+// Inject
 builder.Services.AddHttpClient();
 
-// EF Core.
-builder.Services
-    .AddDbContextFactory<TgEfContext>(opt => opt
-        .UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}"));
+// Register TgEfContext as the DbContext for EF Core
+builder.Services.AddDbContextFactory<TgEfContext>(options => options
+	.UseSqlite(b => b.MigrationsAssembly(nameof(TgDownloaderBlazor))));
+//builder.Services.AddDbContextFactory<TgEfContext>(opt => opt.UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}"));
+TgEfContext efContext = TgEfContext.Instance;
+efContext.Database.Migrate();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");

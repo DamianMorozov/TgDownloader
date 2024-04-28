@@ -7,7 +7,7 @@ namespace TgStorage.Models;
 /// Wrapper for exception.
 /// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgExceptionModel : TgViewModelBase
+public sealed class TgExceptionModel : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
@@ -26,7 +26,7 @@ public class TgExceptionModel : TgViewModelBase
 	public bool IsExist => Exception is not null;
 	public string Message { get; private set; }
 
-	public TgExceptionModel()
+	public TgExceptionModel() : base()
 	{
 		Message = string.Empty;
 		Exception = null;

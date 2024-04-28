@@ -13,10 +13,10 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     public TgPageViewModelBase? ViewModel { get; set; }
     private Guid ProxyUid { get; set; }
 
-    public TgItemProxyViewModel(TgEfContext efContext)
+    public TgItemProxyViewModel()
 	{
         ProxyTypes = GetProxyTypes();
-		ItemProxyVm = new(efContext.ProxyRepository.CreateNewAsync().GetAwaiter().GetResult().Item);
+		ItemProxyVm = new(EfContext.ProxyRepository.CreateNewAsync().GetAwaiter().GetResult().Item);
 	}
 
 	#endregion

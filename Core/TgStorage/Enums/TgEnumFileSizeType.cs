@@ -1,12 +1,13 @@
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Common;
+namespace TgStorage.Enums;
 
-public enum TgEnumChatType
+public enum TgEnumFileSizeType
 {
-	Channel = 0,
-	User = 1,
-	Group = 2,
-	Bot = 3,
+    Bytes = 0,
+    KBytes = 1,
+    MBytes = 2,
+    GBytes = 3,
+    TBytes = 4,
 }

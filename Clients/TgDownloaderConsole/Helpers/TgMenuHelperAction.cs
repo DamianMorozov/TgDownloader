@@ -34,7 +34,7 @@ internal partial class TgMenuHelper
     };
 
 
-	public void RunActionProgress(TgDownloadSettingsModel tgDownloadSettings, Func<TgDownloadSettingsModel, Task> action,
+	public void RunActionProgress(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel> action,
         bool isSkipCheckTgSettings, bool isScanCount)
     {
         if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
@@ -123,7 +123,7 @@ internal partial class TgMenuHelper
                 TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
                 TgClient.SetupUpdateStateFile(UpdateStateFileAsync);
 				// Action.
-				await action(tgDownloadSettings);
+				action(tgDownloadSettings);
 				sw.Stop();
 				progressTaskFile.StopTask();
 				progressTaskSource.StopTask();
@@ -144,7 +144,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public void RunActionStatus(TgDownloadSettingsModel tgDownloadSettings, Func<TgDownloadSettingsModel, Task> action,
+	public void RunActionStatus(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel> action,
 		bool isSkipCheckTgSettings, bool isScanCount)
 	{
 		if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
@@ -227,7 +227,7 @@ internal partial class TgMenuHelper
 				TgClient.SetupUpdateStateMessage(UpdateStateMessageAsync);
 				// Action.
 				Stopwatch sw = Stopwatch.StartNew();
-				action(tgDownloadSettings).GetAwaiter().GetResult();
+				action(tgDownloadSettings);
 				sw.Stop();
 				// Update state source.
 				UpdateStateSourceAsync(0, 0,

@@ -29,19 +29,4 @@ public static class TgStorageUtils
 	public static FluentValidation.Results.ValidationResult GetEfValid(TgEfVersionEntity item) => new TgEfVersionValidator().Validate(item);
 
 	#endregion
-
-	#region Public and private methods
-
-	public static TgEfContext GetEfContextProd()
-	{
-		LoggerFactory factory = new();
-		DbContextOptionsBuilder<TgEfContext> builderDbProd = new DbContextOptionsBuilder<TgEfContext>()
-			.UseLoggerFactory(factory)
-			.UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
-		return new(builderDbProd.Options);
-	}
-
-	public static string ToUpperString(this Guid uid) => uid.ToString().ToUpper();
-
-	#endregion
 }

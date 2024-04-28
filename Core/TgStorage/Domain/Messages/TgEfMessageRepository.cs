@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Messages;
 
-public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfMessageEntity>(efContext)
+public sealed class TgEfMessageRepository : TgEfRepositoryBase<TgEfMessageEntity>
 {
 	#region Public and private methods
 

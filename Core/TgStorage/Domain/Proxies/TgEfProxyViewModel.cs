@@ -40,7 +40,7 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
 
     public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
 
-    public TgEfProxyViewModel(TgEfProxyEntity proxy)
+    public TgEfProxyViewModel(TgEfProxyEntity proxy) : base()
 	{
 		Proxy = proxy;
         ProxyType = proxy.Type;

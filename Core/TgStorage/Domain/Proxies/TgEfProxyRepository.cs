@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Proxies;
 
-public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfProxyEntity>(efContext)
+public sealed class TgEfProxyRepository : TgEfRepositoryBase<TgEfProxyEntity>
 {
 	#region Public and private methods
 

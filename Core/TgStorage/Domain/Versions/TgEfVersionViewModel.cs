@@ -30,13 +30,17 @@ public sealed partial class TgEfVersionViewModel : TgViewModelBase
 	[DefaultValue("New version")]
 	public string Description { get => Item.Description; set => Item.Description = value; }
 
-	public TgEfVersionViewModel(TgEfVersionEntity item)
+	public TgEfVersionViewModel(TgEfVersionEntity item) : base()
 	{
 		Item = item;
 		Description = item.Description;
 	}
 
-	public TgEfVersionViewModel(TgEfContext efContext) : this(efContext.VersionRepository.CreateNew().Item) { }
+	public TgEfVersionViewModel() : base()
+	{
+		Item = EfContext.VersionRepository.CreateNew().Item;
+		Description = Item.Description;
+	}
 
 	#endregion
 

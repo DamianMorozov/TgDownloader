@@ -1,13 +1,13 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Downloads;
+namespace TgDownloaderWinDesktop.ViewModels;
 
 /// <summary>
 /// View for TgSqlTableSourceModel.
 /// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfTableDownloadViewModel : TgViewModelBase
+public sealed partial class TgEfDownloadViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 

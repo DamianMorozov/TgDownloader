@@ -32,6 +32,7 @@ global using TgStorage.Domain.Messages;
 global using TgStorage.Domain.Proxies;
 global using TgStorage.Domain.Sources;
 global using TgStorage.Domain.Versions;
+global using TgStorage.Enums;
 global using TgStorage.Helpers;
 global using TgStorage.Models;
 global using TgStorage.Utils;

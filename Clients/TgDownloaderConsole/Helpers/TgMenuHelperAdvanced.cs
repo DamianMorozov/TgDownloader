@@ -52,7 +52,7 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.AutoDownload:
-					RunActionStatus(tgDownloadSettings, AutoDownloadAsync, true, false);
+					RunActionStatus(tgDownloadSettings, AutoDownload, true, false);
 					break;
 				case TgEnumMenuDownload.AutoViewEvents:
 					RunActionStatus(tgDownloadSettings, AutoViewEvents, true, false);
@@ -89,19 +89,19 @@ internal partial class TgMenuHelper
 		switch (sourceType)
 		{
 			case TgEnumSourceType.Chat:
-				RunActionStatus(tgDownloadSettings, ScanSourcesChatsWithSaveAsync, true, true);
+				RunActionStatus(tgDownloadSettings, ScanSourcesChatsWithSave, true, true);
 				break;
 			case TgEnumSourceType.Dialog:
-				RunActionStatus(tgDownloadSettings, ScanSourcesDialogsWithSaveAsync, true, true);
+				RunActionStatus(tgDownloadSettings, ScanSourcesDialogsWithSave, true, true);
 				break;
 		}
 	}
 
-	private async Task ScanSourcesChatsWithSaveAsync(TgDownloadSettingsModel tgDownloadSettings) =>
-        await TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat);
+	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+        TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat).GetAwaiter().GetResult();
 
-	private async Task ScanSourcesDialogsWithSaveAsync(TgDownloadSettingsModel tgDownloadSettings) =>
-        await TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
+	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+        TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog).GetAwaiter().GetResult();
 
 	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
 	{
@@ -125,32 +125,33 @@ internal partial class TgMenuHelper
 
 	private void MarkHistoryRead(TgDownloadSettingsModel tgDownloadSettings)
 	{
-		RunActionStatus(tgDownloadSettings, MarkHistoryReadAsync, true, false);
+		RunActionStatus(tgDownloadSettings, MarkHistoryReadCore, true, false);
 	}
 
-	private async Task AutoDownloadAsync(TgDownloadSettingsModel _)
+	private void AutoDownload(TgDownloadSettingsModel _)
 	{
-		IEnumerable<TgEfSourceEntity> sources = 
-			(await EfContext.SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)).Items;
+		IEnumerable<TgEfSourceEntity> sources = EfContext.SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items;
 		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
             TgDownloadSettingsModel tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
             // StatusContext.
-            await TgClient.UpdateStateSourceAsync(source.Id, source.FirstId, 
+            TgClient.UpdateStateSourceAsync(source.Id, source.FirstId, 
 				source.Count <= 0
 					? $"The source {sourceId} hasn't any messages!"
-					: $"The source {sourceId} has {source.Count} messages.");
+					: $"The source {sourceId} has {source.Count} messages.")
+	            .GetAwaiter().GetResult();
 			// ManualDownload.
 			if (source.Count > 0)
-                await ManualDownloadAsync(tgDownloadSettings);
+				ManualDownload(tgDownloadSettings);
 		}
 	}
 
-	private async Task AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
+	private void AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
-		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, "Auto view updates is started");
+		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, 
+			"Auto view updates is started").GetAwaiter().GetResult();
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 		TgClient.IsUpdateStatus = false;

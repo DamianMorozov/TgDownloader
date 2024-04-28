@@ -36,7 +36,7 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	//}
 	public string UidString
 	{ 
-		get => Uid.ToUpperString();
+		get => Uid.ToString().ToUpper();
 		set => Uid = Guid.TryParse(value, out Guid uid) ? uid : Guid.Empty;
 	}
 

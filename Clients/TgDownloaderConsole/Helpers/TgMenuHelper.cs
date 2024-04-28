@@ -2,22 +2,11 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using TgStorage.Contracts;
-
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
-internal sealed partial class TgMenuHelper : ITgHelper
+internal sealed partial class TgMenuHelper() : ITgHelper
 {
-	#region Design pattern "Lazy Singleton"
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	private static TgMenuHelper _instance;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	public static TgMenuHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
-
-	#endregion
-
 	#region Public and internal fields, properties, constructor
 
 	internal TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
@@ -25,13 +14,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	internal TgLogHelper TgLog => TgLogHelper.Instance;
 	internal TgClientHelper TgClient => TgClientHelper.Instance;
 	internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
-	internal TgEfContext EfContext { get; } = default!;
+	internal TgEfContext EfContext => TgEfContext.Instance;
 	internal TgEnumMenuMain Value { get; set; }
-
-	public TgMenuHelper()
-	{
-		EfContext = TgStorageUtils.GetEfContextProd();
-	}
 
 	#endregion
 

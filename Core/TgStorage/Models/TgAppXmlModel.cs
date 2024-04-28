@@ -9,7 +9,7 @@ namespace TgStorage.Models;
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgAppXmlModel : ObservableObject, ITgCommon
+public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 

@@ -5,6 +5,15 @@ namespace TgStorage;
 
 public sealed class TgEfContext : DbContext, IDisposable
 {
+	#region Design pattern "Lazy Singleton"
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	private static TgEfContext _instance;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	public static TgEfContext Instance => LazyInitializer.EnsureInitialized(ref _instance);
+
+	#endregion
+
 	#region Public and private fields, properties, constructor
 
 	/// <summary> App queries </summary>
@@ -47,20 +56,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 		IsTableExists(TgStorageConstants.TableFilters) && IsTableExists(TgStorageConstants.TableMessages) &&
 		IsTableExists(TgStorageConstants.TableProxies) && IsTableExists(TgStorageConstants.TableSources) &&
 		IsTableExists(TgStorageConstants.TableVersions);
-
-	public bool IsNotReady => !IsReady;
-
-	// Inject options.
-	// options: The DbContextOptions{TgEfContext} for the context.
-	public TgEfContext(DbContextOptions<TgEfContext> options) : base(options)
-	{
-		InitRepositories();
-	}
-
-	public TgEfContext() : base()
-	{
-		InitRepositories();
-	}
 
 	#endregion
 
@@ -147,28 +142,46 @@ public sealed class TgEfContext : DbContext, IDisposable
 #if DEBUG
 		Debug.WriteLine($"{nameof(ContextId)} {ContextId}: init repositories");
 #endif
-		AppRepository = new TgEfAppRepository(this);
-		DocumentRepository = new TgEfDocumentRepository(this);
-		FilterRepository = new TgEfFilterRepository(this);
-		MessageRepository = new TgEfMessageRepository(this);
-		ProxyRepository = new TgEfProxyRepository(this);
-		SourceRepository = new TgEfSourceRepository(this);
-		VersionRepository = new TgEfVersionRepository(this);
+		AppRepository = new TgEfAppRepository();
+		DocumentRepository = new TgEfDocumentRepository();
+		FilterRepository = new TgEfFilterRepository();
+		MessageRepository = new TgEfMessageRepository();
+		ProxyRepository = new TgEfProxyRepository();
+		SourceRepository = new TgEfSourceRepository();
+		VersionRepository = new TgEfVersionRepository();
 
 		CreateOrConnectDb();
 	}
 
-#if DEBUG
+	public TgEfContext() : base()
+	{
+		InitRepositories();
+	}
+
+	/// <summary> Inject options </summary>
+	/// <param name="options"></param>
+	// For using: services.AddDbContextFactory<TgEfContext>
+	public TgEfContext(DbContextOptions<TgEfContext> options) : base(options)
+	{
+		InitRepositories();
+	}
+
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
+		base.OnConfiguring(optionsBuilder);
+		LoggerFactory factory = new();
 		optionsBuilder
+#if DEBUG
 			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}"), LogLevel.Information)
-			.EnableThreadSafetyChecks()
 			.EnableDetailedErrors()
 			.EnableSensitiveDataLogging()
+#endif
+			.EnableThreadSafetyChecks()
+			.UseLoggerFactory(factory)
+			.UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}")
+			//.UseSqlite(b => b.MigrationsAssembly(assemblyName))
 		;
 	}
-#endif
 
 	//// Magic string.
 	//// Define the model.

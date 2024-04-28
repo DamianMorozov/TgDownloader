@@ -3,11 +3,11 @@
 
 namespace TgStorage.Common;
 
-public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBase, ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
+public abstract class TgEfRepositoryBase<T>() : TgCommonBase, ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
 {
 	#region Public and private fields, properties, constructor
 
-	protected TgEfContext EfContext { get; } = efContext;
+	protected TgEfContext EfContext { get; } = TgEfContext.Instance;
 
 	#endregion
 

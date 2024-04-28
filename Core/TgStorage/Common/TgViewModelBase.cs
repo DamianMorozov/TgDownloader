@@ -3,22 +3,15 @@
 
 namespace TgStorage.Common;
 
-/// <summary>
-/// Base class for TgMvvmModel.
-/// </summary>
+/// <summary> Base class for TgMvvmModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public abstract class TgViewModelBase : ObservableObject, ITgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    protected TgEfContext EfContext { get; } = default!;
+    protected TgEfContext EfContext { get; } = TgEfContext.Instance;
 	public bool IsLoad { get; set; }
     public bool IsNotLoad => !IsLoad;
-
-    protected TgViewModelBase()
-    {
-		EfContext = TgStorageUtils.GetEfContextProd();
-	}
 
     #endregion
 

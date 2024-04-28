@@ -11,7 +11,7 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    public TgEfSourceEntity Item { get; set; }
+    public TgEfSourceEntity Item { get; set; } = default!;
     public float Progress => (float) Item.FirstId * 100 / Item.Count;
     public string ProgressPercentString => Progress == 0 ? "{0:00.00}" : $"{Progress:#00.00} %";
     public string ProgressItemString => $"{Item.FirstId} from {Item.Count}";
@@ -53,19 +53,19 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
     [DefaultValue("")]
 	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-mm-dd HH:mm:ss}";
 	[DefaultValue("")]
-    public string SourceUserName { get => Item.UserName; set => Item.UserName = value; }
+    public string SourceUserName { get => Item.UserName ?? string.Empty; set => Item.UserName = value; }
     [DefaultValue("")]
-    public string SourceAbout { get => Item.About; set => Item.About = value; }
+    public string SourceAbout { get => Item.About ?? string.Empty; set => Item.About = value; }
     [DefaultValue("")]
-    public string SourceTitle { get => Item.Title; set => Item.Title = value; }
+    public string SourceTitle { get => Item.Title ?? string.Empty; set => Item.Title = value; }
     [DefaultValue(1)]
     public int SourceFirstId { get => Item.FirstId; set => Item.FirstId = value; }
     [DefaultValue(1)]
     public int SourceLastId { get => Item.Count; set => Item.Count = value; }
     [DefaultValue("")]
-    public string SourceDirectory { get => Item.Directory; set => Item.Directory = value; }
-    [DefaultValue("")]
-    public string CurrentFileName { get; set; }
+    public string SourceDirectory { get => Item.Directory ?? string.Empty; set => Item.Directory = value; }
+    [DefaultValue("")] 
+    public string CurrentFileName { get; set; } = default!;
     [DefaultValue(1)]
     public int SourceScanCurrent { get; set; }
     [DefaultValue(1)]
@@ -79,28 +79,37 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
     public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsDownload { get; private set; }
 
-    public TgEfSourceViewModel(TgEfSourceEntity item)
+    public TgEfSourceViewModel(TgEfSourceEntity item) : base()
     {
-		Item = item;
-        SourceDirectory = item.Directory;
-        SourceId = item.Id;
-        SourceDtChanged = item.DtChanged;
-        SourceUserName = item.UserName;
-        SourceFirstId = item.FirstId;
-        SourceLastId = item.Count;
-        SourceAbout = item.About;
-        SourceTitle = item.Title;
-        SourceScanCurrent = this.GetDefaultPropertyInt(nameof(SourceScanCurrent));
-        SourceScanCount = this.GetDefaultPropertyInt(nameof(SourceScanCount));
-        IsAutoUpdate = this.GetDefaultPropertyBool(nameof(IsAutoUpdate));
-        CurrentFileName = string.Empty;
+		Default(item);
     }
 
-    public TgEfSourceViewModel(TgEfContext efContext) : this(efContext.SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item) { }
+    public TgEfSourceViewModel() : base()
+    {
+	    TgEfSourceEntity source = EfContext.SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item;
+		Default(source);
+	}
 
     #endregion
 
     #region Public and private methods
+
+    private void Default(TgEfSourceEntity item)
+    {
+	    Item = item;
+	    //SourceDirectory = item.Directory;
+	    //SourceId = item.Id;
+	    //SourceDtChanged = item.DtChanged;
+	    //SourceUserName = item.UserName;
+	    //SourceFirstId = item.FirstId;
+	    //SourceLastId = item.Count;
+	    //SourceAbout = item.About;
+	    //SourceTitle = item.Title;
+	    SourceScanCurrent = this.GetDefaultPropertyInt(nameof(SourceScanCurrent));
+	    SourceScanCount = this.GetDefaultPropertyInt(nameof(SourceScanCount));
+	    IsAutoUpdate = this.GetDefaultPropertyBool(nameof(IsAutoUpdate));
+	    CurrentFileName = string.Empty;
+	}
 
     public override string ToString() => $"{Item} | {Progress}";
 

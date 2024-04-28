@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Domain.Downloads;
-
 namespace TgDownloaderWinDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -10,7 +8,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 {
     #region Public and private fields, properties, constructor
 
-    public ObservableCollection<TgEfTableDownloadViewModel> DownloadVms { get; set; } = new();
+    public ObservableCollection<TgEfDownloadViewModel> DownloadVms { get; set; } = new();
 
     #endregion
 
@@ -33,16 +31,16 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     /// <summary>
     /// Sort.
     /// </summary>
-    private void SetOrderJobs(IEnumerable<TgEfTableDownloadViewModel> downloadVms)
+    private void SetOrderJobs(IEnumerable<TgEfDownloadViewModel> downloadVms)
     {
-	    List<TgEfTableDownloadViewModel> list = downloadVms.ToList();
+	    List<TgEfDownloadViewModel> list = downloadVms.ToList();
 	    if (!list.Any()) return;
 	    DownloadVms = new();
 
 	    downloadVms = list.OrderBy(x => x.DownloadSetting.SourceVm.SourceUserName)
 		    .ThenBy(x => x.DownloadSetting.SourceVm.SourceTitle).ToList();
 	    if (downloadVms.Any())
-		    foreach (TgEfTableDownloadViewModel downloadVm in downloadVms)
+		    foreach (TgEfDownloadViewModel downloadVm in downloadVms)
 			    DownloadVms.Add(downloadVm);
     }
 
@@ -55,7 +53,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 	{
 		TgDownloadSettingsModel downloadSettings = new()
 		{
-			SourceVm = new TgEfSourceViewModel(EfContext)
+			SourceVm = new()
 			{
 				SourceId = sourceVm.Item.Id,
 				SourceFirstId = sourceVm.Item.FirstId,
@@ -86,12 +84,12 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 
     // StartCommand
     [RelayCommand]
-    public async Task OnStartAsync(TgEfTableDownloadViewModel jobVm)
+    public async Task OnStartAsync(TgEfDownloadViewModel jobVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
+            TgEfDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
 	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
             if (findJobVm is not null)
             {
@@ -102,12 +100,12 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 
     // StopCommand
     [RelayCommand]
-    public async Task OnStopAsync(TgEfTableDownloadViewModel jobVm)
+    public async Task OnStopAsync(TgEfDownloadViewModel jobVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfTableDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
+            TgEfDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
 	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
             if (findJobVm is not null)
             {
