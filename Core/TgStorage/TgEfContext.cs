@@ -379,8 +379,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 			await UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
 			await UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
 			await UpdateTableUidUpperCaseAllAsync<TgEfVersionEntity>();
-			// Compact DB.
-			await CompactDbAsync();
 		}
 
 		if (!await CheckTableAppsCrudAsync())
@@ -397,7 +395,11 @@ public sealed class TgEfContext : DbContext, IDisposable
 			throw new(TgLocale.TablesProxiesException);
 		if (!await CheckTableVersionsCrudAsync())
 			throw new(TgLocale.TablesVersionsException);
+
 		await FillTableVersionsAsync();
+
+		// Compact DB.
+		//await CompactDbAsync();
 	}
 
 	private async Task<bool> CheckTableCrudAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
@@ -808,6 +810,8 @@ COMMIT TRANSACTION;
 		}
 		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
 	}
+
+	public void CompactDb() => Database.ExecuteSqlRaw("VACUUM;");
 
 	public async Task CompactDbAsync() => await Database.ExecuteSqlRawAsync("VACUUM;");
 

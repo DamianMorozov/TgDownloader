@@ -194,6 +194,8 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string MenuStoragePerformSteps => "Perform the following set of steps";
 	public string MenuStorageTablesClear => "Clear tables";
 	public string MenuStorageTablesClearFinished => "Clear tables was finished";
+	public string MenuStorageTablesCompactFinished => "Compact storage was finished";
+	public string MenuStorageTablesCompact => "Compact storage";
 	public string MenuStorageTablesVersionsView => "Versions info";
 
 	#endregion

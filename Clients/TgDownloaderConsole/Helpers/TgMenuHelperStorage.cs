@@ -20,7 +20,8 @@ internal partial class TgMenuHelper
 					TgLocale.MenuStorageDbCreateNew,
 					TgLocale.MenuStorageDbDeleteExists,
 					TgLocale.MenuStorageTablesVersionsView,
-					TgLocale.MenuStorageTablesClear
+					TgLocale.MenuStorageTablesClear,
+					TgLocale.MenuStorageTablesCompact
 				));
 		if (prompt.Equals(TgLocale.MenuStorageDbBackup))
 			return TgEnumMenuStorage.DbBackup;
@@ -32,6 +33,8 @@ internal partial class TgMenuHelper
 			return TgEnumMenuStorage.TablesVersionsView;
 		if (prompt.Equals(TgLocale.MenuStorageTablesClear))
 			return TgEnumMenuStorage.TablesClear;
+		if (prompt.Equals(TgLocale.MenuStorageTablesCompact))
+			return TgEnumMenuStorage.TablesCompact;
 		return TgEnumMenuStorage.Return;
 	}
 
@@ -58,6 +61,9 @@ internal partial class TgMenuHelper
 					break;
 				case TgEnumMenuStorage.TablesClear:
 					TgStorageTablesClear();
+					break;
+				case TgEnumMenuStorage.TablesCompact:
+					TgStorageTablesCompact();
 					break;
 			}
 		} while (menu is not TgEnumMenuStorage.Return);
@@ -105,6 +111,15 @@ internal partial class TgMenuHelper
 		EfContext.DeleteTables();
 		EfContext.CreateOrConnectDb();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
+		Console.ReadKey();
+	}
+
+	private void TgStorageTablesCompact()
+	{
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesCompact))
+			return;
+		EfContext.CompactDb();
+		TgLog.WriteLine(TgLocale.MenuStorageTablesCompactFinished);
 		Console.ReadKey();
 	}
 

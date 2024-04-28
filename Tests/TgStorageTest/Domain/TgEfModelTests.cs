@@ -127,7 +127,7 @@ internal class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(version);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals(short.MaxValue, version.Version));
+				Assert.That(Equals((short)1024, version.Version));
 				Assert.That(Equals("New version", version.Description));
 			});
 		});

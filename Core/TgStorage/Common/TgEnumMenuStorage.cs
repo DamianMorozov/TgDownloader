@@ -11,4 +11,5 @@ public enum TgEnumMenuStorage
 	DbDeleteExists,
 	TablesVersionsView,
 	TablesClear,
+	TablesCompact,
 }
