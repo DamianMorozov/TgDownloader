@@ -151,7 +151,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
         //       (ContextManager.ProxyRepository.Get(ContextManager.AppRepository.GetFirstProxyUid) ??
         //        ContextManager.ProxyRepository.GetNew()).IsExist)))
         TgEfOperResult<TgEfProxyEntity> operResult = EfContext.GetCurrentProxy();
-		if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExist)))
+		if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExists)))
             return ResultDisconnected();
         if (ProxyException.IsExist || ClientException.IsExist)
             return ResultDisconnected();
@@ -1370,7 +1370,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
             // Store message.
             TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
 	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
-            if ((operResult.IsExist && tgDownloadSettings.IsRewriteMessages) || operResult.NotExist)
+            if ((operResult.IsExists && tgDownloadSettings.IsRewriteMessages) || !operResult.IsExists)
 	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
 	            {
 					Id = message.ID,
@@ -1612,7 +1612,7 @@ public sealed partial class TgClientHelper : ObservableObject, ITgHelper
 			await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, string.Empty, 0, 0, 0, false);
             TgEfOperResult<TgEfMessageEntity> operResult = await EfContext.MessageRepository.GetAsync(new TgEfMessageEntity
 	            { Id = tgDownloadSettings.SourceVm.SourceFirstId, SourceId = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
-            if ((operResult.IsExist && tgDownloadSettings.IsRewriteMessages) || operResult.NotExist)
+            if ((operResult.IsExists && tgDownloadSettings.IsRewriteMessages) || !operResult.IsExists)
             {
 	            await EfContext.MessageRepository.SaveAsync(new TgEfMessageEntity
 	            {

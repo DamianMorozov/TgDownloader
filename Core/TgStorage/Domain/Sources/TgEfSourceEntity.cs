@@ -26,18 +26,18 @@ public sealed class TgEfSourceEntity : TgEfEntityBase
     [ConcurrencyCheck]
     [MaxLength(256)]
     [Column(TgStorageConstants.ColumnUserName)]
-    public string UserName { get; set; } = default!;
+    public string? UserName { get; set; }
 
     [DefaultValue("Title")]
     [ConcurrencyCheck]
     [MaxLength(1024)]
     [Column(TgStorageConstants.ColumnTitle)]
-    public string Title { get; set; } = default!;
+    public string? Title { get; set; }
 
     [DefaultValue("About")]
     [ConcurrencyCheck]
     [Column(TgStorageConstants.ColumnAbout)]
-    public string About { get; set; } = default!;
+    public string? About { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
@@ -48,7 +48,7 @@ public sealed class TgEfSourceEntity : TgEfEntityBase
     [ConcurrencyCheck]
     [MaxLength(1024)]
     [Column(TgStorageConstants.ColumnDirectory)]
-    public string Directory { get; set; } = default!;
+    public string? Directory { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]

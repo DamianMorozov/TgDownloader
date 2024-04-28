@@ -237,7 +237,7 @@ internal sealed partial class TgMenuHelper : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (EfContext.GetCurrentProxy().NotExist || TgClient.Me is null)
+			if (!EfContext.GetCurrentProxy().IsExists || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));

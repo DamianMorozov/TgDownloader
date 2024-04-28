@@ -46,7 +46,7 @@ public class TgDownloadSettingsModel : ObservableObject, ITgCommon
         if (!SourceVm.IsReadySourceId)
             return;
         TgEfOperResult<TgEfSourceEntity> operResult = await EfContext.SourceRepository.SaveAsync(SourceVm.Item);
-        if (operResult.IsExist) 
+        if (operResult.IsExists) 
 	        SourceVm.Item = operResult.Item;
     }
 

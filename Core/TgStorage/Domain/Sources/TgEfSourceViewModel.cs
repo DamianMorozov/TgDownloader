@@ -40,7 +40,7 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
 		{
 			TgEfOperResult<TgEfSourceEntity> operResult = EfContext.SourceRepository.GetAsync(
 				new TgEfSourceEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
-			Item = operResult.IsExist
+			Item = operResult.IsExists
 				? operResult.Item
 				: EfContext.SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 		}

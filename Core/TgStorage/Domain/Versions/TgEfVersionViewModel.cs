@@ -18,7 +18,7 @@ public sealed partial class TgEfVersionViewModel : TgViewModelBase
 		{
 			TgEfOperResult<TgEfVersionEntity> operResult =
 				EfContext.VersionRepository.Get(new TgEfVersionEntity { Uid = value }, isNoTracking: true);
-			Item = operResult.IsExist
+			Item = operResult.IsExists
 				? operResult.Item
 				: EfContext.VersionRepository.GetNew(isNoTracking: true).Item;
 		}

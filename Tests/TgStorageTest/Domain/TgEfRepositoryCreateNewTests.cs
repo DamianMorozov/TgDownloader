@@ -61,10 +61,10 @@ internal class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
     private async Task CreateNewItemAndDeleteAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
     {
 		TgEfOperResult<T> operResult = await repository.CreateNewAsync();
-		Assert.That(operResult.IsExist);
+		Assert.That(operResult.IsExists);
 		TestContext.WriteLine(operResult.Item.ToDebugString());
 		operResult = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-		Assert.That(operResult.NotExist);
+		Assert.That(!operResult.IsExists);
     }
 
 	[Test]
@@ -110,13 +110,13 @@ internal class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 		do
 		{
 			operResult = await repository.GetNewAsync(isNoTracking: false);
-			if (operResult.IsExist)
+			if (operResult.IsExists)
 			{
 				TestContext.WriteLine(operResult.Item.ToDebugString());
 				TgEfOperResult<T> operResultDelete = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-				Assert.That(operResultDelete.NotExist);
+				Assert.That(!operResultDelete.IsExists);
 			}
-		} while (operResult.IsExist);
+		} while (operResult.IsExists);
 	}
 
 	#endregion

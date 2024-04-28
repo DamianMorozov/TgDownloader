@@ -25,16 +25,16 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 	{
 		T? item = EfContext.Find<T>(uid);
 		return item is not null
-			? new TgEfOperResult<T>(TgEnumEntityState.IsExist, item)
-			: new TgEfOperResult<T>(TgEnumEntityState.NotExist);
+			? new TgEfOperResult<T>(TgEnumEntityState.IsExists, item)
+			: new TgEfOperResult<T>(TgEnumEntityState.NotExists);
 	}
 
 	private async Task<TgEfOperResult<T>> GetAsync(Guid uid)
 	{
 		T? item = await EfContext.FindAsync<T>(uid).ConfigureAwait(false);
 		return item is not null
-			? new TgEfOperResult<T>(TgEnumEntityState.IsExist, item)
-			: new TgEfOperResult<T>(TgEnumEntityState.NotExist);
+			? new TgEfOperResult<T>(TgEnumEntityState.IsExists, item)
+			: new TgEfOperResult<T>(TgEnumEntityState.NotExists);
 	}
 
 	#endregion
@@ -83,7 +83,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 		{
 			operResult = Get(item, isNoTracking: false);
 			// Create.
-			if (operResult.NotExist)
+			if (!operResult.IsExists)
 			{
 				EfContext.Add(operResult.Item);
 				EfContext.SaveChanges();
@@ -119,7 +119,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 			{
 				operResult = await GetAsync(item, isNoTracking: false).ConfigureAwait(false);
 				// Create.
-				if (operResult.NotExist)
+				if (!operResult.IsExists)
 				{
 					await EfContext.AddAsync(operResult.Item).ConfigureAwait(false);
 					await EfContext.SaveChangesAsync().ConfigureAwait(false);
@@ -196,12 +196,12 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 				if (!isSkipFind)
 				{
 					operResult = Get(item, isNoTracking: false);
-					if (operResult.NotExist)
+					if (!operResult.IsExists)
 						return operResult;
 				}
 				else
 				{
-					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExist, item);
+					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExists, item);
 				}
 				EfContext.Remove(operResult.Item);
 				EfContext.SaveChanges();
@@ -228,12 +228,12 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 				if (!isSkipFind)
 				{
 					operResult = await GetAsync(item, isNoTracking: false).ConfigureAwait(false);
-					if (operResult.NotExist)
+					if (!operResult.IsExists)
 						return operResult;
 				}
 				else
 				{
-					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExist, item);
+					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExists, item);
 				}
 				EfContext.Remove(operResult.Item);
 				await EfContext.SaveChangesAsync().ConfigureAwait(false);
@@ -252,7 +252,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 	public virtual TgEfOperResult<T> DeleteNew()
 	{
 		TgEfOperResult<T> operResult = GetNew(isNoTracking: false);
-		return operResult.IsExist
+		return operResult.IsExists
 			? Delete(operResult.Item, isSkipFind: true)
 			: new TgEfOperResult<T>(TgEnumEntityState.NotDeleted);
 	}
@@ -260,7 +260,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 	public virtual async Task<TgEfOperResult<T>> DeleteNewAsync()
 	{
 		TgEfOperResult<T> operResult = await GetNewAsync(isNoTracking: false).ConfigureAwait(false);
-		return operResult.IsExist
+		return operResult.IsExists
 			? await DeleteAsync(operResult.Item, isSkipFind: true).ConfigureAwait(false)
 			: new TgEfOperResult<T>(TgEnumEntityState.NotDeleted);
 	}
@@ -268,27 +268,27 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 	public virtual TgEfOperResult<T> DeleteAll()
 	{
 		TgEfOperResult<T> operResult = GetEnumerable(0, isNoTracking: false);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 		{
 			foreach (T item in operResult.Items)
 			{
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfOperResult<T>(operResult.IsExist ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfOperResult<T>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public virtual async Task<TgEfOperResult<T>> DeleteAllAsync()
 	{
 		TgEfOperResult<T> operResult = await GetEnumerableAsync(0, isNoTracking: false).ConfigureAwait(false);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 		{
 			foreach (T item in operResult.Items)
 			{
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfOperResult<T>(operResult.IsExist ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfOperResult<T>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

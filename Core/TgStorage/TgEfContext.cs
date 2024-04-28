@@ -238,21 +238,21 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy()
 	{
 		TgEfOperResult<TgEfAppEntity> operResultApp = AppRepository.GetFirst(isNoTracking: true);
-		if (operResultApp.NotExist)
-			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist);
+		if (!operResultApp.IsExists)
+			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 		TgEfOperResult<TgEfProxyEntity> operResultProxy = ProxyRepository.Get(
 			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
-		return operResultProxy.IsExist ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist);
+		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 	}
 
 	public async Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync()
 	{
 		TgEfOperResult<TgEfAppEntity> operResultApp = await AppRepository.GetFirstAsync(isNoTracking: true);
-		if (operResultApp.NotExist)
-			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist);
+		if (!operResultApp.IsExists)
+			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 		TgEfOperResult<TgEfProxyEntity> operResultProxy = await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
-		return operResultProxy.IsExist ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist);
+		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 	}
 
 	public Guid GetCurrentProxyUid() => GetCurrentProxy().Item.Uid;
@@ -298,7 +298,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public void VersionsView()
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult = VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity version in operResult.Items)
 			{
@@ -310,7 +310,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public void FiltersView()
 	{
 		TgEfOperResult<TgEfFilterEntity> operResult = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 		{
 			foreach (TgEfFilterEntity filter in operResult.Items)
 			{
@@ -403,10 +403,10 @@ public sealed class TgEfContext : DbContext, IDisposable
 	private async Task<bool> CheckTableCrudAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
 	{
 		var operResult = await repository.CreateNewAsync();
-		if (operResult.NotExist)
+		if (!operResult.IsExists)
 			return false;
 		operResult = await repository.GetNewAsync(isNoTracking: false);
-		if (operResult.NotExist)
+		if (!operResult.IsExists)
 			return false;
 		operResult = await repository.SaveAsync(operResult.Item);
 		if (operResult.State != TgEnumEntityState.IsSaved)

@@ -19,7 +19,7 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
 	    {
 		    TgEfOperResult<TgEfProxyEntity> operResult = EfContext.ProxyRepository.GetAsync(
 			    new TgEfProxyEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
-		    Proxy = operResult.IsExist
+		    Proxy = operResult.IsExists
 			    ? operResult.Item
 			    : EfContext.ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 	    }

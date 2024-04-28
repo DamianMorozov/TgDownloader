@@ -16,9 +16,7 @@ public class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
 
 	public IEnumerable<T> Items { get; set; }
 
-	public bool IsExist => State is TgEnumEntityState.IsExist or TgEnumEntityState.IsSaved;
-
-	public bool NotExist => !IsExist || State == TgEnumEntityState.IsDeleted;
+	public bool IsExists => State is TgEnumEntityState.IsExists or TgEnumEntityState.IsSaved;
 
 	public TgEfOperResult()
 	{

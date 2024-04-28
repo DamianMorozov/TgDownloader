@@ -6,10 +6,9 @@ namespace TgStorage.Common;
 public enum TgEnumEntityState
 {
 	Unknown,
-	IsExist,
-	NotExist,
+	IsExists,
+	NotExists,
 	IsSaved,
-	NotSaved,
 	IsDeleted,
 	NotDeleted,
 	IsExecuted,

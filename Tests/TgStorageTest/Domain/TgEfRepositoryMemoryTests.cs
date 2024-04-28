@@ -15,7 +15,7 @@ internal class TgEfRepositoryMemoryTests : TgDbContextTestsBase
 			TgEfOperResult<T> operResult = repo.CreateNew();
 			TgEfOperResult<T> operResultFind = repo.Get(operResult.Item, isNoTracking: false);
 
-			Assert.That(operResultFind.IsExist);
+			Assert.That(operResultFind.IsExists);
 			TestContext.WriteLine(operResultFind.Item.ToDebugString());
 		});
 	}

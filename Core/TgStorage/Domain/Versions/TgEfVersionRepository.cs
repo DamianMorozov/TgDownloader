@@ -10,7 +10,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public override TgEfOperResult<TgEfVersionEntity> Get(TgEfVersionEntity item, bool isNoTracking)
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult = base.Get(item, isNoTracking);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 			return operResult;
 		TgEfVersionEntity? itemFind = isNoTracking
 			? EfContext.Versions.AsNoTracking()
@@ -18,14 +18,14 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			: EfContext.Versions
 				.SingleOrDefault(x => x.Version == item.Version);
 		return itemFind is not null
-			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, itemFind)
-			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist, item);
+			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
 	}
 
 	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetAsync(TgEfVersionEntity item, bool isNoTracking)
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 			return operResult;
 		TgEfVersionEntity? itemFind = isNoTracking
 			? await EfContext.Versions.AsNoTracking()
@@ -35,8 +35,8 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				.SingleOrDefaultAsync(x => x.Version == item.Version)
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, itemFind)
-			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist, item);
+			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
 	}
 
 	public override TgEfOperResult<TgEfVersionEntity> GetFirst(bool isNoTracking)
@@ -45,8 +45,8 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			? EfContext.Versions.AsTracking().FirstOrDefault()
 			: EfContext.Versions.FirstOrDefault();
 		return item is null
-			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist)
-			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, item);
+			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
+			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
 	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetFirstAsync(bool isNoTracking)
@@ -55,11 +55,12 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			? await EfContext.Versions.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false)
 			: await EfContext.Versions.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist)
-			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, item);
+			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
+			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override TgEfOperResult<TgEfVersionEntity> GetEnumerable(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
+	public override TgEfOperResult<TgEfVersionEntity>
+		GetEnumerable(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
 		topRecords switch
 		{
 			TgEnumTableTopRecords.Top1 => GetEnumerable(1, isNoTracking),
@@ -87,10 +88,13 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				? EfContext.Versions.AsNoTracking().AsEnumerable()
 				: EfContext.Versions.AsEnumerable();
 		}
-		return new TgEfOperResult<TgEfVersionEntity>(items.Any() ? TgEnumEntityState.IsExist : TgEnumEntityState.NotExist, items);
+
+		return new TgEfOperResult<TgEfVersionEntity>(
+			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetEnumerableAsync(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
+	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetEnumerableAsync(TgEnumTableTopRecords topRecords,
+		bool isNoTracking) =>
 		topRecords switch
 		{
 			TgEnumTableTopRecords.Top1 => await GetEnumerableAsync(1, isNoTracking).ConfigureAwait(false),
@@ -119,12 +123,15 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				? EfContext.Versions.AsNoTracking().AsEnumerable()
 				: EfContext.Versions.AsEnumerable();
 		}
-		return new TgEfOperResult<TgEfVersionEntity>(items.Any() ? TgEnumEntityState.IsExist : TgEnumEntityState.NotExist, items);
+
+		return new TgEfOperResult<TgEfVersionEntity>(
+			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Versions.AsNoTracking().Count();
 
-	public override async Task<int> GetCountAsync() => await EfContext.Versions.AsNoTracking().CountAsync().ConfigureAwait(false);
+	public override async Task<int> GetCountAsync() =>
+		await EfContext.Versions.AsNoTracking().CountAsync().ConfigureAwait(false);
 
 	#endregion
 
@@ -139,27 +146,34 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public override TgEfOperResult<TgEfVersionEntity> DeleteAll()
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult = GetEnumerable(0, isNoTracking: false);
-		if (operResult.IsExist)
+		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity item in operResult.Items)
 			{
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfOperResult<TgEfVersionEntity>(operResult.IsExist ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+
+		return new TgEfOperResult<TgEfVersionEntity>(operResult.IsExists
+			? TgEnumEntityState.IsDeleted
+			: TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfOperResult<TgEfVersionEntity>> DeleteAllAsync()
 	{
-		TgEfOperResult<TgEfVersionEntity> operResult = await GetEnumerableAsync(0, isNoTracking: false).ConfigureAwait(false);
-		if (operResult.IsExist)
+		TgEfOperResult<TgEfVersionEntity> operResult =
+			await GetEnumerableAsync(0, isNoTracking: false).ConfigureAwait(false);
+		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity item in operResult.Items)
 			{
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfOperResult<TgEfVersionEntity>(operResult.IsExist ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+
+		return new TgEfOperResult<TgEfVersionEntity>(operResult.IsExists
+			? TgEnumEntityState.IsDeleted
+			: TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

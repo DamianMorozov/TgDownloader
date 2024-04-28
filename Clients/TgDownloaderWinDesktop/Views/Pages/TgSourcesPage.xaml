@@ -69,7 +69,7 @@
 					VerticalAlignment="Center"
 					IsIndeterminate="{Binding Source={x:Static utils:TgDesktopUtils.TgSourcesVm}, Path=IsLoad, Mode=OneWay, IsAsync=True}"
 					Visibility="Visible" />
-				<!--  Load  -->
+				<!--  Get from Storage  -->
 				<ui:Button
 					Grid.Column="1"
 					Margin="2"

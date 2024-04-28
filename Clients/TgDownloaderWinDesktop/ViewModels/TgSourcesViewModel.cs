@@ -92,8 +92,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            List<TgEfSourceEntity> sources = (await
-	            EfContext.SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items.ToList();
+            TgEfOperResult<TgEfSourceEntity> operResult = 
+	            await EfContext.SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true);
+			List<TgEfSourceEntity> sources = operResult.IsExists ? operResult.Items.ToList() : [];
             //if (!sources.Any())
             //{
             //    TgSqlTableSourceModel sourceDefault = ContextManager.SourceRepository.CreateNew(true);
@@ -105,7 +106,6 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             //    await ContextManager.SourceRepository.SaveAsync(sourceDefault);
             //    sources.Add(sourceDefault);
             //}
-
             SetOrderSources(sources);
         }, false);
     }
