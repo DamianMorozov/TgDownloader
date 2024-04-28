@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Filters;
 
-public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfFilterEntity>(efContext), ITgEfRepository<TgEfFilterEntity>
+public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfFilterEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,10 +15,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		if (operResult.IsExist)
 			return operResult;
 		TgEfFilterEntity? itemFind = isNoTracking
-			? efContext.Filters.AsNoTracking().SingleOrDefault(
-				x => x.FilterType == item.FilterType && x.Name == item.Name)
-			: efContext.Filters.SingleOrDefault(
-				x => x.FilterType == item.FilterType && x.Name == item.Name);
+			? EfContext.Filters.AsNoTracking()
+				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name)
+			: EfContext.Filters
+				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExist, item);
@@ -30,10 +30,12 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		if (operResult.IsExist)
 			return operResult;
 		TgEfFilterEntity? itemFind = isNoTracking
-			? await efContext.Filters.AsNoTracking().SingleOrDefaultAsync(
-				x => x.FilterType == item.FilterType && x.Name == item.Name).ConfigureAwait(false)
-			: await efContext.Filters.SingleOrDefaultAsync(
-				x => x.FilterType == item.FilterType && x.Name == item.Name).ConfigureAwait(false);
+			? await EfContext.Filters.AsNoTracking()
+				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.ConfigureAwait(false)
+			: await EfContext.Filters
+				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExist, item);

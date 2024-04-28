@@ -92,5 +92,11 @@ public sealed class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
 	    Secret = proxy.Secret;
     }
 
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
 	#endregion
 }

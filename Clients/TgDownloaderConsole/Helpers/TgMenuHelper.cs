@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TgStorage.Contracts;
 
 namespace TgDownloaderConsole.Helpers;
@@ -28,7 +26,6 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	internal TgClientHelper TgClient => TgClientHelper.Instance;
 	internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
 	internal TgEfContext EfContext { get; } = default!;
-	internal TgXpoContext XpoContext { get; } = new(TgEnumStorageType.Prod);
 	internal TgEnumMenuMain Value { get; set; }
 
 	public TgMenuHelper()
@@ -128,9 +125,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			new Markup(TgAppSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Storage settings.
-		table.AddRow(new Markup(XpoContext.IsReady
+		table.AddRow(new Markup(EfContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(XpoContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// TG client settings.
 		table.AddRow(new Markup(TgClient.IsReady ?
@@ -183,9 +180,9 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsStorage(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
-		table.AddRow(new Markup(XpoContext.IsReady
+		table.AddRow(new Markup(EfContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(XpoContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 	}
 
 	/// <summary>
@@ -195,7 +192,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsFilters(TgDownloadSettingsModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgXpoFilterEntity> filters = XpoContext.FilterRepository.GetEnumerableAsync().GetAwaiter().GetResult().Items;
+		IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)
+			.GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
 	}
@@ -294,8 +292,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgXpoSourceEntity source = XpoContext.SourceRepository.GetAsync(new TgXpoSourceEntity
-				{ Id = tgDownloadSettings.SourceVm.SourceId }).GetAwaiter().GetResult().Item;
+			TgEfSourceEntity source = EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -313,8 +311,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgXpoSourceEntity source = XpoContext.SourceRepository.GetAsync(new TgXpoSourceEntity
-				{ Id = tgDownloadSettings.SourceVm.SourceId }).GetAwaiter().GetResult().Item;
+			TgEfSourceEntity source = EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -383,7 +381,8 @@ internal sealed partial class TgMenuHelper : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
-        IEnumerable<TgXpoFilterEntity> filters = XpoContext.FilterRepository.GetEnumerableEnabledAsync().GetAwaiter().GetResult().Items;
+        IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true)
+	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 	}
 

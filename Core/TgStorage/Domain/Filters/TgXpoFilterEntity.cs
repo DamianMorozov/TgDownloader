@@ -130,6 +130,12 @@ public sealed class TgXpoFilterEntity : XPLiteObject, ITgDbEntity
 	    SizeType = filter.SizeType;
     }
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoFilterEntity)!.Uid;
+	}
+
 	public override string ToString() => FilterType switch
 	{
 		TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>

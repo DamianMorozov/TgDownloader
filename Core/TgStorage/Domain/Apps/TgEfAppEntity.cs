@@ -91,5 +91,11 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 	    ProxyUid = app.ProxyUid;
     }
 
+	public override void Backup(object item)
+	{
+		Fill(item);
+		base.Backup(item);
+	}
+
 	#endregion
 }

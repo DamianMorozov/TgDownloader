@@ -26,6 +26,8 @@ public interface ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
 
 	public TgEfOperResult<T> Save(T item);
 	public Task<TgEfOperResult<T>> SaveAsync(T item);
+	public TgEfOperResult<T> SaveOrRecreate(T item, string tableName);
+	public Task<TgEfOperResult<T>> SaveOrRecreateAsync(T item, string tableName);
 	public TgEfOperResult<T> CreateNew();
 	public Task<TgEfOperResult<T>> CreateNewAsync();
 

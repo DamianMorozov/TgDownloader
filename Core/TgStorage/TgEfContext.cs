@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace TgStorage;
 
@@ -42,6 +41,16 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	public TgLogHelper TgLog => TgLogHelper.Instance;
+	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+
+	public bool IsReady =>
+		TgAppSettings.AppXml.IsExistsFileStorage &&
+		IsTableExists(TgStorageConstants.TableApps) && IsTableExists(TgStorageConstants.TableDocuments) &&
+		IsTableExists(TgStorageConstants.TableFilters) && IsTableExists(TgStorageConstants.TableMessages) &&
+		IsTableExists(TgStorageConstants.TableProxies) && IsTableExists(TgStorageConstants.TableSources) &&
+		IsTableExists(TgStorageConstants.TableVersions);
+
+	public bool IsNotReady => !IsReady;
 
 	// Inject options.
 	// options: The DbContextOptions{TgEfContext} for the context.
@@ -147,6 +156,8 @@ public sealed class TgEfContext : DbContext, IDisposable
 		ProxyRepository = new TgEfProxyRepository(this);
 		SourceRepository = new TgEfSourceRepository(this);
 		VersionRepository = new TgEfVersionRepository(this);
+
+		CreateOrConnectDb();
 	}
 
 #if DEBUG
@@ -254,13 +265,13 @@ public sealed class TgEfContext : DbContext, IDisposable
 		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a | " : "")} | {source.Id} | " +
 		$"{(string.IsNullOrEmpty(source.UserName) ? "" : TgDataFormatUtils.GetFormatString(source.UserName, 30))} | " +
 		$"{(string.IsNullOrEmpty(source.Title) ? "" : TgDataFormatUtils.GetFormatString(source.Title, 30))} | " +
-		$"{source.FirstId} {TgLocaleHelper.Instance.From} {source.Count} {TgLocaleHelper.Instance.Messages}";
+		$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
 
 	public string ToConsoleString(TgEfSourceEntity source) =>
 		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
 		$"{TgDataFormatUtils.GetFormatString(source.UserName, 30)} | " +
 		$"{TgDataFormatUtils.GetFormatString(source.Title, 30)} | " +
-		$"{source.FirstId} {TgLocaleHelper.Instance.From} {source.Count} {TgLocaleHelper.Instance.Messages}";
+		$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
 
 	public string ToConsoleString(TgEfVersionEntity version) =>
 		$"{version.Version}	{version.Description}";
@@ -275,11 +286,8 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	public bool IsPercentCountAll(TgEfSourceEntity source) => source.Count <= source.FirstId;
 
-	/// <summary>
-	/// Check table exists.
-	/// </summary>
+	/// <summary> Check table exists </summary>
 	/// <param name="tableName"></param>
-	/// <returns></returns>
 	public bool IsTableExists(string tableName)
 	{
 		string? result = Database.SqlQuery<string>(
@@ -287,7 +295,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		return tableName == result;
 	}
 
-	public static short LastVersion => 19;
+	public static short LastVersion => 24;
 
 	public void VersionsView()
 	{
@@ -325,6 +333,599 @@ public sealed class TgEfContext : DbContext, IDisposable
 			return (File.Exists(fileBackup), fileBackup);
 		}
 		return (false, string.Empty);
+	}
+
+	public void CreateOrConnectDb()
+	{
+		CheckTablesCrudAsync().GetAwaiter().GetResult();
+	}
+
+	public async Task CreateOrConnectDbAsync()
+	{
+		await CheckTablesCrudAsync();
+	}
+
+	/// <summary> Update structures of tables </summary>
+	private async Task CheckTablesCrudAsync()
+	{
+		TgEfVersionEntity versionLast = GetLastVersion();
+		if (versionLast.Version < 19)
+		{
+			// Upgrade DB.
+			TgEfOperResult<TgEfAppEntity> operResultApps = await AlterTableNoCaseUidAsync<TgEfAppEntity>();
+			if (operResultApps.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfDocumentEntity> operResultDocuments = await AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
+			if (operResultDocuments.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfFilterEntity> operResultFilters = await AlterTableNoCaseUidAsync<TgEfFilterEntity>();
+			if (operResultFilters.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfMessageEntity> operResultMessages = await AlterTableNoCaseUidAsync<TgEfMessageEntity>();
+			if (operResultMessages.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfProxyEntity> operResultProxies = await AlterTableNoCaseUidAsync<TgEfProxyEntity>();
+			if (operResultProxies.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfSourceEntity> operResultSources = await AlterTableNoCaseUidAsync<TgEfSourceEntity>();
+			if (operResultSources.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			TgEfOperResult<TgEfVersionEntity> operResultVersions = await AlterTableNoCaseUidAsync<TgEfVersionEntity>();
+			if (operResultVersions.State == TgEnumEntityState.NotExecuted)
+				throw new(TgLocale.TablesAppsException);
+			// Update UID.
+			await UpdateTableUidUpperCaseAllAsync<TgEfAppEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfDocumentEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfFilterEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfMessageEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
+			await UpdateTableUidUpperCaseAllAsync<TgEfVersionEntity>();
+			// Compact DB.
+			await CompactDbAsync();
+		}
+
+		if (!await CheckTableAppsCrudAsync())
+			throw new(TgLocale.TablesAppsException);
+		if (!await CheckTableDocumentsCrudAsync())
+			throw new(TgLocale.TablesDocumentsException);
+		if (!await CheckTableFiltersCrudAsync())
+			throw new(TgLocale.TablesFiltersException);
+		if (!await CheckTableMessagesCrudAsync())
+			throw new(TgLocale.TablesMessagesException);
+		if (!await CheckTableSourcesCrudAsync())
+			throw new(TgLocale.TablesSourcesException);
+		if (!await CheckTableProxiesCrudAsync())
+			throw new(TgLocale.TablesProxiesException);
+		if (!await CheckTableVersionsCrudAsync())
+			throw new(TgLocale.TablesVersionsException);
+		await FillTableVersionsAsync();
+	}
+
+	private async Task<bool> CheckTableCrudAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		var operResult = await repository.CreateNewAsync();
+		if (operResult.NotExist)
+			return false;
+		operResult = await repository.GetNewAsync(isNoTracking: false);
+		if (operResult.NotExist)
+			return false;
+		operResult = await repository.SaveAsync(operResult.Item);
+		if (operResult.State != TgEnumEntityState.IsSaved)
+			return false;
+		operResult = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
+		return operResult.State == TgEnumEntityState.IsDeleted;
+	}
+
+	public Task<bool> CheckTableAppsCrudAsync() => CheckTableCrudAsync(AppRepository);
+
+	public Task<bool> CheckTableDocumentsCrudAsync() => CheckTableCrudAsync(DocumentRepository);
+
+	public Task<bool> CheckTableFiltersCrudAsync() => CheckTableCrudAsync(FilterRepository);
+
+	public Task<bool> CheckTableMessagesCrudAsync() => CheckTableCrudAsync(MessageRepository);
+
+	public Task<bool> CheckTableProxiesCrudAsync() => CheckTableCrudAsync(ProxyRepository);
+
+	public Task<bool> CheckTableSourcesCrudAsync() => CheckTableCrudAsync(SourceRepository);
+
+	public Task<bool> CheckTableVersionsCrudAsync() => CheckTableCrudAsync(VersionRepository);
+
+	public TgEfVersionEntity GetLastVersion()
+	{
+		TgEfVersionEntity versionLast = !IsTableExists(TgStorageConstants.TableVersions)
+			? new() : VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items
+				.Where(x => x.Description != "New version")
+				.OrderBy(x => x.Version)
+				.Last();
+		return versionLast;
+	}
+
+	public async Task FillTableVersionsAsync()
+	{
+		await VersionRepository.DeleteNewAsync();
+		bool isLast = false;
+		while (!isLast)
+		{
+			TgEfVersionEntity versionLast = GetLastVersion();
+			if (Equals(versionLast.Version, short.MaxValue))
+				versionLast.Version = 0;
+			switch (versionLast.Version)
+			{
+				case 0:
+					await VersionRepository.SaveAsync(new() { Version = 1, Description = "Added versions table" });
+					break;
+				case 1:
+					await VersionRepository.SaveAsync(new() { Version = 2, Description = "Added apps table" });
+					break;
+				case 2:
+					await VersionRepository.SaveAsync(new() { Version = 3, Description = "Added documents table" });
+					break;
+				case 3:
+					await VersionRepository.SaveAsync(new() { Version = 4, Description = "Added filters table" });
+					break;
+				case 4:
+					await VersionRepository.SaveAsync(new() { Version = 5, Description = "Added messages table" });
+					break;
+				case 5:
+					await VersionRepository.SaveAsync(new() { Version = 6, Description = "Added proxies table" });
+					break;
+				case 6:
+					await VersionRepository.SaveAsync(new() { Version = 7, Description = "Added sources table" });
+					break;
+				case 7:
+					await VersionRepository.SaveAsync(new() { Version = 8, Description = "Added source settings table" });
+					break;
+				case 8:
+					await VersionRepository.SaveAsync(new() { Version = 9, Description = "Upgrade versions table" });
+					break;
+				case 9:
+					await VersionRepository.SaveAsync(new() { Version = 10, Description = "Upgrade apps table" });
+					break;
+				case 10:
+					await VersionRepository.SaveAsync(new() { Version = 11, Description = "Upgrade storage on XPO framework" });
+					break;
+				case 11:
+					await VersionRepository.SaveAsync(new() { Version = 12, Description = "Upgrade apps table" });
+					break;
+				case 12:
+					await VersionRepository.SaveAsync(new() { Version = 13, Description = "Upgrade documents table" });
+					break;
+				case 13:
+					await VersionRepository.SaveAsync(new() { Version = 14, Description = "Upgrade filters table" });
+					break;
+				case 14:
+					await VersionRepository.SaveAsync(new() { Version = 15, Description = "Upgrade messages table" });
+					break;
+				case 15:
+					await VersionRepository.SaveAsync(new() { Version = 16, Description = "Upgrade proxies table" });
+					break;
+				case 16:
+					await VersionRepository.SaveAsync(new() { Version = 17, Description = "Upgrade sources table" });
+					break;
+				case 17:
+					await VersionRepository.SaveAsync(new() { Version = 18, Description = "Updating the UID field in the apps table" });
+					break;
+				case 18:
+					await VersionRepository.SaveAsync(new() { Version = 19, Description = "Updating the UID field in the documents table" });
+					break;
+				case 19:
+					await VersionRepository.SaveAsync(new() { Version = 20, Description = "Updating the UID field in the filters table" });
+					break;
+				case 20:
+					await VersionRepository.SaveAsync(new() { Version = 21, Description = "Updating the UID field in the messages table" });
+					break;
+				case 21:
+					await VersionRepository.SaveAsync(new() { Version = 22, Description = "Updating the UID field in the proxies table" });
+					break;
+				case 22:
+					await VersionRepository.SaveAsync(new() { Version = 23, Description = "Updating the UID field in the sources table" });
+					break;
+				case 23:
+					await VersionRepository.SaveAsync(new() { Version = 24, Description = "Updating the UID field in the versions table" });
+					break;
+			}
+			if (versionLast.Version >= LastVersion)
+				isLast = true;
+		}
+	}
+
+	public void DeleteTables()
+	{
+		DeleteTable<TgEfAppEntity>();
+		DeleteTable<TgEfProxyEntity>();
+		DeleteTable<TgEfFilterEntity>();
+		DeleteTable<TgEfDocumentEntity>();
+		DeleteTable<TgEfMessageEntity>();
+		DeleteTable<TgEfSourceEntity>();
+		DeleteTable<TgEfVersionEntity>();
+	}
+
+	public async Task DeleteTablesAsync()
+	{
+		await DeleteTableAsync<TgEfAppEntity>();
+		await DeleteTableAsync<TgEfProxyEntity>();
+		await DeleteTableAsync<TgEfFilterEntity>();
+		await DeleteTableAsync<TgEfDocumentEntity>();
+		await DeleteTableAsync<TgEfMessageEntity>();
+		await DeleteTableAsync<TgEfSourceEntity>();
+		await DeleteTableAsync<TgEfVersionEntity>();
+	}
+
+	/// <summary> Truncate sql table by name </summary>
+	public async Task<TgEfOperResult<T>> TruncateTableAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableApps};";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableDocuments};";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableFilters};";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableMessages};";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableProxies};";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableSources};";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableVersions};";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	/// <summary> Drop sql table </summary>
+	public TgEfOperResult<T> DeleteTable<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableApps};";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableDocuments};";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableFilters};";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableMessages};";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableProxies};";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableSources};";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableVersions};";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = Database.ExecuteSqlRaw(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	/// <summary> Drop sql table </summary>
+	public async Task<TgEfOperResult<T>> DeleteTableAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableApps};";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableDocuments};";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableFilters};";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableMessages};";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableProxies};";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableSources};";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableVersions};";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	public async Task<TgEfOperResult<T>> AlterTableNoCaseUidAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = @"
+-- APPS_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [APPS_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [API_HASH] char(36),
+    [API_ID] int,
+    [PHONE_NUMBER] nvarchar(16),
+    [PROXY_UID] char(36), 
+    primary key ([UID])
+);
+INSERT INTO [APPS_TEMP] SELECT * FROM [APPS];
+DROP TABLE [APPS];
+ALTER TABLE [APPS_TEMP] RENAME TO [APPS];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = @"
+-- DOCUMENTS_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [DOCUMENTS_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [SOURCE_ID] numeric(20,0), 
+    [ID] numeric(20,0), 
+    [MESSAGE_ID] numeric(20,0), 
+    [FILE_NAME] nvarchar(100), 
+    [FILE_SIZE] numeric(20,0), 
+    [ACCESS_HASH] numeric(20,0),
+    primary key ([UID])
+);
+INSERT INTO [DOCUMENTS_TEMP] SELECT * FROM [DOCUMENTS];
+DROP TABLE [DOCUMENTS];
+ALTER TABLE [DOCUMENTS_TEMP] RENAME TO [DOCUMENTS];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = @"
+-- FILTERS_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [FILTERS_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [IS_ENABLED] bit, 
+    [FILTER_TYPE] int, 
+    [NAME] nvarchar(128), 
+    [MASK] nvarchar(128), 
+    [SIZE] numeric(20,0), 
+    [SIZE_TYPE] int,
+    primary key ([UID])
+);
+INSERT INTO [FILTERS_TEMP] SELECT * FROM [FILTERS];
+DROP TABLE [FILTERS];
+ALTER TABLE [FILTERS_TEMP] RENAME TO [FILTERS];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = @"
+-- MESSAGES_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [MESSAGES_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [SOURCE_ID] numeric(20,0), 
+    [ID] numeric(20,0), 
+    [DT_CREATED] datetime, 
+    [TYPE] int, 
+    [SIZE] numeric(20,0), 
+    [MESSAGE] nvarchar(100),
+    primary key ([UID])
+);
+INSERT INTO [MESSAGES_TEMP] SELECT * FROM [MESSAGES];
+DROP TABLE [MESSAGES];
+ALTER TABLE [MESSAGES_TEMP] RENAME TO [MESSAGES];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = @"
+-- PROXIES_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [PROXIES_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [TYPE] int, 
+    [HOST_NAME] nvarchar(128), 
+    [PORT] numeric(5,0), 
+    [USER_NAME] nvarchar(128), 
+    [PASSWORD] nvarchar(128), 
+    [SECRET] nvarchar(128),
+    primary key ([UID])
+);
+INSERT INTO [PROXIES_TEMP] SELECT * FROM [PROXIES];
+DROP TABLE [PROXIES];
+ALTER TABLE [PROXIES_TEMP] RENAME TO [PROXIES];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = @"
+-- SOURCES_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [SOURCES_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [ID] numeric(20,0), 
+    [USER_NAME] nvarchar(100), 
+    [TITLE] nvarchar(100), 
+    [ABOUT] nvarchar(100), 
+    [COUNT] int, 
+    [DIRECTORY] nvarchar(100), 
+    [FIRST_ID] int, 
+    [IS_AUTO_UPDATE] bit, 
+    [DT_CHANGED] datetime,
+    primary key ([UID])
+);
+INSERT INTO [SOURCES_TEMP] SELECT * FROM [SOURCES];
+DROP TABLE [SOURCES];
+ALTER TABLE [SOURCES_TEMP] RENAME TO [SOURCES];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = @"
+-- VERSIONS_ALTER
+BEGIN TRANSACTION;
+CREATE TABLE [VERSIONS_TEMP] (
+    [UID] char(36) NOT NULL COLLATE NOCASE,
+    [VERSION] smallint, 
+    [DESCRIPTION] nvarchar(128),
+    primary key ([UID])
+);
+INSERT INTO [VERSIONS_TEMP] SELECT * FROM [VERSIONS];
+DROP TABLE [VERSIONS];
+ALTER TABLE [VERSIONS_TEMP] RENAME TO [VERSIONS];
+COMMIT TRANSACTION;
+					".TrimStart('\r', ' ', '\n', '\t').TrimEnd('\r', ' ', '\n', '\t');
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	public async Task CompactDbAsync() => await Database.ExecuteSqlRawAsync("VACUUM;");
+
+	/// <summary> Update UID field to upper case </summary>
+	/// <param name="uid"> PK UID </param>
+	public async Task<TgEfOperResult<T>> UpdateTableUidUpperCaseAllAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = UPPER([UID]);";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = UPPER([UID]);";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	/// <summary> Update UID field to upper case </summary>
+	/// <param name="uid"> PK UID </param>
+	public async Task<TgEfOperResult<T>> UpdateTableUidUpperCaseAsync<T>(Guid uid) where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		string uidUpper = uid.ToString().ToUpper();
+		string uidString = uid.ToString();
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = '{uidUpper}' WHERE U[UID]ID = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+	}
+
+	/// <summary> Update UID field to lower case </summary>
+	/// <param name="uid"> PK UID </param>
+	public async Task<TgEfOperResult<T>> UpdateTableUidLowerCaseAsync<T>(Guid uid) where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		string cmd = string.Empty;
+		string uidLower = uid.ToString().ToLower();
+		string uidString = uid.ToString();
+		switch (typeof(T))
+		{
+			case var cls when cls == typeof(TgEfAppEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfDocumentEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfFilterEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfMessageEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfProxyEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfSourceEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+			case var cls when cls == typeof(TgEfVersionEntity):
+				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				break;
+		}
+		if (!string.IsNullOrEmpty(cmd))
+		{
+			int result = await Database.ExecuteSqlRawAsync(cmd);
+			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		}
+		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
 	}
 
 	#endregion

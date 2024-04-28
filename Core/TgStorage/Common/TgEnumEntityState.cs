@@ -13,4 +13,5 @@ public enum TgEnumEntityState
 	IsDeleted,
 	NotDeleted,
 	IsExecuted,
+	NotExecuted,
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Apps;
 
-public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfAppEntity>(efContext), ITgEfRepository<TgEfAppEntity>
+public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfAppEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,8 +15,14 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		if (operResult.IsExist)
 			return operResult;
 		TgEfAppEntity? itemFind = isNoTracking
-				? efContext.Apps.AsNoTracking().Include(x => x.Proxy).SingleOrDefault(x => x.ApiHash == item.ApiHash)
-				: efContext.Apps.Include(x => x.Proxy).SingleOrDefault(x => x.ApiHash == item.ApiHash);
+			? EfContext.Apps.AsNoTracking()
+				.Include(x => x.Proxy)
+				.DefaultIfEmpty()
+				.SingleOrDefault(x => x.ApiHash == item.ApiHash)
+			: EfContext.Apps
+				.Include(x => x.Proxy)
+				.DefaultIfEmpty()
+				.SingleOrDefault(x => x.ApiHash == item.ApiHash);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.NotExist, item);
@@ -28,8 +34,16 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		if (operResult.IsExist)
 			return operResult;
 		TgEfAppEntity? itemFind = isNoTracking
-			? await efContext.Apps.AsNoTracking().Include(x => x.Proxy).SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash).ConfigureAwait(false)
-			: await efContext.Apps.Include(x => x.Proxy).SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash).ConfigureAwait(false);
+			? await EfContext.Apps.AsNoTracking()
+				.Include(x => x.Proxy)
+				.DefaultIfEmpty()
+				.SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash)
+				.ConfigureAwait(false)
+			: await EfContext.Apps
+				.Include(x => x.Proxy)
+				.DefaultIfEmpty()
+				.SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.NotExist, item);

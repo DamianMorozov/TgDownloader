@@ -36,8 +36,6 @@ public sealed class TgXpoContext : IDisposable
 
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
-    public TgLogHelper TgLog => TgLogHelper.Instance;
-    
     public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 
     public bool IsReady =>
@@ -154,13 +152,8 @@ public sealed class TgXpoContext : IDisposable
 
     public void CreateOrConnectDb()
     {
-	    CreateOrConnectDbAsync().GetAwaiter().GetResult();
-    }
-
-    public async Task CreateOrConnectDbAsync()
-    {
 	    SetDataLayer();
-        await CheckTablesAsync();
+	    CheckTablesCrudAsync().GetAwaiter().GetResult();
     }
 
     public void SetDataLayer()
@@ -198,7 +191,7 @@ public sealed class TgXpoContext : IDisposable
     /// <summary>
     /// Update structures of tables.
     /// </summary>
-    private async Task CheckTablesAsync()
+    private async Task CheckTablesCrudAsync()
     {
         if (!await CheckTableAppsAsync())
             throw new(TgLocale.TablesAppsException);
@@ -217,7 +210,7 @@ public sealed class TgXpoContext : IDisposable
         FillTableVersions();
     }
 
-    private async Task<bool> CheckTableAsync<T>(TgXpoRepositoryBase<T> repository) where T : XPLiteObject, ITgDbEntity, new()
+    private async Task<bool> CheckTableCrudAsync<T>(TgXpoRepositoryBase<T> repository) where T : XPLiteObject, ITgDbEntity, new()
     {
         var operResult = await repository.CreateNewAsync();
         if (operResult.NotExist) return false;
@@ -229,19 +222,19 @@ public sealed class TgXpoContext : IDisposable
         return operResult.State == TgEnumEntityState.IsDeleted;
     }
 
-    public Task<bool> CheckTableAppsAsync() => CheckTableAsync(AppRepository);
+    public Task<bool> CheckTableAppsAsync() => CheckTableCrudAsync(AppRepository);
 
-    public Task<bool> CheckTableDocumentsAsync() => CheckTableAsync(DocumentRepository);
+    public Task<bool> CheckTableDocumentsAsync() => CheckTableCrudAsync(DocumentRepository);
 
-    public Task<bool> CheckTableFiltersAsync() => CheckTableAsync(FilterRepository);
+    public Task<bool> CheckTableFiltersAsync() => CheckTableCrudAsync(FilterRepository);
 
-    public Task<bool> CheckTableMessagesAsync() => CheckTableAsync(MessageRepository);
+    public Task<bool> CheckTableMessagesAsync() => CheckTableCrudAsync(MessageRepository);
 
-    public Task<bool> CheckTableProxiesAsync() => CheckTableAsync(ProxyRepository);
+    public Task<bool> CheckTableProxiesAsync() => CheckTableCrudAsync(ProxyRepository);
 
-    public Task<bool> CheckTableSourcesAsync() => CheckTableAsync(SourceRepository);
+    public Task<bool> CheckTableSourcesAsync() => CheckTableCrudAsync(SourceRepository);
 
-    public Task<bool> CheckTableVersionsAsync() => CheckTableAsync(VersionRepository);
+    public Task<bool> CheckTableVersionsAsync() => CheckTableCrudAsync(VersionRepository);
 
     public void FillTableVersions()
     {

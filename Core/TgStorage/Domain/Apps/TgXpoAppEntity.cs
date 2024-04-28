@@ -108,6 +108,12 @@ public sealed class TgXpoAppEntity : XPLiteObject, ITgDbEntity
 		ProxyUid = app.ProxyUid;
     }
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoAppEntity)!.Uid;
+	}
+
 	public override string ToString() => $"{ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
 
     public string ToDebugString() => 

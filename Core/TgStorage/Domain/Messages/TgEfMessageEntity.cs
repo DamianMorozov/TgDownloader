@@ -86,5 +86,11 @@ public sealed class TgEfMessageEntity : TgEfEntityBase
 		Message = message.Message;
 	}
 
-    #endregion
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
+	#endregion
 }

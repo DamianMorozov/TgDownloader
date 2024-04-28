@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Messages;
 
-public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfMessageEntity>(efContext), ITgEfRepository<TgEfMessageEntity>
+public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfMessageEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,8 +15,14 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		if (operResult.IsExist)
 			return operResult;
 		TgEfMessageEntity? itemFind = isNoTracking
-				? efContext.Messages.AsNoTracking().Include(x => x.Source).SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id)
-				: efContext.Messages.Include(x => x.Source).SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id);
+			? EfContext.Messages.AsNoTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id)
+			: EfContext.Messages
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExist, item);
@@ -28,8 +34,16 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		if (operResult.IsExist)
 			return operResult;
 		TgEfMessageEntity? itemFind = isNoTracking
-			? await efContext.Messages.AsNoTracking().Include(x => x.Source).SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id).ConfigureAwait(false)
-			: await efContext.Messages.Include(x => x.Source).SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id).ConfigureAwait(false);
+			? await EfContext.Messages.AsNoTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id)
+				.ConfigureAwait(false)
+			: await EfContext.Messages
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExist, item);

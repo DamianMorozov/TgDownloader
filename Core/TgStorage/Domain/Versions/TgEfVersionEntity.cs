@@ -13,7 +13,7 @@ public sealed class TgEfVersionEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
-    [DefaultValue(short.MaxValue)]
+    [DefaultValue(1024)]
     [MaxLength(4)]
     [ConcurrencyCheck]
     [Column(TgStorageConstants.ColumnVersion)]
@@ -35,7 +35,7 @@ public sealed class TgEfVersionEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableVersions} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {Version} | {Description}";
+        $"{TgStorageConstants.TableVersions} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Version} | {Description}";
 
     public override void Default()
     {
@@ -53,5 +53,11 @@ public sealed class TgEfVersionEntity : TgEfEntityBase
 		Description = version.Description;
 	}
 
-    #endregion
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
+	#endregion
 }

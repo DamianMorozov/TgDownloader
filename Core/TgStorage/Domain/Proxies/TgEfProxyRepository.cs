@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Proxies;
 
-public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfProxyEntity>(efContext), ITgEfRepository<TgEfProxyEntity>
+public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfProxyEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,10 +15,10 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		if (operResult.IsExist)
 			return operResult;
 		TgEfProxyEntity? itemFind = isNoTracking
-			? efContext.Proxies.AsNoTracking().SingleOrDefault(
-				x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
-			: efContext.Proxies.SingleOrDefault(
-				x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
+			? EfContext.Proxies.AsNoTracking()
+				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+			: EfContext.Proxies
+				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist, item);
@@ -30,10 +30,12 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		if (operResult.IsExist)
 			return operResult;
 		TgEfProxyEntity? itemFind = isNoTracking
-			? await efContext.Proxies.AsNoTracking().SingleOrDefaultAsync(
-				x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port).ConfigureAwait(false)
-			: await efContext.Proxies.SingleOrDefaultAsync(
-				x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port).ConfigureAwait(false);
+			? await EfContext.Proxies.AsNoTracking()
+				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.ConfigureAwait(false)
+			: await EfContext.Proxies
+				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExist, item);

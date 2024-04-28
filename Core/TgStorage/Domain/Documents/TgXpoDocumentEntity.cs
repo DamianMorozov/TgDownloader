@@ -116,6 +116,12 @@ public sealed class TgXpoDocumentEntity : XPLiteObject, ITgDbEntity
 	    AccessHash = document.AccessHash;
     }
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoDocumentEntity)!.Uid;
+	}
+
 	public override string ToString() => $"{SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
 	public string ToDebugString() => 

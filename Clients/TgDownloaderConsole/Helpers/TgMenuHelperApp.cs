@@ -68,7 +68,7 @@ internal partial class TgMenuHelper
 	private void SetFileAppSettings()
 	{
 		TgAppSettings.StoreXmlSettings();
-		XpoContext.CreateOrConnectDb();
+		EfContext.CreateOrConnectDb();
 	}
 
 	private void ResetAppSettings()

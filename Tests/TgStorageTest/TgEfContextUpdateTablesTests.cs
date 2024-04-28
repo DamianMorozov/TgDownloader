@@ -8,80 +8,101 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	// TODO: fix here
 	[Test]
-	public void Change_table_apps()
+	public void Upper_uid_at_apps()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfAppEntity> operResult = await EfProdContext.AppRepository.GetFirstAsync(isNoTracking: false);
+			TgEfOperResult<TgEfAppEntity> operResult = await EfProdContext.AppRepository.GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExist)
 			{
-				// Backup.
-				string phoneNumber = operResult.Item.PhoneNumber;
-				// Update.
-				operResult.Item.PhoneNumber = "+1234567890";
-				operResult = await EfProdContext.AppRepository.SaveAsync(operResult.Item);
-				Assert.That(operResult.IsExist);
-				// Restore backup.
-				operResult.Item.PhoneNumber = phoneNumber;
-				operResult = await EfProdContext.AppRepository.SaveAsync(operResult.Item);
-				Assert.That(operResult.IsExist);
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfAppEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
 	}
 
 	[Test]
-	public void Change_table_documents()
+	public void Upper_uid_at_documents()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			
+			TgEfOperResult<TgEfDocumentEntity> operResult = await EfProdContext.DocumentRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 
 	[Test]
-	public void Change_table_filters()
+	public void Upper_uid_at_filters()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-
+			TgEfOperResult<TgEfFilterEntity> operResult = await EfProdContext.FilterRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 
 	[Test]
-	public void Change_table_messages()
+	public void Upper_uid_at_messages()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-
+			TgEfOperResult<TgEfMessageEntity> operResult = await EfProdContext.MessageRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 
 	[Test]
-	public void Change_table_proxies()
+	public void Upper_uid_at_proxies()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-
+			TgEfOperResult<TgEfProxyEntity> operResult = await EfProdContext.ProxyRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 
 	[Test]
-	public void Change_table_sources()
+	public void Upper_uid_at_sources()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-
+			TgEfOperResult<TgEfSourceEntity> operResult = await EfProdContext.SourceRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 
 	[Test]
-	public void Change_table_versions()
+	public void Upper_uid_at_versions()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-
+			TgEfOperResult<TgEfVersionEntity> operResult = await EfProdContext.VersionRepository.GetFirstAsync(isNoTracking: true);
+			if (operResult.IsExist)
+			{
+				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(operResult.Item.Uid);
+				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+			}
 		});
 	}
 

@@ -22,7 +22,7 @@ public partial class TgSourcesPage
 
 	private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
 	{
-		TgXpoSourceViewModel t = e.Item as TgXpoSourceViewModel;
+		TgEfSourceViewModel t = e.Item as TgEfSourceViewModel;
 		if (t != null)
 			// If filter is turned on, filter completed items.
 		{

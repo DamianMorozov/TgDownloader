@@ -120,6 +120,12 @@ public sealed class TgXpoProxyEntity : XPLiteObject, ITgDbProxy
 	    Secret = proxy.Secret;
     }
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoProxyEntity)!.Uid;
+	}
+
 	public override string ToString() => 
 		$"{Type} | {HostName} | {Port} | {UserName} | {Password} | {Secret}";
 

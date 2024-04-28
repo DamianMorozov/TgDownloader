@@ -11,11 +11,11 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-    private static TgXpoContext XpoContext { get; } = new(TgEnumStorageType.Prod);
+    private static TgEfContext EfContext { get; } = new();
     public static TgClientViewModel TgClientVm { get; } = new();
     public static TgDashboardViewModel TgDashboardVm { get; } = new();
     public static TgFiltersViewModel TgFiltersVm { get; } = new();
-    public static TgItemProxyViewModel TgItemProxyVm { get; } = new(XpoContext.ProxyRepository);
+    public static TgItemProxyViewModel TgItemProxyVm { get; } = new(EfContext);
     public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
 	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	public static TgConstants TgConst => TgConstants.CreateInstance();

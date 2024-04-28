@@ -21,9 +21,9 @@ internal class TgDbContextTestsBase
 	public TgDbContextTestsBase()
     {
         LoggerFactory factory = new();
-
-		// Memory EF DB context.
-		DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()
+        
+        // Memory EF DB context.
+        DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()
             .UseLoggerFactory(factory)
             .UseSqlite("DataSource=:memory:");
         EfMemoryContext = new(builderMemory.Options);

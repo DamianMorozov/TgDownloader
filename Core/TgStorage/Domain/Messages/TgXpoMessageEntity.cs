@@ -115,6 +115,12 @@ public sealed class TgXpoMessageEntity : XPLiteObject, ITgDbEntity
 		Message = message.Message;
     }
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoMessageEntity)!.Uid;
+	}
+
 	public override string ToString() => $"{SourceId} | {Id} | {Type} | {Size}";
 
 	public string ToDebugString() => 

@@ -3,7 +3,9 @@
 
 namespace TgStorage.Domain.Sources;
 
-/// <summary> View for TgSqlTableSourceModel </summary>
+/// <summary>
+/// View for TgSqlTableSourceModel.
+/// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgEfSourceViewModel : TgViewModelBase
 {
@@ -36,11 +38,11 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = 
-				EfContext.SourceRepository.Get(new TgEfSourceEntity { Uid = value }, isNoTracking: true);
+			TgEfOperResult<TgEfSourceEntity> operResult = EfContext.SourceRepository.GetAsync(
+				new TgEfSourceEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 			Item = operResult.IsExist
 				? operResult.Item
-				: EfContext.SourceRepository.GetNew(isNoTracking: true).Item;
+				: EfContext.SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 		}
 	}
 
@@ -94,7 +96,7 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
         CurrentFileName = string.Empty;
     }
 
-    public TgEfSourceViewModel(TgEfContext efContext) : this(efContext.SourceRepository.CreateNew().Item) { }
+    public TgEfSourceViewModel(TgEfContext efContext) : this(efContext.SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item) { }
 
     #endregion
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Versions;
 
-public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfVersionEntity>(efContext), ITgEfRepository<TgEfVersionEntity>
+public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfVersionEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,10 +15,10 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		if (operResult.IsExist)
 			return operResult;
 		TgEfVersionEntity? itemFind = isNoTracking
-			? efContext.Versions.AsNoTracking().SingleOrDefault(
-				x => x.Version == item.Version)
-			: efContext.Versions.SingleOrDefault(
-				x => x.Version == item.Version);
+			? EfContext.Versions.AsNoTracking()
+				.SingleOrDefault(x => x.Version == item.Version)
+			: EfContext.Versions
+				.SingleOrDefault(x => x.Version == item.Version);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist, item);
@@ -30,10 +30,12 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		if (operResult.IsExist)
 			return operResult;
 		TgEfVersionEntity? itemFind = isNoTracking
-			? await efContext.Versions.AsNoTracking().SingleOrDefaultAsync(
-				x => x.Version == item.Version).ConfigureAwait(false)
-			: await efContext.Versions.SingleOrDefaultAsync(
-				x => x.Version == item.Version).ConfigureAwait(false);
+			? await EfContext.Versions.AsNoTracking()
+				.SingleOrDefaultAsync(x => x.Version == item.Version)
+				.ConfigureAwait(false)
+			: await EfContext.Versions
+				.SingleOrDefaultAsync(x => x.Version == item.Version)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExist, item);

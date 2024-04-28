@@ -62,6 +62,12 @@ public class TgXpoTableEmpty : XPLiteObject, ITgDbEntity
 			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgXpoTableEmpty)}!");
 	}
 
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoTableEmpty)!.Uid;
+	}
+
 	public override string ToString() => $"{Uid}";
 
     public string ToDebugString() => ToString();

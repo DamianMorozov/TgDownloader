@@ -21,8 +21,8 @@ public interface ITgDbEntity : ITgCommon
 	#region Public and private methods
 
 	public void Default();
-
     public void Fill(object item);
+    public void Backup(object item);
 
     #endregion
 }

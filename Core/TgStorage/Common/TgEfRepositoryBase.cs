@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace TgStorage.Common;
 
 public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBase, ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
@@ -25,7 +23,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	private TgEfOperResult<T> Get(Guid uid)
 	{
-		T? item = efContext.Find<T>(uid);
+		T? item = EfContext.Find<T>(uid);
 		return item is not null
 			? new TgEfOperResult<T>(TgEnumEntityState.IsExist, item)
 			: new TgEfOperResult<T>(TgEnumEntityState.NotExist);
@@ -33,7 +31,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	private async Task<TgEfOperResult<T>> GetAsync(Guid uid)
 	{
-		T? item = await efContext.FindAsync<T>(uid).ConfigureAwait(false);
+		T? item = await EfContext.FindAsync<T>(uid).ConfigureAwait(false);
 		return item is not null
 			? new TgEfOperResult<T>(TgEnumEntityState.IsExist, item)
 			: new TgEfOperResult<T>(TgEnumEntityState.NotExist);
@@ -49,7 +47,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	public virtual TgEfOperResult<T> GetNew(bool isNoTracking) => Get(new T().Uid);
 
-	public virtual async Task<TgEfOperResult<T>> GetNewAsync(bool isNoTracking) => await GetAsync(new T().Uid).ConfigureAwait(false);
+	public virtual async Task<TgEfOperResult<T>> GetNewAsync(bool isNoTracking) => await GetAsync(new T(), isNoTracking).ConfigureAwait(false);
 
 	public virtual TgEfOperResult<T> GetFirst(bool isNoTracking) => UseOverrideMethod();
 
@@ -148,6 +146,37 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 		}
 	}
 
+	public virtual TgEfOperResult<T> SaveOrRecreate(T item, string tableName)
+	{
+		T itemBackup = new();
+		itemBackup.Backup(item);
+		try
+		{
+			return Save(item);
+		}
+		catch (Exception)
+		{
+			item = new();
+			item.Backup(itemBackup);
+			Delete(item, isSkipFind: false);
+			return Save(itemBackup);
+		}
+	}
+
+	public virtual async Task<TgEfOperResult<T>> SaveOrRecreateAsync(T item, string tableName)
+	{
+		try
+		{
+			return await SaveAsync(item);
+		}
+		catch (Exception)
+		{
+			T itemBackup = item;
+			await DeleteAsync(item, isSkipFind: true);
+			return await SaveAsync(itemBackup);
+		}
+	}
+
 	public virtual TgEfOperResult<T> CreateNew() => Save(new T());
 
 	public virtual async Task<TgEfOperResult<T>> CreateNewAsync() => await SaveAsync(new T()).ConfigureAwait(false);
@@ -175,6 +204,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExist, item);
 				}
 				EfContext.Remove(operResult.Item);
+				EfContext.SaveChanges();
 				transaction.Commit();
 				return new TgEfOperResult<T>(TgEnumEntityState.IsDeleted);
 			}
@@ -206,6 +236,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 					operResult = new TgEfOperResult<T>(TgEnumEntityState.IsExist, item);
 				}
 				EfContext.Remove(operResult.Item);
+				await EfContext.SaveChangesAsync().ConfigureAwait(false);
 				await transaction.CommitAsync().ConfigureAwait(false);
 				return new TgEfOperResult<T>(TgEnumEntityState.IsDeleted);
 			}

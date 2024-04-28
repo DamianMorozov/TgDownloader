@@ -81,6 +81,11 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	}
 
     public virtual void Fill(object item) => throw new NotImplementedException(TgLocale.UseOverrideMethod);
+    
+    public virtual void Backup(object item)
+    {
+		Uid = (item as TgEfEntityBase)!.Uid;
+	}
 
-	#endregion
+    #endregion
 }

@@ -7,20 +7,21 @@ namespace TgStorage.Domain.Proxies;
 /// View for TgSqlTableSourceModel.
 /// </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgXpoProxyViewModel : TgViewModelBase
+public sealed partial class TgEfProxyViewModel : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
-	public TgXpoProxyEntity Proxy { get; set; }
+	public TgEfProxyEntity Proxy { get; set; }
     public Guid ProxyUid
     {
 	    get => Proxy.Uid;
 	    set
 	    {
-		    TgXpoOperResult<TgXpoProxyEntity> operResult = XpoContext.ProxyRepository.GetAsync(value).GetAwaiter().GetResult();
+		    TgEfOperResult<TgEfProxyEntity> operResult = EfContext.ProxyRepository.GetAsync(
+			    new TgEfProxyEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 		    Proxy = operResult.IsExist
 			    ? operResult.Item
-			    : XpoContext.ProxyRepository.GetNewAsync().GetAwaiter().GetResult().Item;
+			    : EfContext.ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 	    }
     }
 
@@ -39,7 +40,7 @@ public sealed partial class TgXpoProxyViewModel : TgViewModelBase
 
     public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
 
-    public TgXpoProxyViewModel(TgXpoProxyEntity proxy)
+    public TgEfProxyViewModel(TgEfProxyEntity proxy)
 	{
 		Proxy = proxy;
         ProxyType = proxy.Type;

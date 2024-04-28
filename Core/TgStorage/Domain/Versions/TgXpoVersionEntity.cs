@@ -93,7 +93,13 @@ public sealed class TgXpoVersionEntity : XPLiteObject, ITgDbEntity
         Description = version.Description;
     }
 
-	public override string ToString() => $"{Version} | {Description}";
+    public void Backup(object item)
+    {
+	    Fill(item);
+	    Uid = (item as TgXpoVersionEntity)!.Uid;
+	}
+
+    public override string ToString() => $"{Version} | {Description}";
 
     public string ToDebugString() => 
 	    $"{TgStorageConstants.TableVersions} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {Version} | {Description}";

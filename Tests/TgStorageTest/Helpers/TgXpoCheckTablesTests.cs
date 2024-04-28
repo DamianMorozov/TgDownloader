@@ -4,7 +4,7 @@
 namespace TgStorageTest.Helpers;
 
 [TestFixture]
-internal class TgStorageHelperCheckTablesTests : TgDbContextTestsBase
+internal class TgXpoCheckTablesTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 

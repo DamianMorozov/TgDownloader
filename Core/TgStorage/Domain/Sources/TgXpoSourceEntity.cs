@@ -143,7 +143,13 @@ public sealed class TgXpoSourceEntity : XPLiteObject, ITgDbEntity
         Directory = source.Directory;
     }
 
-    public string ToConsoleStringShort() =>
+	public void Backup(object item)
+	{
+		Fill(item);
+		Uid = (item as TgXpoSourceEntity)!.Uid;
+	}
+
+	public string ToConsoleStringShort() =>
         $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} | " +
         $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
         $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +

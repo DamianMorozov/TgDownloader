@@ -79,7 +79,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew))
 			return;
-		XpoContext.CreateOrConnectDb();
+		EfContext.CreateOrConnectDb();
 	}
 
 	private void TgStorageDeleteExistsDb()
@@ -102,8 +102,8 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
 			return;
-        XpoContext.DeleteTablesAsync().GetAwaiter().GetResult();
-		XpoContext.CreateOrConnectDb();
+		EfContext.DeleteTables();
+		EfContext.CreateOrConnectDb();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();
 	}

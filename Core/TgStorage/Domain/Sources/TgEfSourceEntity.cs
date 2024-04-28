@@ -118,5 +118,33 @@ public sealed class TgEfSourceEntity : TgEfEntityBase
 		Directory = source.Directory;
 	}
 
-    #endregion
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
+    public string ToConsoleStringShort() =>
+	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} | " +
+	    $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
+	    $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +
+	    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+
+    public string ToConsoleString() =>
+	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
+	    $"{TgDataFormatUtils.GetFormatString(UserName, 30)} | " +
+	    $"{TgDataFormatUtils.GetFormatString(Title, 30)} | " +
+	    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+
+	public string GetPercentCountString()
+    {
+	    float percent = Count <= FirstId ? 100 : FirstId > 1 ? (float)FirstId * 100 / Count : 0;
+	    if (IsPercentCountAll())
+		    return "100.00 %";
+	    return percent > 9 ? $" {percent:00.00} %" : $"  {percent:0.00} %";
+    }
+
+    public bool IsPercentCountAll() => Count <= FirstId;
+
+	#endregion
 }

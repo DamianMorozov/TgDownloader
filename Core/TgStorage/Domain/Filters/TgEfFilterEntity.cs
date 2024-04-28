@@ -102,7 +102,13 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
 		SizeType = filter.SizeType;
 	}
 
-    private string GetStringForFilterType() => FilterType switch
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
+	private string GetStringForFilterType() => FilterType switch
     {
         TgEnumFilterType.SingleName => TgLocaleHelper.Instance.MenuFiltersSetSingleName,
         TgEnumFilterType.SingleExtension => TgLocaleHelper.Instance.MenuFiltersSetSingleExtension,

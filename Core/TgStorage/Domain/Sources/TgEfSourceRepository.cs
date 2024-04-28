@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TgStorage.Domain.Sources;
 
-public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfSourceEntity>(efContext), ITgEfRepository<TgEfSourceEntity>
+public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfSourceEntity>(efContext)
 {
 	#region Public and private methods
 
@@ -15,10 +15,10 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		if (operResult.IsExist)
 			return operResult;
 		TgEfSourceEntity? itemFind = isNoTracking
-			? efContext.Sources.AsNoTracking().SingleOrDefault(
-				x => x.Id == item.Id)
-			: efContext.Sources.SingleOrDefault(
-				x => x.Id == item.Id);
+			? EfContext.Sources.AsNoTracking()
+				.SingleOrDefault(x => x.Id == item.Id)
+			: EfContext.Sources
+				.SingleOrDefault(x => x.Id == item.Id);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfSourceEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfSourceEntity>(TgEnumEntityState.NotExist, item);
@@ -30,10 +30,12 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		if (operResult.IsExist)
 			return operResult;
 		TgEfSourceEntity? itemFind = isNoTracking
-			? await efContext.Sources.AsNoTracking().SingleOrDefaultAsync(
-				x => x.Id == item.Id).ConfigureAwait(false)
-			: await efContext.Sources.SingleOrDefaultAsync(
-				x => x.Id == item.Id).ConfigureAwait(false);
+			? await EfContext.Sources.AsNoTracking()
+				.SingleOrDefaultAsync(x => x.Id == item.Id)
+				.ConfigureAwait(false)
+			: await EfContext.Sources
+				.SingleOrDefaultAsync(x => x.Id == item.Id)
+				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfSourceEntity>(TgEnumEntityState.IsExist, itemFind)
 			: new TgEfOperResult<TgEfSourceEntity>(TgEnumEntityState.NotExist, item);

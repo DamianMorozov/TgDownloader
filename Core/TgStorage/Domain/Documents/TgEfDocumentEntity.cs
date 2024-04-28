@@ -87,5 +87,11 @@ public sealed class TgEfDocumentEntity : TgEfEntityBase
 		AccessHash = document.AccessHash;
 	}
 
-    #endregion
+    public override void Backup(object item)
+    {
+	    Fill(item);
+	    base.Backup(item);
+    }
+
+	#endregion
 }
