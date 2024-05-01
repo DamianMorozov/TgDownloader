@@ -32,8 +32,8 @@ jobs:
         run: nuget restore TgDownloader.sln
 
       - name: Tests for Release Any CPU
-        run: | # dotnet test TgDownloader.sln --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
+        run: | # 
             dotnet test Tests/TgAssertCoreTests/TgAssertCoreTests.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
-            # dotnet test Tests/TgDownloaderConsoleTest/TgDownloaderConsoleTest.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
-            # dotnet test Tests/TgDownloaderTest/TgDownloaderTest.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
-            # dotnet test Tests/TgEfCoreTests/TgEfCoreTests.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
+            dotnet test Tests/TgDownloaderConsoleTest/TgDownloaderConsoleTest.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
+            dotnet test Tests/TgDownloaderTest/TgDownloaderTest.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
+            dotnet test Tests/TgStorageTest/TgStorageTest.csproj --no-restore --verbosity quiet -property:Configuration=Release -property:Platform="Any CPU"
