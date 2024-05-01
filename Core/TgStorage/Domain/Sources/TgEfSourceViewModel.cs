@@ -74,7 +74,7 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
     public string IsReadySourceDirectoryDescription => IsReadySourceDirectory 
         ? $"{TgLocaleHelper.Instance.TgDirectoryIsExists}." : $"{TgLocaleHelper.Instance.TgDirectoryIsNotExists}!";
     public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
-    public bool IsReadySourceId => SourceId > 1;
+    public bool IsReadySourceId => SourceId != 0;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsDownload { get; private set; }
 

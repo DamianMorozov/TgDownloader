@@ -318,10 +318,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
     public async Task<TgDownloadSmartSource> GetSmartSourceAsync(TgDownloadSettingsViewModel tgDownloadSettings)
     {
         TgDownloadSmartSource smartSource = new();
-
         if (!DicChatsAll.Any())
             await CollectAllChatsAsync();
-
 		if (tgDownloadSettings.SourceVm.IsReadySourceId)
         {
             tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
@@ -333,7 +331,6 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	        ChatBase? chatBase = DicChatsAll.FirstOrDefault(x => x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
 	        if (chatBase is { }) smartSource.ChatBase = chatBase;
 		}
-
 		return smartSource;
     }
 
@@ -982,7 +979,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         {
             smartSource = await GetSmartSourceAsync(tgDownloadSettings);
             Messages_ChatFull? chatFull;
-			switch (smartSource.Type)
+			switch (smartSource.SourceType)
             {
 	            case TgEnumSourceType.Chat:
 		            break;
@@ -1011,14 +1008,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             }
 
             // Save.
-            TgEfSourceEntity source = (await SourceRepository.GetAsync(new TgEfSourceEntity
-	            { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
-            source.Id = tgDownloadSettings.SourceVm.SourceId;
-            source.UserName = tgDownloadSettings.SourceVm.SourceUserName;
-            source.Title = tgDownloadSettings.SourceVm.SourceTitle;
-            source.About = tgDownloadSettings.SourceVm.SourceAbout;
-            source.Count = tgDownloadSettings.SourceVm.SourceLastId;
-            await SourceRepository.SaveAsync(source);
+            TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository
+	            .GetAsync(new TgEfSourceEntity { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
+            operResult.Item.Backup(tgDownloadSettings.SourceVm.Item);
+            await SourceRepository.SaveAsync(operResult.Item);
         });
         return smartSource;
     }
@@ -1260,7 +1253,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             if (!dirExists) return;
 
             tgDownloadSettings.SourceVm.SetIsDownload(true);
-            bool isAccessToMessages = smartSource.Type switch
+            bool isAccessToMessages = smartSource.SourceType switch
             {
 	            TgEnumSourceType.Default or TgEnumSourceType.Chat or TgEnumSourceType.Dialog or TgEnumSourceType.ChatBase => true,
 	            TgEnumSourceType.Channel => await Client.Channels_ReadMessageContents(smartSource.Channel),

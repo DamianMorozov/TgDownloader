@@ -19,13 +19,6 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	//[ValueGeneratedOnUpdate]
 	[Required]
 	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
-	//public string UidString
-	//{
-	//	get => UidString.ToUpper();
-	//	//set => Uid = Guid.TryParse(value, out Guid uid) ? uid : Guid.Empty;
-	//	set => UidString = value.ToUpper();
-	//	//set => UidString = value.ToUpper() : UidString = Guid.Empty.ToString().ToUpper();
-	//}
 	public Guid Uid { get; set; }
 
 	[NotMapped]

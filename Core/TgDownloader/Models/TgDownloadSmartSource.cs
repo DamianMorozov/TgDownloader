@@ -15,7 +15,7 @@ public class TgDownloadSmartSource
 		set
 		{
 			_chatBase = value;
-			Type = _chatBase is not null ? TgEnumSourceType.ChatBase : TgEnumSourceType.Default;
+			SourceType = _chatBase is not null ? TgEnumSourceType.ChatBase : TgEnumSourceType.Default;
 		}
 	}
 	private Channel? _channel;
@@ -25,18 +25,25 @@ public class TgDownloadSmartSource
 		set
 		{
 			_channel = value;
-			Type = _channel is not null ? TgEnumSourceType.Channel : TgEnumSourceType.Default;
+			SourceType = _channel is not null ? TgEnumSourceType.Channel : TgEnumSourceType.Default;
 		}
 	}
-	public TgEnumSourceType Type { get; set; }
-	public string Value => ChatBase is not null ? $"{ChatBase.ID} | {(!string.IsNullOrEmpty(ChatBase.MainUsername) ? ChatBase.MainUsername : ChatBase.Title)}" : 
-		Channel is not null ? $"{Channel.ID} | {(!string.IsNullOrEmpty(Channel.MainUsername) ? Channel.MainUsername : Channel.Title)}" : "";
+	public TgEnumSourceType SourceType { get; set; }
 
 	#endregion
 
 	#region Public and private methods
 
-	public string ToDebugString() => $"{Value}";
+	public string ToDebugString() => $"{ChatBase.ID} | {SourceType} | {GetUserName()}";
+
+	public string GetUserName()
+	{
+		if (ChatBase is not null)
+			return !string.IsNullOrEmpty(ChatBase.MainUsername) ? ChatBase.MainUsername : ChatBase.Title;
+		if (Channel is not null)
+			return !string.IsNullOrEmpty(Channel.MainUsername) ? Channel.MainUsername : Channel.Title;
+		return string.Empty;
+	}
 
 	#endregion
 }
