@@ -42,7 +42,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuDownload.Return;
 	}
 
-	public void SetupAdvanced(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupAdvanced(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuDownload menu;
 		do
@@ -76,7 +76,7 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
-	private void ScanSources(TgDownloadSettingsModel tgDownloadSettings, TgEnumSourceType sourceType)
+	private void ScanSources(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		ShowTableAdvanced(tgDownloadSettings);
 		if (!TgClient.IsReady)
@@ -97,18 +97,18 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void ScanSourcesChatsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void ScanSourcesChatsWithSave(TgDownloadSettingsViewModel tgDownloadSettings) =>
         TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat).GetAwaiter().GetResult();
 
-	private void ScanSourcesDialogsWithSave(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void ScanSourcesDialogsWithSave(TgDownloadSettingsViewModel tgDownloadSettings) =>
         TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog).GetAwaiter().GetResult();
 
-	private void ViewSources(TgDownloadSettingsModel tgDownloadSettings)
+	private void ViewSources(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgEfSourceEntity source = GetSourceFromEnumerable(TgLocale.MenuViewSources, 
-			EfContext.SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items);
-		if (source.IsExist)
+		TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, operResult.Items);
+		if (source.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;
             tgDownloadSettings = SetupDownloadSource(source.Id);
@@ -116,24 +116,24 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void ViewVersions(TgDownloadSettingsModel tgDownloadSettings)
+	private void ViewVersions(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewVersions(tgDownloadSettings);
 		GetVersionFromEnumerable(TgLocale.MenuViewSources, 
-			EfContext.VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items);
+			VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items);
 	}
 
-	private void MarkHistoryRead(TgDownloadSettingsModel tgDownloadSettings)
+	private void MarkHistoryRead(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		RunActionStatus(tgDownloadSettings, MarkHistoryReadCore, true, false);
 	}
 
-	private void AutoDownload(TgDownloadSettingsModel _)
+	private void AutoDownload(TgDownloadSettingsViewModel _)
 	{
-		IEnumerable<TgEfSourceEntity> sources = EfContext.SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items;
+		IEnumerable<TgEfSourceEntity> sources = SourceRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items;
 		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
-            TgDownloadSettingsModel tgDownloadSettings = SetupDownloadSource(source.Id);
+            TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSource(source.Id);
 			string sourceId = string.IsNullOrEmpty(source.UserName) ? $"{source.Id}" : $"{source.Id} | @{source.UserName}";
             // StatusContext.
             TgClient.UpdateStateSourceAsync(source.Id, source.FirstId, 
@@ -147,7 +147,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void AutoViewEvents(TgDownloadSettingsModel tgDownloadSettings)
+	private void AutoViewEvents(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
 		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, 

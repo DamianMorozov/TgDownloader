@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Filters;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableFilters)]
+[Table(TgEfConstants.TableFilters)]
 [Index(nameof(IsEnabled))]
 [Index(nameof(FilterType))]
 [Index(nameof(Name), IsUnique = true)]
@@ -17,29 +17,29 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
 
     [DefaultValue(true)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnIsEnabled)]
+    [Column(TgEfConstants.ColumnIsEnabled)]
     public bool IsEnabled { get; set; }
 
     [DefaultValue(TgEnumFilterType.SingleName)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnFilterType)]
+    [Column(TgEfConstants.ColumnFilterType)]
     public TgEnumFilterType FilterType { get; set; }
 
     [DefaultValue("Any")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnName)]
+    [Column(TgEfConstants.ColumnName)]
     public string Name { get; set; } = default!;
 
     [DefaultValue("*")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnMask)]
+    [Column(TgEfConstants.ColumnMask)]
     public string Mask { get; set; } = default!;
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnSize)]
+    [Column(TgEfConstants.ColumnSize)]
     public long Size { get; set; }
 
     [NotMapped]
@@ -54,7 +54,7 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
     
     [DefaultValue(TgEnumFileSizeType.Bytes)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnSizeType)]
+    [Column(TgEfConstants.ColumnSizeType)]
     public TgEnumFileSizeType SizeType { get; set; }
 
     public TgEfFilterEntity() : base()
@@ -69,8 +69,8 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
     public override string ToDebugString() => FilterType switch
     {
         TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
-			$"{TgStorageConstants.TableFilters} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
-        _ => $"{TgStorageConstants.TableFilters} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
+			$"{TgEfConstants.TableFilters} | {base.ToDebugString()} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
+        _ => $"{TgEfConstants.TableFilters} | {base.ToDebugString()} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
     };
 
     public override void Default()

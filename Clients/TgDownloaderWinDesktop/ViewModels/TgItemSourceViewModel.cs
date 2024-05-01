@@ -8,6 +8,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 {
     #region Public and private fields, properties, constructor
 
+    private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfSourceViewModel ItemSourceVm { get; } = new();
     public Visibility ChartVisibility { get; private set; } = Visibility.Hidden;
     private LineSeries LineSerie { get; set; } = new()
@@ -78,7 +79,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemSourceVm.SourceUid != SourceUid)
                 SourceUid = ItemSourceVm.SourceUid;
-            TgEfSourceEntity source = (await EfContext.SourceRepository.GetAsync(new TgEfSourceEntity() { Uid = SourceUid }, isNoTracking: false)).Item;
+            TgEfSourceEntity source = (await SourceRepository.GetAsync(new TgEfSourceEntity() { Uid = SourceUid }, isNoTracking: false)).Item;
 			SetItemSourceVm(source);
         }, true);
     }
@@ -163,10 +164,10 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
                 await TgDesktopUtils.TgClient.CollectAllChatsAsync();
 			// Download settings.
-            TgDownloadSettingsModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
+            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
 			// Update source from Telegram.
 			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
-            await EfContext.SourceRepository.SaveAsync(ItemSourceVm.Item);
+            await SourceRepository.SaveAsync(ItemSourceVm.Item);
             // Message.
             await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, false);
@@ -197,7 +198,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             }
 
             // Download settings.
-            TgDownloadSettingsModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
+            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
             SwDownloadChart = Stopwatch.StartNew();
 			// Job.
 			await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
@@ -234,7 +235,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
-            ItemSourceVm.Item = (await EfContext.SourceRepository.GetNewAsync(isNoTracking: false)).Item;
+            ItemSourceVm.Item = (await SourceRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false);
     }
 
@@ -245,7 +246,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await EfContext.SourceRepository.SaveAsync(ItemSourceVm.Item);
+            await SourceRepository.SaveAsync(ItemSourceVm.Item);
         }, false);
 
         await OnGetSourceFromStorageAsync();

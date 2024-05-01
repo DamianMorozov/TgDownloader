@@ -7,7 +7,12 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 {
 	#region Public and private fields, properties, constructor
 
-	//
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
+
+	~ProxyComponent()
+	{
+		ProxyRepository.Dispose();
+	}
 
 	#endregion
 
@@ -26,8 +31,8 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 		    return;
 	    }
 
-	    Items = efContext.ProxyRepository.GetEnumerable(0, isNoTracking: false).Items;
-        ItemsCount = efContext.ProxyRepository.GetCount();
+	    Items = (await ProxyRepository.GetEnumerableAsync(0, isNoTracking: false)).Items;
+        ItemsCount = await ProxyRepository.GetCountAsync();
 
         IsBlazorLoading = false;
 	}

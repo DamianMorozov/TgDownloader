@@ -8,10 +8,11 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 {
     #region Public and private fields, properties, constructor
 
+    private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+    private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfAppViewModel AppVm { get; }
     public TgEfProxyViewModel ProxyVm { get; set; }
     public ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; private set; }
-
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Notifications { get; set; }
@@ -66,7 +67,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public TgClientViewModel()
     {
-        AppVm = new(EfContext.AppRepository.GetFirstAsync(isNoTracking: false).GetAwaiter().GetResult().Item);
+        AppVm = new(AppRepository.GetFirstAsync(isNoTracking: false).GetAwaiter().GetResult().Item);
         ProxyVm = new(new());
         ProxiesVms = new();
 
@@ -108,10 +109,10 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfProxyEntity proxyNew = (await EfContext.ProxyRepository.GetAsync(
+            TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
 	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
             ProxiesVms = new();
-            foreach (TgEfProxyEntity proxy in (await EfContext.ProxyRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items)
+            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }
@@ -205,7 +206,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            if (!TgStorageUtils.GetEfValid(AppVm.App).IsValid)
+            if (!TgEfUtils.GetEfValid(AppVm.App).IsValid)
                 return;
             await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Proxy ?? ProxyVm.Proxy);
         }, true);
@@ -232,7 +233,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
 		    await Task.Delay(TimeSpan.FromMilliseconds(1));
-		    AppVm.App = (await EfContext.AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		    AppVm.App = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 	    }, false).ConfigureAwait(false);
     }
 
@@ -243,8 +244,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await EfContext.AppRepository.DeleteAllAsync();
-            await EfContext.AppRepository.SaveAsync(AppVm.App);
+            await AppRepository.DeleteAllAsync();
+            await AppRepository.SaveAsync(AppVm.App);
         }, false).ConfigureAwait(false);
     }
 
@@ -255,7 +256,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            AppVm.App = (await EfContext.AppRepository.GetNewAsync(isNoTracking: false)).Item;
+            AppVm.App = (await AppRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false).ConfigureAwait(true);
     }
 
@@ -266,7 +267,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await EfContext.AppRepository.DeleteAllAsync();
+            await AppRepository.DeleteAllAsync();
         }, false).ConfigureAwait(true);
 
         await OnAppLoadAsync();

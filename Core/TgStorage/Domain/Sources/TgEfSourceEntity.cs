@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableSources)]
+[Table(TgEfConstants.TableSources)]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(UserName))]
 [Index(nameof(Title))]
@@ -19,50 +19,50 @@ public sealed class TgEfSourceEntity : TgEfEntityBase
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId)]
     public long Id{ get; set; }
 
     [DefaultValue("UserName")]
     [ConcurrencyCheck]
     [MaxLength(256)]
-    [Column(TgStorageConstants.ColumnUserName)]
+    [Column(TgEfConstants.ColumnUserName)]
     public string? UserName { get; set; }
 
     [DefaultValue("Title")]
     [ConcurrencyCheck]
     [MaxLength(1024)]
-    [Column(TgStorageConstants.ColumnTitle)]
+    [Column(TgEfConstants.ColumnTitle)]
     public string? Title { get; set; }
 
     [DefaultValue("About")]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnAbout)]
+    [Column(TgEfConstants.ColumnAbout)]
     public string? About { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnCount)]
+    [Column(TgEfConstants.ColumnCount)]
     public int Count { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(1024)]
-    [Column(TgStorageConstants.ColumnDirectory)]
+    [Column(TgEfConstants.ColumnDirectory)]
     public string? Directory { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnFirstId)]
+    [Column(TgEfConstants.ColumnFirstId)]
     public int FirstId { get; set; }
 
     [DefaultValue(false)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnIsAutoUpdate)]
+    [Column(TgEfConstants.ColumnIsAutoUpdate)]
     public bool IsAutoUpdate { get; set; }
 
     [DefaultValue("0001-01-01 00:00:00")]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnDtChanged)]
+    [Column(TgEfConstants.ColumnDtChanged)]
 	public DateTime DtChanged { get; set; }
 
     [NotMapped]
@@ -80,8 +80,8 @@ public sealed class TgEfSourceEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableSources} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +
-        $"{TgDataFormatUtils.TrimStringEnd(Title)} | {FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+        $"{TgEfConstants.TableSources} | {base.ToDebugString()} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +
+        $"{(string.IsNullOrEmpty(Title) ? string.Empty : TgDataFormatUtils.TrimStringEnd(Title))} | {FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
     public override void Default()
     {

@@ -3,14 +3,13 @@
 
 namespace TgStorage.Domain.Sources;
 
-/// <summary>
-/// View for TgSqlTableSourceModel.
-/// </summary>
+/// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfSourceViewModel : TgViewModelBase
+public sealed class TgEfSourceViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
+    private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfSourceEntity Item { get; set; } = default!;
     public float Progress => (float) Item.FirstId * 100 / Item.Count;
     public string ProgressPercentString => Progress == 0 ? "{0:00.00}" : $"{Progress:#00.00} %";
@@ -38,11 +37,11 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = EfContext.SourceRepository.GetAsync(
+			TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetAsync(
 				new TgEfSourceEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 			Item = operResult.IsExists
 				? operResult.Item
-				: EfContext.SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+				: SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 		}
 	}
 
@@ -86,7 +85,7 @@ public sealed partial class TgEfSourceViewModel : TgViewModelBase
 
     public TgEfSourceViewModel() : base()
     {
-	    TgEfSourceEntity source = EfContext.SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item;
+	    TgEfSourceEntity source = SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item;
 		Default(source);
 	}
 

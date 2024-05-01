@@ -6,7 +6,7 @@ namespace TgLocalization.Helpers;
 /// <summary>
 /// Localization helper.
 /// </summary>
-public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyChanged
+public sealed class TgLocaleHelper : ObservableObject
 {
 	#region Design pattern "Lazy Singleton"
 
@@ -232,6 +232,7 @@ public sealed partial class TgLocaleHelper : ObservableObject, INotifyPropertyCh
 	public string GetSources => "Get sources";
 	public string Load=> "Load";
 	public string MoveUpDown => "(Move up and down to switch select)";
+	public string ObjectHasBeenDisposedOff => "object has been disposed off";
 	public string Return => "Return";
 	public string Save => "Save";
 	public string SaveToStorage=> "Save to Storage";

@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Apps;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableApps)]
+[Table(TgEfConstants.TableApps)]
 [Index(nameof(ApiHash), IsUnique = true)]
 [Index(nameof(ApiId))]
 [Index(nameof(PhoneNumber))]
@@ -15,7 +15,7 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnApiHash)]
+    [Column(TgEfConstants.ColumnApiHash)]
     public Guid ApiHash { get; set; }
     
     [NotMapped]
@@ -27,7 +27,7 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnApiId)]
+    [Column(TgEfConstants.ColumnApiId)]
     public int ApiId { get; set; }
 
 	[NotMapped]
@@ -40,12 +40,12 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 	[DefaultValue("+00000000000")]
 	[ConcurrencyCheck]
 	[MaxLength(16)]
-	[Column(TgStorageConstants.ColumnPhoneNumber)]
+	[Column(TgEfConstants.ColumnPhoneNumber)]
 	public string PhoneNumber { get; set; } = default!;
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnProxyUid)]
+    [Column(TgEfConstants.ColumnProxyUid)]
     public Guid? ProxyUid { get; set; }
 	
     [NotMapped]
@@ -67,7 +67,7 @@ public sealed class TgEfAppEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableApps} | {base.ToDebugString()} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
+        $"{TgEfConstants.TableApps} | {base.ToDebugString()} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
 
     public override void Default()
     {

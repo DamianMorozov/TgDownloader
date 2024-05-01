@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Sources;
 
-public sealed class TgEfSourceRepository : TgEfRepositoryBase<TgEfSourceEntity>
+public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfSourceEntity>(efContext)
 {
 	#region Public and private methods
 

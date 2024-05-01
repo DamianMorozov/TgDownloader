@@ -9,8 +9,9 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	#region Public and private fields, properties, constructor
 
 	public ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; set; } = new();
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 
-    #endregion
+	#endregion
 
 	#region Public and private methods
 
@@ -54,7 +55,8 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            SetOrderProxies((await EfContext.ProxyRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items);
+            TgEfOperResult<TgEfProxyEntity> operResult = await ProxyRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false);
+			SetOrderProxies(operResult.Items);
         }, false).ConfigureAwait(false);
 	}
 
@@ -76,7 +78,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await EfContext.ProxyRepository.DeleteAsync(proxyVm.Proxy, isSkipFind: false);
+            await ProxyRepository.DeleteAsync(proxyVm.Proxy, isSkipFind: false);
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
         }, false).ConfigureAwait(false);

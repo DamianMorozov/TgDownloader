@@ -36,7 +36,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuAppSettings.Return;
 	}
 
-	public void SetupAppSettings(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupAppSettings(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuAppSettings menu;
 		do
@@ -68,7 +68,6 @@ internal partial class TgMenuHelper
 	private void SetFileAppSettings()
 	{
 		TgAppSettings.StoreXmlSettings();
-		EfContext.CreateOrConnectDb();
 	}
 
 	private void ResetAppSettings()

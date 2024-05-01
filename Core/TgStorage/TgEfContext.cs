@@ -5,15 +5,6 @@ namespace TgStorage;
 
 public sealed class TgEfContext : DbContext, IDisposable
 {
-	#region Design pattern "Lazy Singleton"
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	private static TgEfContext _instance;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	public static TgEfContext Instance => LazyInitializer.EnsureInitialized(ref _instance);
-
-	#endregion
-
 	#region Public and private fields, properties, constructor
 
 	/// <summary> App queries </summary>
@@ -30,32 +21,15 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public DbSet<TgEfSourceEntity> Sources { get; set; } = default!;
 	/// <summary> Version queries </summary>
 	public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
-
-	/// <summary> App repository </summary>
-	public ITgEfRepository<TgEfAppEntity> AppRepository { get; set; } = default!;
-	/// <summary> Document repository </summary>
-	public ITgEfRepository<TgEfDocumentEntity> DocumentRepository { get; set; } = default!;
-	/// <summary> Filter repository </summary>
-	public ITgEfRepository<TgEfFilterEntity> FilterRepository { get; set; } = default!;
-	/// <summary> Message repository </summary>
-	public ITgEfRepository<TgEfMessageEntity> MessageRepository { get; set; } = default!;
-	/// <summary> Proxy repository </summary>
-	public ITgEfRepository<TgEfProxyEntity> ProxyRepository { get; set; } = default!;
-	/// <summary> Source repository </summary>
-	public ITgEfRepository<TgEfSourceEntity> SourceRepository { get; set; } = default!;
-	/// <summary> Version repository </summary>
-	public ITgEfRepository<TgEfVersionEntity> VersionRepository { get; set; } = default!;
-
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
-	public TgLogHelper TgLog => TgLogHelper.Instance;
 	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 
 	public bool IsReady =>
 		TgAppSettings.AppXml.IsExistsFileStorage &&
-		IsTableExists(TgStorageConstants.TableApps) && IsTableExists(TgStorageConstants.TableDocuments) &&
-		IsTableExists(TgStorageConstants.TableFilters) && IsTableExists(TgStorageConstants.TableMessages) &&
-		IsTableExists(TgStorageConstants.TableProxies) && IsTableExists(TgStorageConstants.TableSources) &&
-		IsTableExists(TgStorageConstants.TableVersions);
+		IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
+		IsTableExists(TgEfConstants.TableFilters) && IsTableExists(TgEfConstants.TableMessages) &&
+		IsTableExists(TgEfConstants.TableProxies) && IsTableExists(TgEfConstants.TableSources) &&
+		IsTableExists(TgEfConstants.TableVersions);
 
 	#endregion
 
@@ -73,7 +47,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	private void CheckIfDisposed()
 	{
 		if (_disposed)
-			throw new ObjectDisposedException($"{nameof(TgEfContext)}: object has been disposed off!");
+			throw new ObjectDisposedException($"{nameof(TgEfContext)}: {TgLocaleHelper.Instance.ObjectHasBeenDisposedOff}!");
 	}
 
 	/// <summary> Release managed resources </summary>
@@ -137,25 +111,11 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	#region Public and private methods
 
-	private void InitRepositories()
-	{
-#if DEBUG
-		Debug.WriteLine($"{nameof(ContextId)} {ContextId}: init repositories");
-#endif
-		AppRepository = new TgEfAppRepository();
-		DocumentRepository = new TgEfDocumentRepository();
-		FilterRepository = new TgEfFilterRepository();
-		MessageRepository = new TgEfMessageRepository();
-		ProxyRepository = new TgEfProxyRepository();
-		SourceRepository = new TgEfSourceRepository();
-		VersionRepository = new TgEfVersionRepository();
-
-		CreateOrConnectDb();
-	}
-
 	public TgEfContext() : base()
 	{
-		InitRepositories();
+#if DEBUG
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+#endif
 	}
 
 	/// <summary> Inject options </summary>
@@ -163,7 +123,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 	// For using: services.AddDbContextFactory<TgEfContext>
 	public TgEfContext(DbContextOptions<TgEfContext> options) : base(options)
 	{
-		InitRepositories();
+#if DEBUG
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+#endif
 	}
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -190,13 +152,13 @@ public sealed class TgEfContext : DbContext, IDisposable
 		// Concurrency tokens
 		// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
 		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
-		modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgStorageConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		// Ingore.
 		modelBuilder.Ignore<TgEfEntityBase>();
 		modelBuilder.Entity<TgEfAppEntity>().Ignore(x => x.RowVersion);
@@ -248,44 +210,19 @@ public sealed class TgEfContext : DbContext, IDisposable
 		yield return typeof(TgEfVersionEntity);
 	}
 
-	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy()
-	{
-		TgEfOperResult<TgEfAppEntity> operResultApp = AppRepository.GetFirst(isNoTracking: true);
-		if (!operResultApp.IsExists)
-			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-		TgEfOperResult<TgEfProxyEntity> operResultProxy = ProxyRepository.Get(
-			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
-		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-	}
-
-	public async Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync()
-	{
-		TgEfOperResult<TgEfAppEntity> operResultApp = await AppRepository.GetFirstAsync(isNoTracking: true);
-		if (!operResultApp.IsExists)
-			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-		TgEfOperResult<TgEfProxyEntity> operResultProxy = await ProxyRepository.GetAsync(
-			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
-		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-	}
-
-	public Guid GetCurrentProxyUid() => GetCurrentProxy().Item.Uid;
-
-	public async Task<Guid> GetCurrentProxyUidAsync() => (await GetCurrentProxyAsync()).Item.Uid;
-
-	public string ToConsoleStringShort(TgEfSourceEntity source) =>
-		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a | " : "")} | {source.Id} | " +
-		$"{(string.IsNullOrEmpty(source.UserName) ? "" : TgDataFormatUtils.GetFormatString(source.UserName, 30))} | " +
-		$"{(string.IsNullOrEmpty(source.Title) ? "" : TgDataFormatUtils.GetFormatString(source.Title, 30))} | " +
-		$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
+	//public string ToConsoleStringShort(TgEfSourceEntity source) =>
+	//	$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a | " : "")} | {source.Id} | " +
+	//	$"{(string.IsNullOrEmpty(source.UserName) ? "" : TgDataFormatUtils.GetFormatString(source.UserName, 30))} | " +
+	//	$"{(string.IsNullOrEmpty(source.Title) ? "" : TgDataFormatUtils.GetFormatString(source.Title, 30))} | " +
+	//	$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
 
 	public string ToConsoleString(TgEfSourceEntity source) =>
 		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
-		$"{TgDataFormatUtils.GetFormatString(source.UserName, 30)} | " +
-		$"{TgDataFormatUtils.GetFormatString(source.Title, 30)} | " +
+		$"{(!string.IsNullOrEmpty(source.UserName) ? TgDataFormatUtils.GetFormatString(source.UserName, 30) : string.Empty)} | " +
+		$"{(!string.IsNullOrEmpty(source.Title) ? TgDataFormatUtils.GetFormatString(source.Title, 30) : string.Empty)} | " +
 		$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
 
-	public string ToConsoleString(TgEfVersionEntity version) =>
-		$"{version.Version}	{version.Description}";
+	public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
 
 	public string GetPercentCountString(TgEfSourceEntity source)
 	{
@@ -306,32 +243,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 		return tableName == result;
 	}
 
-	public static short LastVersion => 24;
-
-	public void VersionsView()
-	{
-		TgEfOperResult<TgEfVersionEntity> operResult = VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
-		if (operResult.IsExists)
-		{
-			foreach (TgEfVersionEntity version in operResult.Items)
-			{
-				TgLog.WriteLine($" {version.Version:00} | {version.Description}");
-			}
-		}
-	}
-
-	public void FiltersView()
-	{
-		TgEfOperResult<TgEfFilterEntity> operResult = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
-		if (operResult.IsExists)
-		{
-			foreach (TgEfFilterEntity filter in operResult.Items)
-			{
-				TgLog.WriteLine($"{filter}");
-			}
-		}
-	}
-
 	public (bool IsSuccess, string FileName) BackupDb()
 	{
 		if (File.Exists(TgAppSettings.AppXml.FileStorage))
@@ -344,203 +255,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 			return (File.Exists(fileBackup), fileBackup);
 		}
 		return (false, string.Empty);
-	}
-
-	public void CreateOrConnectDb()
-	{
-		CheckTablesCrudAsync().GetAwaiter().GetResult();
-	}
-
-	public async Task CreateOrConnectDbAsync()
-	{
-		await CheckTablesCrudAsync();
-	}
-
-	/// <summary> Update structures of tables </summary>
-	private async Task CheckTablesCrudAsync()
-	{
-		TgEfVersionEntity versionLast = GetLastVersion();
-		if (versionLast.Version < 19)
-		{
-			// Upgrade DB.
-			TgEfOperResult<TgEfAppEntity> operResultApps = await AlterTableNoCaseUidAsync<TgEfAppEntity>();
-			if (operResultApps.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfDocumentEntity> operResultDocuments = await AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
-			if (operResultDocuments.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfFilterEntity> operResultFilters = await AlterTableNoCaseUidAsync<TgEfFilterEntity>();
-			if (operResultFilters.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfMessageEntity> operResultMessages = await AlterTableNoCaseUidAsync<TgEfMessageEntity>();
-			if (operResultMessages.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfProxyEntity> operResultProxies = await AlterTableNoCaseUidAsync<TgEfProxyEntity>();
-			if (operResultProxies.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfSourceEntity> operResultSources = await AlterTableNoCaseUidAsync<TgEfSourceEntity>();
-			if (operResultSources.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			TgEfOperResult<TgEfVersionEntity> operResultVersions = await AlterTableNoCaseUidAsync<TgEfVersionEntity>();
-			if (operResultVersions.State == TgEnumEntityState.NotExecuted)
-				throw new(TgLocale.TablesAppsException);
-			// Update UID.
-			await UpdateTableUidUpperCaseAllAsync<TgEfAppEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfDocumentEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfFilterEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfMessageEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
-			await UpdateTableUidUpperCaseAllAsync<TgEfVersionEntity>();
-		}
-
-		if (!await CheckTableAppsCrudAsync())
-			throw new(TgLocale.TablesAppsException);
-		if (!await CheckTableDocumentsCrudAsync())
-			throw new(TgLocale.TablesDocumentsException);
-		if (!await CheckTableFiltersCrudAsync())
-			throw new(TgLocale.TablesFiltersException);
-		if (!await CheckTableMessagesCrudAsync())
-			throw new(TgLocale.TablesMessagesException);
-		if (!await CheckTableSourcesCrudAsync())
-			throw new(TgLocale.TablesSourcesException);
-		if (!await CheckTableProxiesCrudAsync())
-			throw new(TgLocale.TablesProxiesException);
-		if (!await CheckTableVersionsCrudAsync())
-			throw new(TgLocale.TablesVersionsException);
-
-		await FillTableVersionsAsync();
-
-		// Compact DB.
-		//await CompactDbAsync();
-	}
-
-	private async Task<bool> CheckTableCrudAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
-	{
-		var operResult = await repository.CreateNewAsync();
-		if (!operResult.IsExists)
-			return false;
-		operResult = await repository.GetNewAsync(isNoTracking: false);
-		if (!operResult.IsExists)
-			return false;
-		operResult = await repository.SaveAsync(operResult.Item);
-		if (operResult.State != TgEnumEntityState.IsSaved)
-			return false;
-		operResult = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-		return operResult.State == TgEnumEntityState.IsDeleted;
-	}
-
-	public Task<bool> CheckTableAppsCrudAsync() => CheckTableCrudAsync(AppRepository);
-
-	public Task<bool> CheckTableDocumentsCrudAsync() => CheckTableCrudAsync(DocumentRepository);
-
-	public Task<bool> CheckTableFiltersCrudAsync() => CheckTableCrudAsync(FilterRepository);
-
-	public Task<bool> CheckTableMessagesCrudAsync() => CheckTableCrudAsync(MessageRepository);
-
-	public Task<bool> CheckTableProxiesCrudAsync() => CheckTableCrudAsync(ProxyRepository);
-
-	public Task<bool> CheckTableSourcesCrudAsync() => CheckTableCrudAsync(SourceRepository);
-
-	public Task<bool> CheckTableVersionsCrudAsync() => CheckTableCrudAsync(VersionRepository);
-
-	public TgEfVersionEntity GetLastVersion()
-	{
-		TgEfVersionEntity versionLast = !IsTableExists(TgStorageConstants.TableVersions)
-			? new() : VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items
-				.Where(x => x.Description != "New version")
-				.OrderBy(x => x.Version)
-				.Last();
-		return versionLast;
-	}
-
-	public async Task FillTableVersionsAsync()
-	{
-		await VersionRepository.DeleteNewAsync();
-		bool isLast = false;
-		while (!isLast)
-		{
-			TgEfVersionEntity versionLast = GetLastVersion();
-			if (Equals(versionLast.Version, short.MaxValue))
-				versionLast.Version = 0;
-			switch (versionLast.Version)
-			{
-				case 0:
-					await VersionRepository.SaveAsync(new() { Version = 1, Description = "Added versions table" });
-					break;
-				case 1:
-					await VersionRepository.SaveAsync(new() { Version = 2, Description = "Added apps table" });
-					break;
-				case 2:
-					await VersionRepository.SaveAsync(new() { Version = 3, Description = "Added documents table" });
-					break;
-				case 3:
-					await VersionRepository.SaveAsync(new() { Version = 4, Description = "Added filters table" });
-					break;
-				case 4:
-					await VersionRepository.SaveAsync(new() { Version = 5, Description = "Added messages table" });
-					break;
-				case 5:
-					await VersionRepository.SaveAsync(new() { Version = 6, Description = "Added proxies table" });
-					break;
-				case 6:
-					await VersionRepository.SaveAsync(new() { Version = 7, Description = "Added sources table" });
-					break;
-				case 7:
-					await VersionRepository.SaveAsync(new() { Version = 8, Description = "Added source settings table" });
-					break;
-				case 8:
-					await VersionRepository.SaveAsync(new() { Version = 9, Description = "Upgrade versions table" });
-					break;
-				case 9:
-					await VersionRepository.SaveAsync(new() { Version = 10, Description = "Upgrade apps table" });
-					break;
-				case 10:
-					await VersionRepository.SaveAsync(new() { Version = 11, Description = "Upgrade storage on XPO framework" });
-					break;
-				case 11:
-					await VersionRepository.SaveAsync(new() { Version = 12, Description = "Upgrade apps table" });
-					break;
-				case 12:
-					await VersionRepository.SaveAsync(new() { Version = 13, Description = "Upgrade documents table" });
-					break;
-				case 13:
-					await VersionRepository.SaveAsync(new() { Version = 14, Description = "Upgrade filters table" });
-					break;
-				case 14:
-					await VersionRepository.SaveAsync(new() { Version = 15, Description = "Upgrade messages table" });
-					break;
-				case 15:
-					await VersionRepository.SaveAsync(new() { Version = 16, Description = "Upgrade proxies table" });
-					break;
-				case 16:
-					await VersionRepository.SaveAsync(new() { Version = 17, Description = "Upgrade sources table" });
-					break;
-				case 17:
-					await VersionRepository.SaveAsync(new() { Version = 18, Description = "Updating the UID field in the apps table" });
-					break;
-				case 18:
-					await VersionRepository.SaveAsync(new() { Version = 19, Description = "Updating the UID field in the documents table" });
-					break;
-				case 19:
-					await VersionRepository.SaveAsync(new() { Version = 20, Description = "Updating the UID field in the filters table" });
-					break;
-				case 20:
-					await VersionRepository.SaveAsync(new() { Version = 21, Description = "Updating the UID field in the messages table" });
-					break;
-				case 21:
-					await VersionRepository.SaveAsync(new() { Version = 22, Description = "Updating the UID field in the proxies table" });
-					break;
-				case 22:
-					await VersionRepository.SaveAsync(new() { Version = 23, Description = "Updating the UID field in the sources table" });
-					break;
-				case 23:
-					await VersionRepository.SaveAsync(new() { Version = 24, Description = "Updating the UID field in the versions table" });
-					break;
-			}
-			if (versionLast.Version >= LastVersion)
-				isLast = true;
-		}
 	}
 
 	public void DeleteTables()
@@ -572,25 +286,25 @@ public sealed class TgEfContext : DbContext, IDisposable
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableApps};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableApps};";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableDocuments};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableDocuments};";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableFilters};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableFilters};";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableMessages};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableMessages};";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableProxies};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableProxies};";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableSources};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableSources};";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"TRUNCATE TABLE {TgStorageConstants.TableVersions};";
+				cmd = $"TRUNCATE TABLE {TgEfConstants.TableVersions};";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))
@@ -608,25 +322,25 @@ public sealed class TgEfContext : DbContext, IDisposable
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableApps};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableApps};";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableDocuments};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableDocuments};";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableFilters};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableFilters};";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableMessages};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableMessages};";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableProxies};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableProxies};";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableSources};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableSources};";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableVersions};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableVersions};";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))
@@ -644,25 +358,25 @@ public sealed class TgEfContext : DbContext, IDisposable
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableApps};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableApps};";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableDocuments};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableDocuments};";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableFilters};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableFilters};";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableMessages};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableMessages};";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableProxies};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableProxies};";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableSources};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableSources};";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"DROP TABLE IF EXISTS {TgStorageConstants.TableVersions};";
+				cmd = $"DROP TABLE IF EXISTS {TgEfConstants.TableVersions};";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))
@@ -836,25 +550,25 @@ COMMIT TRANSACTION;
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableApps}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableFilters}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableMessages}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableProxies}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableSources}] SET [UID] = UPPER([UID]);";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = UPPER([UID]);";
+				cmd = $"UPDATE [{TgEfConstants.TableVersions}] SET [UID] = UPPER([UID]);";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))
@@ -875,25 +589,25 @@ COMMIT TRANSACTION;
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableApps}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = '{uidUpper}' WHERE U[UID]ID = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableFilters}] SET [UID] = '{uidUpper}' WHERE U[UID]ID = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableMessages}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableProxies}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableSources}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableVersions}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))
@@ -914,25 +628,25 @@ COMMIT TRANSACTION;
 		switch (typeof(T))
 		{
 			case var cls when cls == typeof(TgEfAppEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableApps}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableApps}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfDocumentEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableDocuments}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableFilters}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableFilters}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfMessageEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableMessages}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableMessages}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfProxyEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableProxies}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableProxies}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfSourceEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableSources}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableSources}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
-				cmd = $"UPDATE [{TgStorageConstants.TableVersions}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
+				cmd = $"UPDATE [{TgEfConstants.TableVersions}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';";
 				break;
 		}
 		if (!string.IsNullOrEmpty(cmd))

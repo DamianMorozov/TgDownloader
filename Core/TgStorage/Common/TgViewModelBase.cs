@@ -9,9 +9,7 @@ public abstract class TgViewModelBase : ObservableObject, ITgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    protected TgEfContext EfContext { get; } = TgEfContext.Instance;
 	public bool IsLoad { get; set; }
-    public bool IsNotLoad => !IsLoad;
 
     #endregion
 

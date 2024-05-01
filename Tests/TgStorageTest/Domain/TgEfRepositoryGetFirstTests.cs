@@ -18,25 +18,25 @@ internal class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void TgEf_get_first_app() => GetFirst(EfProdContext.AppRepository);
+	public void TgEf_get_first_app() => GetFirst(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_document() => GetFirst(EfProdContext.DocumentRepository);
+	public void TgEf_get_first_document() => GetFirst(new TgEfDocumentRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_filter() => GetFirst(EfProdContext.FilterRepository);
+	public void TgEf_get_first_filter() => GetFirst(new TgEfFilterRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_message() => GetFirst(EfProdContext.MessageRepository);
+	public void TgEf_get_first_message() => GetFirst(new TgEfMessageRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_proxy() => GetFirst(EfProdContext.ProxyRepository);
+	public void TgEf_get_first_proxy() => GetFirst(new TgEfProxyRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_source() => GetFirst(EfProdContext.SourceRepository);
+	public void TgEf_get_first_source() => GetFirst(new TgEfSourceRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_first_version() => GetFirst(EfProdContext.VersionRepository);
+	public void TgEf_get_first_version() => GetFirst(new TgEfVersionRepository(TgEfUtils.EfContext));
 
 	#endregion
 }

@@ -32,25 +32,25 @@ internal class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
                 switch (sqlType)
                 {
                     case var cls when cls == typeof(TgEfAppEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.AppRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 						break;
                     case var cls when cls == typeof(TgEfDocumentEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.DocumentRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfFilterEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.FilterRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfMessageEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.MessageRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfProxyEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.ProxyRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfSourceEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.SourceRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfVersionEntity):
-	                    await CreateNewItemAndDeleteAsync(EfProdContext.VersionRepository);
+	                    await CreateNewItemAndDeleteAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
                         break;
                 }
                 TestContext.WriteLine();
@@ -78,25 +78,25 @@ internal class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 				switch (sqlType)
 				{
 					case var cls when cls == typeof(TgEfAppEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.AppRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfDocumentEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.DocumentRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfFilterEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.FilterRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfMessageEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.MessageRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfProxyEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.ProxyRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfSourceEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.SourceRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfVersionEntity):
-						await GetNewItemsAndDeleteAsync(EfProdContext.VersionRepository);
+						await GetNewItemsAndDeleteAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
 						break;
 				}
 				TestContext.WriteLine();

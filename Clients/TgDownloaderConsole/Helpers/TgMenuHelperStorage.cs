@@ -38,7 +38,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuStorage.Return;
 	}
 
-	public void SetupStorage(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupStorage(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuStorage menu;
 		do
@@ -85,7 +85,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew))
 			return;
-		EfContext.CreateOrConnectDb();
+		EfContext.Database.Migrate();
 	}
 
 	private void TgStorageDeleteExistsDb()
@@ -99,7 +99,7 @@ internal partial class TgMenuHelper
 
 	private void TgStorageTablesVersionsView()
 	{
-		EfContext.VersionsView();
+		TgEfUtils.VersionsView();
 		TgLog.WriteLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}
@@ -109,7 +109,7 @@ internal partial class TgMenuHelper
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
 			return;
 		EfContext.DeleteTables();
-		EfContext.CreateOrConnectDb();
+		EfContext.Database.Migrate();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();
 	}

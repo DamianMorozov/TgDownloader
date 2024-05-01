@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LiveCharts.Wpf.NetCore3" Version="0.9.8" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="WPF-UI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />

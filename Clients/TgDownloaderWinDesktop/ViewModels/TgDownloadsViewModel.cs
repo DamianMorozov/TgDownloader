@@ -49,9 +49,9 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 	/// </summary>
 	/// <param name="sourceVm"></param>
 	/// <returns></returns>
-	public TgDownloadSettingsModel CreateDownloadSettings(TgEfSourceViewModel sourceVm)
+	public TgDownloadSettingsViewModel CreateDownloadSettings(TgEfSourceViewModel sourceVm)
 	{
-		TgDownloadSettingsModel downloadSettings = new()
+		TgDownloadSettingsViewModel downloadSettings = new()
 		{
 			SourceVm = new()
 			{

@@ -146,8 +146,8 @@
 //	public string ToDebugString() => FilterType switch
 //	{
 //		TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
-//			$"{TgStorageConstants.TableFilters} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
-//		_ => $"{TgStorageConstants.TableFilters} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
+//			$"{TgStorageConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
+//		_ => $"{TgStorageConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
 //	};
 
 //	private string GetStringForFilterType() => FilterType switch

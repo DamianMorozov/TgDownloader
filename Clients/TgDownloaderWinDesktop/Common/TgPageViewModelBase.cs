@@ -29,7 +29,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 
     #region Public and private methods
 
-    public override string ToString() => $"{TgDesktopUtils.TgLocale} | {EfContext}";
+    public override string ToString() => $"{TgDesktopUtils.TgLocale}";
 
     protected virtual void InitializeViewModel()
     {

@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Messages;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableMessages)]
+[Table(TgEfConstants.TableMessages)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
 [Index(nameof(SourceId), nameof(Id), IsUnique = true)]
@@ -18,34 +18,34 @@ public sealed class TgEfMessageEntity : TgEfEntityBase
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnSourceId)]
+    [Column(TgEfConstants.ColumnSourceId)]
     public long SourceId { get; set; }
 	
     public TgEfSourceEntity? Source { get; set; }
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId)]
     public long Id { get; set; }
 
 	[DefaultValue("0001-01-01 00:00:00")]
 	[ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnDtCreated)]
+    [Column(TgEfConstants.ColumnDtCreated)]
     public DateTime DtCreated { get; set; }
 
     [DefaultValue(TgEnumMessageType.Message)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnType)]
+    [Column(TgEfConstants.ColumnType)]
     public TgEnumMessageType Type { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnSize)]
+    [Column(TgEfConstants.ColumnSize)]
     public long Size { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnMessage)]
+    [Column(TgEfConstants.ColumnMessage)]
     public string Message { get; set; } = default!;
 
     public TgEfMessageEntity() : base()
@@ -58,7 +58,7 @@ public sealed class TgEfMessageEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableMessages} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
+        $"{TgEfConstants.TableMessages} | {base.ToDebugString()} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
 
     public override void Default()
     {

@@ -125,7 +125,7 @@
 //	public override string ToString() => $"{SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
 //	public string ToDebugString() => 
-//		$"{TgStorageConstants.TableDocuments} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
+//		$"{TgStorageConstants.TableDocuments} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
 //    public override int GetHashCode()
 //    {

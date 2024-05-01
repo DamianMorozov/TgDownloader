@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Documents;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableDocuments)]
+[Table(TgEfConstants.TableDocuments)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
 [Index(nameof(SourceId), nameof(Id), IsUnique = true)]
@@ -18,35 +18,35 @@ public sealed class TgEfDocumentEntity : TgEfEntityBase
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnSourceId)]
+    [Column(TgEfConstants.ColumnSourceId)]
     public long SourceId { get; set; }
 	
     public TgEfSourceEntity? Source { get; set; }
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId)]
     public long Id { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnMessageId)]
+    [Column(TgEfConstants.ColumnMessageId)]
     public long MessageId { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(256)]
-    [Column(TgStorageConstants.ColumnFileName)]
+    [Column(TgEfConstants.ColumnFileName)]
     public string FileName { get; set; } = default!;
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnFileSize)]
+    [Column(TgEfConstants.ColumnFileSize)]
     public long FileSize { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnAccessHash)]
+    [Column(TgEfConstants.ColumnAccessHash)]
     public long AccessHash { get; set; }
 
     public TgEfDocumentEntity() : base()
@@ -59,7 +59,7 @@ public sealed class TgEfDocumentEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableDocuments} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
+        $"{TgEfConstants.TableDocuments} | {base.ToDebugString()} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
     public override void Default()
     {

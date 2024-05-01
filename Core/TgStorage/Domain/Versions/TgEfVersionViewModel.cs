@@ -3,26 +3,14 @@
 
 namespace TgStorage.Domain.Versions;
 
-/// <summary> View for TgSqlTableSourceModel </summary>
+/// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfVersionViewModel : TgViewModelBase
+public sealed class TgEfVersionViewModel : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
+	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
 	public TgEfVersionEntity Item { get; set; }
-
-	public Guid VersionUid
-	{
-		get => Item.Uid;
-		set
-		{
-			TgEfOperResult<TgEfVersionEntity> operResult =
-				EfContext.VersionRepository.Get(new TgEfVersionEntity { Uid = value }, isNoTracking: true);
-			Item = operResult.IsExists
-				? operResult.Item
-				: EfContext.VersionRepository.GetNew(isNoTracking: true).Item;
-		}
-	}
 
 	[DefaultValue(short.MaxValue)]
 	public short Version { get => Item.Version; set => Item.Version = value; }
@@ -38,7 +26,7 @@ public sealed partial class TgEfVersionViewModel : TgViewModelBase
 
 	public TgEfVersionViewModel() : base()
 	{
-		Item = EfContext.VersionRepository.CreateNew().Item;
+		Item = VersionRepository.CreateNew().Item;
 		Description = Item.Description;
 	}
 

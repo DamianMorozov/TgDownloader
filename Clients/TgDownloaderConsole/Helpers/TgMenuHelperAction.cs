@@ -8,7 +8,7 @@ internal partial class TgMenuHelper
 {
     #region Public and private methods
 
-    public bool CheckTgSettingsWithWarning(TgDownloadSettingsModel tgDownloadSettings)
+    public bool CheckTgSettingsWithWarning(TgDownloadSettingsViewModel tgDownloadSettings)
     {
         bool result = TgClient is { IsReady: true } && tgDownloadSettings.SourceVm.IsReady;
         if (!result)
@@ -34,7 +34,7 @@ internal partial class TgMenuHelper
     };
 
 
-	public void RunActionProgress(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel> action,
+	public void RunActionProgress(TgDownloadSettingsViewModel tgDownloadSettings, Action<TgDownloadSettingsViewModel> action,
         bool isSkipCheckTgSettings, bool isScanCount)
     {
         if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
@@ -144,7 +144,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public void RunActionStatus(TgDownloadSettingsModel tgDownloadSettings, Action<TgDownloadSettingsModel> action,
+	public void RunActionStatus(TgDownloadSettingsViewModel tgDownloadSettings, Action<TgDownloadSettingsViewModel> action,
 		bool isSkipCheckTgSettings, bool isScanCount)
 	{
 		if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))

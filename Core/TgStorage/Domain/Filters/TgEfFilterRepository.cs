@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Filters;
 
-public sealed class TgEfFilterRepository : TgEfRepositoryBase<TgEfFilterEntity>
+public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfFilterEntity>(efContext)
 {
 	#region Public and private methods
 

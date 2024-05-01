@@ -5,19 +5,15 @@ namespace TgLocalization.Helpers;
 
 public sealed class TgConstants
 {
-	public static TgConstants CreateInstance()
-	{
-		return new TgConstants();
-	}
-
-    public static string AppTitle => "TgDownloader";
+	public static string AppTitle => "TgDownloader";
     public static string AppTitleBlazor => "TgDownloader-Blazor";
+    public static string AppTitleConsole => "TgDownloader-Console";
     public static string AppTitleConsoleShort => "TGDC";
     public static string AppTitleWinDesktop => "TgDownloader-Desktop";
     public static string LinkDockerHub => "https://hub.docker.com/r/damianmorozov/tgdownloader-blazor";
     public static string LinkDockerHubTitle => "DockerHub";
     public static string LinkGitHub => "https://github.com/DamianMorozov/TgDownloader";
     public static string LinkGitHubTitle => "GitHub";
-	public static string LinkTelegramAppsTitle => "Telegram";
 	public static string LinkTelegramApps => "https://my.telegram.org/apps/";
+	public static string LinkTelegramAppsTitle => "Telegram";
 }

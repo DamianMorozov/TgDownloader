@@ -51,7 +51,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuDownload.Return;
 	}
 
-	public void SetupDownload(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupDownload(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuDownload menu;
 		do
@@ -96,9 +96,9 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
-	private TgDownloadSettingsModel SetupDownloadSource(long? id = null)
+	private TgDownloadSettingsViewModel SetupDownloadSource(long? id = null)
 	{
-		TgDownloadSettingsModel tgDownloadSettings = new();
+		TgDownloadSettingsViewModel tgDownloadSettings = new();
 		SetupDownloadSourceCore(id, tgDownloadSettings);
 		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.Channel is null)
@@ -107,7 +107,7 @@ internal partial class TgMenuHelper
 		return tgDownloadSettings;
 	}
 
-	private void SetupDownloadSourceCore(long? id, TgDownloadSettingsModel tgDownloadSettings)
+	private void SetupDownloadSourceCore(long? id, TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		bool isCheck = false;
 		do
@@ -133,7 +133,7 @@ internal partial class TgMenuHelper
 		} while (!isCheck);
 	}
 
-	private void SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsModel tgDownloadSettings)
+	private void SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
 		if (smartSource.Channel is not null)
@@ -151,7 +151,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void SetupDownloadSourceFirstIdManual(TgDownloadSettingsModel tgDownloadSettings)
+	private void SetupDownloadSourceFirstIdManual(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		do
 		{
@@ -160,7 +160,7 @@ internal partial class TgMenuHelper
 		LoadTgClientSettings(tgDownloadSettings, true, true);
 	}
 
-	private void SetupDownloadDestDirectory(TgDownloadSettingsModel tgDownloadSettings)
+	private void SetupDownloadDestDirectory(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		do
 		{
@@ -183,19 +183,19 @@ internal partial class TgMenuHelper
 		} while (!Directory.Exists(tgDownloadSettings.SourceVm.SourceDirectory));
 	}
 
-	private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		tgDownloadSettings.IsRewriteFiles = AskQuestionReturnPositive(TgLocale.TgSettingsIsRewriteFiles, true);
 
-	private void SetTgDownloadIsRewriteMessages(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void SetTgDownloadIsRewriteMessages(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		tgDownloadSettings.IsRewriteMessages = AskQuestionReturnPositive(TgLocale.TgSettingsIsRewriteMessages, true);
 
-	private void SetTgDownloadIsJoinFileNameWithMessageId(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void SetTgDownloadIsJoinFileNameWithMessageId(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		tgDownloadSettings.IsJoinFileNameWithMessageId = AskQuestionReturnPositive(TgLocale.TgSettingsIsJoinFileNameWithMessageId, true);
 
-	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsModel tgDownloadSettings) =>
+	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
-	private void UpdateSourceWithSettings(TgDownloadSettingsModel tgDownloadSettings)
+	private void UpdateSourceWithSettings(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		tgDownloadSettings.UpdateSourceWithSettingsAsync().GetAwaiter().GetResult();
 		// Refresh.
@@ -203,11 +203,11 @@ internal partial class TgMenuHelper
 			.GetAwaiter().GetResult();
 	}
 
-	private void LoadTgClientSettings(TgDownloadSettingsModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
+	private void LoadTgClientSettings(TgDownloadSettingsViewModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
 	{
 		int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
 		string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-		TgEfSourceEntity source = EfContext.SourceRepository.Get(new TgEfSourceEntity
+		TgEfSourceEntity source = SourceRepository.Get(new TgEfSourceEntity
 		{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false).Item;
 		tgDownloadSettings.SourceVm.Item = source;
 		if (isSkipLoadFirstId)
@@ -216,7 +216,7 @@ internal partial class TgMenuHelper
 			tgDownloadSettings.SourceVm.SourceDirectory = sourceDirectory;
 	}
 
-	private void ManualDownload(TgDownloadSettingsModel tgDownloadSettings)
+	private void ManualDownload(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
 		TgClient.DownloadAllDataAsync(tgDownloadSettings).GetAwaiter().GetResult();
@@ -224,7 +224,7 @@ internal partial class TgMenuHelper
 		UpdateSourceWithSettings(tgDownloadSettings);
 	}
 
-	private void MarkHistoryReadCore(TgDownloadSettingsModel tgDownloadSettings)
+	private void MarkHistoryReadCore(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableMarkHistoryReadProgress(tgDownloadSettings);
 		TgClient.MarkHistoryReadAsync().GetAwaiter().GetResult();

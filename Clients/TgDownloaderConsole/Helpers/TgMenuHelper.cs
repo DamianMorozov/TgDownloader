@@ -14,8 +14,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal TgLogHelper TgLog => TgLogHelper.Instance;
 	internal TgClientHelper TgClient => TgClientHelper.Instance;
 	internal Style StyleMain => new(Color.White, null, Decoration.Bold | Decoration.Conceal | Decoration.Italic);
-	internal TgEfContext EfContext => TgEfContext.Instance;
 	internal TgEnumMenuMain Value { get; set; }
+	private TgEfContext EfContext { get; } = TgEfUtils.CreateEfContext();
+	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfDocumentRepository DocumentRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfMessageRepository MessageRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
 
 	#endregion
 
@@ -23,8 +30,8 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	public string ToDebugString() => TgLocale.UseOverrideMethod;
 
-	internal void ShowTableCore(TgDownloadSettingsModel tgDownloadSettings, string title, Action<Table> fillTableColumns,
-		Action<TgDownloadSettingsModel, Table> fillTableRows)
+	internal void ShowTableCore(TgDownloadSettingsViewModel tgDownloadSettings, string title, Action<Table> fillTableColumns,
+		Action<TgDownloadSettingsViewModel, Table> fillTableRows)
 	{
 		AnsiConsole.Clear();
 		AnsiConsole.Write(new FigletText(TgConstants.AppTitle).Centered().Color(Color.Yellow));
@@ -45,38 +52,38 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		AnsiConsole.Write(table);
 	}
 
-	internal void ShowTableMain(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableMain(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMain, FillTableColumns, FillTableRowsMain);
 
-	internal void ShowTableStorageSettings(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableStorageSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainStorage, FillTableColumns, FillTableRowsStorage);
 
-	internal void ShowTableFiltersSettings(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableFiltersSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainFilters, FillTableColumns, FillTableRowsFilters);
 
-	internal void ShowTableAppSettings(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableAppSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainApp, FillTableColumns, FillTableRowsApp);
 
-	internal void ShowTableClient(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableClient(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainClient, FillTableColumns, FillTableRowsClient);
 
-	internal void ShowTableDownload(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableDownload(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
 
-	internal void ShowTableAdvanced(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableAdvanced(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsAdvanced);
 
-	internal void ShowTableViewSources(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableViewSources(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSources);
 
-	internal void ShowTableViewVersions(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableViewVersions(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedVersions);
 
-	internal void ShowTableMarkHistoryReadProgress(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableMarkHistoryReadProgress(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
 			FillTableRowsMarkHistoryReadProgress);
 
-	internal void ShowTableMarkHistoryReadComplete(TgDownloadSettingsModel tgDownloadSettings) =>
+	internal void ShowTableMarkHistoryReadComplete(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
 			FillTableRowsMarkHistoryReadComplete);
 
@@ -93,14 +100,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		{ Width = 80 }.LeftAligned());
 	}
 
-	internal void FillTableRowsMain(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsMain(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// App version.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppXml.Version));
-		TgEfVersionEntity version = !EfContext.IsTableExists(TgStorageConstants.TableVersions) 
+		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
-			: EfContext.VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).
-	            Items.Single(x => x.Version == TgEfContext.LastVersion);
+			: VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).
+	            Items.Single(x => x.Version == TgEfUtils.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
 		// App settings.
@@ -124,7 +131,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 	}
 
-	internal void FillTableRowsApp(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsApp(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// App xml settings.
 		table.AddRow(new Markup(TgAppSettings.IsReady ?
@@ -162,7 +169,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsStorage(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsStorage(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(EfContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
@@ -174,15 +181,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsFilters(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsFilters(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)
 			.GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
 	}
 
-	internal void FillTableRowsClient(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsClient(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// TG client settings.
 		table.AddRow(new Markup(TgClient.IsReady ?
@@ -209,7 +216,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 
 		// Proxy setup.
-		if (Equals(EfContext.GetCurrentProxyUid(), Guid.Empty))
+		if (Equals(ProxyRepository.GetCurrentProxyUid(), Guid.Empty))
 		{
 			if (TgAppSettings.AppXml.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
@@ -221,7 +228,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (!EfContext.GetCurrentProxy().IsExists || TgClient.Me is null)
+			if (!ProxyRepository.GetCurrentProxy().IsExists || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
@@ -240,14 +247,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
-					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Type.ToString())));
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Type.ToString())));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
-					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.HostName)));
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.HostName)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
-					new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Port.ToString())));
-				if (Equals(EfContext.GetCurrentProxy().Item.Type, TgEnumProxyType.MtProto))
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Port.ToString())));
+				if (Equals(ProxyRepository.GetCurrentProxy().Item.Type, TgEnumProxyType.MtProto))
 					table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
-						new Markup(TgLog.GetMarkupString(EfContext.GetCurrentProxy().Item.Secret)));
+						new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Secret)));
 			}
 		}
 
@@ -269,14 +276,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Source info </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+			TgEfSourceEntity source = SourceRepository.GetAsync(new TgEfSourceEntity
 				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
@@ -288,14 +295,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Version info </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsDownloadedVersions(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsDownloadedVersions(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = EfContext.SourceRepository.GetAsync(new TgEfSourceEntity
+			TgEfSourceEntity source = SourceRepository.GetAsync(new TgEfSourceEntity
 				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
@@ -309,7 +316,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsMarkHistoryReadProgress(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsMarkHistoryReadProgress(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
 			new Markup($"{TgLocale.MenuClientProgress} ..."));
@@ -320,13 +327,13 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsMarkHistoryReadComplete(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsMarkHistoryReadComplete(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
 			new Markup($"{TgLocale.MenuClientComplete} ..."));
 	}
 
-	internal void FillTableRowsDownload(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsDownload(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// Download.
 		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
@@ -365,12 +372,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
-        IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true)
+        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true)
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 	}
 
-	internal void FillTableRowsAdvanced(TgDownloadSettingsModel tgDownloadSettings, Table table)
+	internal void FillTableRowsAdvanced(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// Is auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
@@ -380,13 +387,13 @@ internal sealed partial class TgMenuHelper() : ITgHelper
     /// <summary> Source ID/username </summary>
     /// <param name="tgDownloadSettings"></param>
     /// <param name="table"></param>
-    internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
+    internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
         FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
     /// <summary> Version ID/username </summary>
     /// <param name="tgDownloadSettings"></param>
     /// <param name="table"></param>
-    internal void FillTableRowsViewDownloadedVersions(TgDownloadSettingsModel tgDownloadSettings, Table table) => 
+    internal void FillTableRowsViewDownloadedVersions(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
         FillTableRowsDownloadedVersions(tgDownloadSettings, table);
 
     public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
@@ -419,10 +426,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return EfContext.SourceRepository.Get(new TgEfSourceEntity { Id = id }, isNoTracking: true).Item;
+					return SourceRepository.Get(new TgEfSourceEntity { Id = id }, isNoTracking: true).Item;
 			}
 		}
-		return EfContext.SourceRepository.GetNew(isNoTracking: true).Item;
+		return SourceRepository.GetNew(isNoTracking: true).Item;
 	}
 
 	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)

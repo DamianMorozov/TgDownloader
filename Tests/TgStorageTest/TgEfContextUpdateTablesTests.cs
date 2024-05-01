@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Enums;
-
 namespace TgStorageTest;
 
 [TestFixture]
@@ -15,7 +13,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfAppEntity> operResult = await EfProdContext.AppRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfAppEntity> operResult = await new TgEfAppRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfAppEntity>(operResult.Item.Uid);
@@ -29,7 +27,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfDocumentEntity> operResult = await EfProdContext.DocumentRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfDocumentEntity> operResult = await new TgEfDocumentRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(operResult.Item.Uid);
@@ -43,7 +41,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfFilterEntity> operResult = await EfProdContext.FilterRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfFilterEntity> operResult = await new TgEfFilterRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(operResult.Item.Uid);
@@ -57,7 +55,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfMessageEntity> operResult = await EfProdContext.MessageRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfMessageEntity> operResult = await new TgEfMessageRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(operResult.Item.Uid);
@@ -71,7 +69,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfProxyEntity> operResult = await EfProdContext.ProxyRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfProxyEntity> operResult = await new TgEfProxyRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(operResult.Item.Uid);
@@ -85,7 +83,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = await EfProdContext.SourceRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfSourceEntity> operResult = await new TgEfSourceRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(operResult.Item.Uid);
@@ -99,7 +97,7 @@ internal class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfVersionEntity> operResult = await EfProdContext.VersionRepository.GetFirstAsync(isNoTracking: true);
+			TgEfOperResult<TgEfVersionEntity> operResult = await new TgEfVersionRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
 				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(operResult.Item.Uid);

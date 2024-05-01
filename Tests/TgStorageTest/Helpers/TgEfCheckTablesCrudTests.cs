@@ -13,8 +13,8 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableProxiesCrudAsync());
-			Assert.That(await EfProdContext.CheckTableAppsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableAppsCrudAsync());
 		});
 	}
 
@@ -23,7 +23,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableDocumentsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableDocumentsCrudAsync());
 		});
 	}
 
@@ -32,7 +32,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableFiltersCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableFiltersCrudAsync());
 		});
 	}
 
@@ -41,7 +41,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableMessagesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableMessagesCrudAsync());
 		});
 	}
 
@@ -50,7 +50,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableProxiesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync());
 		});
 	}
 
@@ -59,7 +59,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableSourcesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableSourcesCrudAsync());
 		});
 	}
 
@@ -68,7 +68,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await EfProdContext.CheckTableVersionsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableVersionsCrudAsync());
 		});
 	}
 

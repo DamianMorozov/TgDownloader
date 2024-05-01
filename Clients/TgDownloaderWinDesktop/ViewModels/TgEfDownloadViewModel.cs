@@ -11,7 +11,7 @@ public sealed partial class TgEfDownloadViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    public TgDownloadSettingsModel DownloadSetting { get; } = new();
+    public TgDownloadSettingsViewModel DownloadSetting { get; } = new();
 
     #endregion
 

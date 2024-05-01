@@ -29,7 +29,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuClient.Return;
 	}
 
-	public void SetupClient(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupClient(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuClient menu;
 		do
@@ -79,16 +79,16 @@ internal partial class TgMenuHelper
 			proxy.HostName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyHostName}:"));
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
-		TgEfProxyEntity proxyDb = (await EfContext.ProxyRepository.GetAsync(
-			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
-		if (proxyDb.NotExist)
-			await EfContext.ProxyRepository.SaveAsync(proxy);
-		proxy = (await EfContext.ProxyRepository.GetAsync(
+		TgEfOperResult<TgEfProxyEntity> operResult = await ProxyRepository.GetAsync(
+			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false);
+		if (!operResult.IsExists)
+			await ProxyRepository.SaveAsync(proxy);
+		proxy = (await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
 
-		TgEfAppEntity app = (await EfContext.AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		TgEfAppEntity app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		app.ProxyUid = proxy.Uid;
-		await EfContext.AppRepository.SaveAsync(app);
+		await AppRepository.SaveAsync(app);
 
 		return proxy;
 	}
@@ -113,14 +113,14 @@ internal partial class TgMenuHelper
 			if (isSecret)
 				proxy.Secret = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxySecret}:"));
 		}
-        await EfContext.ProxyRepository.SaveAsync(proxy);
+        await ProxyRepository.SaveAsync(proxy);
 		//SetupClientProxyCore();
 	}
 
 	private string? ConfigConsole(string what)
 	{
-		TgEfAppEntity appNew = EfContext.AppRepository.GetNew(isNoTracking: false).Item;
-		TgEfAppEntity app = EfContext.AppRepository.GetFirst(isNoTracking: false).Item;
+		TgEfAppEntity appNew = AppRepository.GetNew(isNoTracking: false).Item;
+		TgEfAppEntity app = AppRepository.GetFirst(isNoTracking: false).Item;
 		switch (what)
 		{
 			case "api_hash":
@@ -131,7 +131,7 @@ internal partial class TgMenuHelper
 				if (app.ApiHash != TgDataFormatUtils.ParseStringToGuid(apiHash))
 				{
 					app.ApiHash = TgDataFormatUtils.ParseStringToGuid(apiHash);
-					EfContext.AppRepository.Save(app);
+					AppRepository.Save(app);
 				}
 				return apiHash;
 			case "api_id":
@@ -142,7 +142,7 @@ internal partial class TgMenuHelper
 				if (app.ApiId != int.Parse(apiId))
 				{
 					app.ApiId = int.Parse(apiId);
-					EfContext.AppRepository.Save(app);
+					AppRepository.Save(app);
 				}
 				return apiId;
 			case "phone_number":
@@ -152,7 +152,7 @@ internal partial class TgMenuHelper
 				if (app.PhoneNumber != phoneNumber)
 				{
 					app.PhoneNumber = phoneNumber;
-					EfContext.AppRepository.Save(app);
+					AppRepository.Save(app);
 				}
 				return phoneNumber;
 			case "verification_code":
@@ -182,10 +182,10 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public void ClientConnectConsole() => 
-		TgClient.ConnectSessionConsole(ConfigConsole, EfContext.GetCurrentProxy().Item);
+	public async Task ClientConnectConsoleAsync() => 
+		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync()).Item);
 
-	private void AskClientConnect(TgDownloadSettingsModel tgDownloadSettings)
+	private void AskClientConnect(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
@@ -198,10 +198,10 @@ internal partial class TgMenuHelper
 			ClientConnect(tgDownloadSettings, false);
 	}
 
-	public void ClientConnect(TgDownloadSettingsModel tgDownloadSettings, bool isSilent)
+	public void ClientConnect(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsole(ConfigConsole, EfContext.GetCurrentProxy().Item);
+		TgClient.ConnectSessionConsoleAsync(ConfigConsole, ProxyRepository.GetCurrentProxy().Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else
@@ -210,7 +210,7 @@ internal partial class TgMenuHelper
 		    Console.ReadKey();
 	}
 
-	public void ClientDisconnect(TgDownloadSettingsModel tgDownloadSettings)
+	public void ClientDisconnect(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableClient(tgDownloadSettings);
 		//TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();

@@ -3,9 +3,9 @@
 
 namespace TgStorage.Domain.Messages;
 
-/// <summary> View for TgSqlTableSourceModel </summary>
+/// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfMessageViewModel(TgEfMessageEntity message, Action<TgEfMessageViewModel> updateAction) : TgViewModelBase
+public sealed class TgEfMessageViewModel(TgEfMessageEntity message, Action<TgEfMessageViewModel> updateAction) : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 

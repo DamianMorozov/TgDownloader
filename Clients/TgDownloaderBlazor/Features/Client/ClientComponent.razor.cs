@@ -8,6 +8,12 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	#region Public and private fields, properties, constructor
 
 	private TgEfAppEntity? Item { get; set; }
+	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+
+	~ClientComponent()
+	{
+		AppRepository.Dispose();
+	}
 
 	#endregion
 
@@ -19,15 +25,14 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
         if (!IsBlazorLoading)
 	        return;
 
-		await using var efContext = await EfFactory.CreateDbContextAsync();
         if (!AppSettings.AppXml.IsExistsFileStorage)
         {
 	        IsBlazorLoading = false;
 	        return;
 		}
 
-		Items = (await efContext.AppRepository.GetEnumerableAsync(0, isNoTracking: false)).Items.ToList();
-        ItemsCount = efContext.AppRepository.GetCount();
+		Items = (await AppRepository.GetEnumerableAsync(0, isNoTracking: false)).Items.ToList();
+        ItemsCount = await AppRepository.GetCountAsync();
         
         await OnClientLoad();
         IsBlazorLoading = false;
@@ -224,7 +229,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 			await using var efContext = await EfFactory.CreateDbContextAsync();
-			Item = (await efContext.AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+			Item = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		}, message =>
 		{
 			NotificationService.Notify(new NotificationMessage
@@ -252,7 +257,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			await using var efContext = await EfFactory.CreateDbContextAsync();
 			if (Item is not null)
 			{
-				await efContext.AppRepository.SaveAsync(Item);
+				await AppRepository.SaveAsync(Item);
 			}
 		}, message =>
 		{

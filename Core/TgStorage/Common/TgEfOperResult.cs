@@ -3,10 +3,8 @@
 
 namespace TgStorage.Common;
 
-/// <summary>
-/// XPO operation result.
-/// </summary>
-public class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
+/// <summary> EF operation result </summary>
+public sealed class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
 {
 	#region Public and private fields, properties, constructor
 
@@ -62,7 +60,7 @@ public class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
 	private void CheckIfDisposed()
 	{
 		if (_disposed)
-			throw new ObjectDisposedException($"{nameof(TgEfContext)}: object has been disposed off!");
+			throw new ObjectDisposedException($"{nameof(TgEfContext)}: {TgLocaleHelper.Instance.ObjectHasBeenDisposedOff}!");
 	}
 
 	/// <summary> Release managed resources </summary>

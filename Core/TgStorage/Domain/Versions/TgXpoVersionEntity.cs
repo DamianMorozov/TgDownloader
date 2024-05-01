@@ -102,7 +102,7 @@
 //    public override string ToString() => $"{Version} | {Description}";
 
 //    public string ToDebugString() => 
-//	    $"{TgStorageConstants.TableVersions} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {Version} | {Description}";
+//	    $"{TgStorageConstants.TableVersions} | {Uid} | {Version} | {Description}";
 
 //    public override int GetHashCode()
 //    {

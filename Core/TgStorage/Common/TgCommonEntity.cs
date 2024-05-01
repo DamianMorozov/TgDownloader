@@ -68,10 +68,3 @@ public sealed class TgCommonEntity
 
 	#endregion
 }
-
-public enum TgEnumCommon
-{
-	Default,
-	Some1,
-	Some2
-}

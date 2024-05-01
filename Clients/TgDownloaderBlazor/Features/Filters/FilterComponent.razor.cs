@@ -7,13 +7,18 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 {
     #region Public and private fields, properties, constructor
 
-    //
+    private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
+
+	~FilterComponent()
+	{
+		FilterRepository.Dispose();
+	}
 
     #endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    protected override async Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
     {
 	    await base.OnInitializedAsync();
 	    if (!IsBlazorLoading)
@@ -26,8 +31,8 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 		    return;
 	    }
 
-		Items = (await efContext.FilterRepository.GetEnumerableAsync(0, isNoTracking: false)).Items;
-        ItemsCount = efContext.FilterRepository.GetCount();
+		Items = (await FilterRepository.GetEnumerableAsync(0, isNoTracking: false)).Items;
+        ItemsCount = await FilterRepository.GetCountAsync();
 
         IsBlazorLoading = false;
     }

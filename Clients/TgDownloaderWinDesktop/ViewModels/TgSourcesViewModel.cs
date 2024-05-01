@@ -9,6 +9,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     #region Public and private fields, properties, constructor
 
     public ObservableCollection<TgEfSourceViewModel> SourcesVms { get; set; } = new();
+    private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 
     #endregion
 
@@ -51,10 +52,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-			TgEfSourceEntity sourceDb = (await
-				EfContext.SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false)).Item;
-            if (sourceDb.IsExist)
-                sourceVm = new(sourceDb);
+			TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+            if (operResult.IsExists)
+                sourceVm = new(operResult.Item);
             if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
                 SourcesVms.Add(sourceVm);
             await SaveSourceAsync(sourceVm);
@@ -74,8 +74,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         {
             if (SourcesVms[i].SourceId.Equals(sourceId))
             {
-	            SourcesVms[i].Item = (await
-		            EfContext.SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceId }, isNoTracking: false)).Item;
+	            SourcesVms[i].Item = (await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceId }, isNoTracking: false)).Item;
                 break;
             }
         }
@@ -92,8 +91,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfOperResult<TgEfSourceEntity> operResult = 
-	            await EfContext.SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true);
+            TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true);
 			List<TgEfSourceEntity> sources = operResult.IsExists ? operResult.Items.ToList() : [];
             //if (!sources.Any())
             //{
@@ -204,11 +202,10 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-			TgEfSourceEntity sourceDb = (await
-				EfContext.SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false)).Item;
-            if (!sourceDb.IsExist)
+			TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+            if (!operResult.IsExists)
             {
-                await EfContext.SourceRepository.SaveAsync(sourceVm.Item);
+                await SourceRepository.SaveAsync(sourceVm.Item);
                 await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Item.Id, 0, $"Saved source | {sourceVm.Item}");
             }
         }, false);

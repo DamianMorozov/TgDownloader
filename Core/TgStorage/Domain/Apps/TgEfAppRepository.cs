@@ -3,7 +3,7 @@
 
 namespace TgStorage.Domain.Apps;
 
-public sealed class TgEfAppRepository() : TgEfRepositoryBase<TgEfAppEntity>()
+public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfAppEntity>(efContext)
 {
 	#region Public and private methods
 

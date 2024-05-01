@@ -1,19 +1,19 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-// Register TgEfContext as the DbContext for EF Core
-
-TgEfContext efContext = TgEfContext.Instance;
-efContext.Database.Migrate();
-
-TgAsyncUtils.SetAppType(TgEnumAppType.Console);
-TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
-TgMenuHelper menu = new();
+// Console
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
 TgLogHelper tgLog = TgLogHelper.Instance;
-TgDownloadSettingsModel tgDownloadSettings = new();
+ConsoleInit();
 
-if (!Setup()) return;
+// Register TgEfContext as the DbContext for EF Core
+tgLog.WriteLine("EF Core init ...");
+TgEfUtils.EfContext.Database.Migrate();
+tgLog.WriteLine("EF Core init success");
+
+TgDownloadSettingsViewModel tgDownloadSettings = new();
+TgMenuHelper menu = new();
+if (!await SetupAsync()) return;
 
 do
 {
@@ -73,15 +73,17 @@ do
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
 
-bool Setup()
+async Task<bool> SetupAsync()
 {
-	// App.
+	// App
+	TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
 	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
-	// Console.
-	Console.OutputEncoding = Encoding.UTF8;
-	Console.Title = TgConstants.AppTitleConsoleShort;
-	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
-	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
+
+	// Menu
+	tgLog.WriteLine("Menu init ...");
+	TgAsyncUtils.SetAppType(TgEnumAppType.Console);
+	tgLog.WriteLine("Menu init success");
+
 	// Create new storage?
 	if (!tgAppSettings.AppXml.IsExistsFileStorage)
 	{
@@ -97,6 +99,17 @@ bool Setup()
 			return false;
 	}
 	// Client.
-	menu.ClientConnectConsole();
+	tgLog.WriteLine("TG client connect ...");
+	await menu.ClientConnectConsoleAsync();
+	tgLog.WriteLine("TG client connect success");
 	return true;
+}
+
+void ConsoleInit()
+{
+	Console.OutputEncoding = Encoding.UTF8;
+	Console.Title = TgConstants.AppTitleConsoleShort;
+	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
+	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
+	tgLog.WriteLine($"{TgConstants.AppTitleConsole} start");
 }

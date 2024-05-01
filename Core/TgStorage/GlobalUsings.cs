@@ -6,7 +6,6 @@ global using CommunityToolkit.Mvvm.ComponentModel;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using Microsoft.Extensions.Logging;
-global using PropertyChanged;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;

@@ -6,5 +6,4 @@ namespace TgStorage.Contracts;
 public interface ITgViewModelBase : ITgCommon
 {
     bool IsLoad { get; set; }
-    bool IsNotLoad => !IsLoad;
 }

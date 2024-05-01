@@ -20,46 +20,46 @@ internal class TgEfContextExistsTablesTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void Check_table_apps() => CheckTable(TgStorageConstants.TableApps);
+	public void Check_table_apps() => CheckTable(TgEfConstants.TableApps);
 
 	[Test]
-	public void Check_table_apps_test() => CheckTable(TgStorageConstants.TableApps + "-TEST", isExists: false);
+	public void Check_table_apps_test() => CheckTable(TgEfConstants.TableApps + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_documents() => CheckTable(TgStorageConstants.TableDocuments);
+	public void Check_table_documents() => CheckTable(TgEfConstants.TableDocuments);
 
 	[Test]
-	public void Check_table_documents_test() => CheckTable(TgStorageConstants.TableDocuments + "-TEST", isExists: false);
+	public void Check_table_documents_test() => CheckTable(TgEfConstants.TableDocuments + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_filters() => CheckTable(TgStorageConstants.TableFilters);
+	public void Check_table_filters() => CheckTable(TgEfConstants.TableFilters);
 
 	[Test]
-	public void Check_table_filters_test() => CheckTable(TgStorageConstants.TableFilters + "-TEST", isExists: false);
+	public void Check_table_filters_test() => CheckTable(TgEfConstants.TableFilters + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_messages() => CheckTable(TgStorageConstants.TableMessages);
+	public void Check_table_messages() => CheckTable(TgEfConstants.TableMessages);
 
 	[Test]
-	public void Check_table_messages_test() => CheckTable(TgStorageConstants.TableMessages + "-TEST", isExists: false);
+	public void Check_table_messages_test() => CheckTable(TgEfConstants.TableMessages + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_proxies() => CheckTable(TgStorageConstants.TableProxies);
+	public void Check_table_proxies() => CheckTable(TgEfConstants.TableProxies);
 
 	[Test]
-	public void Check_table_proxies_test() => CheckTable(TgStorageConstants.TableProxies + "-TEST", isExists: false);
+	public void Check_table_proxies_test() => CheckTable(TgEfConstants.TableProxies + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_sources() => CheckTable(TgStorageConstants.TableSources);
+	public void Check_table_sources() => CheckTable(TgEfConstants.TableSources);
 
 	[Test]
-	public void Check_table_sources_test() => CheckTable(TgStorageConstants.TableSources + "-TEST", isExists: false);
+	public void Check_table_sources_test() => CheckTable(TgEfConstants.TableSources + "-TEST", isExists: false);
 
 	[Test]
-	public void Check_table_versions() => CheckTable(TgStorageConstants.TableVersions);
+	public void Check_table_versions() => CheckTable(TgEfConstants.TableVersions);
 
 	[Test]
-	public void Check_table_versions_test() => CheckTable(TgStorageConstants.TableVersions + "-TEST", isExists: false);
+	public void Check_table_versions_test() => CheckTable(TgEfConstants.TableVersions + "-TEST", isExists: false);
 
 	#endregion
 }

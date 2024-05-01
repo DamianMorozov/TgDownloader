@@ -3,25 +3,24 @@
 
 namespace TgStorage.Domain.Proxies;
 
-/// <summary>
-/// View for TgSqlTableSourceModel.
-/// </summary>
+/// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfProxyViewModel : TgViewModelBase
+public sealed class TgEfProxyViewModel : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 	public TgEfProxyEntity Proxy { get; set; }
     public Guid ProxyUid
     {
 	    get => Proxy.Uid;
 	    set
 	    {
-		    TgEfOperResult<TgEfProxyEntity> operResult = EfContext.ProxyRepository.GetAsync(
+		    TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.GetAsync(
 			    new TgEfProxyEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 		    Proxy = operResult.IsExists
 			    ? operResult.Item
-			    : EfContext.ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+			    : ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 	    }
     }
 

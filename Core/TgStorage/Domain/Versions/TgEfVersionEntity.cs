@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Versions;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableVersions)]
+[Table(TgEfConstants.TableVersions)]
 [Index(nameof(Version), IsUnique = true)]
 [Index(nameof(Description))]
 public sealed class TgEfVersionEntity : TgEfEntityBase
@@ -14,13 +14,13 @@ public sealed class TgEfVersionEntity : TgEfEntityBase
     [DefaultValue(1024)]
     [MaxLength(4)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnVersion)]
+    [Column(TgEfConstants.ColumnVersion)]
     public short Version { get; set; }
 
     [DefaultValue("New version")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnDescription)]
+    [Column(TgEfConstants.ColumnDescription)]
     public string Description { get; set; } = default!;
 
     public TgEfVersionEntity() : base()
@@ -33,7 +33,7 @@ public sealed class TgEfVersionEntity : TgEfEntityBase
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableVersions} | {base.ToDebugString()} | {TgCommonUtils.GetIsExists(IsExist)} | {Version} | {Description}";
+        $"{TgEfConstants.TableVersions} | {base.ToDebugString()} | {Version} | {Description}";
 
     public override void Default()
     {

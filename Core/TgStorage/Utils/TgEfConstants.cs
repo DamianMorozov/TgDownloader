@@ -4,7 +4,7 @@
 
 namespace TgStorage.Utils;
 
-public static class TgStorageConstants
+public static class TgEfConstants
 {
 	#region Public and private fields, properties, constructor - Tables
 
@@ -15,10 +15,6 @@ public static class TgStorageConstants
 	public const string TableProxies = "PROXIES";
 	public const string TableSources = "SOURCES";
 	public const string TableVersions = "VERSIONS";
-	public const string XPObjectType = "XPObjectType";
-
-	public static Guid UidTruncate => Guid.Parse("00000000-0000-0000-0000-000000000001");
-	public static Guid UidDrop => Guid.Parse("00000000-0000-0000-0000-000000000002");
 
 	public static IEnumerable<string> GetTableNames()
     {

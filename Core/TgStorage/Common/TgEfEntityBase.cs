@@ -13,12 +13,12 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	protected TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 
 	[DefaultValue("00000000-0000-0000-0000-000000000000")]
-	[System.ComponentModel.DataAnnotations.Key]
+	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	//[ValueGeneratedOnAdd]
 	//[ValueGeneratedOnUpdate]
 	[Required]
-	[Column(TgStorageConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
 	//public string UidString
 	//{
 	//	get => UidString.ToUpper();
@@ -27,27 +27,6 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	//	//set => UidString = value.ToUpper() : UidString = Guid.Empty.ToString().ToUpper();
 	//}
 	public Guid Uid { get; set; }
-
-	[NotMapped]
-	//public Guid Uid
-	//{
-	//	get => Guid.Parse(UidString);
-	//	set => UidString = value.ToUpperString();
-	//}
-	public string UidString
-	{ 
-		get => Uid.ToString().ToUpper();
-		set => Uid = Guid.TryParse(value, out Guid uid) ? uid : Guid.Empty;
-	}
-
-	[NotMapped]
-    public bool IsExist => !Equals(Uid, Guid.Empty);
-
-	[NotMapped] 
-	public bool NotExist => !IsExist;
-
-	[NotMapped]
-	public TgEnumLetterCase LetterCase { get; set; }
 
 	[NotMapped]
 	//public static readonly string RowVersion = nameof(RowVersion);
@@ -71,7 +50,7 @@ public abstract class TgEfEntityBase : ITgDbEntity
 
     #region Public and private methods
 
-    public virtual string ToDebugString() => $"{TgCommonUtils.GetIsExists(IsExist)} | {Uid}";
+    public virtual string ToDebugString() => $"{Uid}";
 
     public virtual void Default()
     {

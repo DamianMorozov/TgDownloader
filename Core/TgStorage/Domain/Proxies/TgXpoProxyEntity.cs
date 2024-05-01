@@ -130,7 +130,7 @@
 //		$"{Type} | {HostName} | {Port} | {UserName} | {Password} | {Secret}";
 
 //	public string ToDebugString() => 
-//		$"{TgStorageConstants.TableProxies} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
+//		$"{TgStorageConstants.TableProxies} | {Uid} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
 //        $"{TgCommonUtils.GetIsFlag(!string.IsNullOrEmpty(Secret), Secret, "<No secret>")}";
 
 //    public override int GetHashCode()

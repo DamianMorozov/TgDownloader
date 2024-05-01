@@ -18,4 +18,5 @@ global using TgStorage.Utils;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using TgStorage;
+global using TgStorage.Enums;
 global using TgStorageTest.Common;

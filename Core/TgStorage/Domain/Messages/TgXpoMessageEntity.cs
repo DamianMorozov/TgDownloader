@@ -124,7 +124,7 @@
 //	public override string ToString() => $"{SourceId} | {Id} | {Type} | {Size}";
 
 //	public string ToDebugString() => 
-//		$"{TgStorageConstants.TableMessages} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
+//		$"{TgStorageConstants.TableMessages} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
 
 //    public override int GetHashCode()
 //    {

@@ -7,7 +7,12 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 {
 	#region Public and private fields, properties, constructor
 
-	//
+	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
+
+	~VersionComponent()
+	{
+		VersionRepository.Dispose();
+	}
 
 	#endregion
 
@@ -26,9 +31,9 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 		    return;
 	    }
 
-	    Items = efContext.VersionRepository.GetEnumerable(0, isNoTracking: false)
+	    Items = (await VersionRepository.GetEnumerableAsync(0, isNoTracking: false))
 			.Items.OrderByDescending(x => x.Version).ToList();
-        ItemsCount = efContext.VersionRepository.GetCount();
+        ItemsCount = await VersionRepository.GetCountAsync();
 
         IsBlazorLoading = false;
 	}

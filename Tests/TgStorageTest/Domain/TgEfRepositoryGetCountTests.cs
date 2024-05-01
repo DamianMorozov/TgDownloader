@@ -18,25 +18,25 @@ internal class TgEfRepositoryGetCountTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void TgEf_get_count_app() => GetCount(EfProdContext.AppRepository);
+	public void TgEf_get_count_app() => GetCount(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_document() => GetCount(EfProdContext.DocumentRepository);
+	public void TgEf_get_count_document() => GetCount(new TgEfDocumentRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_filter() => GetCount(EfProdContext.FilterRepository);
+	public void TgEf_get_count_filter() => GetCount(new TgEfFilterRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_message() => GetCount(EfProdContext.MessageRepository);
+	public void TgEf_get_count_message() => GetCount(new TgEfMessageRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_proxy() => GetCount(EfProdContext.ProxyRepository);
+	public void TgEf_get_count_proxy() => GetCount(new TgEfProxyRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_source() => GetCount(EfProdContext.SourceRepository);
+	public void TgEf_get_count_source() => GetCount(new TgEfSourceRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_version() => GetCount(EfProdContext.VersionRepository);
+	public void TgEf_get_count_version() => GetCount(new TgEfVersionRepository(TgEfUtils.EfContext));
 
 	#endregion
 }

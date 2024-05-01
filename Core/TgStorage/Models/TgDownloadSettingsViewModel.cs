@@ -3,18 +3,14 @@
 
 namespace TgStorage.Models;
 
-/// <summary>
-/// Download settings.
-/// </summary>
+/// <summary> Download settings </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgDownloadSettingsModel : ObservableObject, ITgCommon
+public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	private TgEfContext EfContext { get; } = TgEfContext.Instance;
-
+	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 	public TgEfSourceViewModel SourceVm { get; set; }
-	
 	public TgEfVersionViewModel VersionVm { get; set; }
 	
 	[DefaultValue(false)]
@@ -24,7 +20,7 @@ public sealed class TgDownloadSettingsModel : ObservableObject, ITgCommon
 	[DefaultValue(true)]
 	public bool IsJoinFileNameWithMessageId { get; set; }
 
-	public TgDownloadSettingsModel()
+	public TgDownloadSettingsViewModel()
 	{
 		SourceVm = new();
 		VersionVm = new();
@@ -43,7 +39,7 @@ public sealed class TgDownloadSettingsModel : ObservableObject, ITgCommon
     {
         if (!SourceVm.IsReadySourceId)
             return;
-        TgEfOperResult<TgEfSourceEntity> operResult = await EfContext.SourceRepository.SaveAsync(SourceVm.Item);
+        TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.SaveAsync(SourceVm.Item);
         if (operResult.IsExists) 
 	        SourceVm.Item = operResult.Item;
     }

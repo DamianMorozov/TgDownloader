@@ -7,11 +7,16 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 {
 	#region Public and private fields, properties, constructor
 
-    //	
+	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 
 	#endregion
 
 	#region Public and private methods
+
+	~SourceComponent()
+	{
+		SourceRepository.Dispose();
+	}
 
 	protected override async Task OnInitializedAsync()
     {
@@ -26,9 +31,9 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 		    return;
 	    }
 
-	    Items = efContext.SourceRepository.GetEnumerable(0, isNoTracking: false)
+	    Items = (await SourceRepository.GetEnumerableAsync(0, isNoTracking: false))
 			.Items.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
-        ItemsCount = efContext.SourceRepository.GetCount();
+        ItemsCount = await SourceRepository.GetCountAsync();
 
         IsBlazorLoading = false;
 	}

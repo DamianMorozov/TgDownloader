@@ -17,20 +17,20 @@ public static class TgDesktopUtils
     public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
     public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
 	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-	public static TgConstants TgConst => TgConstants.CreateInstance();
 	public static TgProxiesViewModel TgProxiesVm { get; } = new();
     public static TgSettingsViewModel TgSettingsVm { get; } = new();
     public static TgSourcesViewModel TgSourcesVm { get; } = new();
     public static TgDownloadsViewModel TgDownloadsVm{ get; } = new();
+    public static TgConstants TgConst { get; } = new();
 
     #endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    /// <summary>
-    /// Set client state update.
-    /// </summary>
-    public static void SetupClient()
+	/// <summary>
+	/// Set client state update.
+	/// </summary>
+	public static void SetupClient()
     {
         TgClient.SetupUpdateStateConnect(TgClientVm.UpdateStateConnectAsync);
         TgClient.SetupUpdateStateProxy(TgClientVm.UpdateStateProxyAsync);

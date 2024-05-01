@@ -8,6 +8,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
 {
     #region Public and private fields, properties, constructor
 
+    private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfProxyViewModel ItemProxyVm { get; private set; }
     public IReadOnlyList<TgEnumProxyType> ProxyTypes { get; }
     public TgPageViewModelBase? ViewModel { get; set; }
@@ -16,7 +17,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     public TgItemProxyViewModel()
 	{
         ProxyTypes = GetProxyTypes();
-		ItemProxyVm = new(EfContext.ProxyRepository.CreateNewAsync().GetAwaiter().GetResult().Item);
+		ItemProxyVm = new(ProxyRepository.CreateNewAsync().GetAwaiter().GetResult().Item);
 	}
 
 	#endregion
@@ -59,7 +60,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            TgEfProxyEntity proxy = (await EfContext.ProxyRepository.GetAsync(new TgEfProxyEntity { Uid = ProxyUid }, isNoTracking: false)).Item;
+            TgEfProxyEntity proxy = (await ProxyRepository.GetAsync(new TgEfProxyEntity { Uid = ProxyUid }, isNoTracking: false)).Item;
             SetItemProxyVm(proxy);
         }, true);
     }
@@ -73,7 +74,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Proxy = (await EfContext.ProxyRepository.GetNewAsync(isNoTracking: false)).Item;
+            ItemProxyVm.Proxy = (await ProxyRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false);
     }
 
@@ -84,7 +85,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await EfContext.ProxyRepository.SaveAsync(ItemProxyVm.Proxy);
+            await ProxyRepository.SaveAsync(ItemProxyVm.Proxy);
         }, false);
     }
 

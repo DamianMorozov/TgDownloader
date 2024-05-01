@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Proxies;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgStorageConstants.TableProxies)]
+[Table(TgEfConstants.TableProxies)]
 [Index(nameof(Type))]
 [Index(nameof(HostName))]
 [Index(nameof(Port))]
@@ -17,36 +17,36 @@ public sealed class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
 
     [DefaultValue(TgEnumProxyType.None)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnType)]
+    [Column(TgEfConstants.ColumnType)]
     public TgEnumProxyType Type { get; set; }
 
     [DefaultValue("No proxy")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnHostName)]
+    [Column(TgEfConstants.ColumnHostName)]
     public string HostName { get; set; } = default!;
 
     [DefaultValue(404)]
     [ConcurrencyCheck]
-    [Column(TgStorageConstants.ColumnPort)]
+    [Column(TgEfConstants.ColumnPort)]
     public ushort Port { get; set; }
 
     [DefaultValue("No user")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnUserName)]
+    [Column(TgEfConstants.ColumnUserName)]
     public string UserName { get; set; } = default!;
 
     [DefaultValue("No password")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnPassword)]
+    [Column(TgEfConstants.ColumnPassword)]
     public string Password { get; set; } = default!;
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgStorageConstants.ColumnSecret)]
+    [Column(TgEfConstants.ColumnSecret)]
     public string Secret { get; set; } = default!;
 
     [NotMapped] 
@@ -62,7 +62,7 @@ public sealed class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
     #region Public and private methods
 
     public override string ToDebugString() =>
-        $"{TgStorageConstants.TableProxies} | {base.ToDebugString()} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
+        $"{TgEfConstants.TableProxies} | {base.ToDebugString()} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
         $"{TgCommonUtils.GetIsFlag(!string.IsNullOrEmpty(Secret), Secret, "<No secret>")}";
 
     public override void Default()

@@ -3,7 +3,6 @@
 
 // Global using directives
 
-global using System.ComponentModel;
 global using System.Diagnostics;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using TgLocalization.Common;

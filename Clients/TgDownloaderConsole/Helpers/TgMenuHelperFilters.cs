@@ -35,7 +35,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuFilter.Return;
 	}
 
-	public void SetupFilters(TgDownloadSettingsModel tgDownloadSettings)
+	public void SetupFilters(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuFilter menu;
 		do
@@ -65,14 +65,14 @@ internal partial class TgMenuHelper
 
 	private void TgFiltersView()
 	{
-		EfContext.FiltersView();
+		TgEfUtils.FiltersView();
 		TgLog.WriteLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}
 
 	private void SetTgFiltersAdd()
 	{
-		TgEfFilterEntity filter = EfContext.FilterRepository.CreateNew().Item;
+		TgEfFilterEntity filter = FilterRepository.CreateNew().Item;
 		string type = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(Console.WindowHeight - 17)
@@ -122,19 +122,19 @@ internal partial class TgMenuHelper
 				break;
 		}
 
-		EfContext.FilterRepository.Save(filter);
+		FilterRepository.Save(filter);
 		TgFiltersView();
 	}
 
 	private void SetTgFiltersEdit()
 	{
-		IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: false).Items;
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: false).Items;
 		TgEfFilterEntity filter = AnsiConsole.Prompt(new SelectionPrompt<TgEfFilterEntity>()
 			.Title(TgLocale.MenuFiltersSetEnabled)
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
 		filter.IsEnabled = AskQuestionReturnPositive(TgLocale.MenuFiltersSetIsEnabled, true);
-		EfContext.FilterRepository.Save(filter);
+		FilterRepository.Save(filter);
 		TgFiltersView();
 	}
 
@@ -149,12 +149,12 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersRemove()
 	{
-		IEnumerable<TgEfFilterEntity> filters = EfContext.FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: false).Items;
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: false).Items;
 		TgEfFilterEntity filter = AnsiConsole.Prompt(new SelectionPrompt<TgEfFilterEntity>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(filters));
-		EfContext.FilterRepository.DeleteAsync(filter, isSkipFind: false).GetAwaiter().GetResult();
+		FilterRepository.DeleteAsync(filter, isSkipFind: false).GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 
@@ -162,7 +162,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuFiltersReset))
 			return;
-		EfContext.FilterRepository.DeleteAllAsync().GetAwaiter().GetResult();
+		FilterRepository.DeleteAllAsync().GetAwaiter().GetResult();
 		TgFiltersView();
 	}
 

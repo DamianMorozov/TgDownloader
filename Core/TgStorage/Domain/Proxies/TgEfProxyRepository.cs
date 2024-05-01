@@ -1,9 +1,11 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Microsoft.EntityFrameworkCore;
+
 namespace TgStorage.Domain.Proxies;
 
-public sealed class TgEfProxyRepository : TgEfRepositoryBase<TgEfProxyEntity>
+public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfProxyEntity>(efContext), ITgEfProxyRepository
 {
 	#region Public and private methods
 
@@ -161,6 +163,38 @@ public sealed class TgEfProxyRepository : TgEfRepositoryBase<TgEfProxyEntity>
 		}
 		return new TgEfOperResult<TgEfProxyEntity>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
+
+	#endregion
+
+	#region Public and private methods
+
+	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy()
+	{
+		TgEfAppRepository appRepository = new(EfContext);
+		TgEfProxyRepository proxyRepository = new(EfContext);
+		TgEfOperResult<TgEfAppEntity> operResultApp = appRepository.GetFirst(isNoTracking: true);
+		if (!operResultApp.IsExists)
+			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+		TgEfOperResult<TgEfProxyEntity> operResultProxy = proxyRepository.Get(
+			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
+		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+	}
+
+	public async Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync()
+	{
+		TgEfAppRepository appRepository = new(EfContext);
+		TgEfProxyRepository proxyRepository = new(EfContext);
+		TgEfOperResult<TgEfAppEntity> operResultApp = await appRepository.GetFirstAsync(isNoTracking: true);
+		if (!operResultApp.IsExists)
+			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+		TgEfOperResult<TgEfProxyEntity> operResultProxy = await proxyRepository.GetAsync(
+			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
+		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+	}
+
+	public Guid GetCurrentProxyUid() => GetCurrentProxy().Item.Uid;
+
+	public async Task<Guid> GetCurrentProxyUidAsync() => (await GetCurrentProxyAsync()).Item.Uid;
 
 	#endregion
 }

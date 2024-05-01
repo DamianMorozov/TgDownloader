@@ -117,7 +117,7 @@
 //	public override string ToString() => $"{ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
 
 //    public string ToDebugString() => 
-//	    $"{TgStorageConstants.TableApps} | {TgCommonUtils.GetIsExists(IsExist)} | {Uid} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
+//	    $"{TgStorageConstants.TableApps} | {Uid} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
 
 //    public void Clear()
 //	{

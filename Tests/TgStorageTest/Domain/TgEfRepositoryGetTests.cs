@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Enums;
-
 namespace TgStorageTest.Domain;
 
 [TestFixture]
@@ -27,25 +25,25 @@ internal class TgEfRepositoryGetTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void Get_apps() => GetEnumerable(EfProdContext.AppRepository);
+	public void Get_apps() => GetEnumerable(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_documents() => GetEnumerable(EfProdContext.DocumentRepository);
+	public void Get_documents() => GetEnumerable(new TgEfDocumentRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_filters() => GetEnumerable(EfProdContext.FilterRepository);
+	public void Get_filters() => GetEnumerable(new TgEfFilterRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_messages() => GetEnumerable(EfProdContext.MessageRepository);
+	public void Get_messages() => GetEnumerable(new TgEfMessageRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_proxies() => GetEnumerable(EfProdContext.ProxyRepository);
+	public void Get_proxies() => GetEnumerable(new TgEfProxyRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_sources() => GetEnumerable(EfProdContext.SourceRepository);
+	public void Get_sources() => GetEnumerable(new TgEfSourceRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_versions() => GetEnumerable(EfProdContext.VersionRepository);
+	public void Get_versions() => GetEnumerable(new TgEfVersionRepository(TgEfUtils.EfContext));
 
 	#endregion
 }

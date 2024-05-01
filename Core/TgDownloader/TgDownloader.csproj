@@ -17,15 +17,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
     <PackageReference Include="ProxyLib" Version="1.0.2" />
     <PackageReference Include="WTelegramClient" Version="4.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\" />
   </ItemGroup>
 </Project>
