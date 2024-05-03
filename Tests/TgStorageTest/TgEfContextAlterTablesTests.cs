@@ -4,7 +4,7 @@
 namespace TgStorageTest;
 
 [TestFixture]
-internal class TgEfContextAlterTablesTests : TgDbContextTestsBase
+internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 

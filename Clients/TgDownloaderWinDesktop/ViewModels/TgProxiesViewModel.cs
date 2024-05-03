@@ -78,7 +78,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ProxyRepository.DeleteAsync(proxyVm.Proxy, isSkipFind: false);
+            await ProxyRepository.DeleteAsync(proxyVm.Item, isSkipFind: false);
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
         }, false).ConfigureAwait(false);

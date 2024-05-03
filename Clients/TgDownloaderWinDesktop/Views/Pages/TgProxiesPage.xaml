@@ -183,7 +183,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Proxy.Type, Mode=TwoWay, IsAsync=True}" />
+								Text="{Binding Item.Type, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -206,7 +206,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Proxy.HostName, Mode=TwoWay, IsAsync=True}" />
+								Text="{Binding Item.HostName, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -229,7 +229,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Proxy.Port, Mode=TwoWay, IsAsync=True}" />
+								Text="{Binding Item.Port, Mode=TwoWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -252,7 +252,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Text="{Binding Proxy.UserName, Mode=OneWay, IsAsync=True}" />
+								Text="{Binding Item.UserName, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -275,7 +275,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Password="{Binding Proxy.Password, Mode=OneWay, IsAsync=True}" />
+								Password="{Binding Item.Password, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
@@ -298,7 +298,7 @@
 								HorizontalContentAlignment="Center"
 								IsEnabled="False"
 								IsReadOnly="True"
-								Password="{Binding Proxy.Secret, Mode=OneWay, IsAsync=True}" />
+								Password="{Binding Item.Secret, Mode=OneWay, IsAsync=True}" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>

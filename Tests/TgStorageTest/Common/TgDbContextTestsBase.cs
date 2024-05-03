@@ -3,14 +3,14 @@
 
 namespace TgStorageTest.Common;
 
-internal class TgDbContextTestsBase
+internal abstract class TgDbContextTestsBase
 {
     #region Public and private fields, properties, constructor
 
 	/// <summary> Product EF DB context </summary>
 	protected TgEfContext EfProdContext { get; }
 
-	public TgDbContextTestsBase()
+	protected TgDbContextTestsBase()
     {
         LoggerFactory factory = new();
         

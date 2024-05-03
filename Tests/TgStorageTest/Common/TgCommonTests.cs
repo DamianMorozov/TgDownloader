@@ -4,7 +4,7 @@
 namespace TgStorageTest.Common;
 
 [TestFixture]
-internal class TgCommonTests
+internal sealed class TgCommonTests
 {
 	#region Public and private methods
 

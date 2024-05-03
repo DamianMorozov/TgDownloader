@@ -116,7 +116,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             {
                 ProxiesVms.Add(new(proxy));
             }
-            if (!ProxiesVms.Select(p => p.Proxy.UserName).Contains(proxyNew.UserName))
+            if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
             {
                 ProxyVm = new(proxyNew);
                 ProxiesVms.Add(ProxyVm);
@@ -208,7 +208,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (!TgEfUtils.GetEfValid(AppVm.App).IsValid)
                 return;
-            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Proxy ?? ProxyVm.Proxy);
+            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Item ?? ProxyVm.Item);
         }, true);
 
         ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExist 

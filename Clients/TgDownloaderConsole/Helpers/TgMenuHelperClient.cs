@@ -182,6 +182,9 @@ internal partial class TgMenuHelper
 		}
 	}
 
+	public void ClientConnectConsole() =>
+		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy().Item);
+
 	public async Task ClientConnectConsoleAsync() => 
 		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync()).Item);
 

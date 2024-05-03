@@ -100,7 +100,7 @@ async Task<bool> SetupAsync()
 	}
 	// Client.
 	tgLog.WriteLine("TG client connect ...");
-	await menu.ClientConnectConsoleAsync();
+	menu.ClientConnectConsole();
 	tgLog.WriteLine("TG client connect success");
 	return true;
 }

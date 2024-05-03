@@ -10,7 +10,7 @@ public sealed class TgEfVersionViewModel : TgViewModelBase
 	#region Public and private fields, properties, constructor
 
 	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
-	public TgEfVersionEntity Item { get; set; }
+	public TgEfVersionEntity Item { get; set; } = default!;
 
 	[DefaultValue(short.MaxValue)]
 	public short Version { get => Item.Version; set => Item.Version = value; }
@@ -20,19 +20,24 @@ public sealed class TgEfVersionViewModel : TgViewModelBase
 
 	public TgEfVersionViewModel(TgEfVersionEntity item) : base()
 	{
-		Item = item;
-		Description = item.Description;
+		Default(item);
 	}
 
 	public TgEfVersionViewModel() : base()
 	{
-		Item = VersionRepository.CreateNew().Item;
-		Description = Item.Description;
+		TgEfVersionEntity item = VersionRepository.GetNew(false).Item;
+		Default(item);
 	}
 
 	#endregion
 
 	#region Public and private methods
+
+	private void Default(TgEfVersionEntity item)
+	{
+		Item = item;
+		Description = item.Description;
+	}
 
 	public override string ToString() => $"{Version} | {Description}";
 

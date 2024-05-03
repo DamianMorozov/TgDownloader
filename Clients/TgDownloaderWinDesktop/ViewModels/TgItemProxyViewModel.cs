@@ -42,13 +42,13 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     }
 
     public void SetItemProxyVm(TgEfProxyViewModel itemProxyVm) =>
-        SetItemProxyVm(itemProxyVm.Proxy);
+        SetItemProxyVm(itemProxyVm.Item);
 
     public void SetItemProxyVm(TgEfProxyEntity proxy)
     {
-        ItemProxyVm.Proxy.Fill(proxy);
+        ItemProxyVm.Item.Fill(proxy);
         TgEfProxyViewModel itemBackup = ItemProxyVm;
-        ItemProxyVm = new(itemBackup.Proxy);
+        ItemProxyVm = new(itemBackup.Item);
     }
 
     // GetProxyFromStorageCommand
@@ -74,7 +74,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
             await Task.Delay(TimeSpan.FromMilliseconds(1));
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Proxy = (await ProxyRepository.GetNewAsync(isNoTracking: false)).Item;
+            ItemProxyVm.Item = (await ProxyRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false);
     }
 
@@ -85,7 +85,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            await ProxyRepository.SaveAsync(ItemProxyVm.Proxy);
+            await ProxyRepository.SaveAsync(ItemProxyVm.Item);
         }, false);
     }
 

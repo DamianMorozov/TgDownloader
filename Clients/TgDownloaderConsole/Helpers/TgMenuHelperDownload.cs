@@ -64,7 +64,7 @@ internal partial class TgMenuHelper
 					tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, true, false);
+					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, true, false);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
 					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
@@ -100,9 +100,7 @@ internal partial class TgMenuHelper
 	{
 		TgDownloadSettingsViewModel tgDownloadSettings = new();
 		SetupDownloadSourceCore(id, tgDownloadSettings);
-		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
-		if (smartSource.Channel is null)
-			_ = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
+		_ = TgClient.CreateSmartSource(tgDownloadSettings, true);
 		LoadTgClientSettings(tgDownloadSettings, false, false);
 		return tgDownloadSettings;
 	}
@@ -133,17 +131,9 @@ internal partial class TgMenuHelper
 		} while (!isCheck);
 	}
 
-	private void SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	private void SetupDownloadSourceFirstIdAuto(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		TgDownloadSmartSource smartSource = TgClient.PrepareChannelDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
-		if (smartSource.Channel is not null)
-		{
-			TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.Channel).GetAwaiter().GetResult();
-			LoadTgClientSettings(tgDownloadSettings, true, false);
-			return;
-		}
-
-		smartSource = TgClient.PrepareChatBaseDownloadMessagesAsync(tgDownloadSettings, true).GetAwaiter().GetResult();
+		TgDownloadSmartSource smartSource = TgClient.CreateSmartSource(tgDownloadSettings, true);
 		if (smartSource.ChatBase is not null)
 		{
 			TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase).GetAwaiter().GetResult();

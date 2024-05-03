@@ -4,7 +4,7 @@
 namespace TgStorageTest.Domain;
 
 [TestFixture]
-internal class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
+internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 

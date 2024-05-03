@@ -4,6 +4,7 @@
 namespace TgStorage.Common;
 
 /// <summary> EF operation result </summary>
+[DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
 {
 	#region Public and private fields, properties, constructor
@@ -109,6 +110,12 @@ public sealed class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new
 		// Result.
 		return ValueTask.CompletedTask;
 	}
+
+	#endregion
+
+	#region Public and private methods
+
+	public string ToDebugString() => $"{State} | {Item.ToDebugString()} | {Items.Count()}";
 
 	#endregion
 }

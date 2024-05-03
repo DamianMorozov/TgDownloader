@@ -10,51 +10,63 @@ public sealed class TgEfProxyViewModel : TgViewModelBase
 	#region Public and private fields, properties, constructor
 
 	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
-	public TgEfProxyEntity Proxy { get; set; }
+	public TgEfProxyEntity Item { get; set; } = default!;
     public Guid ProxyUid
     {
-	    get => Proxy.Uid;
+	    get => Item.Uid;
 	    set
 	    {
-		    TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.GetAsync(
-			    new TgEfProxyEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
-		    Proxy = operResult.IsExists
+		    TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.Get(
+			    new TgEfProxyEntity { Uid = value }, isNoTracking: false);
+		    Item = operResult.IsExists
 			    ? operResult.Item
-			    : ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+			    : ProxyRepository.GetNew(isNoTracking: false).Item;
 	    }
     }
 
     [DefaultValue(0)]
-    public TgEnumProxyType ProxyType { get => Proxy.Type; set => Proxy.Type = value; }
+    public TgEnumProxyType ProxyType { get => Item.Type; set => Item.Type = value; }
     [DefaultValue("")]
-    public string ProxyHostName { get => Proxy.HostName; set => Proxy.HostName = value; }
+    public string ProxyHostName { get => Item.HostName; set => Item.HostName = value; }
     [DefaultValue(0)]
-    public ushort ProxyPort { get => Proxy.Port; set => Proxy.Port = value; }
+    public ushort ProxyPort { get => Item.Port; set => Item.Port = value; }
     [DefaultValue("")]
-    public string ProxyUserName { get => Proxy.UserName; set => Proxy.UserName = value; }
+    public string ProxyUserName { get => Item.UserName; set => Item.UserName = value; }
     [DefaultValue("")]
-    public string ProxyPassword { get => Proxy.Password; set => Proxy.Password = value; }
+    public string ProxyPassword { get => Item.Password; set => Item.Password = value; }
     [DefaultValue("")]
-    public string ProxySecret { get => Proxy.Secret; set => Proxy.Secret = value; }
+    public string ProxySecret { get => Item.Secret; set => Item.Secret = value; }
 
-    public string PrettyName => $"{Proxy.Type} | {TgDataFormatUtils.GetFormatString(Proxy.HostName, 30)} | {Proxy.Port} | {Proxy.UserName}";
+    public string PrettyName => $"{Item.Type} | {TgDataFormatUtils.GetFormatString(Item.HostName, 30)} | {Item.Port} | {Item.UserName}";
 
-    public TgEfProxyViewModel(TgEfProxyEntity proxy) : base()
+    public TgEfProxyViewModel(TgEfProxyEntity item) : base()
 	{
-		Proxy = proxy;
-        ProxyType = proxy.Type;
-        ProxyHostName = proxy.HostName;
-        ProxyPort = proxy.Port;
-        ProxyUserName = proxy.UserName;
-        ProxyPassword = proxy.Password;
-        ProxySecret = proxy.Secret;
+		Default(item);
+    }
+    
+    public TgEfProxyViewModel() : base()
+    {
+	    TgEfProxyEntity item = ProxyRepository.GetNew(false).Item;
+	    Default(item);
     }
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public override string ToString() => PrettyName;
+	private void Default(TgEfProxyEntity item)
+	{
+		Item = item;
+		ProxyUid = item.Uid;
+		ProxyType = item.Type;
+		ProxyHostName = item.HostName;
+		ProxyPort = item.Port;
+		ProxyUserName = item.UserName;
+		ProxyPassword = item.Password;
+		ProxySecret = item.Secret;
+	}
+
+	public override string ToString() => PrettyName;
 
 	#endregion
 }

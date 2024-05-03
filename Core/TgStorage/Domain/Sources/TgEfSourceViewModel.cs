@@ -37,11 +37,11 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetAsync(
-				new TgEfSourceEntity { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
+			TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.Get(
+				new TgEfSourceEntity { Uid = value }, isNoTracking: false);
 			Item = operResult.IsExists
 				? operResult.Item
-				: SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+				: SourceRepository.GetNew(isNoTracking: false).Item;
 		}
 	}
 
@@ -85,8 +85,8 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 
     public TgEfSourceViewModel() : base()
     {
-	    TgEfSourceEntity source = SourceRepository.CreateNewAsync().GetAwaiter().GetResult().Item;
-		Default(source);
+	    TgEfSourceEntity item = SourceRepository.GetNew(false).Item;
+		Default(item);
 	}
 
     #endregion
@@ -96,14 +96,15 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
     private void Default(TgEfSourceEntity item)
     {
 	    Item = item;
-	    //SourceDirectory = item.Directory;
-	    //SourceId = item.Id;
-	    //SourceDtChanged = item.DtChanged;
-	    //SourceUserName = item.UserName;
-	    //SourceFirstId = item.FirstId;
-	    //SourceLastId = item.Count;
-	    //SourceAbout = item.About;
-	    //SourceTitle = item.Title;
+	    SourceUid = item.Uid;
+		SourceId = item.Id;
+	    SourceDtChanged = item.DtChanged;
+	    SourceUserName = item.UserName ?? string.Empty;
+	    SourceAbout = item.About ?? string.Empty;
+	    SourceTitle = item.Title ?? string.Empty;
+		SourceDirectory = item.Directory ?? string.Empty;
+		SourceFirstId = item.FirstId;
+		SourceLastId = item.Count;
 	    SourceScanCurrent = this.GetDefaultPropertyInt(nameof(SourceScanCurrent));
 	    SourceScanCount = this.GetDefaultPropertyInt(nameof(SourceScanCount));
 	    IsAutoUpdate = this.GetDefaultPropertyBool(nameof(IsAutoUpdate));
