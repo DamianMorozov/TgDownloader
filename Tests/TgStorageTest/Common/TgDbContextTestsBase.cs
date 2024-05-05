@@ -7,7 +7,9 @@ internal abstract class TgDbContextTestsBase
 {
     #region Public and private fields, properties, constructor
 
-	protected TgEfContext CreateEfContext()
+    protected object Locker { get; } = new();
+
+    protected TgEfContext CreateEfContext()
 	{
 		LoggerFactory factory = new();
 		DbContextOptionsBuilder<TgEfContext> builderDbProd = new DbContextOptionsBuilder<TgEfContext>()
