@@ -111,7 +111,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	public virtual async Task<TgEfOperResult<T>> GetAsync(T item, bool isNoTracking) => await GetAsync(item.Uid).ConfigureAwait(false);
 
-	public virtual TgEfOperResult<T> GetNew(bool isNoTracking) => Get(new T().Uid);
+	public virtual TgEfOperResult<T> GetNew(bool isNoTracking) => Get(new T(), isNoTracking);
 
 	public virtual async Task<TgEfOperResult<T>> GetNewAsync(bool isNoTracking) => await GetAsync(new T(), isNoTracking).ConfigureAwait(false);
 
