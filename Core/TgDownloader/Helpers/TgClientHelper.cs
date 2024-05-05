@@ -131,36 +131,39 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
     public bool CheckClientIsReady()
     {
-        bool ResultDisconnected()
-        {
-            UpdateStateSourceAsync(0, 0, string.Empty);
-            UpdateStateProxyAsync(TgLocale.ProxyIsDisconnect);
-            UpdateStateConnectAsync(TgLocale.MenuClientIsDisconnected);
-            return IsReady = false;
-        }
-        bool ResultConnected()
-        {
-            UpdateStateConnectAsync(TgLocale.MenuClientIsConnected);
-            return IsReady = true;
-        }
         bool result = Client is { Disconnected: false };
         if (!result) 
-            return ResultDisconnected();
+            return ClientResultDisconnected();
         if (!TgAppSettings.AppXml.IsExistsFileSession)
-            return ResultDisconnected();
-
+            return ClientResultDisconnected();
         //if (!(!TgAppSettings.AppXml.IsUseProxy ||
         //      (TgAppSettings.AppXml.IsUseProxy &&
         //       (ContextManager.ProxyRepository.Get(AppRepository.GetFirstProxyUid) ??
         //        ContextManager.ProxyRepository.GetNew()).IsExist)))
-        TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.GetCurrentProxy();
-		if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExists)))
-            return ResultDisconnected();
-        if (ProxyException.IsExist || ClientException.IsExist)
-            return ResultDisconnected();
-        return ResultConnected();
+        TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp());
+		//if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExists)))
+		//    return ClientResultDisconnected();
+		if (TgAppSettings.AppXml.IsUseProxy && !operResult.IsExists)
+			return ClientResultDisconnected();
+		if (ProxyException.IsExist || ClientException.IsExist)
+			return ClientResultDisconnected();
+		return ClientResultConnected();
     }
 
+    private bool ClientResultDisconnected()
+    {
+	    UpdateStateSourceAsync(0, 0, string.Empty);
+	    UpdateStateProxyAsync(TgLocale.ProxyIsDisconnect);
+	    UpdateStateConnectAsync(TgLocale.MenuClientIsDisconnected);
+	    return IsReady = false;
+    }
+
+	private bool ClientResultConnected()
+    {
+	    UpdateStateConnectAsync(TgLocale.MenuClientIsConnected);
+	    return IsReady = true;
+    }
+    
     public void ConnectSessionConsole(Func<string, string?>? config, TgEfProxyEntity proxy)
     {
         if (IsReady) return;
@@ -770,7 +773,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                         TgLog.MarkupLine(GetChatInfo(dicChat.Value));
                         break;
                 }
-            });
+            }, isLoginConsole: true);
         }
     }
 
@@ -851,7 +854,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         {
 	        await Client.ReadHistory(chatBase);
             result = true;
-		});
+		}, isLoginConsole: true);
 		
         return result;
     }
@@ -1070,7 +1073,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                             await UpdateSourceTgAsync(channel, messagesCount);
                             await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, $"{channel} | {messagesCount}");
                         }
-                    });
+                    }, isLoginConsole: true);
                 }
                 await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceScanCount, 
                     tgDownloadSettings.SourceVm.SourceScanCurrent):#00.00} %");
@@ -1086,10 +1089,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                         int messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, group);
                         await UpdateSourceTgAsync(group, messagesCount);
                         await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, $"{group} | {messagesCount}");
-                    });
+                    }, isLoginConsole: true);
                 }
             }
-        });
+        }, isLoginConsole: true);
         await UpdateTitleAsync(string.Empty);
     }
 
@@ -1123,7 +1126,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                     }
                     break;
             }
-        });
+        }, isLoginConsole: false);
     }
 
     private async Task AfterCollectSourcesAsync(Func<TgEfSourceViewModel, Task> afterScanAsync)
@@ -1151,7 +1154,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                         }
                     }
                     await afterScanAsync(new(source));
-                });
+                }, isLoginConsole: true);
             }
             i++;
             await UpdateStateSourceAsync(channel.ID, 0, $"Read channel '{channel.ID}' | {channel.IsActive} | {i} from {count}");
@@ -1171,7 +1174,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                     source.Count = messagesCount;
                 }
                 await afterScanAsync(new(source));
-            });
+            }, isLoginConsole: true);
             i++;
             await UpdateStateSourceAsync(group.ID, 0, $"Read channel '{group.ID}' | {group.IsActive} | {i} from {count}");
         }
@@ -1229,13 +1232,13 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				            }
 			            }
 			            tgDownloadSettings.SourceVm.SourceFirstId++;
-		            });
+		            }, isLoginConsole: true);
 	            }
 			}
             tgDownloadSettings.SourceVm.SourceFirstId = tgDownloadSettings.SourceVm.SourceLastId;
             tgDownloadSettings.SourceVm.SourceFirstId = tgDownloadSettings.SourceVm.SourceLastId;
             tgDownloadSettings.SourceVm.SetIsDownload(false);
-		});
+		}, isLoginConsole: true);
 		await UpdateTitleAsync(string.Empty);
     }
 
@@ -1254,7 +1257,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                 default:
 	                throw new InvalidEnumArgumentException(TgLocale.MenuException, (int)TgAsyncUtils.AppType, typeof(TgEnumSourceType));
             }
-        });
+        }, isLoginConsole: true);
         
         await CollectAllChatsAsync();
         await UpdateStateMessageAsync("Mark as read all message in the channels: in the progress");
@@ -1270,14 +1273,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 						await UpdateStateMessageAsync(
 				            $"Mark as read the source | {chatBase.ID} | " +
 				            $"{(string.IsNullOrEmpty(chatBase.MainUsername) ? chatBase.Title : chatBase.MainUsername)}]: {(isSuccess ? "success" : "was already readed")}");
-		            });
+		            }, isLoginConsole: true);
 				}
 	        }
 	        else
 	        {
 		        await UpdateStateMessageAsync("Mark as read all messages: Client is not connected!");
 	        }
-        });
+        }, isLoginConsole: true);
         await UpdateStateMessageAsync("Mark as read all message in the channels: complete");
     }
 
@@ -1305,7 +1308,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
         await TryCatchFuncAsync(async () =>
         {
-            await tgDownloadSettings.UpdateSourceWithSettingsAsync();
+            tgDownloadSettings.UpdateSourceWithSettings();
 			// Store message.
 			await MessageSaveAsync(tgDownloadSettings, message.ID, message.Date, 0, message.message, TgEnumMessageType.Message);
             // Parse documents and photos.
@@ -1315,7 +1318,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             }
             await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, message.ID, "Read the message");
             await UpdateStateItemSourceAsync(tgDownloadSettings.SourceVm.SourceId);
-        });
+        }, isLoginConsole: true);
     }
 
     private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(MessageMedia messageMedia)
@@ -1460,7 +1463,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
                     }
                 }
             }
-        });
+        }, isLoginConsole: true);
     }
 
     private async Task DownloadDataCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings, MessageBase messageBase, MessageMedia messageMedia)
@@ -1693,7 +1696,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
         try
         {
-            Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
+            if (Me is null || !Me.IsActive)
+				Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
             UpdateStateSourceAsync(0, 0, string.Empty);
         }
         catch (Exception ex)
@@ -1707,9 +1711,9 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             if (isProxyUpdate && IsReady)
             {
                 TgEfAppEntity app = AppRepository.GetFirst(isNoTracking: false).Item;
-                if (ProxyRepository.GetCurrentProxyUid() != app.ProxyUid)
+                if (ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp()) != app.ProxyUid)
                 {
-	                app.ProxyUid = ProxyRepository.GetCurrentProxyUid();
+	                app.ProxyUid = ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp());
 	                AppRepository.Save(app);
                 }
 			}
@@ -1738,7 +1742,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             if (isProxyUpdate && IsReady)
             {
                 TgEfAppEntity app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
-					app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync();
+					app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync());
                 await AppRepository.SaveAsync(app);
             }
             await AfterClientConnectAsync();
@@ -1791,7 +1795,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
     #region Public and private methods
 
-    private async Task TryCatchFuncAsync(Func<Task> actionAsync)
+    private async Task TryCatchFuncAsync(Func<Task> actionAsync, bool isLoginConsole)
     {
         try
         {
@@ -1804,7 +1808,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             {
 	            await SetClientExceptionShortAsync(ex);
 	            await UpdateStateMessageAsync("Reconnect client ...");
-	            await LoginUserDesktopAsync();
+	            if (isLoginConsole)
+		            LoginUserConsole(isProxyUpdate: false);
+                else
+					await LoginUserDesktopAsync(isProxyUpdate: false);
             }
             else
             {

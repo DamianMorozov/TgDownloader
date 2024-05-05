@@ -64,7 +64,8 @@ internal partial class TgMenuHelper
 					tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, true, false);
+					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, isSkipCheckTgSettings: true, 
+						isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
 					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
@@ -87,10 +88,11 @@ internal partial class TgMenuHelper
 					SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SettingsSave:
-					RunActionStatus(tgDownloadSettings, UpdateSourceWithSettings, true, false);
+					RunActionStatus(tgDownloadSettings, UpdateSourceWithSettings, isSkipCheckTgSettings: true, 
+						isScanCount: false, isWaitComplete: false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					RunActionProgress(tgDownloadSettings, ManualDownload, false, false);
+					RunActionProgress(tgDownloadSettings, ManualDownload, false, isScanCount: false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -187,7 +189,7 @@ internal partial class TgMenuHelper
 
 	private void UpdateSourceWithSettings(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		tgDownloadSettings.UpdateSourceWithSettingsAsync().GetAwaiter().GetResult();
+		tgDownloadSettings.UpdateSourceWithSettings();
 		// Refresh.
 		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource)
 			.GetAwaiter().GetResult();

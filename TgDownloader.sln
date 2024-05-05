@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderBlazor", "Clien
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{49FCA776-C63B-4C0C-B2B2-E9CA0E5949ED}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\CHANGELOG-RUS.md = Docs\CHANGELOG-RUS.md
+		Docs\CHANGELOG.md = Docs\CHANGELOG.md
 		Docs\GUIDE-SETUP-DESKTOP-RUS.md = Docs\GUIDE-SETUP-DESKTOP-RUS.md
 		Docs\GUIDE-SETUP-DESKTOP.md = Docs\GUIDE-SETUP-DESKTOP.md
 		Docs\GUIDE-SETUP-DOCKER-RUS.md = Docs\GUIDE-SETUP-DOCKER-RUS.md
@@ -50,6 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{49FCA776-C
 		Docs\GUIDES.md = Docs\GUIDES.md
 		Docs\ISSUE-RUS.md = Docs\ISSUE-RUS.md
 		Docs\ISSUE.md = Docs\ISSUE.md
+		LICENSE.md = LICENSE.md
 		Docs\RELEASE.md = Docs\RELEASE.md
 		Docs\RESOURCES-RUS.md = Docs\RESOURCES-RUS.md
 		Docs\RESOURCES.md = Docs\RESOURCES.md

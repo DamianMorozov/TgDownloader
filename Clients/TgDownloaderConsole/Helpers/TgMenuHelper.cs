@@ -216,7 +216,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 
 		// Proxy setup.
-		if (Equals(ProxyRepository.GetCurrentProxyUid(), Guid.Empty))
+		if (Equals(ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp()), Guid.Empty))
 		{
 			if (TgAppSettings.AppXml.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
@@ -228,7 +228,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (!ProxyRepository.GetCurrentProxy().IsExists || TgClient.Me is null)
+			if (!ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).IsExists || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
@@ -247,14 +247,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Type.ToString())));
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Type.ToString())));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.HostName)));
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.HostName)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Port.ToString())));
-				if (Equals(ProxyRepository.GetCurrentProxy().Item.Type, TgEnumProxyType.MtProto))
+					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Port.ToString())));
+				if (Equals(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Type, TgEnumProxyType.MtProto))
 					table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
-						new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy().Item.Secret)));
+						new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Secret)));
 			}
 		}
 

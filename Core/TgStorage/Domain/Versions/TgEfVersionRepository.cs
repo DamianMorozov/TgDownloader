@@ -15,7 +15,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		TgEfVersionEntity? itemFind = isNoTracking
 			? EfContext.Versions.AsNoTracking()
 				.SingleOrDefault(x => x.Version == item.Version)
-			: EfContext.Versions
+			: EfContext.Versions.AsTracking()
 				.SingleOrDefault(x => x.Version == item.Version);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, itemFind)
@@ -31,7 +31,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			? await EfContext.Versions.AsNoTracking()
 				.SingleOrDefaultAsync(x => x.Version == item.Version)
 				.ConfigureAwait(false)
-			: await EfContext.Versions
+			: await EfContext.Versions.AsTracking()
 				.SingleOrDefaultAsync(x => x.Version == item.Version)
 				.ConfigureAwait(false);
 		return itemFind is not null
@@ -42,8 +42,8 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public override TgEfOperResult<TgEfVersionEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfVersionEntity? item = isNoTracking
-			? EfContext.Versions.AsTracking().FirstOrDefault()
-			: EfContext.Versions.FirstOrDefault();
+			? EfContext.Versions.AsNoTracking().FirstOrDefault()
+			: EfContext.Versions.AsTracking().FirstOrDefault();
 		return item is null
 			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
@@ -52,8 +52,8 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfVersionEntity? item = isNoTracking
-			? await EfContext.Versions.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Versions.FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Versions.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
+			: await EfContext.Versions.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
 			? new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
@@ -80,13 +80,13 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			items = isNoTracking
 				? EfContext.Versions.AsNoTracking().Take(count).AsEnumerable()
-				: EfContext.Versions.Take(count).AsEnumerable();
+				: EfContext.Versions.AsTracking().Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Versions.AsNoTracking().AsEnumerable()
-				: EfContext.Versions.AsEnumerable();
+				: EfContext.Versions.AsTracking().AsEnumerable();
 		}
 
 		return new TgEfOperResult<TgEfVersionEntity>(
@@ -121,7 +121,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			items = isNoTracking
 				? EfContext.Versions.AsNoTracking().AsEnumerable()
-				: EfContext.Versions.AsEnumerable();
+				: EfContext.Versions.AsTracking().AsEnumerable();
 		}
 
 		return new TgEfOperResult<TgEfVersionEntity>(

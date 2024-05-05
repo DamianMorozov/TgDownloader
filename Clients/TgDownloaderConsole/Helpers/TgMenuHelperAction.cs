@@ -145,7 +145,7 @@ internal partial class TgMenuHelper
 	}
 
 	public void RunActionStatus(TgDownloadSettingsViewModel tgDownloadSettings, Action<TgDownloadSettingsViewModel> action,
-		bool isSkipCheckTgSettings, bool isScanCount)
+		bool isSkipCheckTgSettings, bool isScanCount, bool isWaitComplete)
 	{
 		if (!isSkipCheckTgSettings && !CheckTgSettingsWithWarning(tgDownloadSettings))
 			return;
@@ -240,7 +240,7 @@ internal partial class TgMenuHelper
 		//TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		//Console.ReadKey();
 		TgLog.MarkupLine(TgLocale.WaitDownloadComplete);
-		while (!tgDownloadSettings.SourceVm.IsComplete)
+		while (isWaitComplete && !tgDownloadSettings.SourceVm.IsComplete)
 		{
 			Console.ReadKey();
 			TgLog.MarkupLine(TgLocale.WaitDownloadComplete);

@@ -35,11 +35,11 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 
     public string ToDebugString() => $"{SourceVm.ToDebugString()}";
 
-    public async Task UpdateSourceWithSettingsAsync()
+    public void UpdateSourceWithSettings()
     {
         if (!SourceVm.IsReadySourceId)
             return;
-        TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.SaveAsync(SourceVm.Item);
+        TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.Save(SourceVm.Item);
         if (operResult.IsExists) 
 	        SourceVm.Item = operResult.Item;
     }

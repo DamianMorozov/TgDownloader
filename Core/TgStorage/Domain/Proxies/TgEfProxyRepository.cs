@@ -15,7 +15,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		TgEfProxyEntity? itemFind = isNoTracking
 			? EfContext.Proxies.AsNoTracking()
 				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
-			: EfContext.Proxies
+			: EfContext.Proxies.AsTracking()
 				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, itemFind)
@@ -31,7 +31,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			? await EfContext.Proxies.AsNoTracking()
 				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
 				.ConfigureAwait(false)
-			: await EfContext.Proxies
+			: await EfContext.Proxies.AsTracking()
 				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
 				.ConfigureAwait(false);
 		return itemFind is not null
@@ -42,8 +42,8 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 	public override TgEfOperResult<TgEfProxyEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfProxyEntity? item = isNoTracking
-			? EfContext.Proxies.AsTracking().FirstOrDefault()
-			: EfContext.Proxies.FirstOrDefault();
+			? EfContext.Proxies.AsNoTracking().FirstOrDefault()
+			: EfContext.Proxies.AsTracking().FirstOrDefault();
 		return item is null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
@@ -52,8 +52,8 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 	public override async Task<TgEfOperResult<TgEfProxyEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfProxyEntity? item = isNoTracking
-			? await EfContext.Proxies.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Proxies.FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Proxies.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
+			: await EfContext.Proxies.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
@@ -79,13 +79,13 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		{
 			items = isNoTracking
 				? EfContext.Proxies.AsNoTracking().Take(count).AsEnumerable()
-				: EfContext.Proxies.Take(count).AsEnumerable();
+				: EfContext.Proxies.AsTracking().Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Proxies.AsNoTracking().AsEnumerable()
-				: EfContext.Proxies.AsEnumerable();
+				: EfContext.Proxies.AsTracking().AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -111,13 +111,13 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		{
 			items = isNoTracking
 				? EfContext.Proxies.AsNoTracking().Take(count).AsEnumerable()
-				: EfContext.Proxies.Take(count).AsEnumerable();
+				: EfContext.Proxies.AsTracking().Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Proxies.AsNoTracking().AsEnumerable()
-				: EfContext.Proxies.AsEnumerable();
+				: EfContext.Proxies.AsTracking().AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -166,33 +166,29 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	#region Public and private methods
 
-	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy()
+	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy(TgEfOperResult<TgEfAppEntity> operResult)
 	{
-		TgEfAppRepository appRepository = new(EfContext);
-		TgEfProxyRepository proxyRepository = new(EfContext);
-		TgEfOperResult<TgEfAppEntity> operResultApp = appRepository.GetFirst(isNoTracking: true);
-		if (!operResultApp.IsExists)
+		if (!operResult.IsExists)
 			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-		TgEfOperResult<TgEfProxyEntity> operResultProxy = proxyRepository.Get(
-			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
+
+		TgEfOperResult<TgEfProxyEntity> operResultProxy = Get(
+			new TgEfProxyEntity { Uid = operResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
 		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 	}
 
-	public async Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync()
+	public async Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync(TgEfOperResult<TgEfAppEntity> operResult)
 	{
-		TgEfAppRepository appRepository = new(EfContext);
-		TgEfProxyRepository proxyRepository = new(EfContext);
-		TgEfOperResult<TgEfAppEntity> operResultApp = await appRepository.GetFirstAsync(isNoTracking: true);
-		if (!operResultApp.IsExists)
+		if (!operResult.IsExists)
 			return new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
-		TgEfOperResult<TgEfProxyEntity> operResultProxy = await proxyRepository.GetAsync(
-			new TgEfProxyEntity { Uid = operResultApp.Item.ProxyUid ?? Guid.Empty }, isNoTracking: true);
+
+		TgEfOperResult<TgEfProxyEntity> operResultProxy = await GetAsync(
+			new TgEfProxyEntity { Uid = operResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
 		return operResultProxy.IsExists ? operResultProxy : new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
 	}
 
-	public Guid GetCurrentProxyUid() => GetCurrentProxy().Item.Uid;
+	public Guid GetCurrentProxyUid(TgEfOperResult<TgEfAppEntity> operResult) => GetCurrentProxy(operResult).Item.Uid;
 
-	public async Task<Guid> GetCurrentProxyUidAsync() => (await GetCurrentProxyAsync()).Item.Uid;
+	public async Task<Guid> GetCurrentProxyUidAsync(TgEfOperResult<TgEfAppEntity> operResult) => (await GetCurrentProxyAsync(operResult)).Item.Uid;
 
 	#endregion
 }

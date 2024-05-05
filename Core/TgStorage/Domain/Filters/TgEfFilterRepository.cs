@@ -15,7 +15,7 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		TgEfFilterEntity? itemFind = isNoTracking
 			? EfContext.Filters.AsNoTracking()
 				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name)
-			: EfContext.Filters
+			: EfContext.Filters.AsTracking()
 				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)
@@ -31,7 +31,7 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 			? await EfContext.Filters.AsNoTracking()
 				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
 				.ConfigureAwait(false)
-			: await EfContext.Filters
+			: await EfContext.Filters.AsTracking()
 				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
 				.ConfigureAwait(false);
 		return itemFind is not null
@@ -42,8 +42,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 	public override TgEfOperResult<TgEfFilterEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfFilterEntity? item = isNoTracking
-			? EfContext.Filters.AsTracking().FirstOrDefault()
-			: EfContext.Filters.FirstOrDefault();
+			? EfContext.Filters.AsNoTracking()
+				.FirstOrDefault()
+			: EfContext.Filters.AsTracking()
+				.FirstOrDefault();
 		return item is null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
@@ -52,8 +54,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 	public override async Task<TgEfOperResult<TgEfFilterEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfFilterEntity? item = isNoTracking
-			? await EfContext.Filters.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Filters.FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Filters.AsNoTracking()
+				.FirstOrDefaultAsync().ConfigureAwait(false)
+			: await EfContext.Filters.AsTracking()
+				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
@@ -78,14 +82,18 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		if (count > 0)
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking().Take(count).AsEnumerable()
-				: EfContext.Filters.Take(count).AsEnumerable();
+				? EfContext.Filters.AsNoTracking()
+					.Take(count).AsEnumerable()
+				: EfContext.Filters.AsTracking()
+					.Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking().AsEnumerable()
-				: EfContext.Filters.AsEnumerable();
+				? EfContext.Filters.AsNoTracking()
+					.AsEnumerable()
+				: EfContext.Filters.AsTracking()
+					.AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -111,13 +119,13 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		{
 			items = isNoTracking
 				? EfContext.Filters.AsNoTracking().Take(count).AsEnumerable()
-				: EfContext.Filters.Take(count).AsEnumerable();
+				: EfContext.Filters.AsTracking().Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Filters.AsNoTracking().AsEnumerable()
-				: EfContext.Filters.AsEnumerable();
+				: EfContext.Filters.AsTracking().AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

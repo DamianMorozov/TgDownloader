@@ -5,8 +5,8 @@ namespace TgStorage.Contracts;
 
 public interface ITgEfProxyRepository
 {
-    TgEfOperResult<TgEfProxyEntity> GetCurrentProxy();
-    Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync();
-    Guid GetCurrentProxyUid();
-    Task<Guid> GetCurrentProxyUidAsync();
+    TgEfOperResult<TgEfProxyEntity> GetCurrentProxy(TgEfOperResult<TgEfAppEntity> operResult);
+    Task<TgEfOperResult<TgEfProxyEntity>> GetCurrentProxyAsync(TgEfOperResult<TgEfAppEntity> operResult);
+    Guid GetCurrentProxyUid(TgEfOperResult<TgEfAppEntity> operResult);
+    Task<Guid> GetCurrentProxyUidAsync(TgEfOperResult<TgEfAppEntity> operResult);
 }

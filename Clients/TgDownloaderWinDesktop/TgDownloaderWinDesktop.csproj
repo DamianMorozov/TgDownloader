@@ -32,23 +32,6 @@
     <Resource Include="Assets\applicationIcon-191.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\CHANGELOG-RUS.md" Link="CHANGELOG-RUS.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\CHANGELOG.md" Link="CHANGELOG.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\LICENSE.md" Link="LICENSE.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\README-RUS.md" Link="README-RUS.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\README.md" Link="README.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
     <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
@@ -57,5 +40,33 @@
     <Compile Update="Views\Controls\TgExceptionsUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Docs\CHANGELOG-RUS.md" Link="Docs\CHANGELOG-RUS.md" />
+    <None Include="..\..\Docs\CHANGELOG.md" Link="Docs\CHANGELOG.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-DESKTOP-RUS.md" Link="Docs\GUIDE-SETUP-DESKTOP-RUS.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-DESKTOP.md" Link="Docs\GUIDE-SETUP-DESKTOP.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-DOCKER-RUS.md" Link="Docs\GUIDE-SETUP-DOCKER-RUS.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-DOCKER.md" Link="Docs\GUIDE-SETUP-DOCKER.md" />
+    <None Include="..\..\Docs\GUIDES-RUS.md" Link="Docs\GUIDES-RUS.md" />
+    <None Include="..\..\Docs\GUIDES.md" Link="Docs\GUIDES.md" />
+    <None Include="..\..\Docs\ISSUE-RUS.md" Link="Docs\ISSUE-RUS.md" />
+    <None Include="..\..\Docs\ISSUE.md" Link="Docs\ISSUE.md" />
+    <None Include="..\..\Docs\RELEASE.md" Link="Docs\RELEASE.md" />
+    <None Include="..\..\Docs\RESOURCES-RUS.md" Link="Docs\RESOURCES-RUS.md" />
+    <None Include="..\..\Docs\RESOURCES.md" Link="Docs\RESOURCES.md" />
+    <None Include="..\..\Docs\SCREENSHOTS.md" Link="Docs\SCREENSHOTS.md" />
+    <None Include="..\..\LICENSE.md" Link="Docs\LICENSE.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\README-RUS.md" Link="Docs\README-RUS.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\README.md" Link="Docs\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

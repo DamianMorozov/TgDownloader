@@ -50,8 +50,14 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 	public override TgEfOperResult<TgEfMessageEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfMessageEntity? item = isNoTracking
-			? EfContext.Messages.AsTracking().Include(x => x.Source).FirstOrDefault()
-			: EfContext.Messages.Include(x => x.Source).FirstOrDefault();
+			? EfContext.Messages.AsTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefault()
+			: EfContext.Messages
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefault();
 		return item is null
 			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
@@ -60,8 +66,14 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 	public override async Task<TgEfOperResult<TgEfMessageEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfMessageEntity? item = isNoTracking
-			? await EfContext.Messages.AsTracking().Include(x => x.Source).FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Messages.Include(x => x.Source).FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Messages.AsTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefaultAsync().ConfigureAwait(false)
+			: await EfContext.Messages
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
 			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
@@ -86,14 +98,22 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		if (count > 0)
 		{
 			items = isNoTracking
-				? EfContext.Messages.AsNoTracking().Include(x => x.Source).Take(count).AsEnumerable()
-				: EfContext.Messages.Include(x => x.Source).Take(count).AsEnumerable();
+				? EfContext.Messages.AsNoTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable()
+				: EfContext.Messages
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Messages.AsNoTracking().Include(x => x.Source).AsEnumerable()
-				: EfContext.Messages.Include(x => x.Source).AsEnumerable();
+				? EfContext.Messages.AsNoTracking()
+					.Include(x => x.Source)
+					.AsEnumerable()
+				: EfContext.Messages
+					.Include(x => x.Source)
+					.AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -118,14 +138,22 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		if (count > 0)
 		{
 			items = isNoTracking
-				? EfContext.Messages.AsNoTracking().Include(x => x.Source).Take(count).AsEnumerable()
-				: EfContext.Messages.Include(x => x.Source).Take(count).AsEnumerable();
+				? EfContext.Messages.AsNoTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable()
+				: EfContext.Messages
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Messages.AsNoTracking().Include(x => x.Source).AsEnumerable()
-				: EfContext.Messages.Include(x => x.Source).AsEnumerable();
+				? EfContext.Messages.AsNoTracking()
+					.Include(x => x.Source)
+					.AsEnumerable()
+				: EfContext.Messages
+					.Include(x => x.Source)
+					.AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

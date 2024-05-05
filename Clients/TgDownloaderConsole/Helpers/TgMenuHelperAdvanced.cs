@@ -52,10 +52,10 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.AutoDownload:
-					RunActionStatus(tgDownloadSettings, AutoDownload, true, false);
+					RunActionStatus(tgDownloadSettings, AutoDownload, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.AutoViewEvents:
-					RunActionStatus(tgDownloadSettings, AutoViewEvents, true, false);
+					RunActionStatus(tgDownloadSettings, AutoViewEvents, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.ScanChats:
 					ScanSources(tgDownloadSettings, TgEnumSourceType.Chat);
@@ -89,10 +89,10 @@ internal partial class TgMenuHelper
 		switch (sourceType)
 		{
 			case TgEnumSourceType.Chat:
-				RunActionStatus(tgDownloadSettings, ScanSourcesChatsWithSave, true, true);
+				RunActionStatus(tgDownloadSettings, ScanSourcesChatsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 			case TgEnumSourceType.Dialog:
-				RunActionStatus(tgDownloadSettings, ScanSourcesDialogsWithSave, true, true);
+				RunActionStatus(tgDownloadSettings, ScanSourcesDialogsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 		}
 	}
@@ -125,7 +125,7 @@ internal partial class TgMenuHelper
 
 	private void MarkHistoryRead(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		RunActionStatus(tgDownloadSettings, MarkHistoryReadCore, true, false);
+		RunActionStatus(tgDownloadSettings, MarkHistoryReadCore, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 	}
 
 	private void AutoDownload(TgDownloadSettingsViewModel _)

@@ -183,10 +183,11 @@ internal partial class TgMenuHelper
 	}
 
 	public void ClientConnectConsole() =>
-		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy().Item);
+		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
 
 	public async Task ClientConnectConsoleAsync() => 
-		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync()).Item);
+		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync(
+			await AppRepository.GetCurrentAppAsync())).Item);
 
 	private void AskClientConnect(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
@@ -204,7 +205,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsoleAsync(ConfigConsole, ProxyRepository.GetCurrentProxy().Item);
+		TgClient.ConnectSessionConsoleAsync(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

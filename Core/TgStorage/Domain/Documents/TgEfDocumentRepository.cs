@@ -17,7 +17,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				.Include(x => x.Source)
 				.DefaultIfEmpty()
 				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
-			: EfContext.Documents
+			: EfContext.Documents.AsTracking()
 				.Include(x => x.Source)
 				.DefaultIfEmpty()
 				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId);
@@ -37,7 +37,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				.DefaultIfEmpty()
 				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
 				.ConfigureAwait(false)
-			: await EfContext.Documents
+			: await EfContext.Documents.AsTracking()
 				.Include(x => x.Source)
 				.DefaultIfEmpty()
 				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
@@ -50,8 +50,14 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 	public override TgEfOperResult<TgEfDocumentEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfDocumentEntity? item = isNoTracking
-			? EfContext.Documents.AsTracking().Include(x => x.Source).FirstOrDefault()
-			: EfContext.Documents.Include(x => x.Source).FirstOrDefault();
+			? EfContext.Documents.AsNoTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefault()
+			: EfContext.Documents.AsTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefault();
 		return item is null
 			? new TgEfOperResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
@@ -60,8 +66,14 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 	public override async Task<TgEfOperResult<TgEfDocumentEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfDocumentEntity? item = isNoTracking
-			? await EfContext.Documents.AsTracking().Include(x => x.Source).FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Documents.Include(x => x.Source).FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Documents.AsNoTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefaultAsync().ConfigureAwait(false)
+			: await EfContext.Documents.AsTracking()
+				.Include(x => x.Source)
+				.DefaultIfEmpty()
+				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
 			? new TgEfOperResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists)
 			: new TgEfOperResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
@@ -86,14 +98,22 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		if (count > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking().Include(x => x.Source).Take(count).AsEnumerable()
-				: EfContext.Documents.Include(x => x.Source).Take(count).AsEnumerable();
+				? EfContext.Documents.AsNoTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable()
+				: EfContext.Documents.AsTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking().Include(x => x.Source).AsEnumerable()
-				: EfContext.Documents.Include(x => x.Source).AsEnumerable();
+				? EfContext.Documents.AsNoTracking()
+					.Include(x => x.Source)
+					.AsEnumerable()
+				: EfContext.Documents.AsTracking()
+					.Include(x => x.Source)
+					.AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -118,14 +138,22 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		if (count > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking().Include(x => x.Source).Take(count).AsEnumerable()
-				: EfContext.Documents.Include(x => x.Source).Take(count).AsEnumerable();
+				? EfContext.Documents.AsNoTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable()
+				: EfContext.Documents.AsTracking()
+					.Include(x => x.Source)
+					.Take(count).AsEnumerable();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking().Include(x => x.Source).AsEnumerable()
-				: EfContext.Documents.Include(x => x.Source).AsEnumerable();
+				? EfContext.Documents.AsNoTracking()
+					.Include(x => x.Source)
+					.AsEnumerable()
+				: EfContext.Documents.AsTracking()
+					.Include(x => x.Source)
+					.AsEnumerable();
 		}
 		return new TgEfOperResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
