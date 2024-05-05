@@ -13,62 +13,63 @@ namespace TgStorage.Domain.Sources;
 [Index(nameof(FirstId))]
 [Index(nameof(IsAutoUpdate))]
 [Index(nameof(DtChanged))]
-public sealed class TgEfSourceEntity : TgEfEntityBase
+public sealed partial class TgEfSourceEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
     public long Id{ get; set; }
 
     [DefaultValue("UserName")]
     [ConcurrencyCheck]
     [MaxLength(256)]
-    [Column(TgEfConstants.ColumnUserName)]
+    [Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
     public string? UserName { get; set; }
 
     [DefaultValue("Title")]
     [ConcurrencyCheck]
     [MaxLength(1024)]
-    [Column(TgEfConstants.ColumnTitle)]
+    [Column(TgEfConstants.ColumnTitle, TypeName = "NVARCHAR(256)")]
     public string? Title { get; set; }
 
     [DefaultValue("About")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnAbout)]
+    [Column(TgEfConstants.ColumnAbout, TypeName = "NVARCHAR(1024)")]
     public string? About { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnCount)]
+    [Column(TgEfConstants.ColumnCount, TypeName = "INT")]
     public int Count { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(1024)]
-    [Column(TgEfConstants.ColumnDirectory)]
+    [Column(TgEfConstants.ColumnDirectory, TypeName = "NVARCHAR(256)")]
     public string? Directory { get; set; }
 
     [DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnFirstId)]
+    [Column(TgEfConstants.ColumnFirstId, TypeName = "INT")]
     public int FirstId { get; set; }
 
     [DefaultValue(false)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnIsAutoUpdate)]
+    [Column(TgEfConstants.ColumnIsAutoUpdate, TypeName = "BIT")]
     public bool IsAutoUpdate { get; set; }
 
     [DefaultValue("0001-01-01 00:00:00")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnDtChanged)]
+    [Column(TgEfConstants.ColumnDtChanged, TypeName = "DATETIME")]
 	public DateTime DtChanged { get; set; }
 
     [NotMapped]
     public ICollection<TgEfDocumentEntity> Documents { get; set; } = default!;
 
-	[NotMapped] public ICollection<TgEfMessageEntity> Messages { get; set; } = default!;
+    [NotMapped]
+	public ICollection<TgEfMessageEntity> Messages { get; set; } = default!;
 
     public TgEfSourceEntity() : base()
     {

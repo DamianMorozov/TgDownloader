@@ -13,10 +13,8 @@ public interface ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
 	public Task<TgEfOperResult<T>> GetNewAsync(bool isNoTracking);
 	public TgEfOperResult<T> GetFirst(bool isNoTracking);
 	public Task<TgEfOperResult<T>> GetFirstAsync(bool isNoTracking);
-	public TgEfOperResult<T> GetEnumerable(TgEnumTableTopRecords topRecords, bool isNoTracking);
-	public TgEfOperResult<T> GetEnumerable(int count, bool isNoTracking);
-	public Task<TgEfOperResult<T>> GetEnumerableAsync(TgEnumTableTopRecords topRecords, bool isNoTracking);
-	public Task<TgEfOperResult<T>> GetEnumerableAsync(int count, bool isNoTracking);
+	public TgEfOperResult<T> GetList(TgEnumTableTopRecords topRecords, bool isNoTracking);
+	public Task<TgEfOperResult<T>> GetListAsync(TgEnumTableTopRecords topRecords, bool isNoTracking);
 	public int GetCount();
 	public Task<int> GetCountAsync();
 

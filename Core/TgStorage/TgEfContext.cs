@@ -131,7 +131,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		base.OnConfiguring(optionsBuilder);
+		//base.OnConfiguring(optionsBuilder);
 		LoggerFactory factory = new();
 		optionsBuilder
 #if DEBUG
@@ -146,10 +146,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		;
 	}
 
-	//// Magic string.
-	//// Define the model.
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		// Magic string - Define the model
 		// Concurrency tokens
 		// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
 		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
@@ -169,7 +168,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		modelBuilder.Entity<TgEfProxyEntity>().Ignore(x => x.RowVersion);
 		modelBuilder.Entity<TgEfSourceEntity>().Ignore(x => x.RowVersion);
 		modelBuilder.Entity<TgEfVersionEntity>().Ignore(x => x.RowVersion);
-		// FK.
+		// FOREIGN KEYS.
 		modelBuilder.Entity<TgEfAppEntity>()
 			.HasOne(app => app.Proxy)
 			.WithMany(proxy => proxy.Apps)
@@ -187,8 +186,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 			.HasForeignKey(message => message.SourceId)
 			.HasPrincipalKey(source => source.Id)
 			.IsRequired();
+
 		// Result.
-		base.OnModelCreating(modelBuilder);
+		//base.OnModelCreating(modelBuilder);
 	}
 
 	public IEnumerable<ITgDbEntity> GetTableModels()
@@ -519,16 +519,28 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public void CreateAndUpdateDb()
 	{
 		CheckIfDisposed();
-		Database.EnsureCreated();
-		Database.Migrate();
+		if (!Database.GetPendingMigrations().Any())
+		{
+			Database.EnsureCreated();
+		}
+		else
+		{
+			Database.Migrate();
+		}
 	}
 
 	/// <summary> Create and update storage </summary>
 	public async Task CreateAndUpdateDbAsync()
 	{
 		CheckIfDisposed();
-		await Database.EnsureCreatedAsync();
-		await Database.MigrateAsync();
+		if (!(await Database.GetPendingMigrationsAsync()).Any())
+		{
+			await Database.EnsureCreatedAsync();
+		}
+		else
+		{
+			await Database.MigrateAsync();
+		}
 	}
 
 	#endregion

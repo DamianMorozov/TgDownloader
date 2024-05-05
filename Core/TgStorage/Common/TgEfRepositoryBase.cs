@@ -119,14 +119,9 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	public virtual async Task<TgEfOperResult<T>> GetFirstAsync(bool isNoTracking) => await UseOverrideMethodAsync().ConfigureAwait(false);
 
-	public virtual TgEfOperResult<T> GetEnumerable(TgEnumTableTopRecords topRecords, bool isNoTracking) => UseOverrideMethod();
+	public virtual TgEfOperResult<T> GetList(TgEnumTableTopRecords topRecords, bool isNoTracking) => UseOverrideMethod();
 
-	public virtual TgEfOperResult<T> GetEnumerable(int count, bool isNoTracking) => UseOverrideMethod();
-
-	public virtual async Task<TgEfOperResult<T>> GetEnumerableAsync(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
-		await UseOverrideMethodAsync().ConfigureAwait(false);
-
-	public virtual async Task<TgEfOperResult<T>> GetEnumerableAsync(int count, bool isNoTracking) => 
+	public virtual async Task<TgEfOperResult<T>> GetListAsync(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
 		await UseOverrideMethodAsync().ConfigureAwait(false);
 
 	public virtual int GetCount() => throw new NotImplementedException(TgLocale.UseOverrideMethod);
@@ -333,7 +328,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	public virtual TgEfOperResult<T> DeleteAll()
 	{
-		TgEfOperResult<T> operResult = GetEnumerable(0, isNoTracking: false);
+		TgEfOperResult<T> operResult = GetList(0, isNoTracking: false);
 		if (operResult.IsExists)
 		{
 			foreach (T item in operResult.Items)
@@ -346,7 +341,7 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	public virtual async Task<TgEfOperResult<T>> DeleteAllAsync()
 	{
-		TgEfOperResult<T> operResult = await GetEnumerableAsync(0, isNoTracking: false).ConfigureAwait(false);
+		TgEfOperResult<T> operResult = await GetListAsync(0, isNoTracking: false).ConfigureAwait(false);
 		if (operResult.IsExists)
 		{
 			foreach (T item in operResult.Items)

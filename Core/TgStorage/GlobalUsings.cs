@@ -1,26 +1,26 @@
-// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // Global using directives
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 
 global using CommunityToolkit.Mvvm.ComponentModel;
-global using FluentValidation;
 global using FluentValidation.Results;
+global using FluentValidation;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
-global using System.ComponentModel;
-global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
+global using System.ComponentModel.DataAnnotations;
+global using System.ComponentModel;
 global using System.Data;
 global using System.Diagnostics;
 global using System.IO.Enumeration;
 global using System.Linq.Expressions;
 global using System.Reflection;
-global using System.Text;
 global using System.Text.RegularExpressions;
-global using System.Xml;
+global using System.Text;
 global using System.Xml.Linq;
 global using System.Xml.Serialization;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.Storage;
+global using System.Xml;
 global using TgLocalization.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Contracts;

@@ -9,13 +9,13 @@ namespace TgStorage.Domain.Apps;
 [Index(nameof(ApiId))]
 [Index(nameof(PhoneNumber))]
 [Index(nameof(ProxyUid))]
-public sealed class TgEfAppEntity : TgEfEntityBase
+public sealed partial class TgEfAppEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnApiHash)]
+    [Column(TgEfConstants.ColumnApiHash, TypeName = "CHAR(36)")]
     public Guid ApiHash { get; set; }
     
     [NotMapped]
@@ -27,7 +27,7 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnApiId)]
+    [Column(TgEfConstants.ColumnApiId, TypeName = "INT")]
     public int ApiId { get; set; }
 
 	[NotMapped]
@@ -40,21 +40,15 @@ public sealed class TgEfAppEntity : TgEfEntityBase
 	[DefaultValue("+00000000000")]
 	[ConcurrencyCheck]
 	[MaxLength(16)]
-	[Column(TgEfConstants.ColumnPhoneNumber)]
+	[Column(TgEfConstants.ColumnPhoneNumber, TypeName = "NVARCHAR(16)")]
 	public string PhoneNumber { get; set; } = default!;
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnProxyUid)]
+    [Column(TgEfConstants.ColumnProxyUid, TypeName = "CHAR(36)")]
     public Guid? ProxyUid { get; set; }
-	
-    [NotMapped]
-	public string ProxyUidString
-	{
-		get => ProxyUid is null ? Guid.Empty.ToString() : ProxyUid.ToString();
-		set => ProxyUid = Guid.TryParse(value, out Guid proxyUid) ? proxyUid : Guid.Empty;
-	}
 
+	[NotMapped]
 	public TgEfProxyEntity? Proxy { get; set; }
 
     public TgEfAppEntity() : base()

@@ -12,40 +12,41 @@ namespace TgStorage.Domain.Messages;
 [Index(nameof(Type))]
 [Index(nameof(Size))]
 [Index(nameof(Message))]
-public sealed class TgEfMessageEntity : TgEfEntityBase
+public sealed partial class TgEfMessageEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSourceId)]
+    [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
     public long SourceId { get; set; }
-	
+
+	[NotMapped]
     public TgEfSourceEntity? Source { get; set; }
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
     public long Id { get; set; }
 
 	[DefaultValue("0001-01-01 00:00:00")]
 	[ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnDtCreated)]
+    [Column(TgEfConstants.ColumnDtCreated, TypeName = "DATETIME")]
     public DateTime DtCreated { get; set; }
 
     [DefaultValue(TgEnumMessageType.Message)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnType)]
+    [Column(TgEfConstants.ColumnType, TypeName = "INT")]
     public TgEnumMessageType Type { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSize)]
+    [Column(TgEfConstants.ColumnSize, TypeName = "INT(20)")]
     public long Size { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnMessage)]
+    [Column(TgEfConstants.ColumnMessage, TypeName = "NVARCHAR(100)")]
     public string Message { get; set; } = default!;
 
     public TgEfMessageEntity() : base()

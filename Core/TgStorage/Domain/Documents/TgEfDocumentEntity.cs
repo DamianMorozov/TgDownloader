@@ -12,41 +12,42 @@ namespace TgStorage.Domain.Documents;
 [Index(nameof(FileName))]
 [Index(nameof(FileSize))]
 [Index(nameof(AccessHash))]
-public sealed class TgEfDocumentEntity : TgEfEntityBase
+public sealed partial class TgEfDocumentEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSourceId)]
+    [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
     public long SourceId { get; set; }
-	
+
+	[NotMapped]
     public TgEfSourceEntity? Source { get; set; }
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId)]
+    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
     public long Id { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnMessageId)]
+    [Column(TgEfConstants.ColumnMessageId, TypeName = "INT(20)")]
     public long MessageId { get; set; }
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(256)]
-    [Column(TgEfConstants.ColumnFileName)]
+    [Column(TgEfConstants.ColumnFileName, TypeName = "NVARCHAR(100)")]
     public string FileName { get; set; } = default!;
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnFileSize)]
+    [Column(TgEfConstants.ColumnFileSize, TypeName = "INT(20)")]
     public long FileSize { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnAccessHash)]
+    [Column(TgEfConstants.ColumnAccessHash, TypeName = "INT(20)")]
     public long AccessHash { get; set; }
 
     public TgEfDocumentEntity() : base()

@@ -11,42 +11,42 @@ namespace TgStorage.Domain.Proxies;
 [Index(nameof(UserName))]
 [Index(nameof(Password))]
 [Index(nameof(Secret))]
-public sealed class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
+public sealed partial class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(TgEnumProxyType.None)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnType)]
+    [Column(TgEfConstants.ColumnType, TypeName = "INT")]
     public TgEnumProxyType Type { get; set; }
 
     [DefaultValue("No proxy")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnHostName)]
+    [Column(TgEfConstants.ColumnHostName, TypeName = "INT")]
     public string HostName { get; set; } = default!;
 
     [DefaultValue(404)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnPort)]
+    [Column(TgEfConstants.ColumnPort, TypeName = "INT(5)")]
     public ushort Port { get; set; }
 
     [DefaultValue("No user")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnUserName)]
+    [Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
     public string UserName { get; set; } = default!;
 
     [DefaultValue("No password")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnPassword)]
+    [Column(TgEfConstants.ColumnPassword, TypeName = "NVARCHAR(128)")]
     public string Password { get; set; } = default!;
 
     [DefaultValue("")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnSecret)]
+    [Column(TgEfConstants.ColumnSecret, TypeName = "NVARCHAR(128)")]
     public string Secret { get; set; } = default!;
 
     [NotMapped] 

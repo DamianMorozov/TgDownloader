@@ -46,7 +46,7 @@ public static class TgEfUtils
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfOperResult<TgEfVersionEntity> operResult = versionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfOperResult<TgEfVersionEntity> operResult = versionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity version in operResult.Items)
@@ -59,7 +59,7 @@ public static class TgEfUtils
 	public static void FiltersView()
 	{
 		TgEfFilterRepository filterRepository = new(EfContext);
-		TgEfOperResult<TgEfFilterEntity> operResult = filterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfOperResult<TgEfFilterEntity> operResult = filterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfFilterEntity filter in operResult.Items)
@@ -74,7 +74,7 @@ public static class TgEfUtils
 	{
 		using TgEfContext efContext = CreateEfContext();
 		efContext.CreateAndUpdateDb();
-		TgEfVersionEntity versionLast = GetLastVersion();
+		TgEfVersionEntity versionLast = GetLastVersion(efContext);
 		if (versionLast.Version < 19)
 		{
 			UpgradeDb();
@@ -90,7 +90,7 @@ public static class TgEfUtils
 	{
 		await using TgEfContext efContext = CreateEfContext();
 		await efContext.CreateAndUpdateDbAsync();
-		TgEfVersionEntity versionLast = GetLastVersion();
+		TgEfVersionEntity versionLast = GetLastVersion(efContext);
 		if (versionLast.Version < 19)
 		{
 			await UpgradeDbAsync();
@@ -268,14 +268,17 @@ public static class TgEfUtils
 
 	public static Task<bool> CheckTableVersionsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfVersionRepository(efContext));
 
-	public static TgEfVersionEntity GetLastVersion()
+	public static TgEfVersionEntity GetLastVersion(TgEfContext efContext)
 	{
-		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfVersionEntity versionLast = !EfContext.IsTableExists(TgEfConstants.TableVersions)
-			? new() : versionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).Items
-				.Where(x => x.Description != "New version")
-				.OrderBy(x => x.Version)
-				.Last();
+		TgEfVersionRepository versionRepository = new(efContext);
+		TgEfVersionEntity versionLast = new();
+		if (EfContext.IsTableExists(TgEfConstants.TableVersions))
+		{
+			List<TgEfVersionEntity> versions = versionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).Items
+				.Where(x => x.Version != new TgEfVersionEntity().Version).OrderBy(x => x.Version).ToList();
+			if (versions.Any())
+				versionLast = versions[^1];
+		}
 		return versionLast;
 	}
 
@@ -286,7 +289,7 @@ public static class TgEfUtils
 		bool isLast = false;
 		while (!isLast)
 		{
-			TgEfVersionEntity versionLast = GetLastVersion();
+			TgEfVersionEntity versionLast = GetLastVersion(efContext);
 			if (Equals(versionLast.Version, short.MaxValue))
 				versionLast.Version = 0;
 			switch (versionLast.Version)
@@ -376,7 +379,7 @@ public static class TgEfUtils
 		bool isLast = false;
 		while (!isLast)
 		{
-			TgEfVersionEntity versionLast = GetLastVersion();
+			TgEfVersionEntity versionLast = GetLastVersion(efContext);
 			if (Equals(versionLast.Version, short.MaxValue))
 				versionLast.Version = 0;
 			switch (versionLast.Version)

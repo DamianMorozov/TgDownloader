@@ -7,20 +7,20 @@ namespace TgStorage.Domain.Versions;
 [Table(TgEfConstants.TableVersions)]
 [Index(nameof(Version), IsUnique = true)]
 [Index(nameof(Description))]
-public sealed class TgEfVersionEntity : TgEfEntityBase
+public sealed partial class TgEfVersionEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(1024)]
     [MaxLength(4)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnVersion)]
+    [Column(TgEfConstants.ColumnVersion, TypeName = "SMALLINT")]
     public short Version { get; set; }
 
     [DefaultValue("New version")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnDescription)]
+    [Column(TgEfConstants.ColumnDescription, TypeName = "NVARCHAR(128)")]
     public string Description { get; set; } = default!;
 
     public TgEfVersionEntity() : base()

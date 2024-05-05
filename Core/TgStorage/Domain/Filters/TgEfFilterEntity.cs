@@ -11,35 +11,35 @@ namespace TgStorage.Domain.Filters;
 [Index(nameof(Mask))]
 [Index(nameof(Size))]
 [Index(nameof(SizeType))]
-public sealed class TgEfFilterEntity : TgEfEntityBase
+public sealed partial class TgEfFilterEntity : TgEfEntityBase
 {
     #region Public and private fields, properties, constructor
 
     [DefaultValue(true)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnIsEnabled)]
+    [Column(TgEfConstants.ColumnIsEnabled, TypeName = "BIT")]
     public bool IsEnabled { get; set; }
 
     [DefaultValue(TgEnumFilterType.SingleName)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnFilterType)]
+    [Column(TgEfConstants.ColumnFilterType, TypeName = "INT")]
     public TgEnumFilterType FilterType { get; set; }
 
     [DefaultValue("Any")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnName)]
+    [Column(TgEfConstants.ColumnName, TypeName = "NVARCHAR(128)")]
     public string Name { get; set; } = default!;
 
     [DefaultValue("*")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnMask)]
+    [Column(TgEfConstants.ColumnMask, TypeName = "NVARCHAR(128)")]
     public string Mask { get; set; } = default!;
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSize)]
+    [Column(TgEfConstants.ColumnSize, TypeName = "INT(20)")]
     public long Size { get; set; }
 
     [NotMapped]
@@ -54,7 +54,7 @@ public sealed class TgEfFilterEntity : TgEfEntityBase
     
     [DefaultValue(TgEnumFileSizeType.Bytes)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSizeType)]
+    [Column(TgEfConstants.ColumnSizeType, TypeName = "INT")]
     public TgEnumFileSizeType SizeType { get; set; }
 
     public TgEfFilterEntity() : base()

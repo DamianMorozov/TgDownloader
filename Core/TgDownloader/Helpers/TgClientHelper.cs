@@ -1186,7 +1186,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         await TryCatchFuncAsync(async () =>
         {
             // Set filters.
-            Filters = (await FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false))
+            Filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: false))
 	            .Items.Where(x => x.IsEnabled);
 
             switch (TgAsyncUtils.AppType)
