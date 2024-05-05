@@ -85,7 +85,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew))
 			return;
-		EfContext.Database.Migrate();
+		TgEfUtils.CreateAndUpdateDb();
 	}
 
 	private void TgStorageDeleteExistsDb()
@@ -109,7 +109,7 @@ internal partial class TgMenuHelper
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
 			return;
 		EfContext.DeleteTables();
-		EfContext.Database.Migrate();
+		TgEfUtils.CreateAndUpdateDb();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();
 	}

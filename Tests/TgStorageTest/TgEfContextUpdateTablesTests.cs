@@ -16,7 +16,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfAppEntity> operResult = await new TgEfAppRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfAppEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfAppEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -30,7 +30,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfDocumentEntity> operResult = await new TgEfDocumentRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -44,7 +44,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfFilterEntity> operResult = await new TgEfFilterRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -58,7 +58,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfMessageEntity> operResult = await new TgEfMessageRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -72,7 +72,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfProxyEntity> operResult = await new TgEfProxyRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -86,7 +86,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfSourceEntity> operResult = await new TgEfSourceRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});
@@ -100,7 +100,7 @@ internal sealed class TgEfContextUpdateTablesTests : TgDbContextTestsBase
 			TgEfOperResult<TgEfVersionEntity> operResult = await new TgEfVersionRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
 			if (operResult.IsExists)
 			{
-				operResult = await EfProdContext.UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(operResult.Item.Uid);
+				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(operResult.Item.Uid);
 				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 			}
 		});

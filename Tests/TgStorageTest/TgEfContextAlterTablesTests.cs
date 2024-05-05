@@ -13,7 +13,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfAppEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfAppEntity>();
+			TgEfOperResult<TgEfAppEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfAppEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -23,7 +23,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfDocumentEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
+			TgEfOperResult<TgEfDocumentEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -33,7 +33,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfFilterEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfFilterEntity>();
+			TgEfOperResult<TgEfFilterEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfFilterEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -43,7 +43,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfMessageEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfMessageEntity>();
+			TgEfOperResult<TgEfMessageEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfMessageEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -53,7 +53,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfProxyEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfProxyEntity>();
+			TgEfOperResult<TgEfProxyEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfProxyEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -63,7 +63,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfSourceEntity>();
+			TgEfOperResult<TgEfSourceEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfSourceEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}
@@ -73,7 +73,7 @@ internal sealed class TgEfContextAlterTablesTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<TgEfVersionEntity> operResult = await EfProdContext.AlterTableNoCaseUidAsync<TgEfVersionEntity>();
+			TgEfOperResult<TgEfVersionEntity> operResult = await CreateEfContext().AlterTableNoCaseUidAsync<TgEfVersionEntity>();
 			Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
 		});
 	}

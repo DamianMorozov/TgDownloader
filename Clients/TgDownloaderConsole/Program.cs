@@ -8,7 +8,7 @@ ConsoleInit();
 
 // Register TgEfContext as the DbContext for EF Core
 tgLog.WriteLine("EF Core init ...");
-TgEfUtils.EfContext.Database.Migrate();
+TgEfUtils.CreateAndUpdateDb();
 tgLog.WriteLine("EF Core init success");
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();

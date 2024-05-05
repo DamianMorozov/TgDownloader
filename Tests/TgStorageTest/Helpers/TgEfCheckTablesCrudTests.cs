@@ -13,8 +13,8 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync());
-			Assert.That(await TgEfUtils.CheckTableAppsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync(CreateEfContext()));
+			Assert.That(await TgEfUtils.CheckTableAppsCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -23,7 +23,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableDocumentsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableDocumentsCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -32,7 +32,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableFiltersCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableFiltersCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -41,7 +41,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableMessagesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableMessagesCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -50,7 +50,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -59,7 +59,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableSourcesCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableSourcesCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -68,7 +68,7 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(await TgEfUtils.CheckTableVersionsCrudAsync());
+			Assert.That(await TgEfUtils.CheckTableVersionsCrudAsync(CreateEfContext()));
 		});
 	}
 

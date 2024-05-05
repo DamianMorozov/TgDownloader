@@ -20,5 +20,25 @@ public abstract class TgPageComponentBase : ComponentBase
     protected static TgClientHelper TgClient => TgClientHelper.Instance;
     public bool IsBlazorLoading { get; set; } = true;
 
-    #endregion
+	#endregion
+
+	#region Public and private methods
+
+	protected ConfirmOptions GetConfirmOptions() =>
+		new()
+		{
+			ShowTitle = false,
+			ShowClose = true,
+			OkButtonText = TgLocale.MenuYes,
+			CancelButtonText = TgLocale.MenuNo,
+			Bottom = null,
+			ChildContent = null,
+			Height = null,
+			Left = null,
+			Style = null,
+			Top = null,
+			Width = null,
+		};
+
+	#endregion
 }

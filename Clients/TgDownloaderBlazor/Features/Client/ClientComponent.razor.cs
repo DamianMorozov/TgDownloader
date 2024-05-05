@@ -177,7 +177,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			// return;
 			//await TgClient.ConnectSessionAsync(proxyVm ?? ProxyVm);
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var efContext = await EfFactory.CreateDbContextAsync();
+			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			//await TgClient.ConnectSessionAsync(efContext.ProxyRepo.CreateNew());
 		}, message =>
 		{
@@ -228,7 +228,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var efContext = await EfFactory.CreateDbContextAsync();
+			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			Item = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		}, message =>
 		{
@@ -254,7 +254,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var efContext = await EfFactory.CreateDbContextAsync();
+			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			if (Item is not null)
 			{
 				await AppRepository.SaveAsync(Item);
@@ -286,7 +286,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var efContext = await EfFactory.CreateDbContextAsync();
+			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			Item = new TgEfAppEntity();
 		}, message =>
 		{
@@ -312,7 +312,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-			await using var efContext = await EfFactory.CreateDbContextAsync();
+			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			//await efContext.AppsRepo.DeleteAllItemsAsync();
 		}, message =>
 		{

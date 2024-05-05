@@ -36,5 +36,17 @@ public sealed partial class Index : TgPageComponentBase
 		AppSettings.LoadXmlSettings();
 	}
 
+	private async Task CreateNewStorage(MouseEventArgs arg)
+	{
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		ConfirmOptions confirmOptions = GetConfirmOptions();
+		bool? result = await DialogService.Confirm(TgLocale.MenuStorageDbCreateNew, "", confirmOptions);
+		if (result == true)
+		{
+			await TgEfUtils.CreateAndUpdateDbAsync();
+			DialogService.Close();
+		}
+	}
+
 	#endregion
 }

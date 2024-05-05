@@ -7,33 +7,27 @@ internal abstract class TgDbContextTestsBase
 {
     #region Public and private fields, properties, constructor
 
-	/// <summary> Product EF DB context </summary>
-	protected TgEfContext EfProdContext { get; }
-
-	protected TgDbContextTestsBase()
-    {
-        LoggerFactory factory = new();
-        
-        //// Memory EF DB context.
-        //DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()
-        //    .UseLoggerFactory(factory)
-        //    .UseSqlite("DataSource=:memory:");
-        //EfMemoryContext = new(builderMemory.Options);
-        //TestContext.WriteLine(EfMemoryContext.Database.GetConnectionString());
-        
-        // Product EF DB Context.
+	protected TgEfContext CreateEfContext()
+	{
+		LoggerFactory factory = new();
 		DbContextOptionsBuilder<TgEfContext> builderDbProd = new DbContextOptionsBuilder<TgEfContext>()
-	        .UseLoggerFactory(factory)
-	        .UseSqlite($"{TgLocalization.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
-        EfProdContext = new(builderDbProd.Options);
-        TestContext.WriteLine(EfProdContext.Database.GetConnectionString());
+			.UseLoggerFactory(factory)
+			.UseSqlite($"{TgLocalization.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
+		TgEfContext efContext = new(builderDbProd.Options);
+		TestContext.WriteLine(efContext.Database.GetConnectionString());
+		return efContext;
 	}
 
-	~TgDbContextTestsBase()
-    {
-	    //EfMemoryContext.Dispose();
-        EfProdContext.Dispose();
-    }
+	protected TgEfContext CreateEfContextMemory()
+	{
+		LoggerFactory factory = new();
+		DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()
+			.UseLoggerFactory(factory)
+			.UseSqlite("DataSource=:memory:");
+		TgEfContext efContext = new(builderMemory.Options);
+		TestContext.WriteLine(efContext.Database.GetConnectionString());
+		return efContext;
+	}
 
-    #endregion
+	#endregion
 }

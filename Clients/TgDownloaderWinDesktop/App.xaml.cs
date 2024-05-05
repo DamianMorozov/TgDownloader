@@ -74,8 +74,7 @@ public partial class App
 	private async void OnStartup(object sender, StartupEventArgs e)
 	{
 		// Register TgEfContext as the DbContext for EF Core
-		await using TgEfContext efContext = TgEfUtils.CreateEfContext();
-		await efContext.Database.MigrateAsync();
+		await TgEfUtils.CreateAndUpdateDbAsync();
 
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
 		await Host.StartAsync().ConfigureAwait(false);

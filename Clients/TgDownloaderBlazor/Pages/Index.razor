@@ -6,11 +6,14 @@
 <RadzenStack>
 	@* Buttons *@
 	<RadzenRow AlignItems="AlignItems.Center">
-		<RadzenColumn Size="12" SizeMD="6">
-			<RadzenButton Style="width: 100%; " Icon="refresh" Click="ResetToDefault" Text=@TgLocale.HomeResetToDefault></RadzenButton>
+		<RadzenColumn Size="12" SizeMD="4">
+			<RadzenButton Style="width: 100%; " Icon="refresh" Click=@ResetToDefault Text=@TgLocale.HomeResetToDefault></RadzenButton>
 		</RadzenColumn>
-		<RadzenColumn Size="12" SizeMD="6">
-			<RadzenButton Style="width: 100%; " Icon="save" Click="SaveToXml" Text=@TgLocale.HomeSaveToXml></RadzenButton>
+		<RadzenColumn Size="12" SizeMD="4">
+			<RadzenButton Style="width: 100%; " Icon="save" Click=@SaveToXml Text=@TgLocale.HomeSaveToXml></RadzenButton>
+		</RadzenColumn>
+		<RadzenColumn Size="12" SizeMD="4">
+			<RadzenButton Style="width: 100%; " Icon="save" Click=@CreateNewStorage Text=@TgLocale.MenuStorageDbCreateNew></RadzenButton>
 		</RadzenColumn>
 	</RadzenRow>
 	@* Titles *@

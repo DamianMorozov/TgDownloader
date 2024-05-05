@@ -13,9 +13,9 @@ internal sealed class TgEfContextExistsTablesTests : TgDbContextTestsBase
 		Assert.DoesNotThrow(() =>
 		{
 			if (isExists)
-				Assert.That(EfProdContext.IsTableExists(tableName));
+				Assert.That(CreateEfContext().IsTableExists(tableName));
 			else
-				Assert.That(!EfProdContext.IsTableExists(tableName));
+				Assert.That(!CreateEfContext().IsTableExists(tableName));
 		});
 	}
 

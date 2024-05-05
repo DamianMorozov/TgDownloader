@@ -24,7 +24,7 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 	    if (!IsBlazorLoading)
 		    return;
 
-	    await using var efContext = await EfFactory.CreateDbContextAsync();
+	    await using TgEfContext? efContext = await EfFactory.CreateDbContextAsync();
 	    if (!AppSettings.AppXml.IsExistsFileStorage)
 	    {
 		    IsBlazorLoading = false;
