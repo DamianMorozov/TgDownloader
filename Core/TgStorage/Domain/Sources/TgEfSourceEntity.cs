@@ -5,7 +5,7 @@ namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableSources)]
-[Index(nameof(Id), IsUnique = true)]
+[Index(nameof(Id))]
 [Index(nameof(UserName))]
 [Index(nameof(Title))]
 [Index(nameof(Count))]
@@ -65,10 +65,8 @@ public sealed partial class TgEfSourceEntity : TgEfEntityBase
     [Column(TgEfConstants.ColumnDtChanged, TypeName = "DATETIME")]
 	public DateTime DtChanged { get; set; }
 
-    [NotMapped]
     public ICollection<TgEfDocumentEntity> Documents { get; set; } = default!;
 
-    [NotMapped]
 	public ICollection<TgEfMessageEntity> Messages { get; set; } = default!;
 
     public TgEfSourceEntity() : base()

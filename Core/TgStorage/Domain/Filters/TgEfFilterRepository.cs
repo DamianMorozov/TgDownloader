@@ -29,10 +29,12 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 			return operResult;
 		TgEfFilterEntity? itemFind = isNoTracking
 			? await EfContext.Filters.AsNoTracking()
-				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.Where(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Filters.AsTracking()
-				.SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.Where(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)

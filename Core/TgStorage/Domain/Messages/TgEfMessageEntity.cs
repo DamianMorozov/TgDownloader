@@ -7,7 +7,6 @@ namespace TgStorage.Domain.Messages;
 [Table(TgEfConstants.TableMessages)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
-[Index(nameof(SourceId), nameof(Id), IsUnique = true)]
 [Index(nameof(DtCreated))]
 [Index(nameof(Type))]
 [Index(nameof(Size))]
@@ -19,9 +18,8 @@ public sealed partial class TgEfMessageEntity : TgEfEntityBase
     [DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
-    public long SourceId { get; set; }
+    public long? SourceId { get; set; }
 
-	[NotMapped]
     public TgEfSourceEntity? Source { get; set; }
 
 	[DefaultValue(0)]
@@ -64,7 +62,8 @@ public sealed partial class TgEfMessageEntity : TgEfEntityBase
     public override void Default()
     {
 	    base.Default();
-	    SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+	    //SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+	    SourceId = null;
 	    Id = this.GetDefaultPropertyLong(nameof(Id));
 	    DtCreated = this.GetDefaultPropertyDateTime(nameof(DtCreated));
 		Type = this.GetDefaultPropertyGeneric<TgEnumMessageType>(nameof(Type));

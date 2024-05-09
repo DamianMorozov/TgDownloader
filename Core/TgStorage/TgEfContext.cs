@@ -26,7 +26,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 
 	public bool IsReady =>
-		TgAppSettings.AppXml.IsExistsFileStorage &&
+		TgAppSettings.AppXml.IsExistsEfStorage &&
 		IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
 		IsTableExists(TgEfConstants.TableFilters) && IsTableExists(TgEfConstants.TableMessages) &&
 		IsTableExists(TgEfConstants.TableProxies) && IsTableExists(TgEfConstants.TableSources) &&
@@ -131,8 +131,8 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		//base.OnConfiguring(optionsBuilder);
 		LoggerFactory factory = new();
+		string storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
 		optionsBuilder
 #if DEBUG
 			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}"), LogLevel.Information)
@@ -141,34 +141,36 @@ public sealed class TgEfContext : DbContext, IDisposable
 #endif
 			.EnableThreadSafetyChecks()
 			.UseLoggerFactory(factory)
-			.UseSqlite($"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}")
-			//.UseSqlite(b => b.MigrationsAssembly(assemblyName))
+			.UseSqlite(storagePath)
 		;
+#if DEBUG
+		Debug.WriteLine(storagePath);
+#endif
 	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		// Magic string - Define the model
-		// Concurrency tokens
-		// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
-		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
-		modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		// Ingore.
-		modelBuilder.Ignore<TgEfEntityBase>();
-		modelBuilder.Entity<TgEfAppEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfDocumentEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfFilterEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfMessageEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfProxyEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfSourceEntity>().Ignore(x => x.RowVersion);
-		modelBuilder.Entity<TgEfVersionEntity>().Ignore(x => x.RowVersion);
-		// FOREIGN KEYS.
+		//// Magic string - Define the model
+		//// Concurrency tokens
+		//// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
+		//// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
+		//modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//// Ingore
+		//modelBuilder.Ignore<TgEfEntityBase>();
+		//modelBuilder.Entity<TgEfAppEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfDocumentEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfFilterEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfMessageEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfProxyEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(x => x.RowVersion);
+		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(x => x.RowVersion);
+		// FOREIGN KEY
 		modelBuilder.Entity<TgEfAppEntity>()
 			.HasOne(app => app.Proxy)
 			.WithMany(proxy => proxy.Apps)
@@ -178,15 +180,12 @@ public sealed class TgEfContext : DbContext, IDisposable
 			.HasOne(document => document.Source)
 			.WithMany(source => source.Documents)
 			.HasForeignKey(document => document.SourceId)
-			.HasPrincipalKey(source => source.Id)
-			.IsRequired();
+			.HasPrincipalKey(source => source.Id);
 		modelBuilder.Entity<TgEfMessageEntity>()
 			.HasOne(message => message.Source)
 			.WithMany(source => source.Messages)
 			.HasForeignKey(message => message.SourceId)
-			.HasPrincipalKey(source => source.Id)
-			.IsRequired();
-
+			.HasPrincipalKey(source => source.Id);
 		// Result.
 		//base.OnModelCreating(modelBuilder);
 	}
@@ -240,13 +239,13 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	public (bool IsSuccess, string FileName) BackupDb()
 	{
-		if (File.Exists(TgAppSettings.AppXml.FileStorage))
+		if (File.Exists(TgAppSettings.AppXml.XmlEfStorage))
 		{
 			DateTime dt = DateTime.Now;
 			string fileBackup =
-				$"{Path.GetDirectoryName(TgAppSettings.AppXml.FileStorage)}\\" +
-				$"{Path.GetFileNameWithoutExtension(TgAppSettings.AppXml.FileStorage)}_{dt:yyyyMMdd}_{dt:HHmmss}.bak";
-			File.Copy(TgAppSettings.AppXml.FileStorage, fileBackup);
+				$"{Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}\\" +
+				$"{Path.GetFileNameWithoutExtension(TgAppSettings.AppXml.XmlEfStorage)}_{dt:yyyyMMdd}_{dt:HHmmss}.bak";
+			File.Copy(TgAppSettings.AppXml.XmlEfStorage, fileBackup);
 			return (File.Exists(fileBackup), fileBackup);
 		}
 		return (false, string.Empty);
@@ -519,7 +518,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public void CreateAndUpdateDb()
 	{
 		CheckIfDisposed();
-		if (!Database.GetPendingMigrations().Any())
+		if (!Database.GetPendingMigrations().Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
 		{
 			Database.EnsureCreated();
 		}
@@ -533,7 +532,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public async Task CreateAndUpdateDbAsync()
 	{
 		CheckIfDisposed();
-		if (!(await Database.GetPendingMigrationsAsync()).Any())
+		if (!(await Database.GetPendingMigrationsAsync()).Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
 		{
 			await Database.EnsureCreatedAsync();
 		}

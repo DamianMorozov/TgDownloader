@@ -49,7 +49,6 @@ public sealed partial class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
     [Column(TgEfConstants.ColumnSecret, TypeName = "NVARCHAR(128)")]
     public string Secret { get; set; } = default!;
 
-    [NotMapped] 
     public ICollection<TgEfAppEntity> Apps { get; set; } = default!;
 
 	public TgEfProxyEntity() : base()

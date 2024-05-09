@@ -7,7 +7,6 @@ namespace TgStorage.Domain.Documents;
 [Table(TgEfConstants.TableDocuments)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
-[Index(nameof(SourceId), nameof(Id), IsUnique = true)]
 [Index(nameof(MessageId))]
 [Index(nameof(FileName))]
 [Index(nameof(FileSize))]
@@ -19,7 +18,7 @@ public sealed partial class TgEfDocumentEntity : TgEfEntityBase
     [DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
-    public long SourceId { get; set; }
+    public long? SourceId { get; set; }
 
 	[NotMapped]
     public TgEfSourceEntity? Source { get; set; }
@@ -65,7 +64,8 @@ public sealed partial class TgEfDocumentEntity : TgEfEntityBase
     public override void Default()
     {
 	    base.Default();
-	    SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+	    //SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+	    SourceId = null;
 	    Id = this.GetDefaultPropertyLong(nameof(Id));
 	    MessageId = this.GetDefaultPropertyLong(nameof(MessageId));
 	    FileName = this.GetDefaultPropertyString(nameof(FileName));

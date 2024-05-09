@@ -12,9 +12,10 @@ public static class TgFileUtils
 
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
-	public static string AppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
-	public static string Session => "TgDownloader.session";
-	public static string Storage => "TgDownloader.db";
+	public static string FileAppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
+	public static string FileSession => "TgDownloader.session";
+	public static string FileEfStorage => "TgStorage.db";
+	public static string FileDeprecatedStorage => "TgDownloader.db";
 
 	#endregion
 

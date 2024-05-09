@@ -34,13 +34,15 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		TgEfMessageEntity? itemFind = isNoTracking
 			? await EfContext.Messages.AsNoTracking()
 				.Include(x => x.Source)
+				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.DefaultIfEmpty()
-				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Messages
 				.Include(x => x.Source)
+				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.DefaultIfEmpty()
-				.SingleOrDefaultAsync(x => x.SourceId == item.SourceId && x.Id == item.Id)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)

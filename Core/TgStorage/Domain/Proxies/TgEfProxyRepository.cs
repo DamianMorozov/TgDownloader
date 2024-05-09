@@ -29,10 +29,12 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			return operResult;
 		TgEfProxyEntity? itemFind = isNoTracking
 			? await EfContext.Proxies.AsNoTracking()
-				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Proxies.AsTracking()
-				.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, itemFind)

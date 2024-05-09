@@ -29,10 +29,12 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 			return operResult;
 		TgEfSourceEntity? itemFind = isNoTracking
 			? await EfContext.Sources.AsNoTracking()
-				.SingleOrDefaultAsync(x => x.Id == item.Id)
+				.Where(x => x.Id == item.Id)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Sources.AsTracking()
-				.SingleOrDefaultAsync(x => x.Id == item.Id)
+				.Where(x => x.Id == item.Id)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, itemFind)

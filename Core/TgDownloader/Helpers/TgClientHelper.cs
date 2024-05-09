@@ -136,14 +136,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
             return ClientResultDisconnected();
         if (!TgAppSettings.AppXml.IsExistsFileSession)
             return ClientResultDisconnected();
-        //if (!(!TgAppSettings.AppXml.IsUseProxy ||
-        //      (TgAppSettings.AppXml.IsUseProxy &&
+        //if (!(!TgAppSettings.IsUseProxy ||
+        //      (TgAppSettings.IsUseProxy &&
         //       (ContextManager.ProxyRepository.Get(AppRepository.GetFirstProxyUid) ??
         //        ContextManager.ProxyRepository.GetNew()).IsExist)))
         TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp());
 		//if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && operResult.IsExists)))
 		//    return ClientResultDisconnected();
-		if (TgAppSettings.AppXml.IsUseProxy && !operResult.IsExists)
+		if (TgAppSettings.IsUseProxy && !operResult.IsExists)
 			return ClientResultDisconnected();
 		if (ProxyException.IsExist || ClientException.IsExist)
 			return ClientResultDisconnected();
@@ -209,10 +209,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         if (!CheckClientIsReady()) return;
         if (Client is null) return;
         if (proxy.Uid == Guid.Empty) return;
-        if (!isDesktop && !TgAppSettings.AppXml.IsUseProxy) return;
+        if (!isDesktop && !TgAppSettings.IsUseProxy) return;
         if (Equals(proxy.Type, TgEnumProxyType.None)) return;
         if (proxy is TgEfProxyEntity efProxy)
-	        if (!TgEfUtils.GetEfValid(efProxy).IsValid) return;
+	        if (!TgEfUtils.GetEfValid<TgEfProxyEntity>(efProxy).IsValid) return;
 
 		try
 		{

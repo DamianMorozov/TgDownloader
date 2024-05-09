@@ -15,12 +15,14 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		TgEfAppEntity? itemFind = isNoTracking
 			? EfContext.Apps.AsNoTracking()
 				.Include(x => x.Proxy)
+				.Where(x => x.ApiHash == item.ApiHash)
 				.DefaultIfEmpty()
-				.SingleOrDefault(x => x.ApiHash == item.ApiHash)
+				.SingleOrDefault()
 			: EfContext.Apps.AsTracking()
 				.Include(x => x.Proxy)
+				.Where(x => x.ApiHash == item.ApiHash)
 				.DefaultIfEmpty()
-				.SingleOrDefault(x => x.ApiHash == item.ApiHash);
+				.SingleOrDefault();
 		return itemFind is not null
 			? new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.NotExists, item);
@@ -34,13 +36,15 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		TgEfAppEntity? itemFind = isNoTracking
 			? await EfContext.Apps.AsNoTracking()
 				.Include(x => x.Proxy)
+				.Where(x => x.ApiHash == item.ApiHash)
 				.DefaultIfEmpty()
-				.SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Apps.AsTracking()
 				.Include(x => x.Proxy)
+				.Where(x => x.ApiHash == item.ApiHash)
 				.DefaultIfEmpty()
-				.SingleOrDefaultAsync(x => x.ApiHash == item.ApiHash)
+				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
 			? new TgEfOperResult<TgEfAppEntity>(TgEnumEntityState.IsExists, itemFind)

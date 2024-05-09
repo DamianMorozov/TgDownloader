@@ -16,6 +16,7 @@ public sealed partial class TgEfAppEntity : TgEfEntityBase
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnApiHash, TypeName = "CHAR(36)")]
+    [SQLite.Collation("NOCASE")]
     public Guid ApiHash { get; set; }
     
     [NotMapped]
@@ -46,9 +47,9 @@ public sealed partial class TgEfAppEntity : TgEfEntityBase
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnProxyUid, TypeName = "CHAR(36)")]
-    public Guid? ProxyUid { get; set; }
+    [SQLite.Collation("NOCASE")]
+	public Guid? ProxyUid { get; set; }
 
-	[NotMapped]
 	public TgEfProxyEntity? Proxy { get; set; }
 
     public TgEfAppEntity() : base()
@@ -69,7 +70,8 @@ public sealed partial class TgEfAppEntity : TgEfEntityBase
         ApiHash = this.GetDefaultPropertyGuid(nameof(ApiHash));
         ApiId = this.GetDefaultPropertyInt(nameof(ApiId));
         PhoneNumber = this.GetDefaultPropertyString(nameof(PhoneNumber));
-		ProxyUid = this.GetDefaultPropertyGuid(nameof(ProxyUid));
+		//ProxyUid = this.GetDefaultPropertyGuid(nameof(ProxyUid));
+		ProxyUid = null;
     }
 
 	public override void Fill(object item)

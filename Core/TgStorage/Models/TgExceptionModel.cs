@@ -3,9 +3,7 @@
 
 namespace TgStorage.Models;
 
-/// <summary>
-/// Wrapper for exception.
-/// </summary>
+/// <summary> Wrapper for exception </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgExceptionModel : TgViewModelBase
 {

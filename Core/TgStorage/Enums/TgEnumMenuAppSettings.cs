@@ -8,7 +8,7 @@ public enum TgEnumMenuAppSettings
     Return,
     Reset,
     SetFileSession,
-    SetFileStorage,
-    SetTestStorage,
+    SetEfStorage,
+    SetDepreactedStorage,
     SetUseProxy,
 }

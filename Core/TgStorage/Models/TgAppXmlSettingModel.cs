@@ -3,28 +3,16 @@
 
 namespace TgStorage.Models;
 
-/// <summary>
-/// App xml setting.
-/// </summary>
+/// <summary> App xml setting </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgAppXmlSettingModel : ITgCommon
+public sealed class TgAppXmlSettingModel(string name, string value) : ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	public string Name { get; set; }
-	public string Value { get; set; }
+	public string Name { get; set; } = name;
+	public string Value { get; set; } = value;
 
-	public TgAppXmlSettingModel()
-	{
-		Name = string.Empty;
-		Value = string.Empty;
-	}
-
-	public TgAppXmlSettingModel(string name, string value)
-	{
-		Name = name;
-		Value = value;
-	}
+	public TgAppXmlSettingModel() : this(string.Empty, string.Empty) { }
 
 	#endregion
 

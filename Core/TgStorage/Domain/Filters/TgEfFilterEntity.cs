@@ -7,7 +7,7 @@ namespace TgStorage.Domain.Filters;
 [Table(TgEfConstants.TableFilters)]
 [Index(nameof(IsEnabled))]
 [Index(nameof(FilterType))]
-[Index(nameof(Name), IsUnique = true)]
+[Index(nameof(Name))]
 [Index(nameof(Mask))]
 [Index(nameof(Size))]
 [Index(nameof(SizeType))]

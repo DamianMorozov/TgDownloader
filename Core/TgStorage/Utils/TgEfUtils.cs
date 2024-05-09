@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using FluentValidation;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace TgStorage.Utils;
@@ -11,8 +12,6 @@ public static class TgEfUtils
 
 	public static TgLogHelper TgLog => TgLogHelper.Instance;
 	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-	public static short LastVersion => 24;
-
 
 	#endregion
 
@@ -21,23 +20,15 @@ public static class TgEfUtils
 	public static ValidationResult GetEfValid<T>(T item) where T : TgEfEntityBase, ITgDbEntity, new() =>
 		item switch
 		{
-			TgEfAppEntity app => GetEfValid(app),
-			TgEfDocumentEntity document => GetEfValid(document),
-			TgEfFilterEntity filter => GetEfValid(filter),
-			TgEfMessageEntity message => GetEfValid(message),
-			TgEfSourceEntity source => GetEfValid(source),
-			TgEfProxyEntity proxy => GetEfValid(proxy),
-			TgEfVersionEntity version => GetEfValid(version),
+			TgEfAppEntity app => new TgEfAppValidator().Validate(app),
+			TgEfDocumentEntity document => new TgEfDocumentValidator().Validate(document),
+			TgEfFilterEntity filter => new TgEfFilterValidator().Validate(filter),
+			TgEfMessageEntity message => new TgEfMessageValidator().Validate(message),
+			TgEfSourceEntity source => new TgEfSourceValidator().Validate(source),
+			TgEfProxyEntity proxy => new TgEfProxyValidator().Validate(proxy),
+			TgEfVersionEntity version => new TgEfVersionValidator().Validate(version),
 			_ => new ValidationResult { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
 		};
-
-	public static ValidationResult GetEfValid(TgEfAppEntity item) => new TgEfAppValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfDocumentEntity item) => new TgEfDocumentValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfFilterEntity item) => new TgEfFilterValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfMessageEntity item) => new TgEfMessageValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfSourceEntity item) => new TgEfSourceValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfProxyEntity item) => new TgEfProxyValidator().Validate(item);
-	public static ValidationResult GetEfValid(TgEfVersionEntity item) => new TgEfVersionValidator().Validate(item);
 
 	public static TgEfContext EfContext => CreateEfContext();
 
@@ -74,14 +65,15 @@ public static class TgEfUtils
 	{
 		using TgEfContext efContext = CreateEfContext();
 		efContext.CreateAndUpdateDb();
-		TgEfVersionEntity versionLast = GetLastVersion(efContext);
-		if (versionLast.Version < 19)
-		{
-			UpgradeDb();
-			UpdateDbTableUidUpperCase();
-		}
+		TgEfVersionRepository versionRepository = new(efContext);
+		//TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+		//if (versionLast.Version < 19)
+		//{
+		//	UpgradeDb();
+		//	UpdateDbTableUidUpperCase();
+		//}
 		CheckDbTables(efContext);
-		FillTableVersions(efContext);
+		versionRepository.FillTableVersions();
 		efContext.CompactDb();
 	}
 
@@ -90,14 +82,15 @@ public static class TgEfUtils
 	{
 		await using TgEfContext efContext = CreateEfContext();
 		await efContext.CreateAndUpdateDbAsync();
-		TgEfVersionEntity versionLast = GetLastVersion(efContext);
-		if (versionLast.Version < 19)
-		{
-			await UpgradeDbAsync();
-			await UpdateDbTableUidUpperCaseAsync();
-		}
+		TgEfVersionRepository versionRepository = new(efContext);
+		//TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+		//if (versionLast.Version < 19)
+		//{
+		//	await UpgradeDbAsync();
+		//	await UpdateDbTableUidUpperCaseAsync();
+		//}
 		await CheckDbTablesAsync(efContext);
-		await FillTableVersionsAsync(efContext);
+		await versionRepository.FillTableVersionsAsync();
 		await efContext.CompactDbAsync();
 	}
 
@@ -209,7 +202,6 @@ public static class TgEfUtils
 			throw new(TgLocale.TablesVersionsException);
 	}
 
-
 	private static bool CheckTableCrud<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
 	{
 		var operResult = repository.CreateNew();
@@ -267,200 +259,6 @@ public static class TgEfUtils
 	public static bool CheckTableVersionsCrud(TgEfContext efContext) => CheckTableCrud(new TgEfVersionRepository(efContext));
 
 	public static Task<bool> CheckTableVersionsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfVersionRepository(efContext));
-
-	public static TgEfVersionEntity GetLastVersion(TgEfContext efContext)
-	{
-		TgEfVersionRepository versionRepository = new(efContext);
-		TgEfVersionEntity versionLast = new();
-		if (EfContext.IsTableExists(TgEfConstants.TableVersions))
-		{
-			List<TgEfVersionEntity> versions = versionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).Items
-				.Where(x => x.Version != new TgEfVersionEntity().Version).OrderBy(x => x.Version).ToList();
-			if (versions.Any())
-				versionLast = versions[^1];
-		}
-		return versionLast;
-	}
-
-	public static void FillTableVersions(TgEfContext efContext)
-	{
-		TgEfVersionRepository versionRepository = new(efContext);
-		versionRepository.DeleteNew();
-		bool isLast = false;
-		while (!isLast)
-		{
-			TgEfVersionEntity versionLast = GetLastVersion(efContext);
-			if (Equals(versionLast.Version, short.MaxValue))
-				versionLast.Version = 0;
-			switch (versionLast.Version)
-			{
-				case 0:
-					versionRepository.Save(new() { Version = 1, Description = "Added versions table" });
-					break;
-				case 1:
-					versionRepository.Save(new() { Version = 2, Description = "Added apps table" });
-					break;
-				case 2:
-					versionRepository.Save(new() { Version = 3, Description = "Added documents table" });
-					break;
-				case 3:
-					versionRepository.Save(new() { Version = 4, Description = "Added filters table" });
-					break;
-				case 4:
-					versionRepository.Save(new() { Version = 5, Description = "Added messages table" });
-					break;
-				case 5:
-					versionRepository.Save(new() { Version = 6, Description = "Added proxies table" });
-					break;
-				case 6:
-					versionRepository.Save(new() { Version = 7, Description = "Added sources table" });
-					break;
-				case 7:
-					versionRepository.Save(new() { Version = 8, Description = "Added source settings table" });
-					break;
-				case 8:
-					versionRepository.Save(new() { Version = 9, Description = "Upgrade versions table" });
-					break;
-				case 9:
-					versionRepository.Save(new() { Version = 10, Description = "Upgrade apps table" });
-					break;
-				case 10:
-					versionRepository.Save(new() { Version = 11, Description = "Upgrade storage on XPO framework" });
-					break;
-				case 11:
-					versionRepository.Save(new() { Version = 12, Description = "Upgrade apps table" });
-					break;
-				case 12:
-					versionRepository.Save(new() { Version = 13, Description = "Upgrade documents table" });
-					break;
-				case 13:
-					versionRepository.Save(new() { Version = 14, Description = "Upgrade filters table" });
-					break;
-				case 14:
-					versionRepository.Save(new() { Version = 15, Description = "Upgrade messages table" });
-					break;
-				case 15:
-					versionRepository.Save(new() { Version = 16, Description = "Upgrade proxies table" });
-					break;
-				case 16:
-					versionRepository.Save(new() { Version = 17, Description = "Upgrade sources table" });
-					break;
-				case 17:
-					versionRepository.Save(new() { Version = 18, Description = "Updating the UID field in the apps table" });
-					break;
-				case 18:
-					versionRepository.Save(new() { Version = 19, Description = "Updating the UID field in the documents table" });
-					break;
-				case 19:
-					versionRepository.Save(new() { Version = 20, Description = "Updating the UID field in the filters table" });
-					break;
-				case 20:
-					versionRepository.Save(new() { Version = 21, Description = "Updating the UID field in the messages table" });
-					break;
-				case 21:
-					versionRepository.Save(new() { Version = 22, Description = "Updating the UID field in the proxies table" });
-					break;
-				case 22:
-					versionRepository.Save(new() { Version = 23, Description = "Updating the UID field in the sources table" });
-					break;
-				case 23:
-					versionRepository.Save(new() { Version = 24, Description = "Updating the UID field in the versions table" });
-					break;
-			}
-			if (versionLast.Version >= LastVersion)
-				isLast = true;
-		}
-	}
-
-	public static async Task FillTableVersionsAsync(TgEfContext efContext)
-	{
-		TgEfVersionRepository versionRepository = new(efContext);
-		await versionRepository.DeleteNewAsync();
-		bool isLast = false;
-		while (!isLast)
-		{
-			TgEfVersionEntity versionLast = GetLastVersion(efContext);
-			if (Equals(versionLast.Version, short.MaxValue))
-				versionLast.Version = 0;
-			switch (versionLast.Version)
-			{
-				case 0:
-					await versionRepository.SaveAsync(new() { Version = 1, Description = "Added versions table" });
-					break;
-				case 1:
-					await versionRepository.SaveAsync(new() { Version = 2, Description = "Added apps table" });
-					break;
-				case 2:
-					await versionRepository.SaveAsync(new() { Version = 3, Description = "Added documents table" });
-					break;
-				case 3:
-					await versionRepository.SaveAsync(new() { Version = 4, Description = "Added filters table" });
-					break;
-				case 4:
-					await versionRepository.SaveAsync(new() { Version = 5, Description = "Added messages table" });
-					break;
-				case 5:
-					await versionRepository.SaveAsync(new() { Version = 6, Description = "Added proxies table" });
-					break;
-				case 6:
-					await versionRepository.SaveAsync(new() { Version = 7, Description = "Added sources table" });
-					break;
-				case 7:
-					await versionRepository.SaveAsync(new() { Version = 8, Description = "Added source settings table" });
-					break;
-				case 8:
-					await versionRepository.SaveAsync(new() { Version = 9, Description = "Upgrade versions table" });
-					break;
-				case 9:
-					await versionRepository.SaveAsync(new() { Version = 10, Description = "Upgrade apps table" });
-					break;
-				case 10:
-					await versionRepository.SaveAsync(new() { Version = 11, Description = "Upgrade storage on XPO framework" });
-					break;
-				case 11:
-					await versionRepository.SaveAsync(new() { Version = 12, Description = "Upgrade apps table" });
-					break;
-				case 12:
-					await versionRepository.SaveAsync(new() { Version = 13, Description = "Upgrade documents table" });
-					break;
-				case 13:
-					await versionRepository.SaveAsync(new() { Version = 14, Description = "Upgrade filters table" });
-					break;
-				case 14:
-					await versionRepository.SaveAsync(new() { Version = 15, Description = "Upgrade messages table" });
-					break;
-				case 15:
-					await versionRepository.SaveAsync(new() { Version = 16, Description = "Upgrade proxies table" });
-					break;
-				case 16:
-					await versionRepository.SaveAsync(new() { Version = 17, Description = "Upgrade sources table" });
-					break;
-				case 17:
-					await versionRepository.SaveAsync(new() { Version = 18, Description = "Updating the UID field in the apps table" });
-					break;
-				case 18:
-					await versionRepository.SaveAsync(new() { Version = 19, Description = "Updating the UID field in the documents table" });
-					break;
-				case 19:
-					await versionRepository.SaveAsync(new() { Version = 20, Description = "Updating the UID field in the filters table" });
-					break;
-				case 20:
-					await versionRepository.SaveAsync(new() { Version = 21, Description = "Updating the UID field in the messages table" });
-					break;
-				case 21:
-					await versionRepository.SaveAsync(new() { Version = 22, Description = "Updating the UID field in the proxies table" });
-					break;
-				case 22:
-					await versionRepository.SaveAsync(new() { Version = 23, Description = "Updating the UID field in the sources table" });
-					break;
-				case 23:
-					await versionRepository.SaveAsync(new() { Version = 24, Description = "Updating the UID field in the versions table" });
-					break;
-			}
-			if (versionLast.Version >= LastVersion)
-				isLast = true;
-		}
-	}
 
 	#endregion
 }

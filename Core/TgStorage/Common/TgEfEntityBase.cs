@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using SQLite;
-
 namespace TgStorage.Common;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -16,11 +14,11 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Required]
 	[System.ComponentModel.DataAnnotations.Schema.Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
-	[Collation("NOCASE")]
+	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
-	[NotMapped]
-	public byte[] RowVersion { get; set; }
+	//[NotMapped]
+	//public byte[] RowVersion { get; set; }
 	//public static readonly string RowVersion = nameof(RowVersion);
 
 	//[NotMapped]
@@ -43,17 +41,11 @@ public abstract class TgEfEntityBase : ITgDbEntity
 
     public virtual string ToDebugString() => $"{Uid}";
 
-    public virtual void Default()
-    {
-		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
-	}
+    public virtual void Default() => Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 
     public virtual void Fill(object item) => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
     
-    public virtual void Backup(object item)
-    {
-		Uid = (item as TgEfEntityBase)!.Uid;
-	}
+    public virtual void Backup(object item) => Uid = (item as TgEfEntityBase)!.Uid;
 
     #endregion
 }

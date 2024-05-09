@@ -14,7 +14,7 @@ internal abstract class TgDbContextTestsBase
 		LoggerFactory factory = new();
 		DbContextOptionsBuilder<TgEfContext> builderDbProd = new DbContextOptionsBuilder<TgEfContext>()
 			.UseLoggerFactory(factory)
-			.UseSqlite($"{TgLocalization.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.FileStorage}");
+			.UseSqlite($"{TgLocalization.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}");
 		TgEfContext efContext = new(builderDbProd.Options);
 		TestContext.WriteLine(efContext.Database.GetConnectionString());
 		return efContext;

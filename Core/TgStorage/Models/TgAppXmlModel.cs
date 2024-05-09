@@ -3,76 +3,45 @@
 
 namespace TgStorage.Models;
 
-/// <summary>
-/// App xml.
-/// </summary>
+/// <summary> App xml </summary>
+[DebuggerDisplay("{ToDebugString()}")]
 [Serializable]
 [XmlRoot("App", Namespace = "", IsNullable = true)]
-[DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
 	[DefaultValue("")]
+	[XmlElement("FileSession")]
+	public string XmlFileSession { get; set; }
 	[XmlIgnore]
-	public string Version { get; set; }
+	public bool IsExistsFileSession => File.Exists(XmlFileSession);
 	[DefaultValue("")]
-	[XmlElement]
-	public string FileSession { get; set; }
+	[XmlElement("EfStorage")]
+	public string XmlEfStorage { get; set; }
 	[XmlIgnore]
-	public bool IsExistsFileSession => File.Exists(FileSession);
+	public bool IsExistsEfStorage => File.Exists(XmlEfStorage) && new FileInfo(XmlEfStorage).Length > 0;
 	[DefaultValue("")]
-	[XmlElement]
-	public string FileStorage { get; set; }
+	[XmlElement("DeprecatedStorage")]
+	public string XmlDeprecatedStorage { get; set; }
 	[XmlIgnore]
-	public bool IsExistsFileStorage => File.Exists(FileStorage) && new FileInfo(FileStorage).Length > 0;
-	[DefaultValue("")]
-	[XmlElement]
-	public string TestStorage { get; set; }
+	public bool IsExistsDeprecatedStorage => File.Exists(XmlDeprecatedStorage) && new FileInfo(XmlDeprecatedStorage).Length > 0;
 	[XmlIgnore]
-	public bool IsExistsTestStorage => File.Exists(TestStorage);
-	[XmlIgnore] 
-	public bool IsReady => IsExistsFileSession && IsExistsFileStorage;
-	[DefaultValue(false)]
-	[XmlElement]
-	public bool IsUseProxy { get; set; }
+	public bool IsReady => IsExistsFileSession && IsExistsEfStorage;
 
 	public TgAppXmlModel()
 	{
-		if (string.IsNullOrEmpty(Version))
-			Version = this.GetDefaultPropertyString(nameof(Version));
-		FileSession = this.GetDefaultPropertyString(nameof(FileSession));
-		FileStorage = this.GetDefaultPropertyString(nameof(FileStorage));
-		TestStorage = this.GetDefaultPropertyString(nameof(TestStorage));
-		IsUseProxy = this.GetDefaultPropertyBool(nameof(IsUseProxy));
+		XmlFileSession = this.GetDefaultPropertyString(nameof(XmlFileSession));
+		XmlEfStorage = this.GetDefaultPropertyString(nameof(XmlEfStorage));
+		XmlDeprecatedStorage = this.GetDefaultPropertyString(nameof(XmlDeprecatedStorage));
 	}
 
 	#endregion
 
 	#region Public and private methods
 
-    public string ToDebugString() => $"{TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsUseProxy(IsUseProxy)}";
-
-	/// <summary>
-	/// Set version from assembly.
-	/// </summary>
-	/// <param name="assembly"></param>
-	public void SetVersion(Assembly assembly)
-	{
-		Version = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion ?? string.Empty;
-		ushort count = 0, pos = 0;
-		foreach (char c in Version)
-		{
-			if (Equals(c, '.'))
-				count++;
-			if (count is 3)
-				break;
-			pos++;
-		}
-		if (count is 3)
-			Version = Version.Substring(0, pos);
-		Version = $"v{Version}";
-	}
+    public string ToDebugString() =>
+	    $"{TgCommonUtils.GetIsReady(IsReady)} | {nameof(XmlFileSession)}: {XmlFileSession} | {nameof(XmlEfStorage)}: {XmlEfStorage} | {nameof(XmlDeprecatedStorage)}: {XmlDeprecatedStorage}";
 
 	/// <summary>
 	///  Set path for file session.
@@ -80,47 +49,40 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 	/// <param name="path"></param>
 	public void SetFileSessionPath(string path)
 	{
-		FileSession = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, TgFileUtils.Session)
+		XmlFileSession = !File.Exists(path) && Directory.Exists(path)
+			? Path.Combine(path, TgFileUtils.FileSession)
 			: path;
 		if (!IsExistsFileSession)
 		{
-			FileSession = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Session);
+			XmlFileSession = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.FileSession);
 		}
 	}
 
-	/// <summary>
-	/// Set path for file storage.
-	/// </summary>
+	/// <summary> Set path for file storage </summary>
 	/// <param name="path"></param>
-	public void SetFileStoragePath(string path)
+	public void SetEfStoragePath(string path)
 	{
-		FileStorage = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, TgFileUtils.Storage)
+		XmlEfStorage = !File.Exists(path) && Directory.Exists(path)
+			? Path.Combine(path, TgFileUtils.FileEfStorage)
 			: path;
-		if (!IsExistsFileStorage)
+		if (!IsExistsEfStorage)
 		{
-			FileStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Storage);
+			XmlEfStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.FileEfStorage);
 		}
 	}
 
-	/// <summary>
-	/// Set path for test storage.
-	/// </summary>
+	/// <summary> Set path for deprecated storage </summary>
 	/// <param name="path"></param>
-	public void SetTestStoragePath(string path)
+	public void SetDeprecatedStoragePath(string path)
 	{
-		TestStorage = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, TgFileUtils.Storage)
+		XmlDeprecatedStorage = !File.Exists(path) && Directory.Exists(path)
+			? Path.Combine(path, TgFileUtils.FileDeprecatedStorage)
 			: path;
-		if (!IsExistsTestStorage)
+		if (!IsExistsDeprecatedStorage)
 		{
-			TestStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.Storage);
+			XmlDeprecatedStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.FileDeprecatedStorage);
 		}
 	}
-
-	public override string ToString() =>
-		$"{nameof(TgAppXmlModel)} | {FileSession} | {FileStorage} | {TestStorage} | {IsUseProxy}";
 
 	#endregion
 }
