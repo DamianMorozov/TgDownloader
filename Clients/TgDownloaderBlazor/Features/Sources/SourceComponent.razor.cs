@@ -13,11 +13,6 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 
 	#region Public and private methods
 
-	~SourceComponent()
-	{
-		SourceRepository.Dispose();
-	}
-
 	protected override async Task OnInitializedAsync()
     {
 	    await base.OnInitializedAsync();

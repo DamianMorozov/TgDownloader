@@ -13,7 +13,7 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Required]
-	[System.ComponentModel.DataAnnotations.Schema.Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
@@ -30,10 +30,10 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	//	set;
 	//}
 
-	protected TgEfEntityBase()
-    {
-	    Default();
-    }
+	//protected TgEfEntityBase()
+	//{
+	//	Default();
+	//}
 
     #endregion
 

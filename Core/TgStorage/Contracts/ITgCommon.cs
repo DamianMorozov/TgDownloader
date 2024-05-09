@@ -3,9 +3,7 @@
 
 namespace TgStorage.Contracts;
 
-/// <summary>
-/// Common interface.
-/// </summary>
+/// <summary> Common interface </summary>
 public interface ITgCommon
 {
     public string ToDebugString();

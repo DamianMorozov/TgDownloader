@@ -3,9 +3,7 @@
 
 namespace TgStorage.Contracts;
 
-/// <summary>
-/// SQL table interface.
-/// </summary>
+/// <summary> SQL table interface </summary>
 public interface ITgDbEntity : ITgCommon
 {
 	#region Public and private fields, properties, constructor

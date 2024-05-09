@@ -9,11 +9,6 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 
     private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
 
-	~FilterComponent()
-	{
-		FilterRepository.Dispose();
-	}
-
     #endregion
 
 	#region Public and private methods

@@ -6,15 +6,9 @@ namespace TgStorage.Common;
 [DebuggerDisplay("{ToDebugString()}")]
 public abstract class TgCommonBase : ITgCommon
 {
-    #region Public and private fields, properties, constructor
-
-    public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-
-    #endregion
-    
     #region Public and private methods
 
-    public virtual string ToDebugString() => throw new NotImplementedException(TgLocale.UseOverrideMethod);
+    public virtual string ToDebugString() => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 
     #endregion
 }

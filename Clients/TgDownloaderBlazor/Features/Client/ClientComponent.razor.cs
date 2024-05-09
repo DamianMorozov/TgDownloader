@@ -10,11 +10,6 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	private TgEfAppEntity? Item { get; set; }
 	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
 
-	~ClientComponent()
-	{
-		AppRepository.Dispose();
-	}
-
 	#endregion
 
 	#region Public and private methods

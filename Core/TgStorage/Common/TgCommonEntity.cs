@@ -3,9 +3,7 @@
 
 namespace TgStorage.Common;
 
-/// <summary>
-/// Common class to tests.
-/// </summary>
+/// <summary> Common class to tests </summary>
 public sealed class TgCommonEntity
 {
 	#region Public and private fields, properties, constructor

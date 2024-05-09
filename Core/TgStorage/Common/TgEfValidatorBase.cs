@@ -3,10 +3,7 @@
 
 namespace TgStorage.Common;
 
-/// <summary>
-/// SQL validator base.
-/// </summary>
-/// <typeparam name="T"></typeparam>
+/// <summary> SQL validator base </summary>
 public class TgEfValidatorBase<T> : AbstractValidator<T>, ITgCommon where T : ITgDbEntity
 {
     #region Public and private fields, properties, constructor

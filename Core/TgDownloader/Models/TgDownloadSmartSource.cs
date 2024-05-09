@@ -8,7 +8,7 @@ public class TgDownloadSmartSource
 {
 	#region Public and private fields, properties, constructor
 
-	public ChatBase? ChatBase { get; set; }
+	public TlChatBase? ChatBase { get; set; }
 
 	#endregion
 

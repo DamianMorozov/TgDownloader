@@ -3,8 +3,8 @@
 
 namespace TgStorage.Common;
 
-public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBase, IDisposable,
-	ITgEfRepository<T> where T : TgEfEntityBase, ITgDbEntity, new()
+public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBase, ITgEfRepository<T>
+	where T : TgEfEntityBase, ITgDbEntity, new()
 {
 	#region Public and private fields, properties, constructor
 
@@ -12,79 +12,14 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 
 	#endregion
 
-	#region Interface IDisposable
-
-	/// <summary> Locker object </summary>
-	private readonly object _locker = new();
-	/// <summary> To detect redundant calls </summary>
-	private bool _disposed;
-
-	/// <summary> Finalizer </summary>
-	~TgEfRepositoryBase() => Dispose();
-
-	/// <summary> Throw exception if disposed </summary>
-	private void CheckIfDisposed()
-	{
-		if (_disposed)
-			throw new ObjectDisposedException($"{nameof(TgEfContext)}: {TgLocaleHelper.Instance.ObjectHasBeenDisposedOff}!");
-	}
-	/// <summary> Release managed resources </summary>
-	private void ReleaseManagedResources()
-	{
-		//
-	}
-
-	/// <summary> Release unmanaged resources </summary>
-	private void ReleaseUnmanagedResources()
-	{
-		EfContext.Dispose();
-	}
-
-	/// <summary> Dispose pattern </summary>
-	public virtual void Dispose()
-	{
-		Dispose(true);
-		// Suppress finalization.
-		GC.SuppressFinalize(this);
-	}
-
-	private void Dispose(bool disposing)
-	{
-		if (_disposed)
-			return;
-		lock (_locker)
-		{
-			// Release managed resources.
-			if (disposing)
-				ReleaseManagedResources();
-			// Release unmanaged resources.
-			ReleaseUnmanagedResources();
-			// Flag.
-			_disposed = true;
-		}
-	}
-
-	/// <summary> Dispose async pattern | await using </summary>
-	public virtual ValueTask DisposeAsync()
-	{
-		// Release unmanaged resources.
-		Dispose(false);
-		// Suppress finalization.
-		GC.SuppressFinalize(this);
-		// Result.
-		return ValueTask.CompletedTask;
-	}
-
-	#endregion
-
 	#region Public and private methods
 
-	private TgEfOperResult<T> UseOverrideMethod() => throw new NotImplementedException(TgLocale.UseOverrideMethod);
+	private TgEfOperResult<T> UseOverrideMethod() => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 
 	private async Task<TgEfOperResult<T>> UseOverrideMethodAsync()
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		throw new NotImplementedException(TgLocale.UseOverrideMethod);
+		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 	}
 
 	private TgEfOperResult<T> Get(Guid uid)
@@ -124,13 +59,9 @@ public abstract class TgEfRepositoryBase<T>(TgEfContext efContext) : TgCommonBas
 	public virtual async Task<TgEfOperResult<T>> GetListAsync(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
 		await UseOverrideMethodAsync().ConfigureAwait(false);
 
-	public virtual int GetCount() => throw new NotImplementedException(TgLocale.UseOverrideMethod);
+	public virtual int GetCount() => 0;
 
-	public virtual async Task<int> GetCountAsync()
-	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
-		throw new NotImplementedException(TgLocale.UseOverrideMethod);
-	}
+	public virtual async Task<int> GetCountAsync() => await Task.FromResult(0);
 
 	#endregion
 

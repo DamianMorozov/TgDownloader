@@ -9,11 +9,6 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 
 	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 
-	~ProxyComponent()
-	{
-		ProxyRepository.Dispose();
-	}
-
 	#endregion
 
 	#region Public and private methods

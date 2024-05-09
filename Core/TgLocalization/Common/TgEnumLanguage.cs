@@ -6,8 +6,5 @@ namespace TgLocalization.Common;
 public enum TgEnumLanguage
 {
 	English = 0,
-	Russian,
-	Spanish,
-	Chinese,
-	Turkish
+	//Russian = 1,
 }

@@ -9,11 +9,6 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 
 	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
 
-	~VersionComponent()
-	{
-		VersionRepository.Dispose();
-	}
-
 	#endregion
 
 	#region Public and private methods
