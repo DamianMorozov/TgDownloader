@@ -20,7 +20,7 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 				Assert.That(Equals(Guid.Empty, app.ApiHash));
 				Assert.That(Equals(0, app.ApiId));
 				Assert.That(Equals("+00000000000", app.PhoneNumber));
-				Assert.That(Equals(Guid.Empty, app.ProxyUid));
+				Assert.That(Equals(null, app.ProxyUid));
 			});
 		});
 	}
@@ -35,7 +35,7 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			Assert.Multiple(() =>
 			{
 				Assert.That(Equals((long)0, document.Id));
-				Assert.That(Equals((long)0, document.SourceId));
+				Assert.That(Equals(null, document.SourceId));
 				Assert.That(Equals((long)0, document.MessageId));
 				Assert.That(Equals(string.Empty, document.FileName));
 				Assert.That(Equals((long)0, document.FileSize));
@@ -73,7 +73,7 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			Assert.Multiple(() =>
 			{
 				Assert.That(Equals((long)0, message.Id));
-				Assert.That(Equals((long)0, message.SourceId));
+				Assert.That(Equals(null, message.SourceId));
 				Assert.That(Equals(TgEnumMessageType.Message, message.Type));
 				Assert.That(Equals((long)0, message.Size));
 				Assert.That(Equals(string.Empty, message.Message));

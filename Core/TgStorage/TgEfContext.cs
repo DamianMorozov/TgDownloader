@@ -23,7 +23,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 	/// <summary> Version queries </summary>
 	public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
-	public TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 
 	public bool IsReady =>
 		TgAppSettings.AppXml.IsExistsEfStorage &&
@@ -31,6 +30,8 @@ public sealed class TgEfContext : DbContext, IDisposable
 		IsTableExists(TgEfConstants.TableFilters) && IsTableExists(TgEfConstants.TableMessages) &&
 		IsTableExists(TgEfConstants.TableProxies) && IsTableExists(TgEfConstants.TableSources) &&
 		IsTableExists(TgEfConstants.TableVersions);
+
+	private string FileStorage { get; }
 
 	#endregion
 
@@ -112,8 +113,16 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	#region Public and private methods
 
-	public TgEfContext() : base()
+	public TgEfContext()
 	{
+#if DEBUG
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+#endif
+	}
+
+	public TgEfContext(string fileStorage)
+	{
+		FileStorage = fileStorage;
 #if DEBUG
 		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
 #endif
@@ -132,7 +141,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		LoggerFactory factory = new();
-		string storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
+		string storagePath = string.IsNullOrEmpty(FileStorage)
+			? $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}"
+			: $"{TgLocaleHelper.Instance.SqliteDataSource}={FileStorage}";
 		optionsBuilder
 #if DEBUG
 			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}"), LogLevel.Information)
@@ -214,7 +225,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
 		$"{(!string.IsNullOrEmpty(source.UserName) ? TgDataFormatUtils.GetFormatString(source.UserName, 30) : string.Empty)} | " +
 		$"{(!string.IsNullOrEmpty(source.Title) ? TgDataFormatUtils.GetFormatString(source.Title, 30) : string.Empty)} | " +
-		$"{source.FirstId} {TgLocale.From} {source.Count} {TgLocale.Messages}";
+		$"{source.FirstId} {TgLocaleHelper.Instance.From} {source.Count} {TgLocaleHelper.Instance.Messages}";
 
 	public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
 
@@ -358,12 +369,10 @@ public sealed class TgEfContext : DbContext, IDisposable
 			var cls when cls == typeof(TgEfVersionEntity) => TgEfQueries.QueryAlterVersions,
 			_ => string.Empty
 		};
-		if (!string.IsNullOrEmpty(cmd))
-		{
-			int result = Database.ExecuteSqlRaw(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
-		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		if (string.IsNullOrEmpty(cmd))
+			return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		int result = Database.ExecuteSqlRaw(cmd);
+		return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
 	public async Task<TgEfOperResult<T>> AlterTableNoCaseUidAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
@@ -380,12 +389,10 @@ public sealed class TgEfContext : DbContext, IDisposable
 			var cls when cls == typeof(TgEfVersionEntity) => TgEfQueries.QueryAlterVersions,
 			_ => string.Empty
 		};
-		if (!string.IsNullOrEmpty(cmd))
-		{
-			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
-		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		if (string.IsNullOrEmpty(cmd))
+			return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		int result = await Database.ExecuteSqlRawAsync(cmd);
+		return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
 	public void CompactDb()
@@ -518,28 +525,28 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public void CreateAndUpdateDb()
 	{
 		CheckIfDisposed();
-		if (!Database.GetPendingMigrations().Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		{
-			Database.EnsureCreated();
-		}
-		else
-		{
-			Database.Migrate();
-		}
+		//if (!Database.GetPendingMigrations().Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
+		//{
+		//	Database.EnsureCreated();
+		//}
+		//else
+		//{
+		Database.Migrate();
+		//}
 	}
 
 	/// <summary> Create and update storage </summary>
 	public async Task CreateAndUpdateDbAsync()
 	{
 		CheckIfDisposed();
-		if (!(await Database.GetPendingMigrationsAsync()).Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		{
-			await Database.EnsureCreatedAsync();
-		}
-		else
-		{
-			await Database.MigrateAsync();
-		}
+		//if (!(await Database.GetPendingMigrationsAsync()).Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
+		//{
+		//	await Database.EnsureCreatedAsync();
+		//}
+		//else
+		//{
+		await Database.MigrateAsync();
+		//}
 	}
 
 	#endregion

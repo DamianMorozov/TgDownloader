@@ -33,6 +33,8 @@ public static class TgEfUtils
 
 	public static TgEfContext CreateEfContext() => new();
 
+	public static TgEfContext CreateEfContext(string fileStorage) => new(fileStorage);
+
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
@@ -91,6 +93,24 @@ public static class TgEfUtils
 		await CheckDbTablesAsync(efContext);
 		await versionRepository.FillTableVersionsAsync();
 		await efContext.CompactDbAsync();
+	}
+
+	// TODO
+	/// <summary> Data transfer between storages </summary>
+	public static void DataTransferBetweenStorages()
+	{
+		using TgEfContext efContextFrom = CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
+		using TgEfContext efContextTo = CreateEfContext();
+
+		TgEfOperResult<TgEfAppEntity> operResultApps = new TgEfAppRepository(efContextFrom).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+		if (operResultApps.IsExists)
+		{
+			TgEfAppRepository appRepositoryTo = new(efContextTo);
+			foreach (TgEfAppEntity app in operResultApps.Items)
+			{
+				appRepositoryTo.Save(app);
+			}
+		}
 	}
 
 	private static void UpdateDbTableUidUpperCase()

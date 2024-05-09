@@ -11,6 +11,11 @@ tgLog.WriteLine("EF Core init ...");
 TgEfUtils.CreateAndUpdateDb();
 tgLog.WriteLine("EF Core init success");
 
+// Transfer data from previous TgDownloader.db into TgStorage.db
+//tgLog.WriteLine("Storage transfer ...");
+//TgEfUtils.DataTransferBetweenStorages();
+//tgLog.WriteLine("Storage transfer success");
+
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
 if (!Setup()) return;

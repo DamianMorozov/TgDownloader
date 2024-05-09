@@ -58,18 +58,18 @@ public sealed class TgAppSettingsHelper : ITgHelper
 	{
 		AppXml.XmlFileSession = TgFileUtils.FileSession;
 		AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
-		AppXml.XmlDeprecatedStorage = TgFileUtils.FileDeprecatedStorage;
+		AppXml.XmlFileStorage = TgFileUtils.FileDeprecatedStorage;
 		StoreXmlSettingsUnsafe(encoding);
 	}
 
 	public void StoreXmlSettings(Encoding? encoding = null)
 	{
-		if (string.IsNullOrEmpty(AppXml.XmlFileSession) || !AppXml.IsExistsFileSession)
-			AppXml.XmlFileSession = TgFileUtils.FileSession;
-		if (string.IsNullOrEmpty(AppXml.XmlEfStorage) || !AppXml.IsExistsEfStorage)
-			AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
-		if (string.IsNullOrEmpty(AppXml.XmlDeprecatedStorage) || !AppXml.IsExistsDeprecatedStorage)
-			AppXml.XmlDeprecatedStorage = TgFileUtils.FileDeprecatedStorage;
+		//if (string.IsNullOrEmpty(AppXml.XmlFileSession) || !AppXml.IsExistsFileSession)
+		//	AppXml.XmlFileSession = TgFileUtils.FileSession;
+		//if (string.IsNullOrEmpty(AppXml.XmlEfStorage) || !AppXml.IsExistsEfStorage)
+		//	AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
+		//if (string.IsNullOrEmpty(AppXml.XmlDeprecatedStorage) || !AppXml.IsExistsDeprecatedStorage)
+		//	AppXml.XmlDeprecatedStorage = TgFileUtils.FileDeprecatedStorage;
 		StoreXmlSettingsUnsafe(encoding);
 	}
 
