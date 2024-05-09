@@ -34,10 +34,10 @@
 			<RadzenText Text=@TgLocale.FileStorage TextStyle="TextStyle.Body1" Style="margin: 0" />
 		</RadzenColumn>
 		<RadzenColumn Size="12" SizeMD="1">
-			<RadzenCheckBox Value=@AppSettings.AppXml.IsExistsFileStorage Disabled="true" />
+			<RadzenCheckBox Value=@AppSettings.AppXml.IsExistsEfStorage Disabled="true" />
 		</RadzenColumn>
 		<RadzenColumn Size="12" SizeMD="9">
-			<RadzenTextBox @bind-Value=@AppSettings.AppXml.FileStorage Style="width: 100%; " />
+			<RadzenTextBox @bind-Value=@AppSettings.AppXml.XmlEfStorage Style="width: 100%; " />
 		</RadzenColumn>
 	</RadzenRow>
 	<RadzenRow AlignItems="AlignItems.Center">
@@ -48,7 +48,7 @@
 			<RadzenCheckBox Value=@AppSettings.AppXml.IsExistsFileSession Disabled="true"/>
 		</RadzenColumn>
 		<RadzenColumn Size="12" SizeMD="9">
-			<RadzenTextBox @bind-Value=@AppSettings.AppXml.FileSession Style="width: 100%; " />
+			<RadzenTextBox @bind-Value=@AppSettings.AppXml.XmlFileSession Style="width: 100%; " />
 		</RadzenColumn>
 	</RadzenRow>
 </RadzenStack>

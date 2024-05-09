@@ -91,7 +91,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true);
+            TgEfOperResult<TgEfSourceEntity> operResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: true);
 			List<TgEfSourceEntity> sources = operResult.IsExists ? operResult.Items.ToList() : [];
             //if (!sources.Any())
             //{

@@ -103,11 +103,11 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal void FillTableRowsMain(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// App version.
-		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppXml.Version));
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
 		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
-			: VersionRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true).
-	            Items.Single(x => x.Version == TgEfUtils.LastVersion);
+			: VersionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).
+	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
 		// App settings.
@@ -142,26 +142,26 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		// File session is exists.
 		if (TgAppSettings.AppXml.IsExistsFileSession)
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.FileSession)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.FileSession)));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlFileSession)));
 		else
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.FileSession)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.FileSession)));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlFileSession)));
 
 		// File storage is exists.
-		if (TgAppSettings.AppXml.IsExistsFileStorage)
+		if (TgAppSettings.AppXml.IsExistsEfStorage)
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.FileStorage)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.FileStorage)));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlEfStorage)));
 		else
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.FileStorage)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.FileStorage)));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlEfStorage)));
 
 		// Usage proxy.
-		if (TgAppSettings.AppXml.IsUseProxy)
+		if (TgAppSettings.IsUseProxy)
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuAppUseProxy)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.IsUseProxy.ToString())));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.IsUseProxy.ToString())));
 		else
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuAppUseProxy, true)),
-				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.IsUseProxy.ToString())));
+				new Markup(TgLog.GetMarkupString(TgAppSettings.IsUseProxy.ToString())));
 	}
 
 	/// <summary>
@@ -183,7 +183,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsFilters(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: true)
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: true)
 			.GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
@@ -218,7 +218,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		// Proxy setup.
 		if (Equals(ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp()), Guid.Empty))
 		{
-			if (TgAppSettings.AppXml.IsUseProxy)
+			if (TgAppSettings.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
 			else
@@ -372,7 +372,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
-        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetEnumerable(TgEnumTableTopRecords.All, isNoTracking: true)
+        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true)
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 	}

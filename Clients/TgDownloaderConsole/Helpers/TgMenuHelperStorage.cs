@@ -73,7 +73,7 @@ internal partial class TgMenuHelper
 	{
 		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup))
 			return;
-		TgLog.WriteLine($"{TgLocale.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.FileStorage)}");
+		TgLog.WriteLine($"{TgLocale.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}");
 		(bool IsSuccess, string FileName) backupResult = EfContext.BackupDb();
 		TgLog.WriteLine($"{TgLocale.MenuStorageBackupFile}: {backupResult.FileName}");
 		TgLog.WriteLine(backupResult.IsSuccess ? TgLocale.MenuStorageBackupSuccess : TgLocale.MenuStorageBackupFailed);
@@ -92,7 +92,7 @@ internal partial class TgMenuHelper
 	{
 		AnsiConsole.WriteLine(TgLocale.MenuStoragePerformSteps);
 		AnsiConsole.WriteLine($"- {TgLocale.MenuStorageExitProgram}");
-		AnsiConsole.WriteLine($"- {TgLocale.MenuStorageDeleteExistsInfo(TgAppSettings.AppXml.FileStorage)}");
+		AnsiConsole.WriteLine($"- {TgLocale.MenuStorageDeleteExistsInfo(TgAppSettings.AppXml.XmlEfStorage)}");
 		TgLog.WriteLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 	}

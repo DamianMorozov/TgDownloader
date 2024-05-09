@@ -13,7 +13,7 @@ tgLog.WriteLine("EF Core init success");
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
-if (!await SetupAsync()) return;
+if (!Setup()) return;
 
 do
 {
@@ -73,11 +73,11 @@ do
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
 
-async Task<bool> SetupAsync()
+bool Setup()
 {
 	// App
 	TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
-	tgAppSettings.AppXml.SetVersion(Assembly.GetExecutingAssembly());
+	tgAppSettings.SetVersion(Assembly.GetExecutingAssembly());
 
 	// Menu
 	tgLog.WriteLine("Menu init ...");
@@ -85,16 +85,16 @@ async Task<bool> SetupAsync()
 	tgLog.WriteLine("Menu init success");
 
 	// Create new storage?
-	if (!tgAppSettings.AppXml.IsExistsFileStorage)
+	if (!tgAppSettings.AppXml.IsExistsEfStorage)
 	{
-		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.FileStorage));
+		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.XmlEfStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}
 	// Storage is exist.
-	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.FileStorage), (long)0))
+	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.XmlEfStorage), (long)0))
 	{
-		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.FileStorage));
+		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.XmlEfStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}

@@ -124,7 +124,7 @@
 					HorizontalContentAlignment="Left"
 					IsEnabled="False"
 					IsReadOnly="True"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgClientVm}, Path=TgAppSettings.AppXml.XmlFileSession, Mode=TwoWay, IsAsync=True}" />
 				<!--  Load  -->
 				<ui:Button
 					Grid.Column="3"

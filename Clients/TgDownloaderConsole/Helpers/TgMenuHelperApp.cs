@@ -19,18 +19,18 @@ internal partial class TgMenuHelper
 					TgLocale.MenuMainReturn,
 					TgLocale.MenuMainReset,
 					TgLocale.MenuAppFileSession,
-					TgLocale.MenuAppFileStorage,
-					TgLocale.MenuAppTestStorage,
+					TgLocale.MenuAppEfStorage,
+					TgLocale.MenuAppDeprecatedStorage,
 					TgLocale.MenuAppUseProxy
 			));
 		if (prompt.Equals(TgLocale.MenuMainReset))
 			return TgEnumMenuAppSettings.Reset;
 		if (prompt.Equals(TgLocale.MenuAppFileSession))
 			return TgEnumMenuAppSettings.SetFileSession;
-		if (prompt.Equals(TgLocale.MenuAppFileStorage))
-			return TgEnumMenuAppSettings.SetFileStorage;
-		if (prompt.Equals(TgLocale.MenuAppTestStorage))
-			return TgEnumMenuAppSettings.SetTestStorage;
+		if (prompt.Equals(TgLocale.MenuAppEfStorage))
+			return TgEnumMenuAppSettings.SetEfStorage;
+		if (prompt.Equals(TgLocale.MenuAppDeprecatedStorage))
+			return TgEnumMenuAppSettings.SetDepreactedStorage;
 		if (prompt.Equals(TgLocale.MenuAppUseProxy))
 			return TgEnumMenuAppSettings.SetUseProxy;
 		return TgEnumMenuAppSettings.Return;
@@ -51,11 +51,11 @@ internal partial class TgMenuHelper
 				case TgEnumMenuAppSettings.SetFileSession:
 					SetFileSession();
 					break;
-				case TgEnumMenuAppSettings.SetFileStorage:
-					SetFileStorage();
+				case TgEnumMenuAppSettings.SetEfStorage:
+					SetEfStorage();
 					break;
-				case TgEnumMenuAppSettings.SetTestStorage:
-					SetTestStorage();
+				case TgEnumMenuAppSettings.SetDepreactedStorage:
+					SetDeprecatedStorage();
 					break;
 				case TgEnumMenuAppSettings.SetUseProxy:
 					SetUseProxy();
@@ -83,17 +83,17 @@ internal partial class TgMenuHelper
 		SetFileAppSettings();
 	}
 
-	private void SetFileStorage()
+	private void SetEfStorage()
 	{
-		TgAppSettings.AppXml.SetFileStoragePath(AnsiConsole.Ask<string>(
-			TgLog.GetLineStampInfo($"{TgLocale.MenuAppFileStorage}:")));
+		TgAppSettings.AppXml.SetEfStoragePath(AnsiConsole.Ask<string>(
+			TgLog.GetLineStampInfo($"{TgLocale.MenuAppEfStorage}:")));
 		SetFileAppSettings();
 	}
 
-	private void SetTestStorage()
+	private void SetDeprecatedStorage()
 	{
-		TgAppSettings.AppXml.SetTestStoragePath(AnsiConsole.Ask<string>(
-			TgLog.GetLineStampInfo($"{TgLocale.MenuAppFileStorage}:")));
+		TgAppSettings.AppXml.SetDeprecatedStoragePath(AnsiConsole.Ask<string>(
+			TgLog.GetLineStampInfo($"{TgLocale.MenuAppEfStorage}:")));
 		SetFileAppSettings();
 	}
 
@@ -105,7 +105,7 @@ internal partial class TgMenuHelper
 				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuAppUseProxyDisable, TgLocale.MenuAppUseProxyEnable));
-		TgAppSettings.AppXml.IsUseProxy = prompt.Equals(TgLocale.MenuAppUseProxyEnable);
+		TgAppSettings.IsUseProxy = prompt.Equals(TgLocale.MenuAppUseProxyEnable);
 		SetFileAppSettings();
 	}
 

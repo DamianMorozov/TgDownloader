@@ -25,13 +25,13 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
         if (!IsBlazorLoading)
 	        return;
 
-        if (!AppSettings.AppXml.IsExistsFileStorage)
+        if (!AppSettings.AppXml.IsExistsEfStorage)
         {
 	        IsBlazorLoading = false;
 	        return;
 		}
 
-		Items = (await AppRepository.GetEnumerableAsync(0, isNoTracking: false)).Items.ToList();
+		Items = (await AppRepository.GetListAsync(0, isNoTracking: false)).Items.ToList();
         ItemsCount = await AppRepository.GetCountAsync();
         
         await OnClientLoad();

@@ -25,13 +25,13 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 		    return;
 
 	    await using TgEfContext? efContext = await EfFactory.CreateDbContextAsync();
-	    if (!AppSettings.AppXml.IsExistsFileStorage)
+	    if (!AppSettings.AppXml.IsExistsEfStorage)
 	    {
 		    IsBlazorLoading = false;
 		    return;
 	    }
 
-	    Items = (await VersionRepository.GetEnumerableAsync(0, isNoTracking: false))
+	    Items = (await VersionRepository.GetListAsync(0, isNoTracking: false))
 			.Items.OrderByDescending(x => x.Version).ToList();
         ItemsCount = await VersionRepository.GetCountAsync();
 

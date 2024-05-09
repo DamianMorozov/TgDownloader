@@ -112,7 +112,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
 	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
             ProxiesVms = new();
-            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetEnumerableAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items)
+            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }
@@ -162,7 +162,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
                     IsNeedLastName = true;
                 return LastName;
             case "session_pathname":
-                string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.FileSession);
+                string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.XmlFileSession);
                 return sessionPath;
             case "verification_code":
                 if (string.IsNullOrEmpty(VerificationCode))
@@ -206,7 +206,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            if (!TgEfUtils.GetEfValid(AppVm.App).IsValid)
+            if (!TgEfUtils.GetEfValid<TgEfAppEntity>(AppVm.App).IsValid)
                 return;
             await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Item ?? ProxyVm.Item);
         }, true);

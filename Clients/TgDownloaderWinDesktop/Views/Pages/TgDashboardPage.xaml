@@ -149,7 +149,7 @@
 					Margin="2"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
-					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.IsExistsFileStorage, Mode=OneWay, IsAsync=True}"
+					IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.IsExistsEfStorage, Mode=OneWay, IsAsync=True}"
 					IsEnabled="False" />
 				<ui:TextBox
 					Grid.Row="2"
@@ -158,7 +158,7 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileStorage, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.XmlEfStorage, Mode=TwoWay, IsAsync=True}" />
 				<!--  FileSession  -->
 				<Label
 					Grid.Row="3"
@@ -183,7 +183,7 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
-					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.FileSession, Mode=TwoWay, IsAsync=True}" />
+					Text="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=TgAppSettings.AppXml.XmlFileSession, Mode=TwoWay, IsAsync=True}" />
 			</Grid>
 		</Border>
 	</Grid>
