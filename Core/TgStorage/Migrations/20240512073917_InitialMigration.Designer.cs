@@ -11,7 +11,7 @@ using TgStorage;
 namespace TgStorage.Migrations
 {
     [DbContext(typeof(TgEfContext))]
-    [Migration("20240509154858_InitialMigration")]
+    [Migration("20240512073917_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -374,7 +374,8 @@ namespace TgStorage.Migrations
 
                     b.HasIndex("FirstId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.HasIndex("IsAutoUpdate");
 

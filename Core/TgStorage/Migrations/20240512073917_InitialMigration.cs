@@ -337,7 +337,8 @@ namespace TgStorage.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_SOURCES_ID",
                 table: "SOURCES",
-                column: "ID");
+                column: "ID",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SOURCES_IS_AUTO_UPDATE",

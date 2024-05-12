@@ -106,7 +106,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
 		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
-			: VersionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).
+			: VersionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
@@ -183,7 +183,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <param name="table"></param>
 	internal void FillTableRowsFilters(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: true)
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
 			.GetAwaiter().GetResult().Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
@@ -372,7 +372,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters.
-        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true)
+        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 	}

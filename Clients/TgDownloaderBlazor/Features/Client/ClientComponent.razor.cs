@@ -26,7 +26,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	        return;
 		}
 
-		Items = (await AppRepository.GetListAsync(0, isNoTracking: false)).Items.ToList();
+		Items = (await AppRepository.GetListAsync(0, 0, isNoTracking: false)).Items.ToList();
         ItemsCount = await AppRepository.GetCountAsync();
         
         await OnClientLoad();

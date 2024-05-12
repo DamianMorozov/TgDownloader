@@ -128,7 +128,7 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersEdit()
 	{
-		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: false).Items;
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: false).Items;
 		TgEfFilterEntity filter = AnsiConsole.Prompt(new SelectionPrompt<TgEfFilterEntity>()
 			.Title(TgLocale.MenuFiltersSetEnabled)
 			.PageSize(Console.WindowHeight - 17)
@@ -149,7 +149,7 @@ internal partial class TgMenuHelper
 
 	private void SetTgFiltersRemove()
 	{
-		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: false).Items;
+		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: false).Items;
 		TgEfFilterEntity filter = AnsiConsole.Prompt(new SelectionPrompt<TgEfFilterEntity>()
 			.Title(TgLocale.MenuFiltersSetType)
 			.PageSize(Console.WindowHeight - 17)

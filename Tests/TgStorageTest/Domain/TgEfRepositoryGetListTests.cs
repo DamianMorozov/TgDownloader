@@ -4,7 +4,7 @@
 namespace TgStorageTest.Domain;
 
 [TestFixture]
-internal sealed class TgEfRepositoryGetTests : TgDbContextTestsBase
+internal sealed class TgEfRepositoryGetListTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
@@ -13,7 +13,7 @@ internal sealed class TgEfRepositoryGetTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			TgEfOperResult<T> operResult = repo.GetList(count, isNoTracking: true);
+			TgEfOperResult<T> operResult = repo.GetList(count, 0, isNoTracking: true);
 			TestContext.WriteLine($"Found {operResult.Items.Count()} items.");
 			foreach (T item in operResult.Items)
 			{
@@ -29,7 +29,7 @@ internal sealed class TgEfRepositoryGetTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<T> operResult = await repo.GetListAsync(count, isNoTracking: true);
+			TgEfOperResult<T> operResult = await repo.GetListAsync(count, 0, isNoTracking: true);
 			TestContext.WriteLine($"Found {operResult.Items.Count()} items.");
 			foreach (T item in operResult.Items)
 			{

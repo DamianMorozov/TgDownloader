@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace TgStorage.Utils;
@@ -16,6 +17,36 @@ public static class TgEfUtils
 
 	#region Public and private methods
 
+	public static IEnumerable<ITgDbEntity> GetTableModels()
+	{
+		yield return new TgEfAppEntity();
+		yield return new TgEfDocumentEntity();
+		yield return new TgEfFilterEntity();
+		yield return new TgEfProxyEntity();
+		yield return new TgEfSourceEntity();
+		yield return new TgEfVersionEntity();
+	}
+
+	public static IEnumerable<Type> GetTableTypes()
+	{
+		yield return typeof(TgEfAppEntity);
+		yield return typeof(TgEfDocumentEntity);
+		yield return typeof(TgEfFilterEntity);
+		yield return typeof(TgEfProxyEntity);
+		yield return typeof(TgEfSourceEntity);
+		yield return typeof(TgEfVersionEntity);
+	}
+
+	public static string GetPercentCountString(TgEfSourceEntity source)
+	{
+		float percent = source.Count <= source.FirstId ? 100 : source.FirstId > 1 ? (float)source.FirstId * 100 / source.Count : 0;
+		if (IsPercentCountAll(source))
+			return "100.00 %";
+		return percent > 9 ? $" {percent:00.00} %" : $"  {percent:0.00} %";
+	}
+
+	public static bool IsPercentCountAll(TgEfSourceEntity source) => source.Count <= source.FirstId;
+
 	public static ValidationResult GetEfValid<T>(T item) where T : TgEfEntityBase, ITgDbEntity, new() =>
 		item switch
 		{
@@ -29,6 +60,39 @@ public static class TgEfUtils
 			_ => new ValidationResult { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
 		};
 
+	public static void Normilize<T>(T item) where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		switch (item)
+		{
+			case TgEfAppEntity app:
+				if (app.ProxyUid == Guid.Empty)
+				{
+					app.ProxyUid = null;
+				}
+				break;
+			case TgEfDocumentEntity document:
+				if (document.SourceId == 0)
+				{
+					document.SourceId = null;
+				}
+				break;
+			case TgEfFilterEntity filter:
+				break;
+			case TgEfMessageEntity message:
+				if (message.SourceId == 0)
+				{
+					message.SourceId = null;
+				}
+				break;
+			case TgEfSourceEntity source:
+				break;
+			case TgEfProxyEntity proxy:
+				break;
+			case TgEfVersionEntity version:
+				break;
+		}
+	}
+
 	public static TgEfContext EfContext => CreateEfContext();
 
 	public static TgEfContext CreateEfContext() => new();
@@ -38,7 +102,7 @@ public static class TgEfUtils
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfOperResult<TgEfVersionEntity> operResult = versionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfOperResult<TgEfVersionEntity> operResult = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity version in operResult.Items)
@@ -51,7 +115,7 @@ public static class TgEfUtils
 	public static void FiltersView()
 	{
 		TgEfFilterRepository filterRepository = new(EfContext);
-		TgEfOperResult<TgEfFilterEntity> operResult = filterRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfOperResult<TgEfFilterEntity> operResult = filterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfFilterEntity filter in operResult.Items)
@@ -95,23 +159,152 @@ public static class TgEfUtils
 		await efContext.CompactDbAsync();
 	}
 
-	// TODO
-	/// <summary> Data transfer between storages </summary>
-	public static void DataTransferBetweenStorages()
+	public static async Task<bool> IsDataExistsInTablesAsync(TgEfContext efContextTo, Action<string> logWrite)
 	{
-		using TgEfContext efContextFrom = CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
-		using TgEfContext efContextTo = CreateEfContext();
+		if (await new TgEfAppRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfAppEntity>()).ConfigureAwait(false) > 0) return true;
+		if (await new TgEfFilterRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfFilterEntity>()).ConfigureAwait(false) > 0) return true;
+		if (await new TgEfProxyRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfProxyEntity>()).ConfigureAwait(false) > 0) return true;
+		if (await new TgEfSourceRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfSourceEntity>()).ConfigureAwait(false) > 0) return true;
+		logWrite("No data found in tables!");
+		return false;
+	}
 
-		TgEfOperResult<TgEfAppEntity> operResultApps = new TgEfAppRepository(efContextFrom).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
-		if (operResultApps.IsExists)
+	/// <summary> Data transfer between storages </summary>
+	public static async Task DataTransferBetweenStoragesAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite)
+	{
+		await DataTransferAppsAsync(efContextFrom, efContextTo, logWrite);
+		await DataTransferFilters(efContextFrom, efContextTo, logWrite);
+		await DataTransferProxies(efContextFrom, efContextTo, logWrite);
+		await DataTransferSources(efContextFrom, efContextTo, logWrite);
+		//await DataTransferMessages(efContextFrom, efContextTo, logWrite);
+		//await DataTransferDocuments(efContextFrom, efContextTo, logWrite);
+	}
+
+	private static async Task DataTransferAppsAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfAppRepository(efContextFrom), new TgEfAppRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableApps);
+
+	private static async Task DataTransferDocuments(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfDocumentRepository(efContextFrom), new TgEfDocumentRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableDocuments);
+
+	private static async Task DataTransferFilters(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfFilterRepository(efContextFrom), new TgEfFilterRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableFilters);
+
+	private static async Task DataTransferMessages(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfMessageRepository(efContextFrom), new TgEfMessageRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableMessages);
+
+	private static async Task DataTransferProxies(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfProxyRepository(efContextFrom), new TgEfProxyRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableProxies);
+
+	private static async Task DataTransferSources(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
+		await DataTransferCoreAsync(new TgEfSourceRepository(efContextFrom), new TgEfSourceRepository(efContextTo),
+			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableSources);
+
+	private static async Task DataTransferCoreAsync<T>(ITgEfRepository<T> repoFrom, ITgEfRepository<T> repoTo, 
+		ITgEfRepository<TgEfSourceEntity> repoSourceTo, Action<string> logWrite, string tableName) where T : TgEfEntityBase, ITgDbEntity, new()
+	{
+		logWrite($"Transfering table {tableName}: ...");
+		int batchSizeFrom = 100;
+		int batchSizeTo = 100;
+		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<T>()).ConfigureAwait(false);
+		int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<T>()).ConfigureAwait(false);
+
+		for (int i = 0; i < countFrom; i += batchSizeFrom)
 		{
-			TgEfAppRepository appRepositoryTo = new(efContextTo);
-			foreach (TgEfAppEntity app in operResultApps.Items)
+			try
 			{
-				appRepositoryTo.Save(app);
+				TgEfOperResult<T> operResultFrom = await repoFrom.GetListAsync(batchSizeFrom, i, WhereUidNotEmpty<T>(), isNoTracking: false).ConfigureAwait(false);
+				TgEfOperResult<T> operResultTo = await repoTo.GetListAsync(countTo, 0, WhereUidNotEmpty<T>(), isNoTracking: false).ConfigureAwait(false);
+				if (operResultFrom.IsExists)
+				{
+					List<T> itemsTo = operResultTo.Items.ToList();
+					List<T> itemsFrom = operResultFrom.Items.Where(itemFrom => itemsTo.All(itemTo => itemTo.Uid != itemFrom.Uid)).ToList();
+					int countErrors = 0;
+					if (itemsFrom.Any())
+					{
+						try
+						{
+							//switch (typeof(T))
+							//{
+							//	case var cls when cls == typeof(TgEfDocumentRepository):
+							//		foreach (T itemFrom in itemsFrom)
+							//		{
+							//			if (itemFrom is TgEfDocumentEntity document)
+							//			{
+							//				TgEfOperResult<TgEfSourceEntity> operResultSource = new(TgEnumEntityState.Unknown);
+							//				if (document.Source is not null)
+							//				{
+							//					operResultSource = await repoSourceTo.GetAsync(document.Source, isNoTracking: false);
+							//				}
+							//				if (!operResultSource.IsExists || document.Source is null)
+							//				{
+							//					document.Source = null;
+							//					document.SourceId = null;
+							//				}
+							//			}
+							//		}
+							//		itemsFrom.RemoveAll(item => item is TgEfDocumentEntity { Source: null, SourceId: null });
+							//		break;
+							//	case var cls when cls == typeof(TgEfMessageEntity):
+							//		foreach (T itemFrom in itemsFrom)
+							//		{
+							//			if (itemFrom is TgEfMessageEntity message)
+							//			{
+							//				TgEfOperResult<TgEfSourceEntity> operResultSource = new(TgEnumEntityState.Unknown);
+							//				if (message.Source is not null)
+							//				{
+							//					operResultSource = await repoSourceTo.GetAsync(message.Source, isNoTracking: false);
+							//				}
+							//				if (!operResultSource.IsExists || message.Source is null)
+							//				{
+							//					message.Source = null;
+							//					message.SourceId = null;
+							//				}
+							//			}
+							//		}
+							//		itemsFrom.RemoveAll(item => item is TgEfMessageEntity { Source: null, SourceId: null });
+							//		break;
+							//}
+							foreach (T itemFrom in itemsFrom)
+							{
+								await repoTo.SaveAsync(itemFrom).ConfigureAwait(false);
+							}
+						}
+						catch (Exception ex)
+						{
+							Interlocked.Increment(ref countErrors);
+#if DEBUG
+							logWrite(ex.Message);
+							if (ex.InnerException is not null)
+								logWrite(ex.InnerException.Message);
+#endif
+						}
+					}
+					if (itemsFrom.Count > 0)
+						logWrite($"Transfering table {tableName}: copied {itemsFrom.Count} records");
+					if (countErrors > 0)
+						logWrite($"Transfering table {tableName}: errors in {countErrors} records");
+				}
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				logWrite(ex.Message);
+#endif
+				throw;
 			}
 		}
+		logWrite($"Transfering table {tableName}: completed");
 	}
+
+	public static Expression<Func<T, bool>> WhereUidNotEmpty<T>() where T : TgEfEntityBase, ITgDbEntity, new() => x => x.Uid != Guid.Empty;
+	
+	public static Expression<Func<T, List<T>, bool>> WhereUidNotEquals<T>() where T : TgEfEntityBase, ITgDbEntity, new() =>
+		(itemFrom, itemsTo) => itemsTo.All(itemTo => itemTo.Uid.ToString().ToUpper() != itemFrom.Uid.ToString().ToUpper());
 
 	private static void UpdateDbTableUidUpperCase()
 	{

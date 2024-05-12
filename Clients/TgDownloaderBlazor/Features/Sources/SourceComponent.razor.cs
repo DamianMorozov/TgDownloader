@@ -19,14 +19,14 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 	    if (!IsBlazorLoading)
 		    return;
 
-	    await using TgEfContext? efContext = await EfFactory.CreateDbContextAsync();
+	    await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 	    if (!AppSettings.AppXml.IsExistsEfStorage)
 	    {
 		    IsBlazorLoading = false;
 		    return;
 	    }
 
-	    Items = (await SourceRepository.GetListAsync(0, isNoTracking: false))
+	    Items = (await SourceRepository.GetListAsync(0, 0, isNoTracking: false))
 			.Items.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
         ItemsCount = await SourceRepository.GetCountAsync();
 

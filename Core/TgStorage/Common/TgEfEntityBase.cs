@@ -18,6 +18,7 @@ public abstract class TgEfEntityBase : ITgDbEntity
 	public Guid Uid { get; set; }
 
 	//[NotMapped]
+	//[Column(TgEfConstants.ColumnRowVersion)]
 	//public byte[] RowVersion { get; set; }
 	//public static readonly string RowVersion = nameof(RowVersion);
 

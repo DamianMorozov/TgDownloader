@@ -7,6 +7,8 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 {
 	#region Public and private methods
 
+	public override string ToDebugString() => $"{nameof(TgEfVersionRepository)}";
+
 	public override TgEfOperResult<TgEfVersionEntity> Get(TgEfVersionEntity item, bool isNoTracking)
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult = base.Get(item, isNoTracking);
@@ -61,67 +63,98 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfOperResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override TgEfOperResult<TgEfVersionEntity> GetList(TgEnumTableTopRecords topRecords, bool isNoTracking) => 
-		topRecords switch
-		{
-			TgEnumTableTopRecords.Top1 => GetList(1, isNoTracking),
-			TgEnumTableTopRecords.Top20 => GetList(20, isNoTracking),
-			TgEnumTableTopRecords.Top100 => GetList(200, isNoTracking),
-			TgEnumTableTopRecords.Top1000 => GetList(1_000, isNoTracking),
-			TgEnumTableTopRecords.Top10000 => GetList(10_000, isNoTracking),
-			TgEnumTableTopRecords.Top100000 => GetList(100_000, isNoTracking),
-			TgEnumTableTopRecords.Top1000000 => GetList(1_000_000, isNoTracking),
-			_ => GetList(0, isNoTracking),
-		};
-
-	private TgEfOperResult<TgEfVersionEntity> GetList(int count, bool isNoTracking)
+	public override TgEfOperResult<TgEfVersionEntity> GetList(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfVersionEntity> items;
-		if (count > 0)
+		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().Take(count).AsEnumerable().ToList()
-				: EfContext.Versions.AsTracking().Take(count).AsEnumerable().ToList();
+				? EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToList()
+				: EfContext.Versions.AsTracking().Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().AsEnumerable().ToList()
-				: EfContext.Versions.AsTracking().AsEnumerable().ToList();
+				? EfContext.Versions.AsNoTracking().ToList()
+				: EfContext.Versions.AsTracking().ToList();
 		}
 
 		return new TgEfOperResult<TgEfVersionEntity>(
 			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetListAsync(TgEnumTableTopRecords topRecords,
-		bool isNoTracking) => topRecords switch
-		{
-			TgEnumTableTopRecords.Top1 => await GetListAsync(1, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top20 => await GetListAsync(20, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top100 => await GetListAsync(200, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, isNoTracking).ConfigureAwait(false),
-			_ => await GetListAsync(0, isNoTracking).ConfigureAwait(false),
-		};
-
-	private async Task<TgEfOperResult<TgEfVersionEntity>> GetListAsync(int count, bool isNoTracking)
+	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfVersionEntity> items;
-		if (count > 0)
+		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().Take(count).AsEnumerable().ToList()
-				: EfContext.Versions.Take(count).AsEnumerable().ToList();
+				? EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToList()
+				: EfContext.Versions.Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().AsEnumerable().ToList()
-				: EfContext.Versions.AsTracking().AsEnumerable().ToList();
+				? EfContext.Versions.AsNoTracking().ToList()
+				: EfContext.Versions.AsTracking().ToList();
+		}
+
+		return new TgEfOperResult<TgEfVersionEntity>(
+			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	public override TgEfOperResult<TgEfVersionEntity> GetList(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
+	{
+		IList<TgEfVersionEntity> items;
+		if (take > 0)
+		{
+			items = isNoTracking
+				? EfContext.Versions.AsNoTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList()
+				: EfContext.Versions.AsTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList();
+		}
+		else
+		{
+			items = isNoTracking
+				? EfContext.Versions.AsNoTracking()
+					.Where(where)
+					.ToList()
+				: EfContext.Versions.AsTracking()
+					.Where(where)
+					.ToList();
+		}
+
+		return new TgEfOperResult<TgEfVersionEntity>(
+			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	public override async Task<TgEfOperResult<TgEfVersionEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
+	{
+		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		IList<TgEfVersionEntity> items;
+		if (take > 0)
+		{
+			items = isNoTracking
+				? EfContext.Versions.AsNoTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList()
+				: EfContext.Versions.Take(take)
+					.Where(where)
+					.ToList();
+		}
+		else
+		{
+			items = isNoTracking
+				? EfContext.Versions.AsNoTracking()
+					.Where(where)
+					.ToList()
+				: EfContext.Versions.AsTracking()
+					.Where(where)
+					.ToList();
 		}
 
 		return new TgEfOperResult<TgEfVersionEntity>(
@@ -132,6 +165,12 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<int> GetCountAsync() =>
 		await EfContext.Versions.AsNoTracking().CountAsync().ConfigureAwait(false);
+
+	public override int GetCount(Expression<Func<TgEfVersionEntity, bool>> where) => 
+		EfContext.Versions.AsNoTracking().Where(where).Count();
+
+	public override async Task<int> GetCountAsync(Expression<Func<TgEfVersionEntity, bool>> where) =>
+		await EfContext.Versions.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
 
 	#endregion
 
@@ -145,7 +184,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override TgEfOperResult<TgEfVersionEntity> DeleteAll()
 	{
-		TgEfOperResult<TgEfVersionEntity> operResult = GetList(0, isNoTracking: false);
+		TgEfOperResult<TgEfVersionEntity> operResult = GetList(0, 0, isNoTracking: false);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity item in operResult.Items)
@@ -162,7 +201,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public override async Task<TgEfOperResult<TgEfVersionEntity>> DeleteAllAsync()
 	{
 		TgEfOperResult<TgEfVersionEntity> operResult =
-			await GetListAsync(0, isNoTracking: false).ConfigureAwait(false);
+			await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfVersionEntity item in operResult.Items)
@@ -178,7 +217,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	#endregion
 
-	#region Public and private methods - Contract
+	#region Public and private methods - ITgEfVersionRepository
 
 	public short LastVersion => 24;
 
@@ -188,7 +227,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		if (EfContext.IsTableExists(TgEfConstants.TableVersions))
 		{
 			short defaultVersion = new TgEfVersionEntity().Version;
-			List<TgEfVersionEntity> versions = GetList(TgEnumTableTopRecords.All, isNoTracking: true).Items
+			List<TgEfVersionEntity> versions = GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items
 				.Where(x => x.Version != defaultVersion).OrderBy(x => x.Version).ToList();
 			if (versions.Any())
 				versionLast = versions[^1];

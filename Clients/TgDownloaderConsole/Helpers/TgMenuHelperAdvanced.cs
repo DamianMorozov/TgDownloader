@@ -106,7 +106,7 @@ internal partial class TgMenuHelper
 	private void ViewSources(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+		TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, operResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
@@ -120,7 +120,7 @@ internal partial class TgMenuHelper
 	{
 		ShowTableViewVersions(tgDownloadSettings);
 		GetVersionFromEnumerable(TgLocale.MenuViewSources, 
-			VersionRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).Items);
+			VersionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items);
 	}
 
 	private void MarkHistoryRead(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -130,7 +130,7 @@ internal partial class TgMenuHelper
 
 	private void AutoDownload(TgDownloadSettingsViewModel _)
 	{
-		IEnumerable<TgEfSourceEntity> sources = SourceRepository.GetList(TgEnumTableTopRecords.All, isNoTracking: true).Items;
+		IEnumerable<TgEfSourceEntity> sources = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items;
 		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
             TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSource(source.Id);

@@ -13,7 +13,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
     {
         Assert.DoesNotThrow(() =>
         {
-            IEnumerable<ITgDbEntity> sqlTables = CreateEfContext().GetTableModels();
+            IEnumerable<ITgDbEntity> sqlTables = TgEfUtils.GetTableModels();
             foreach (ITgDbEntity sqlTable in sqlTables)
             {
                 TestContext.WriteLine(sqlTable.GetType());
@@ -26,7 +26,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-			IEnumerable<Type> sqlTypes = CreateEfContext().GetTableTypes();
+			IEnumerable<Type> sqlTypes = TgEfUtils.GetTableTypes();
             foreach (Type sqlType in sqlTypes)
             {
                 switch (sqlType)
@@ -72,7 +72,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-			IEnumerable<Type> sqlTypes = CreateEfContext().GetTableTypes();
+			IEnumerable<Type> sqlTypes = TgEfUtils.GetTableTypes();
             foreach (Type sqlType in sqlTypes)
             {
 				switch (sqlType)

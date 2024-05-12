@@ -371,7 +371,8 @@ namespace TgStorage.Migrations
 
                     b.HasIndex("FirstId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.HasIndex("IsAutoUpdate");
 

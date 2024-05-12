@@ -112,7 +112,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
 	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
             ProxiesVms = new();
-            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, isNoTracking: false)).Items)
+            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }

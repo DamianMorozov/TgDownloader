@@ -49,7 +49,7 @@ public sealed class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new
 
 	#region Public and private methods
 
-	public string ToDebugString() => $"{State} | {Item.ToDebugString()} | {Items.Count()}";
+	public string ToDebugString() => $"{State} | {Item.Uid} | {Items.Count()}";
 
 	#endregion
 }

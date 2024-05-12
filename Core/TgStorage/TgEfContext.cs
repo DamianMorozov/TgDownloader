@@ -115,6 +115,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	public TgEfContext()
 	{
+		FileStorage = string.Empty;
 #if DEBUG
 		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
 #endif
@@ -133,6 +134,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	// For using: services.AddDbContextFactory<TgEfContext>
 	public TgEfContext(DbContextOptions<TgEfContext> options) : base(options)
 	{
+		FileStorage = string.Empty;
 #if DEBUG
 		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
 #endif
@@ -164,7 +166,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		//// Magic string - Define the model
 		//// Concurrency tokens
 		//// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
-		//// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
+		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
 		//modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
@@ -172,72 +174,50 @@ public sealed class TgEfContext : DbContext, IDisposable
 		//modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
+		//modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//// Ingore
 		//modelBuilder.Ignore<TgEfEntityBase>();
-		//modelBuilder.Entity<TgEfAppEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfDocumentEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfFilterEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfMessageEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfProxyEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(x => x.RowVersion);
-		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(x => x.RowVersion);
-		// FOREIGN KEY
+		//modelBuilder.Entity<TgEfAppEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfDocumentEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfFilterEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfMessageEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfProxyEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		// FOREIGN KEY: Apps
 		modelBuilder.Entity<TgEfAppEntity>()
 			.HasOne(app => app.Proxy)
 			.WithMany(proxy => proxy.Apps)
 			.HasForeignKey(app => app.ProxyUid)
 			.HasPrincipalKey(proxy => proxy.Uid);
+		// FOREIGN KEY: Documents
 		modelBuilder.Entity<TgEfDocumentEntity>()
 			.HasOne(document => document.Source)
 			.WithMany(source => source.Documents)
 			.HasForeignKey(document => document.SourceId)
 			.HasPrincipalKey(source => source.Id);
+		// FOREIGN KEY: Messages
 		modelBuilder.Entity<TgEfMessageEntity>()
 			.HasOne(message => message.Source)
 			.WithMany(source => source.Messages)
 			.HasForeignKey(message => message.SourceId)
 			.HasPrincipalKey(source => source.Id);
-		// Result.
-		//base.OnModelCreating(modelBuilder);
-	}
-
-	public IEnumerable<ITgDbEntity> GetTableModels()
-	{
-		yield return new TgEfAppEntity();
-		yield return new TgEfDocumentEntity();
-		yield return new TgEfFilterEntity();
-		yield return new TgEfProxyEntity();
-		yield return new TgEfSourceEntity();
-		yield return new TgEfVersionEntity();
-	}
-
-	public IEnumerable<Type> GetTableTypes()
-	{
-		yield return typeof(TgEfAppEntity);
-		yield return typeof(TgEfDocumentEntity);
-		yield return typeof(TgEfFilterEntity);
-		yield return typeof(TgEfProxyEntity);
-		yield return typeof(TgEfSourceEntity);
-		yield return typeof(TgEfVersionEntity);
 	}
 
 	public string ToConsoleString(TgEfSourceEntity source) =>
-		$"{GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
+		$"{TgEfUtils.GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
 		$"{(!string.IsNullOrEmpty(source.UserName) ? TgDataFormatUtils.GetFormatString(source.UserName, 30) : string.Empty)} | " +
 		$"{(!string.IsNullOrEmpty(source.Title) ? TgDataFormatUtils.GetFormatString(source.Title, 30) : string.Empty)} | " +
 		$"{source.FirstId} {TgLocaleHelper.Instance.From} {source.Count} {TgLocaleHelper.Instance.Messages}";
 
 	public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
-
-	public string GetPercentCountString(TgEfSourceEntity source)
-	{
-		float percent = source.Count <= source.FirstId ? 100 : source.FirstId > 1 ? (float)source.FirstId * 100 / source.Count : 0;
-		if (IsPercentCountAll(source))
-			return "100.00 %";
-		return percent > 9 ? $" {percent:00.00} %" : $"  {percent:0.00} %";
-	}
-
-	public bool IsPercentCountAll(TgEfSourceEntity source) => source.Count <= source.FirstId;
 
 	/// <summary> Check table exists </summary>
 	/// <param name="tableName"></param>

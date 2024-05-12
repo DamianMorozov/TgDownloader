@@ -7,6 +7,8 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 {
 	#region Public and private methods
 
+	public override string ToDebugString() => $"{nameof(TgEfProxyRepository)}";
+
 	public override TgEfOperResult<TgEfProxyEntity> Get(TgEfProxyEntity item, bool isNoTracking)
 	{
 		TgEfOperResult<TgEfProxyEntity> operResult = base.Get(item, isNoTracking);
@@ -61,65 +63,92 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			: new TgEfOperResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override TgEfOperResult<TgEfProxyEntity> GetList(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
-		topRecords switch
-		{
-			TgEnumTableTopRecords.Top1 => GetList(1, isNoTracking),
-			TgEnumTableTopRecords.Top20 => GetList(20, isNoTracking),
-			TgEnumTableTopRecords.Top100 => GetList(200, isNoTracking),
-			TgEnumTableTopRecords.Top1000 => GetList(1_000, isNoTracking),
-			TgEnumTableTopRecords.Top10000 => GetList(10_000, isNoTracking),
-			TgEnumTableTopRecords.Top100000 => GetList(100_000, isNoTracking),
-			TgEnumTableTopRecords.Top1000000 => GetList(1_000_000, isNoTracking),
-			_ => GetList(0, isNoTracking),
-		};
-
-	private TgEfOperResult<TgEfProxyEntity> GetList(int count, bool isNoTracking)
+	public override TgEfOperResult<TgEfProxyEntity> GetList(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfProxyEntity> items;
-		if (count > 0)
+		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().Take(count).AsEnumerable().ToList()
-				: EfContext.Proxies.AsTracking().Take(count).AsEnumerable().ToList();
+				? EfContext.Proxies.AsNoTracking().Skip(skip).Take(take).ToList()
+				: EfContext.Proxies.AsTracking().Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().AsEnumerable().ToList()
-				: EfContext.Proxies.AsTracking().AsEnumerable().ToList();
+				? EfContext.Proxies.AsNoTracking().ToList()
+				: EfContext.Proxies.AsTracking().ToList();
 		}
 		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfProxyEntity>> GetListAsync(TgEnumTableTopRecords topRecords, bool isNoTracking) =>
-		topRecords switch
-		{
-			TgEnumTableTopRecords.Top1 => await GetListAsync(1, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top20 => await GetListAsync(20, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top100 => await GetListAsync(200, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, isNoTracking).ConfigureAwait(false),
-			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, isNoTracking).ConfigureAwait(false),
-			_ => await GetListAsync(0, isNoTracking).ConfigureAwait(false),
-		};
-
-	private async Task<TgEfOperResult<TgEfProxyEntity>> GetListAsync(int count, bool isNoTracking)
+	public override async Task<TgEfOperResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfProxyEntity> items;
-		if (count > 0)
+		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().Take(count).AsEnumerable().ToList()
-				: EfContext.Proxies.AsTracking().Take(count).AsEnumerable().ToList();
+				? EfContext.Proxies.AsNoTracking().Skip(skip).Take(take).ToList()
+				: EfContext.Proxies.AsTracking().Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().AsEnumerable().ToList()
-				: EfContext.Proxies.AsTracking().AsEnumerable().ToList();
+				? EfContext.Proxies.AsNoTracking().ToList()
+				: EfContext.Proxies.AsTracking().ToList();
+		}
+		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	public override TgEfOperResult<TgEfProxyEntity> GetList(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
+	{
+		IList<TgEfProxyEntity> items;
+		if (take > 0)
+		{
+			items = isNoTracking
+				? EfContext.Proxies.AsNoTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList()
+				: EfContext.Proxies.AsTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList();
+		}
+		else
+		{
+			items = isNoTracking
+				? EfContext.Proxies.AsNoTracking()
+					.Where(where)
+					.ToList()
+				: EfContext.Proxies.AsTracking()
+					.Where(where)
+					.ToList();
+		}
+		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	public override async Task<TgEfOperResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
+	{
+		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		IList<TgEfProxyEntity> items;
+		if (take > 0)
+		{
+			items = isNoTracking
+				? EfContext.Proxies.AsNoTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList()
+				: EfContext.Proxies.AsTracking()
+					.Where(where)
+					.Skip(skip).Take(take).ToList();
+		}
+		else
+		{
+			items = isNoTracking
+				? EfContext.Proxies.AsNoTracking()
+					.Where(where)
+					.ToList()
+				: EfContext.Proxies.AsTracking()
+					.Where(where)
+					.ToList();
 		}
 		return new TgEfOperResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -127,6 +156,12 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 	public override int GetCount() => EfContext.Proxies.AsNoTracking().Count();
 
 	public override async Task<int> GetCountAsync() => await EfContext.Proxies.AsNoTracking().CountAsync().ConfigureAwait(false);
+
+	public override int GetCount(Expression<Func<TgEfProxyEntity, bool>> where) => 
+		EfContext.Proxies.AsNoTracking().Where(where).Count();
+
+	public override async Task<int> GetCountAsync(Expression<Func<TgEfProxyEntity, bool>> where) => 
+		await EfContext.Proxies.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
 
 	#endregion
 
@@ -140,7 +175,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override TgEfOperResult<TgEfProxyEntity> DeleteAll()
 	{
-		TgEfOperResult<TgEfProxyEntity> operResult = GetList(0, isNoTracking: false);
+		TgEfOperResult<TgEfProxyEntity> operResult = GetList(0, 0, isNoTracking: false);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfProxyEntity item in operResult.Items)
@@ -153,7 +188,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfOperResult<TgEfProxyEntity>> DeleteAllAsync()
 	{
-		TgEfOperResult<TgEfProxyEntity> operResult = await GetListAsync(0, isNoTracking: false).ConfigureAwait(false);
+		TgEfOperResult<TgEfProxyEntity> operResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
 		if (operResult.IsExists)
 		{
 			foreach (TgEfProxyEntity item in operResult.Items)
@@ -166,7 +201,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	#endregion
 
-	#region Public and private methods
+	#region Public and private methods - ITgEfProxyRepository
 
 	public TgEfOperResult<TgEfProxyEntity> GetCurrentProxy(TgEfOperResult<TgEfAppEntity> operResult)
 	{

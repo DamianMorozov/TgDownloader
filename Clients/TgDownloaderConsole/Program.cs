@@ -12,9 +12,7 @@ TgEfUtils.CreateAndUpdateDb();
 tgLog.WriteLine("EF Core init success");
 
 // Transfer data from previous TgDownloader.db into TgStorage.db
-//tgLog.WriteLine("Storage transfer ...");
-//TgEfUtils.DataTransferBetweenStorages();
-//tgLog.WriteLine("Storage transfer success");
+DataTransferBetweenStorages();
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
@@ -77,6 +75,23 @@ do
 		Console.ReadKey();
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
+
+void DataTransferBetweenStorages()
+{
+	using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
+	if (TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine).GetAwaiter().GetResult()) return;
+
+	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
+		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
+		.PageSize(Console.WindowHeight - 17)
+		.AddChoices(new List<string> { TgLocaleHelper.Instance.MenuIsFalse, TgLocaleHelper.Instance.MenuIsTrue }));
+	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
+
+	using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
+	tgLog.WriteLine("Storage transfer ...");
+	TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine).GetAwaiter().GetResult();
+	tgLog.WriteLine("Storage transfer success");
+}
 
 bool Setup()
 {

@@ -25,14 +25,15 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string AppName => "Name";
 	public string AppValue => "Value";
 	public string AppVersion => "App version";
+	public string AskDataMigration => "Perform a data migration from a previous storage?";
 	public string Exception => "Exception";
 	public string FoundRows => "Found rows";
 	public string From => "from";
 	public string HomeResetToDefault => "Reset to default";
 	public string HomeSaveToXml => "Save to XML";
-	public string MenuAppFileSession => "Setting the path to the session file";
-	public string MenuAppEfStorage => "Setting the path to the EF Core storage file";
 	public string MenuAppDeprecatedStorage => "Setting the path to the deprecated storage file";
+	public string MenuAppEfStorage => "Setting the path to the EF Core storage file";
+	public string MenuAppFileSession => "Setting the path to the session file";
 	public string MenuAppUseProxy => "Usage proxy";
 	public string MenuAppUseProxyDisable => "Disable proxy";
 	public string MenuAppUseProxyEnable => "Enable proxy";

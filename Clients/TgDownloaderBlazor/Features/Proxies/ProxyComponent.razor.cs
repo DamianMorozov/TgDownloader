@@ -19,14 +19,14 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 	    if (!IsBlazorLoading)
 		    return;
 
-	    await using TgEfContext? efContext = await EfFactory.CreateDbContextAsync();
+	    await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 	    if (!AppSettings.AppXml.IsExistsEfStorage)
 	    {
 		    IsBlazorLoading = false;
 		    return;
 	    }
 
-	    Items = (await ProxyRepository.GetListAsync(0, isNoTracking: false)).Items;
+	    Items = (await ProxyRepository.GetListAsync(0, 0, isNoTracking: false)).Items;
         ItemsCount = await ProxyRepository.GetCountAsync();
 
         IsBlazorLoading = false;
