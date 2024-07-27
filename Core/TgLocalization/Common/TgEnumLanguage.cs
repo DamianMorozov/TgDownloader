@@ -3,6 +3,7 @@
 
 namespace TgLocalization.Common;
 
+
 public enum TgEnumLanguage
 {
 	English,
