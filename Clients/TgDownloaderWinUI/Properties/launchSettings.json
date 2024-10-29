@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TgDownloaderWinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "TgDownloaderWinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

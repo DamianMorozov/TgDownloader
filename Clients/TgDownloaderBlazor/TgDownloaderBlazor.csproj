@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-		<Platforms>AnyCPU</Platforms>
+		<Platforms>AnyCPU;x64;x86</Platforms>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>acec7ca6-caa9-470e-96aa-3f14f080d6bd</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -13,6 +13,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 	  <DebugType>none</DebugType>
 	</PropertyGroup>
 

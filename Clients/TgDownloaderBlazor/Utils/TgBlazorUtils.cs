@@ -36,7 +36,7 @@ public static class TgBlazorUtils
 			Console.WriteLine(ex);
 #endif
 			if (ex.InnerException is null)
-				actionException(ex.Message);
+			actionException(ex.Message);
 			else
 				actionException(ex.Message + Environment.NewLine + ex.InnerException.Message);
 		}
