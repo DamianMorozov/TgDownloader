@@ -214,7 +214,7 @@ public static class TgEfUtils
 	{
 		logWrite($"Transfering table {tableName}: ...");
 		int batchSizeFrom = 100;
-		const int batchSizeTo = 100;
+		//const int batchSizeTo = 100;
 		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
 		int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
 
