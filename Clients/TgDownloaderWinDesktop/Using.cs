@@ -1,6 +1,5 @@
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
-// Global using directives
 
 global using CommunityToolkit.Mvvm.Input;
 global using LiveCharts;
@@ -23,7 +22,6 @@ global using System.Windows;
 global using System.Windows.Controls;
 global using System.Windows.Data;
 global using System.Windows.Threading;
-global using Microsoft.EntityFrameworkCore;
 global using TgDownloader.Helpers;
 global using TgDownloaderWinDesktop.Common;
 global using TgDownloaderWinDesktop.Models;

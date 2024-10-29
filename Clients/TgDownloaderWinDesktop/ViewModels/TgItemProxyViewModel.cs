@@ -46,7 +46,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
 
     public void SetItemProxyVm(TgEfProxyEntity proxy)
     {
-        ItemProxyVm.Item.Fill(proxy);
+        ItemProxyVm.Item.Fill(proxy, isUidCopy: false);
         TgEfProxyViewModel itemBackup = ItemProxyVm;
         ItemProxyVm = new(itemBackup.Item);
     }

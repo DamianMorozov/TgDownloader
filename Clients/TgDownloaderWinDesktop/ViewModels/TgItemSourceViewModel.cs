@@ -67,7 +67,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
     public void SetItemSourceVm(TgEfSourceEntity source)
     {
-        ItemSourceVm.Item.Fill(source);
+        ItemSourceVm.Item.Fill(source, isUidCopy: false);
     }
 
     // GetSourceFromStorageCommand

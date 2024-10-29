@@ -89,9 +89,10 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
-	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
-            if (findJobVm is not null)
+            TgEfDownloadViewModel? findJobVm = DownloadVms
+				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
+				.SingleOrDefault();
+			if (findJobVm is not null)
             {
 	            // 
             }
@@ -105,9 +106,10 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            TgEfDownloadViewModel? findJobVm = DownloadVms.SingleOrDefault(x =>
-	            x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId));
-            if (findJobVm is not null)
+            TgEfDownloadViewModel? findJobVm = DownloadVms
+				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
+				.SingleOrDefault();
+			if (findJobVm is not null)
             {
 	            // 
             }
