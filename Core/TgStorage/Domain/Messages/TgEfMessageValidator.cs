@@ -17,10 +17,9 @@ public sealed class TgEfMessageValidator : TgEfValidatorBase<TgEfMessageEntity>
 		//		.NotNull()
 		//		.GreaterThanOrEqualTo(0);
 		RuleFor(item => item.DtCreated)
-			.NotEmpty()
 			.NotNull();
 		RuleFor(item => item.Message)
-				.NotNull();
+			.NotNull();
 	}
 
 	#endregion

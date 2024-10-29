@@ -5,6 +5,7 @@ namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableSources)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(UserName))]
 [Index(nameof(Title))]
@@ -13,16 +14,24 @@ namespace TgStorage.Domain.Sources;
 [Index(nameof(FirstId))]
 [Index(nameof(IsAutoUpdate))]
 [Index(nameof(DtChanged))]
-public sealed partial class TgEfSourceEntity : TgEfEntityBase
+public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(1)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(1)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
-    public long Id{ get; set; }
+	public long Id { get; set; }
 
-    [DefaultValue("UserName")]
+	[DefaultValue("UserName")]
     [ConcurrencyCheck]
     [MaxLength(256)]
     [Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
@@ -78,14 +87,14 @@ public sealed partial class TgEfSourceEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableSources} | {base.ToDebugString()} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableSources} | {Uid} | {Id} | {(IsAutoUpdate ? "a" : " ")} | {(FirstId == Count ? "v" : "x")} | {UserName} | " +
         $"{(string.IsNullOrEmpty(Title) ? string.Empty : TgDataFormatUtils.TrimStringEnd(Title))} | {FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    Id = this.GetDefaultPropertyLong(nameof(Id));
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		Id = this.GetDefaultPropertyLong(nameof(Id));
 	    UserName = this.GetDefaultPropertyString(nameof(UserName));
 	    Title = this.GetDefaultPropertyString(nameof(Title));
 	    About = this.GetDefaultPropertyString(nameof(About));
@@ -96,32 +105,25 @@ public sealed partial class TgEfSourceEntity : TgEfEntityBase
 	    DtChanged = this.GetDefaultPropertyDateTime(nameof(DtChanged));
 	    Documents = new List<TgEfDocumentEntity>();
         Messages = new List<TgEfMessageEntity>();
-
     }
 
-    public override void Fill(object item)
+    public TgEfSourceEntity Fill(TgEfSourceEntity item, bool isUidCopy)
     {
-		if (item is not TgEfSourceEntity source)
-			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfSourceEntity)}!");
-
-		DtChanged = source.DtChanged > DateTime.MinValue ? source.DtChanged : DateTime.Now;
-		Id = source.Id;
-		FirstId = source.FirstId;
-		IsAutoUpdate = source.IsAutoUpdate;
-		UserName = string.IsNullOrEmpty(source.UserName) ? "" : source.UserName;
-		Title = source.Title;
-		About = source.About;
-		Count = source.Count;
-		Directory = source.Directory;
+		if (isUidCopy)
+			Uid = item.Uid;
+		DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now;
+		Id = item.Id;
+		FirstId = item.FirstId;
+		IsAutoUpdate = item.IsAutoUpdate;
+		UserName = string.IsNullOrEmpty(item.UserName) ? "" : item.UserName;
+		Title = item.Title;
+		About = item.About;
+		Count = item.Count;
+		Directory = item.Directory;
+        return this;
 	}
 
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
-    }
-
-    public string ToConsoleStringShort() =>
+	public string ToConsoleStringShort() =>
 	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} | " +
 	    $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
 	    $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +
@@ -129,8 +131,8 @@ public sealed partial class TgEfSourceEntity : TgEfEntityBase
 
     public string ToConsoleString() =>
 	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
-	    $"{TgDataFormatUtils.GetFormatString(UserName, 30)} | " +
-	    $"{TgDataFormatUtils.GetFormatString(Title, 30)} | " +
+	    $"{(UserName is not null ? TgDataFormatUtils.GetFormatString(UserName, 30) : string.Empty)} | " +
+	    $"{(Title is not null ? TgDataFormatUtils.GetFormatString(Title, 30) : string.Empty)} | " +
 	    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
 	public string GetPercentCountString()

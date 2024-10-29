@@ -9,81 +9,83 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override string ToDebugString() => $"{nameof(TgEfMessageRepository)}";
 
-	public override TgEfOperResult<TgEfMessageEntity> Get(TgEfMessageEntity item, bool isNoTracking)
+	public override TgEfStorageResult<TgEfMessageEntity> Get(TgEfMessageEntity item, bool isNoTracking)
 	{
-		TgEfOperResult<TgEfMessageEntity> operResult = base.Get(item, isNoTracking);
-		if (operResult.IsExists)
-			return operResult;
+		TgEfStorageResult<TgEfMessageEntity> storageResult = base.Get(item, isNoTracking);
+		if (storageResult.IsExists)
+			return storageResult;
 		TgEfMessageEntity? itemFind = isNoTracking
 			? EfContext.Messages.AsNoTracking()
+				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
-				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id)
+				//.DefaultIfEmpty()
+				.SingleOrDefault()
 			: EfContext.Messages
+				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
-				.SingleOrDefault(x => x.SourceId == item.SourceId && x.Id == item.Id);
+				//.DefaultIfEmpty()
+				.SingleOrDefault();
 		return itemFind is not null
-			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
-			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
+			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfOperResult<TgEfMessageEntity>> GetAsync(TgEfMessageEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetAsync(TgEfMessageEntity item, bool isNoTracking)
 	{
-		TgEfOperResult<TgEfMessageEntity> operResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
-		if (operResult.IsExists)
-			return operResult;
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		if (storageResult.IsExists)
+			return storageResult;
 		TgEfMessageEntity? itemFind = isNoTracking
 			? await EfContext.Messages.AsNoTracking()
-				.Include(x => x.Source)
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
-				.DefaultIfEmpty()
+				.Include(x => x.Source)
+				//.DefaultIfEmpty()
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false)
 			: await EfContext.Messages
-				.Include(x => x.Source)
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
-				.DefaultIfEmpty()
+				.Include(x => x.Source)
+				//.DefaultIfEmpty()
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
-			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
+			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override TgEfOperResult<TgEfMessageEntity> GetFirst(bool isNoTracking)
+	public override TgEfStorageResult<TgEfMessageEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfMessageEntity? item = isNoTracking
 			? EfContext.Messages.AsTracking()
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
+				//.DefaultIfEmpty()
 				.FirstOrDefault()
 			: EfContext.Messages
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
+				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
-			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
-			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
+			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
+			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override async Task<TgEfOperResult<TgEfMessageEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfMessageEntity? item = isNoTracking
 			? await EfContext.Messages.AsTracking()
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
+				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync().ConfigureAwait(false)
 			: await EfContext.Messages
 				.Include(x => x.Source)
-				.DefaultIfEmpty()
+				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
-			: new TgEfOperResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
+			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
+			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override TgEfOperResult<TgEfMessageEntity> GetList(int take, int skip, bool isNoTracking)
+	public override TgEfStorageResult<TgEfMessageEntity> GetList(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
@@ -106,10 +108,10 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfMessageEntity> items;
@@ -133,10 +135,10 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override TgEfOperResult<TgEfMessageEntity> GetList(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
+	public override TgEfStorageResult<TgEfMessageEntity> GetList(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
 	{
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
@@ -163,10 +165,10 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfMessageEntity> items;
@@ -196,7 +198,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Messages.AsNoTracking().Count();
@@ -219,30 +221,30 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	#region Public and private methods - Delete
 
-	public override TgEfOperResult<TgEfMessageEntity> DeleteAll()
+	public override TgEfStorageResult<TgEfMessageEntity> DeleteAll()
 	{
-		TgEfOperResult<TgEfMessageEntity> operResult = GetList(0, 0, isNoTracking: false);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfMessageEntity> storageResult = GetList(0, 0, isNoTracking: false);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfMessageEntity item in operResult.Items)
+			foreach (TgEfMessageEntity item in storageResult.Items)
 			{
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfStorageResult<TgEfMessageEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
-	public override async Task<TgEfOperResult<TgEfMessageEntity>> DeleteAllAsync()
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> DeleteAllAsync()
 	{
-		TgEfOperResult<TgEfMessageEntity> operResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfMessageEntity item in operResult.Items)
+			foreach (TgEfMessageEntity item in storageResult.Items)
 			{
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfOperResult<TgEfMessageEntity>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfStorageResult<TgEfMessageEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

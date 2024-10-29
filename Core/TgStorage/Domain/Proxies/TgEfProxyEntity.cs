@@ -5,17 +5,26 @@ namespace TgStorage.Domain.Proxies;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableProxies)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Type))]
 [Index(nameof(HostName))]
 [Index(nameof(Port))]
 [Index(nameof(UserName))]
 [Index(nameof(Password))]
 [Index(nameof(Secret))]
-public sealed partial class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
+public sealed class TgEfProxyEntity : ITgDbProxy, ITgDbEntity, ITgDbFillEntity<TgEfProxyEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(TgEnumProxyType.None)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(TgEnumProxyType.None)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnType, TypeName = "INT")]
     public TgEnumProxyType Type { get; set; }
@@ -60,14 +69,14 @@ public sealed partial class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableProxies} | {base.ToDebugString()} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableProxies} | {Uid} | {Type} | {HostName} | {Port} | {UserName} | {Password} | " +
         $"{TgCommonUtils.GetIsFlag(!string.IsNullOrEmpty(Secret), Secret, "<No secret>")}";
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    Type = this.GetDefaultPropertyGeneric<TgEnumProxyType>(nameof(Type));
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		Type = this.GetDefaultPropertyGeneric<TgEnumProxyType>(nameof(Type));
 	    HostName = this.GetDefaultPropertyString(nameof(HostName));
 	    Port = this.GetDefaultPropertyUshort(nameof(Port));
 	    UserName = this.GetDefaultPropertyString(nameof(UserName));
@@ -76,23 +85,17 @@ public sealed partial class TgEfProxyEntity : TgEfEntityBase, ITgDbProxy
 	    Apps = new List<TgEfAppEntity>();
     }
 
-    public override void Fill(object item)
-    {
-	    if (item is not TgEfProxyEntity proxy)
-		    throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfProxyEntity)}!");
-
-	    Type = proxy.Type;
-	    HostName = proxy.HostName;
-	    Port = proxy.Port;
-	    UserName = proxy.UserName;
-	    Password = proxy.Password;
-	    Secret = proxy.Secret;
-    }
-
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
+    public TgEfProxyEntity Fill(TgEfProxyEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		Type = item.Type;
+	    HostName = item.HostName;
+	    Port = item.Port;
+	    UserName = item.UserName;
+	    Password = item.Password;
+	    Secret = item.Secret;
+        return this;
     }
 
 	#endregion

@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace TgStorage.Utils;
@@ -47,7 +46,7 @@ public static class TgEfUtils
 
 	public static bool IsPercentCountAll(TgEfSourceEntity source) => source.Count <= source.FirstId;
 
-	public static ValidationResult GetEfValid<T>(T item) where T : TgEfEntityBase, ITgDbEntity, new() =>
+	public static ValidationResult GetEfValid<TEntity>(TEntity item) where TEntity : ITgDbFillEntity<TEntity>, new() =>
 		item switch
 		{
 			TgEfAppEntity app => new TgEfAppValidator().Validate(app),
@@ -60,7 +59,7 @@ public static class TgEfUtils
 			_ => new ValidationResult { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
 		};
 
-	public static void Normilize<T>(T item) where T : TgEfEntityBase, ITgDbEntity, new()
+	public static void Normilize<TEntity>(TEntity item) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		switch (item)
 		{
@@ -102,10 +101,10 @@ public static class TgEfUtils
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfOperResult<TgEfVersionEntity> operResult = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfVersionEntity> storageResult = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfVersionEntity version in operResult.Items)
+			foreach (TgEfVersionEntity version in storageResult.Items)
 			{
 				TgLog.WriteLine($" {version.Version:00} | {version.Description}");
 			}
@@ -115,10 +114,10 @@ public static class TgEfUtils
 	public static void FiltersView()
 	{
 		TgEfFilterRepository filterRepository = new(EfContext);
-		TgEfOperResult<TgEfFilterEntity> operResult = filterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfFilterEntity> storageResult = filterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfFilterEntity filter in operResult.Items)
+			foreach (TgEfFilterEntity filter in storageResult.Items)
 			{
 				TgLog.WriteLine($"{filter}");
 			}
@@ -132,9 +131,9 @@ public static class TgEfUtils
 		efContext.CreateAndUpdateDb();
 		TgEfVersionRepository versionRepository = new(efContext);
 		//TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
-		//if (versionLast.Version < 19)
+		//if (versionLast.Version < 25)
 		//{
-		//	UpgradeDb();
+		//	//await UpgradeDbAsync();
 		//	UpdateDbTableUidUpperCase();
 		//}
 		CheckDbTables(efContext);
@@ -148,10 +147,10 @@ public static class TgEfUtils
 		await using TgEfContext efContext = CreateEfContext();
 		await efContext.CreateAndUpdateDbAsync();
 		TgEfVersionRepository versionRepository = new(efContext);
-		//TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
-		//if (versionLast.Version < 19)
+		TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+		//if (versionLast.Version < 25)
 		//{
-		//	await UpgradeDbAsync();
+		//	//await UpgradeDbAsync();
 		//	await UpdateDbTableUidUpperCaseAsync();
 		//}
 		await CheckDbTablesAsync(efContext);
@@ -173,11 +172,17 @@ public static class TgEfUtils
 	public static async Task DataTransferBetweenStoragesAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite)
 	{
 		await DataTransferAppsAsync(efContextFrom, efContextTo, logWrite);
+		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfAppEntity>();
 		await DataTransferFilters(efContextFrom, efContextTo, logWrite);
+		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfFilterEntity>();
 		await DataTransferProxies(efContextFrom, efContextTo, logWrite);
+		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
 		await DataTransferSources(efContextFrom, efContextTo, logWrite);
+		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
 		//await DataTransferMessages(efContextFrom, efContextTo, logWrite);
+		//await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfMessageEntity>();
 		//await DataTransferDocuments(efContextFrom, efContextTo, logWrite);
+		//await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfDocumentEntity>();
 	}
 
 	private static async Task DataTransferAppsAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
@@ -204,43 +209,43 @@ public static class TgEfUtils
 		await DataTransferCoreAsync(new TgEfSourceRepository(efContextFrom), new TgEfSourceRepository(efContextTo),
 			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableSources);
 
-	private static async Task DataTransferCoreAsync<T>(ITgEfRepository<T> repoFrom, ITgEfRepository<T> repoTo, 
-		ITgEfRepository<TgEfSourceEntity> repoSourceTo, Action<string> logWrite, string tableName) where T : TgEfEntityBase, ITgDbEntity, new()
+	private static async Task DataTransferCoreAsync<TEntity>(ITgEfRepository<TEntity> repoFrom, ITgEfRepository<TEntity> repoTo, 
+		ITgEfRepository<TgEfSourceEntity> repoSourceTo, Action<string> logWrite, string tableName) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		logWrite($"Transfering table {tableName}: ...");
 		int batchSizeFrom = 100;
-		int batchSizeTo = 100;
-		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<T>()).ConfigureAwait(false);
-		int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<T>()).ConfigureAwait(false);
+		const int batchSizeTo = 100;
+		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
+		int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
 
 		for (int i = 0; i < countFrom; i += batchSizeFrom)
 		{
 			try
 			{
-				TgEfOperResult<T> operResultFrom = await repoFrom.GetListAsync(batchSizeFrom, i, WhereUidNotEmpty<T>(), isNoTracking: false).ConfigureAwait(false);
-				TgEfOperResult<T> operResultTo = await repoTo.GetListAsync(countTo, 0, WhereUidNotEmpty<T>(), isNoTracking: false).ConfigureAwait(false);
-				if (operResultFrom.IsExists)
+				TgEfStorageResult<TEntity> storageResultFrom = await repoFrom.GetListAsync(batchSizeFrom, i, WhereUidNotEmpty<TEntity>(), isNoTracking: false).ConfigureAwait(false);
+				TgEfStorageResult<TEntity> storageResultTo = await repoTo.GetListAsync(countTo, 0, WhereUidNotEmpty<TEntity>(), isNoTracking: false).ConfigureAwait(false);
+				if (storageResultFrom.IsExists)
 				{
-					List<T> itemsTo = operResultTo.Items.ToList();
-					List<T> itemsFrom = operResultFrom.Items.Where(itemFrom => itemsTo.All(itemTo => itemTo.Uid != itemFrom.Uid)).ToList();
+					List<TEntity> itemsTo = storageResultTo.Items.ToList();
+					List<TEntity> itemsFrom = storageResultFrom.Items.Where(itemFrom => itemsTo.All(itemTo => itemTo.Uid != itemFrom.Uid)).ToList();
 					int countErrors = 0;
 					if (itemsFrom.Any())
 					{
 						try
 						{
-							//switch (typeof(T))
+							//switch (typeof(TEntity))
 							//{
 							//	case var cls when cls == typeof(TgEfDocumentRepository):
-							//		foreach (T itemFrom in itemsFrom)
+							//		foreach (TEntity itemFrom in itemsFrom)
 							//		{
 							//			if (itemFrom is TgEfDocumentEntity document)
 							//			{
-							//				TgEfOperResult<TgEfSourceEntity> operResultSource = new(TgEnumEntityState.Unknown);
+							//				TgEfStorageResult<TgEfSourceEntity> storageResultSource = new(TgEnumEntityState.Unknown);
 							//				if (document.Source is not null)
 							//				{
-							//					operResultSource = await repoSourceTo.GetAsync(document.Source, isNoTracking: false);
+							//					storageResultSource = await repoSourceTo.GetAsync(document.Source, isNoTracking: false);
 							//				}
-							//				if (!operResultSource.IsExists || document.Source is null)
+							//				if (!storageResultSource.IsExists || document.Source is null)
 							//				{
 							//					document.Source = null;
 							//					document.SourceId = null;
@@ -250,16 +255,16 @@ public static class TgEfUtils
 							//		itemsFrom.RemoveAll(item => item is TgEfDocumentEntity { Source: null, SourceId: null });
 							//		break;
 							//	case var cls when cls == typeof(TgEfMessageEntity):
-							//		foreach (T itemFrom in itemsFrom)
+							//		foreach (TEntity itemFrom in itemsFrom)
 							//		{
 							//			if (itemFrom is TgEfMessageEntity message)
 							//			{
-							//				TgEfOperResult<TgEfSourceEntity> operResultSource = new(TgEnumEntityState.Unknown);
+							//				TgEfStorageResult<TgEfSourceEntity> storageResultSource = new(TgEnumEntityState.Unknown);
 							//				if (message.Source is not null)
 							//				{
-							//					operResultSource = await repoSourceTo.GetAsync(message.Source, isNoTracking: false);
+							//					storageResultSource = await repoSourceTo.GetAsync(message.Source, isNoTracking: false);
 							//				}
-							//				if (!operResultSource.IsExists || message.Source is null)
+							//				if (!storageResultSource.IsExists || message.Source is null)
 							//				{
 							//					message.Source = null;
 							//					message.SourceId = null;
@@ -269,7 +274,7 @@ public static class TgEfUtils
 							//		itemsFrom.RemoveAll(item => item is TgEfMessageEntity { Source: null, SourceId: null });
 							//		break;
 							//}
-							foreach (T itemFrom in itemsFrom)
+							foreach (TEntity itemFrom in itemsFrom)
 							{
 								await repoTo.SaveAsync(itemFrom).ConfigureAwait(false);
 							}
@@ -301,9 +306,9 @@ public static class TgEfUtils
 		logWrite($"Transfering table {tableName}: completed");
 	}
 
-	public static Expression<Func<T, bool>> WhereUidNotEmpty<T>() where T : TgEfEntityBase, ITgDbEntity, new() => x => x.Uid != Guid.Empty;
+	public static Expression<Func<TEntity, bool>> WhereUidNotEmpty<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new() => x => x.Uid != Guid.Empty;
 	
-	public static Expression<Func<T, List<T>, bool>> WhereUidNotEquals<T>() where T : TgEfEntityBase, ITgDbEntity, new() =>
+	public static Expression<Func<TEntity, List<TEntity>, bool>> WhereUidNotEquals<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new() =>
 		(itemFrom, itemsTo) => itemsTo.All(itemTo => itemTo.Uid.ToString().ToUpper() != itemFrom.Uid.ToString().ToUpper());
 
 	private static void UpdateDbTableUidUpperCase()
@@ -330,51 +335,51 @@ public static class TgEfUtils
 
 	private static void UpgradeDb()
 	{
-		TgEfOperResult<TgEfAppEntity> operResultApps = EfContext.AlterTableNoCaseUid<TgEfAppEntity>();
-		if (operResultApps.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfAppEntity> storageResultApps = EfContext.AlterTableNoCaseUid<TgEfAppEntity>();
+		if (storageResultApps.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfDocumentEntity> operResultDocuments = EfContext.AlterTableNoCaseUid<TgEfDocumentEntity>();
-		if (operResultDocuments.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = EfContext.AlterTableNoCaseUid<TgEfDocumentEntity>();
+		if (storageResultDocuments.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfFilterEntity> operResultFilters = EfContext.AlterTableNoCaseUid<TgEfFilterEntity>();
-		if (operResultFilters.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfFilterEntity> storageResultFilters = EfContext.AlterTableNoCaseUid<TgEfFilterEntity>();
+		if (storageResultFilters.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfMessageEntity> operResultMessages = EfContext.AlterTableNoCaseUid<TgEfMessageEntity>();
-		if (operResultMessages.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfMessageEntity> storageResultMessages = EfContext.AlterTableNoCaseUid<TgEfMessageEntity>();
+		if (storageResultMessages.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfProxyEntity> operResultProxies = EfContext.AlterTableNoCaseUid<TgEfProxyEntity>();
-		if (operResultProxies.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfProxyEntity> storageResultProxies = EfContext.AlterTableNoCaseUid<TgEfProxyEntity>();
+		if (storageResultProxies.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfSourceEntity> operResultSources = EfContext.AlterTableNoCaseUid<TgEfSourceEntity>();
-		if (operResultSources.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfSourceEntity> storageResultSources = EfContext.AlterTableNoCaseUid<TgEfSourceEntity>();
+		if (storageResultSources.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfVersionEntity> operResultVersions = EfContext.AlterTableNoCaseUid<TgEfVersionEntity>();
-		if (operResultVersions.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfVersionEntity> storageResultVersions = EfContext.AlterTableNoCaseUid<TgEfVersionEntity>();
+		if (storageResultVersions.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
 	}
 
 	private static async Task UpgradeDbAsync()
 	{
-		TgEfOperResult<TgEfAppEntity> operResultApps = await EfContext.AlterTableNoCaseUidAsync<TgEfAppEntity>();
-		if (operResultApps.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfAppEntity> storageResultApps = await EfContext.AlterTableNoCaseUidAsync<TgEfAppEntity>();
+		if (storageResultApps.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfDocumentEntity> operResultDocuments = await EfContext.AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
-		if (operResultDocuments.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = await EfContext.AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
+		if (storageResultDocuments.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfFilterEntity> operResultFilters = await EfContext.AlterTableNoCaseUidAsync<TgEfFilterEntity>();
-		if (operResultFilters.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfFilterEntity> storageResultFilters = await EfContext.AlterTableNoCaseUidAsync<TgEfFilterEntity>();
+		if (storageResultFilters.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfMessageEntity> operResultMessages = await EfContext.AlterTableNoCaseUidAsync<TgEfMessageEntity>();
-		if (operResultMessages.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfMessageEntity> storageResultMessages = await EfContext.AlterTableNoCaseUidAsync<TgEfMessageEntity>();
+		if (storageResultMessages.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfProxyEntity> operResultProxies = await EfContext.AlterTableNoCaseUidAsync<TgEfProxyEntity>();
-		if (operResultProxies.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfProxyEntity> storageResultProxies = await EfContext.AlterTableNoCaseUidAsync<TgEfProxyEntity>();
+		if (storageResultProxies.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfSourceEntity> operResultSources = await EfContext.AlterTableNoCaseUidAsync<TgEfSourceEntity>();
-		if (operResultSources.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfSourceEntity> storageResultSources = await EfContext.AlterTableNoCaseUidAsync<TgEfSourceEntity>();
+		if (storageResultSources.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
-		TgEfOperResult<TgEfVersionEntity> operResultVersions = await EfContext.AlterTableNoCaseUidAsync<TgEfVersionEntity>();
-		if (operResultVersions.State == TgEnumEntityState.NotExecuted)
+		TgEfStorageResult<TgEfVersionEntity> storageResultVersions = await EfContext.AlterTableNoCaseUidAsync<TgEfVersionEntity>();
+		if (storageResultVersions.State == TgEnumEntityState.NotExecuted)
 			throw new(TgLocale.TablesAppsException);
 	}
 
@@ -388,6 +393,34 @@ public static class TgEfUtils
 			throw new(TgLocale.TablesFiltersException);
 		if (!CheckTableMessagesCrud(efContext))
 			throw new(TgLocale.TablesMessagesException);
+
+		TgEfStorageResult<TgEfSourceEntity> storageResultSource = new TgEfSourceRepository(efContext).GetNew(isNoTracking: false);
+		if (storageResultSource.IsExists)
+		{
+			// Delete wrong messages
+			TgEfMessageRepository messageRepository = new(efContext);
+			TgEfStorageResult<TgEfMessageEntity> storageResultMessages = messageRepository.GetList(TgEnumTableTopRecords.All, 0, 
+				item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
+			if (storageResultMessages.IsExists)
+			{
+				foreach (TgEfMessageEntity message in storageResultMessages.Items)
+				{
+					messageRepository.Delete(message, isSkipFind: true);
+				}
+			}
+			// Delete wrong documents
+			TgEfDocumentRepository documentRepository = new(efContext);
+			TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = documentRepository.GetList(TgEnumTableTopRecords.All, 0,
+				item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
+			if (storageResultDocuments.IsExists)
+			{
+				foreach (TgEfDocumentEntity document in storageResultDocuments.Items)
+				{
+					documentRepository.Delete(document, isSkipFind: true);
+				}
+			}
+		}
+
 		if (!CheckTableSourcesCrud(efContext))
 			throw new(TgLocale.TablesSourcesException);
 		if (!CheckTableProxiesCrud(efContext))
@@ -406,6 +439,34 @@ public static class TgEfUtils
 			throw new(TgLocale.TablesFiltersException);
 		if (!await CheckTableMessagesCrudAsync(efContext))
 			throw new(TgLocale.TablesMessagesException);
+
+		TgEfStorageResult<TgEfSourceEntity> storageResultSource = await (new TgEfSourceRepository(efContext)).GetNewAsync(isNoTracking: false);
+		if (storageResultSource.IsExists)
+		{
+			// Delete wrong messages
+			TgEfMessageRepository messageRepository = new(efContext);
+			TgEfStorageResult<TgEfMessageEntity> storageResultMessages = await messageRepository.GetListAsync(TgEnumTableTopRecords.All, 0,
+				item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
+			if (storageResultMessages.IsExists)
+			{
+				foreach (TgEfMessageEntity message in storageResultMessages.Items)
+				{
+					await messageRepository.DeleteAsync(message, isSkipFind: true);
+				}
+			}
+			// Delete wrong documents
+			TgEfDocumentRepository documentRepository = new(efContext);
+			TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = await documentRepository.GetListAsync(TgEnumTableTopRecords.All, 0,
+				item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
+			if (storageResultDocuments.IsExists)
+			{
+				foreach (TgEfDocumentEntity document in storageResultDocuments.Items)
+				{
+					await documentRepository.DeleteAsync(document, isSkipFind: true);
+				}
+			}
+		}
+
 		if (!await CheckTableSourcesCrudAsync(efContext))
 			throw new(TgLocale.TablesSourcesException);
 		if (!await CheckTableProxiesCrudAsync(efContext))
@@ -414,34 +475,34 @@ public static class TgEfUtils
 			throw new(TgLocale.TablesVersionsException);
 	}
 
-	private static bool CheckTableCrud<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
+	private static bool CheckTableCrud<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
-		var operResult = repository.CreateNew();
-		if (!operResult.IsExists)
+		var storageResult = repository.CreateNew();
+		if (!storageResult.IsExists)
 			return false;
-		operResult = repository.GetNew(isNoTracking: false);
-		if (!operResult.IsExists)
+		storageResult = repository.GetNew(isNoTracking: false);
+		if (!storageResult.IsExists)
 			return false;
-		operResult = repository.Save(operResult.Item);
-		if (operResult.State != TgEnumEntityState.IsSaved)
+		storageResult = repository.Save(storageResult.Item);
+		if (storageResult.State != TgEnumEntityState.IsSaved)
 			return false;
-		operResult = repository.Delete(operResult.Item, isSkipFind: false);
-		return operResult.State == TgEnumEntityState.IsDeleted;
+		storageResult = repository.Delete(storageResult.Item, isSkipFind: false);
+		return storageResult.State == TgEnumEntityState.IsDeleted;
 	}
 
-	private static async Task<bool> CheckTableCrudAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
+	private static async Task<bool> CheckTableCrudAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
-		var operResult = await repository.CreateNewAsync();
-		if (!operResult.IsExists)
+		var storageResult = await repository.CreateNewAsync();
+		if (!storageResult.IsExists)
 			return false;
-		operResult = await repository.GetNewAsync(isNoTracking: false);
-		if (!operResult.IsExists)
+		storageResult = await repository.GetNewAsync(isNoTracking: false);
+		if (!storageResult.IsExists)
 			return false;
-		operResult = await repository.SaveAsync(operResult.Item);
-		if (operResult.State != TgEnumEntityState.IsSaved)
+		storageResult = await repository.SaveAsync(storageResult.Item);
+		if (storageResult.State != TgEnumEntityState.IsSaved)
 			return false;
-		operResult = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-		return operResult.State == TgEnumEntityState.IsDeleted;
+		storageResult = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+		return storageResult.State == TgEnumEntityState.IsDeleted;
 	}
 
 	public static bool CheckTableAppsCrud(TgEfContext efContext) => CheckTableCrud(new TgEfAppRepository(efContext));

@@ -3,46 +3,46 @@
 
 namespace TgStorage.Common;
 
-/// <summary> EF operation result </summary>
+/// <summary> EF storage result </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgEfOperResult<T> where T : TgEfEntityBase, ITgDbEntity, new()
+public sealed class TgEfStorageResult<TEntity> where TEntity : ITgDbFillEntity<TEntity>, new()
 {
 	#region Public and private fields, properties, constructor
 
 	public TgEnumEntityState State { get; set; }
 
-	public T Item { get; set; }
+	public TEntity Item { get; set; }
 
-	public IEnumerable<T> Items { get; set; }
+	public IEnumerable<TEntity> Items { get; set; }
 
 	public bool IsExists => State is TgEnumEntityState.IsExists or TgEnumEntityState.IsSaved;
 
-	public TgEfOperResult()
+	public TgEfStorageResult()
 	{
 		State = TgEnumEntityState.Unknown;
 		Item = new();
 		Items = [];
 	}
 
-	public TgEfOperResult(TgEnumEntityState state)
-	{
-		State = state;
-		Item = new T();
-		Items = [];
-	}
-
-	public TgEfOperResult(TgEnumEntityState state, T item)
-	{
-		State = state;
-		Item = item;
-		Items = [];
-	}
-
-	public TgEfOperResult(TgEnumEntityState state, IEnumerable<T> items)
+	public TgEfStorageResult(TgEnumEntityState state)
 	{
 		State = state;
 		Item = new();
-		Items = items;
+		Items = [];
+	}
+
+	public TgEfStorageResult(TgEnumEntityState state, TEntity? item)
+	{
+		State = state;
+		Item = item ?? new();
+		Items = [];
+	}
+
+	public TgEfStorageResult(TgEnumEntityState state, IEnumerable<TEntity>? items)
+	{
+		State = state;
+		Item = new();
+		Items = items ?? new List<TEntity>();
 	}
 
 	#endregion

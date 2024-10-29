@@ -12,13 +12,14 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 	public TgEfSourceViewModel SourceVm { get; set; }
 	public TgEfVersionViewModel VersionVm { get; set; }
-	
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteMessages { get; set; }
 	[DefaultValue(true)]
 	public bool IsJoinFileNameWithMessageId { get; set; }
+	[DefaultValue(1)]
+	public int CountThreads { get; set; }
 
 	public TgDownloadSettingsViewModel()
 	{
@@ -27,6 +28,7 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
 		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
 		IsRewriteMessages = this.GetDefaultPropertyBool(nameof(IsRewriteMessages));
+		CountThreads = this.GetDefaultPropertyInt(nameof(CountThreads));
 	}
 
 	#endregion
@@ -39,9 +41,9 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
     {
         if (!SourceVm.IsReadySourceId)
             return;
-        TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.Save(SourceVm.Item);
-        if (operResult.IsExists) 
-	        SourceVm.Item = operResult.Item;
+        TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.Save(SourceVm.Item);
+        if (storageResult.IsExists) 
+	        SourceVm.Item = storageResult.Item;
     }
 
     #endregion

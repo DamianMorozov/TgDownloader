@@ -4,17 +4,11 @@
 namespace TgStorage.Contracts;
 
 /// <summary> SQL table interface </summary>
-public interface ITgDbEntity : ITgCommon
+public interface ITgDbFillEntity<TEntity> : ITgDbEntity where TEntity : new()
 {
-	#region Public and private fields, properties, constructor
-
-	public Guid Uid { get; set; }
-
-	#endregion
-
 	#region Public and private methods
 
-	public void Default();
+	public TEntity Fill(TEntity item, bool isUidCopy);
 
 	#endregion
 }

@@ -5,17 +5,26 @@ namespace TgStorage.Domain.Documents;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableDocuments)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
 [Index(nameof(MessageId))]
 [Index(nameof(FileName))]
 [Index(nameof(FileSize))]
 [Index(nameof(AccessHash))]
-public sealed partial class TgEfDocumentEntity : TgEfEntityBase
+public sealed class TgEfDocumentEntity : ITgDbEntity, ITgDbFillEntity<TgEfDocumentEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(0)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
     public long? SourceId { get; set; }
@@ -58,14 +67,14 @@ public sealed partial class TgEfDocumentEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableDocuments} | {base.ToDebugString()} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableDocuments} | {Uid} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    //SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
-	    SourceId = null;
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		//SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+		SourceId = null;
 	    Id = this.GetDefaultPropertyLong(nameof(Id));
 	    MessageId = this.GetDefaultPropertyLong(nameof(MessageId));
 	    FileName = this.GetDefaultPropertyString(nameof(FileName));
@@ -73,24 +82,18 @@ public sealed partial class TgEfDocumentEntity : TgEfEntityBase
 	    AccessHash = this.GetDefaultPropertyLong(nameof(AccessHash));
 	}
 
-    public override void Fill(object item)
-    {
-	    if (item is not TgEfDocumentEntity document)
-		    throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfDocumentEntity)}!");
-
-		SourceId = document.SourceId;
-		Id = document.Id;
-		MessageId = document.MessageId;
-		FileName = document.FileName;
-		FileSize = document.FileSize;
-		AccessHash = document.AccessHash;
+    public TgEfDocumentEntity Fill(TgEfDocumentEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		SourceId = item.SourceId;
+		Id = item.Id;
+		MessageId = item.MessageId;
+		FileName = item.FileName;
+		FileSize = item.FileSize;
+		AccessHash = item.AccessHash;
+		return this;
 	}
-
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
-    }
 
 	#endregion
 }

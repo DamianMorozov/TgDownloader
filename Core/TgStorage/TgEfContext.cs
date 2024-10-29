@@ -224,7 +224,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public bool IsTableExists(string tableName)
 	{
 		string? result = Database.SqlQuery<string>(
-			$"SELECT [name] AS [Value] FROM [sqlite_master]").SingleOrDefault(x => x == tableName);
+			$"SELECT [name] AS [Value] FROM [sqlite_master]")
+			.Where(x => x == tableName)
+			.SingleOrDefault();
 		return tableName == result;
 	}
 
@@ -267,10 +269,10 @@ public sealed class TgEfContext : DbContext, IDisposable
 	}
 
 	/// <summary> Truncate sql table by name </summary>
-	public async Task<TgEfOperResult<T>> TruncateTableAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public async Task<TgEfStorageResult<TEntity>> TruncateTableAsync<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => $"TRUNCATE TABLE {TgEfConstants.TableApps};",
 			var cls when cls == typeof(TgEfDocumentEntity) => $"TRUNCATE TABLE {TgEfConstants.TableDocuments};",
@@ -284,16 +286,16 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Drop sql table </summary>
-	public TgEfOperResult<T> DeleteTable<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public TgEfStorageResult<TEntity> DeleteTable<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => $"DROP TABLE IF EXISTS {TgEfConstants.TableApps};",
 			var cls when cls == typeof(TgEfDocumentEntity) => $"DROP TABLE IF EXISTS {TgEfConstants.TableDocuments};",
@@ -307,16 +309,16 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = Database.ExecuteSqlRaw(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Drop sql table </summary>
-	public async Task<TgEfOperResult<T>> DeleteTableAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public async Task<TgEfStorageResult<TEntity>> DeleteTableAsync<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => $"DROP TABLE IF EXISTS {TgEfConstants.TableApps};",
 			var cls when cls == typeof(TgEfDocumentEntity) => $"DROP TABLE IF EXISTS {TgEfConstants.TableDocuments};",
@@ -330,15 +332,15 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
-	public TgEfOperResult<T> AlterTableNoCaseUid<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public TgEfStorageResult<TEntity> AlterTableNoCaseUid<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => TgEfQueries.QueryAlterApps,
 			var cls when cls == typeof(TgEfDocumentEntity) => TgEfQueries.QueryAlterDocuments,
@@ -350,15 +352,15 @@ public sealed class TgEfContext : DbContext, IDisposable
 			_ => string.Empty
 		};
 		if (string.IsNullOrEmpty(cmd))
-			return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 		int result = Database.ExecuteSqlRaw(cmd);
-		return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
-	public async Task<TgEfOperResult<T>> AlterTableNoCaseUidAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public async Task<TgEfStorageResult<TEntity>> AlterTableNoCaseUidAsync<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => TgEfQueries.QueryAlterApps,
 			var cls when cls == typeof(TgEfDocumentEntity) => TgEfQueries.QueryAlterDocuments,
@@ -370,9 +372,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 			_ => string.Empty
 		};
 		if (string.IsNullOrEmpty(cmd))
-			return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 		int result = await Database.ExecuteSqlRawAsync(cmd);
-		return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
 	public void CompactDb()
@@ -389,10 +391,10 @@ public sealed class TgEfContext : DbContext, IDisposable
 
 	/// <summary> Update UID field to upper case </summary>
 	/// <param name="uid"> PK UID </param>
-	public TgEfOperResult<T> UpdateTableUidUpperCaseAll<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public TgEfStorageResult<TEntity> UpdateTableUidUpperCaseAll<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => $"UPDATE [{TgEfConstants.TableApps}] SET [UID] = UPPER([UID]);",
 			var cls when cls == typeof(TgEfDocumentEntity) => $"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = UPPER([UID]);",
@@ -406,17 +408,16 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = Database.ExecuteSqlRaw(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Update UID field to upper case </summary>
-	/// <param name="uid"> PK UID </param>
-	public async Task<TgEfOperResult<T>> UpdateTableUidUpperCaseAllAsync<T>() where T : TgEfEntityBase, ITgDbEntity, new()
+	public async Task<TgEfStorageResult<TEntity>> UpdateTableUidUpperCaseAllAsync<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => $"UPDATE [{TgEfConstants.TableApps}] SET [UID] = UPPER([UID]);",
 			var cls when cls == typeof(TgEfDocumentEntity) => $"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = UPPER([UID]);",
@@ -430,19 +431,19 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Update UID field to upper case </summary>
 	/// <param name="uid"> PK UID </param>
-	public async Task<TgEfOperResult<T>> UpdateTableUidUpperCaseAsync<T>(Guid uid) where T : TgEfEntityBase, ITgDbEntity, new()
+	public async Task<TgEfStorageResult<TEntity>> UpdateTableUidUpperCaseAsync<TEntity>(Guid uid) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		CheckIfDisposed();
 		string uidUpper = uid.ToString().ToUpper();
 		string uidString = uid.ToString();
-		string cmd = typeof(T) switch
+		string cmd = typeof(TEntity) switch
 		{
 			var cls when cls == typeof(TgEfAppEntity) => 
 				$"UPDATE [{TgEfConstants.TableApps}] SET [UID] = '{uidUpper}' WHERE [UID] = '{uidString}';",
@@ -463,42 +464,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
-	}
-
-	/// <summary> Update UID field to lower case </summary>
-	/// <param name="uid"> PK UID </param>
-	public async Task<TgEfOperResult<T>> UpdateTableUidLowerCaseAsync<T>(Guid uid) where T : TgEfEntityBase, ITgDbEntity, new()
-	{
-		CheckIfDisposed();
-		string uidLower = uid.ToString().ToLower();
-		string uidString = uid.ToString();
-		string cmd = typeof(T) switch
-		{
-			var cls when cls == typeof(TgEfAppEntity) =>
-				$"UPDATE [{TgEfConstants.TableApps}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfDocumentEntity) =>
-				$"UPDATE [{TgEfConstants.TableDocuments}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfFilterEntity) =>
-				$"UPDATE [{TgEfConstants.TableFilters}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfMessageEntity) =>
-				$"UPDATE [{TgEfConstants.TableMessages}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfProxyEntity) =>
-				$"UPDATE [{TgEfConstants.TableProxies}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfSourceEntity) =>
-				$"UPDATE [{TgEfConstants.TableSources}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			var cls when cls == typeof(TgEfVersionEntity) =>
-				$"UPDATE [{TgEfConstants.TableVersions}] SET [UID] = '{uidLower}' WHERE [UID] = '{uidString}';",
-			_ => string.Empty
-		};
-		if (!string.IsNullOrEmpty(cmd))
-		{
-			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfOperResult<T>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
-		}
-		return new TgEfOperResult<T>(TgEnumEntityState.NotExecuted);
+		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Create and update storage </summary>
@@ -506,13 +474,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 	{
 		CheckIfDisposed();
 		//if (!Database.GetPendingMigrations().Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		//{
 		//	Database.EnsureCreated();
-		//}
 		//else
-		//{
 		Database.Migrate();
-		//}
 	}
 
 	/// <summary> Create and update storage </summary>
@@ -520,13 +484,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 	{
 		CheckIfDisposed();
 		//if (!(await Database.GetPendingMigrationsAsync()).Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		//{
 		//	await Database.EnsureCreatedAsync();
-		//}
 		//else
-		//{
 		await Database.MigrateAsync();
-		//}
 	}
 
 	#endregion

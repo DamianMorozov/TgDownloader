@@ -16,10 +16,10 @@ public sealed class TgEfProxyViewModel : TgViewModelBase
 	    get => Item.Uid;
 	    set
 	    {
-		    TgEfOperResult<TgEfProxyEntity> operResult = ProxyRepository.Get(
+		    TgEfStorageResult<TgEfProxyEntity> storageResult = ProxyRepository.Get(
 			    new TgEfProxyEntity { Uid = value }, isNoTracking: false);
-		    Item = operResult.IsExists
-			    ? operResult.Item
+		    Item = storageResult.IsExists
+			    ? storageResult.Item
 			    : ProxyRepository.GetNew(isNoTracking: false).Item;
 	    }
     }

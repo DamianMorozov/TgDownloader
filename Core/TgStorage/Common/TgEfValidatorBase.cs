@@ -4,7 +4,7 @@
 namespace TgStorage.Common;
 
 /// <summary> SQL validator base </summary>
-public class TgEfValidatorBase<T> : AbstractValidator<T>, ITgCommon where T : ITgDbEntity
+public class TgEfValidatorBase<TEntity> : AbstractValidator<TEntity>, ITgCommon where TEntity : ITgDbEntity
 {
     #region Public and private fields, properties, constructor
 
@@ -18,7 +18,7 @@ public class TgEfValidatorBase<T> : AbstractValidator<T>, ITgCommon where T : IT
 
     #region Public and private methods
 
-    public string ToDebugString() => this is T item ? $"{item.Uid}" : string.Empty;
+    public string ToDebugString() => this is TEntity item ? $"{item.Uid}" : string.Empty;
 
     #endregion
 }

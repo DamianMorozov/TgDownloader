@@ -5,15 +5,24 @@ namespace TgStorage.Domain.Apps;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableApps)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(ApiHash), IsUnique = true)]
 [Index(nameof(ApiId))]
 [Index(nameof(PhoneNumber))]
 [Index(nameof(ProxyUid))]
-public sealed partial class TgEfAppEntity : TgEfEntityBase
+public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnApiHash, TypeName = "CHAR(36)")]
     [SQLite.Collation("NOCASE")]
@@ -61,34 +70,34 @@ public sealed partial class TgEfAppEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableApps} | {base.ToDebugString()} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableApps} | {Uid} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
 
-    public override void Default()
+    public void Default()
     {
-        base.Default();
-        ApiHash = this.GetDefaultPropertyGuid(nameof(ApiHash));
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		ApiHash = this.GetDefaultPropertyGuid(nameof(ApiHash));
         ApiId = this.GetDefaultPropertyInt(nameof(ApiId));
         PhoneNumber = this.GetDefaultPropertyString(nameof(PhoneNumber));
 		//ProxyUid = this.GetDefaultPropertyGuid(nameof(ProxyUid));
 		ProxyUid = null;
     }
 
-	public override void Fill(object item)
-    {
-		if (item is not TgEfAppEntity app)
-			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfAppEntity)}!");
-	    
-	    ApiHash = app.ApiHash;
-	    ApiId = app.ApiId;
-	    PhoneNumber = app.PhoneNumber;
-	    ProxyUid = app.ProxyUid;
+	public TgEfAppEntity Fill(TgEfAppEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		//Uid = item is { } entity ? entity.Uid : Guid.Empty;
+		ApiHash = item.ApiHash;
+	    ApiId = item.ApiId;
+	    PhoneNumber = item.PhoneNumber;
+	    ProxyUid = item.ProxyUid;
+		return this;
     }
 
-	public override void Backup(object item)
+	public TgEfAppEntity Backup(object item)
 	{
-		Fill(item);
-		base.Backup(item);
+		return this;
 	}
 
 	#endregion

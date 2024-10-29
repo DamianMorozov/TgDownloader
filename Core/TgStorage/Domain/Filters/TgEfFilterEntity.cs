@@ -5,17 +5,26 @@ namespace TgStorage.Domain.Filters;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableFilters)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(IsEnabled))]
 [Index(nameof(FilterType))]
 [Index(nameof(Name))]
 [Index(nameof(Mask))]
 [Index(nameof(Size))]
 [Index(nameof(SizeType))]
-public sealed partial class TgEfFilterEntity : TgEfEntityBase
+public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(true)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(true)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnIsEnabled, TypeName = "BIT")]
     public bool IsEnabled { get; set; }
@@ -66,17 +75,17 @@ public sealed partial class TgEfFilterEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() => FilterType switch
+    public string ToDebugString() => FilterType switch
     {
         TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
-			$"{TgEfConstants.TableFilters} | {base.ToDebugString()} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
-        _ => $"{TgEfConstants.TableFilters} | {base.ToDebugString()} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
+			$"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
+        _ => $"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
     };
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    IsEnabled = this.GetDefaultPropertyBool(nameof(IsEnabled));
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		IsEnabled = this.GetDefaultPropertyBool(nameof(IsEnabled));
 	    FilterType = this.GetDefaultPropertyGeneric<TgEnumFilterType>(nameof(FilterType));
 	    Name = this.GetDefaultPropertyString(nameof(Name));
 	    Mask = this.GetDefaultPropertyString(nameof(Mask));
@@ -84,27 +93,21 @@ public sealed partial class TgEfFilterEntity : TgEfEntityBase
 	    SizeType = this.GetDefaultPropertyGeneric<TgEnumFileSizeType>(nameof(SizeType));
 	}
 
-    public override void Fill(object item)
-    {
-		if (item is not TgEfFilterEntity filter)
-			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfFilterEntity)}!");
-
-		IsEnabled = filter.IsEnabled;
-		FilterType = filter.FilterType;
-		Name = filter.Name;
+    public TgEfFilterEntity Fill(TgEfFilterEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		IsEnabled = item.IsEnabled;
+		FilterType = item.FilterType;
+		Name = item.Name;
 		//_mask = filter.Mask;
-		Mask = string.IsNullOrEmpty(filter.Mask) &&
-		        (Equals(filter.FilterType, TgEnumFilterType.MinSize) ||
-		         Equals(filter.FilterType, TgEnumFilterType.MaxSize)) ? "*" : filter.Mask;
-		Size = filter.Size;
-		SizeType = filter.SizeType;
+		Mask = string.IsNullOrEmpty(item.Mask) &&
+		        (Equals(item.FilterType, TgEnumFilterType.MinSize) ||
+		         Equals(item.FilterType, TgEnumFilterType.MaxSize)) ? "*" : item.Mask;
+		Size = item.Size;
+		SizeType = item.SizeType;
+        return this;
 	}
-
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
-    }
 
 	private string GetStringForFilterType() => FilterType switch
     {

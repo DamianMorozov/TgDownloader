@@ -36,6 +36,7 @@ public static class TgEfConstants
 	public const string ColumnApiHash = "API_HASH";
 	public const string ColumnApiId = "API_ID";
 	public const string ColumnCount = "COUNT";
+	public const string ColumnCountThreads = "COUNT_THREADS";
 	public const string ColumnDescription = "DESCRIPTION";
 	public const string ColumnDirectory = "DIRECTORY";
 	public const string ColumnDtChanged = "DT_CHANGED";

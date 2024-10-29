@@ -37,10 +37,10 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.Get(
+			TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.Get(
 				new TgEfSourceEntity { Uid = value }, isNoTracking: false);
-			Item = operResult.IsExists
-				? operResult.Item
+			Item = storageResult.IsExists
+				? storageResult.Item
 				: SourceRepository.GetNew(isNoTracking: false).Item;
 		}
 	}
@@ -113,7 +113,8 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 
     public override string ToString() => $"{Item} | {Progress}";
 
-    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | {TgCommonUtils.GetIsAutoUpdate(IsAutoUpdate)} | {SourceUserName} | {SourceId} | {SourceFirstId}";
+    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(IsReady)} | " +
+        $"{TgCommonUtils.GetIsAutoUpdate(IsAutoUpdate)} | {SourceUserName} | {SourceId} | {SourceFirstId}";
 
     /// <summary>
     /// Set new source.

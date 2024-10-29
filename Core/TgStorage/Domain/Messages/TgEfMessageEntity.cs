@@ -5,17 +5,26 @@ namespace TgStorage.Domain.Messages;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableMessages)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
 [Index(nameof(DtCreated))]
 [Index(nameof(Type))]
 [Index(nameof(Size))]
 [Index(nameof(Message))]
-public sealed partial class TgEfMessageEntity : TgEfEntityBase
+public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessageEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(0)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
     public long? SourceId { get; set; }
@@ -56,14 +65,14 @@ public sealed partial class TgEfMessageEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableMessages} | {base.ToDebugString()} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableMessages} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    //SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
-	    SourceId = null;
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		//SourceId = this.GetDefaultPropertyLong(nameof(SourceId));
+		SourceId = null;
 	    Id = this.GetDefaultPropertyLong(nameof(Id));
 	    DtCreated = this.GetDefaultPropertyDateTime(nameof(DtCreated));
 		Type = this.GetDefaultPropertyGeneric<TgEnumMessageType>(nameof(Type));
@@ -71,24 +80,18 @@ public sealed partial class TgEfMessageEntity : TgEfEntityBase
 	    Message = this.GetDefaultPropertyString(nameof(Message));
 	}
 
-    public override void Fill(object item)
-    {
-		if (item is not TgEfMessageEntity message)
-			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfMessageEntity)}!");
-
-		SourceId = message.SourceId;
-		Id = message.Id;
-		DtCreated = message.DtCreated > DateTime.MinValue ? message.DtCreated : DateTime.Now;
-		Type = message.Type;
-		Size = message.Size;
-		Message = message.Message;
+    public TgEfMessageEntity Fill(TgEfMessageEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		SourceId = item.SourceId;
+		Id = item.Id;
+		DtCreated = item.DtCreated > DateTime.MinValue ? item.DtCreated : DateTime.Now;
+		Type = item.Type;
+		Size = item.Size;
+		Message = item.Message;
+		return this;
 	}
-
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
-    }
 
 	#endregion
 }

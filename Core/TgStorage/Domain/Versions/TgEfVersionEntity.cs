@@ -5,13 +5,22 @@ namespace TgStorage.Domain.Versions;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Table(TgEfConstants.TableVersions)]
+[Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Version), IsUnique = true)]
 [Index(nameof(Description))]
-public sealed partial class TgEfVersionEntity : TgEfEntityBase
+public sealed class TgEfVersionEntity : ITgDbEntity, ITgDbFillEntity<TgEfVersionEntity>
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    [DefaultValue(1024)]
+	[DefaultValue("00000000-0000-0000-0000-000000000000")]
+	[Key]
+	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Required]
+	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
+	[SQLite.Collation("NOCASE")]
+	public Guid Uid { get; set; }
+
+	[DefaultValue(1024)]
     [MaxLength(4)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnVersion, TypeName = "SMALLINT")]
@@ -32,30 +41,24 @@ public sealed partial class TgEfVersionEntity : TgEfEntityBase
 
     #region Public and private methods
 
-    public override string ToDebugString() =>
-        $"{TgEfConstants.TableVersions} | {base.ToDebugString()} | {Version} | {Description}";
+    public string ToDebugString() =>
+        $"{TgEfConstants.TableVersions} | {Uid} | {Version} | {Description}";
 
-    public override void Default()
+    public void Default()
     {
-	    base.Default();
-	    Version = this.GetDefaultPropertyShort(nameof(Version));
+		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		Version = this.GetDefaultPropertyShort(nameof(Version));
 	    Description = this.GetDefaultPropertyString(nameof(Description));
     }
 
-    public override void Fill(object item)
-    {
-		if (item is not TgEfVersionEntity version)
-			throw new ArgumentException($"The {nameof(item)} is not {nameof(TgEfVersionEntity)}!");
-
-		Version = version.Version;
-		Description = version.Description;
+    public TgEfVersionEntity Fill(TgEfVersionEntity item, bool isUidCopy)
+	{
+		if (isUidCopy)
+			Uid = item.Uid;
+		Version = item.Version;
+		Description = item.Description;
+        return this;
 	}
-
-    public override void Backup(object item)
-    {
-	    Fill(item);
-	    base.Backup(item);
-    }
 
 	#endregion
 }

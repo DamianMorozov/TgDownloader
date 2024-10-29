@@ -9,26 +9,28 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	public override string ToDebugString() => $"{nameof(TgEfFilterRepository)}";
 
-	public override TgEfOperResult<TgEfFilterEntity> Get(TgEfFilterEntity item, bool isNoTracking)
+	public override TgEfStorageResult<TgEfFilterEntity> Get(TgEfFilterEntity item, bool isNoTracking)
 	{
-		TgEfOperResult<TgEfFilterEntity> operResult = base.Get(item, isNoTracking);
-		if (operResult.IsExists)
-			return operResult;
+		TgEfStorageResult<TgEfFilterEntity> storageResult = base.Get(item, isNoTracking);
+		if (storageResult.IsExists)
+			return storageResult;
 		TgEfFilterEntity? itemFind = isNoTracking
 			? EfContext.Filters.AsNoTracking()
-				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.Where(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.SingleOrDefault()
 			: EfContext.Filters.AsTracking()
-				.SingleOrDefault(x => x.FilterType == item.FilterType && x.Name == item.Name);
+				.Where(x => x.FilterType == item.FilterType && x.Name == item.Name)
+				.SingleOrDefault();
 		return itemFind is not null
-			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)
-			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);
+			? new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfOperResult<TgEfFilterEntity>> GetAsync(TgEfFilterEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetAsync(TgEfFilterEntity item, bool isNoTracking)
 	{
-		TgEfOperResult<TgEfFilterEntity> operResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
-		if (operResult.IsExists)
-			return operResult;
+		TgEfStorageResult<TgEfFilterEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		if (storageResult.IsExists)
+			return storageResult;
 		TgEfFilterEntity? itemFind = isNoTracking
 			? await EfContext.Filters.AsNoTracking()
 				.Where(x => x.FilterType == item.FilterType && x.Name == item.Name)
@@ -39,11 +41,11 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)
-			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);
+			? new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, itemFind)
+			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override TgEfOperResult<TgEfFilterEntity> GetFirst(bool isNoTracking)
+	public override TgEfStorageResult<TgEfFilterEntity> GetFirst(bool isNoTracking)
 	{
 		TgEfFilterEntity? item = isNoTracking
 			? EfContext.Filters.AsNoTracking()
@@ -51,11 +53,11 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 			: EfContext.Filters.AsTracking()
 				.FirstOrDefault();
 		return item is null
-			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
-			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
+			? new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
+			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override async Task<TgEfOperResult<TgEfFilterEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfFilterEntity? item = isNoTracking
 			? await EfContext.Filters.AsNoTracking()
@@ -63,11 +65,11 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 			: await EfContext.Filters.AsTracking()
 				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
-			: new TgEfOperResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
+			? new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists)
+			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override TgEfOperResult<TgEfFilterEntity> GetList(int take, int skip, bool isNoTracking)
+	public override TgEfStorageResult<TgEfFilterEntity> GetList(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfFilterEntity> items;
 		if (take > 0)
@@ -86,10 +88,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 				: EfContext.Filters.AsTracking()
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfFilterEntity> items;
@@ -105,10 +107,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 				? EfContext.Filters.AsNoTracking().ToList()
 				: EfContext.Filters.AsTracking().ToList();
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override TgEfOperResult<TgEfFilterEntity> GetList(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
+	public override TgEfStorageResult<TgEfFilterEntity> GetList(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
 	{
 		IList<TgEfFilterEntity> items;
 		if (take > 0)
@@ -131,10 +133,10 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfOperResult<TgEfFilterEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
 	{
 		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 		IList<TgEfFilterEntity> items;
@@ -158,7 +160,7 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new TgEfStorageResult<TgEfFilterEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Filters.AsNoTracking().Count();
@@ -181,30 +183,30 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	#region Public and private methods - Delete
 
-	public override TgEfOperResult<TgEfFilterEntity> DeleteAll()
+	public override TgEfStorageResult<TgEfFilterEntity> DeleteAll()
 	{
-		TgEfOperResult<TgEfFilterEntity> operResult = GetList(0, 0, isNoTracking: false);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfFilterEntity> storageResult = GetList(0, 0, isNoTracking: false);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfFilterEntity item in operResult.Items)
+			foreach (TgEfFilterEntity item in storageResult.Items)
 			{
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfStorageResult<TgEfFilterEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
-	public override async Task<TgEfOperResult<TgEfFilterEntity>> DeleteAllAsync()
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> DeleteAllAsync()
 	{
-		TgEfOperResult<TgEfFilterEntity> operResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
-		if (operResult.IsExists)
+		TgEfStorageResult<TgEfFilterEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		if (storageResult.IsExists)
 		{
-			foreach (TgEfFilterEntity item in operResult.Items)
+			foreach (TgEfFilterEntity item in storageResult.Items)
 			{
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfOperResult<TgEfFilterEntity>(operResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new TgEfStorageResult<TgEfFilterEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

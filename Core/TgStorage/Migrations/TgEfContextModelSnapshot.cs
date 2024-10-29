@@ -60,7 +60,7 @@ namespace TgStorage.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("APPS");
+                    b.ToTable("APPS", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Documents.TgEfDocumentEntity", b =>
@@ -119,7 +119,7 @@ namespace TgStorage.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("DOCUMENTS");
+                    b.ToTable("DOCUMENTS", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Filters.TgEfFilterEntity", b =>
@@ -180,7 +180,7 @@ namespace TgStorage.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("FILTERS");
+                    b.ToTable("FILTERS", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Messages.TgEfMessageEntity", b =>
@@ -238,7 +238,7 @@ namespace TgStorage.Migrations
                     b.HasIndex("Uid")
                         .IsUnique();
 
-                    b.ToTable("MESSAGES");
+                    b.ToTable("MESSAGES", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Proxies.TgEfProxyEntity", b =>
@@ -303,7 +303,7 @@ namespace TgStorage.Migrations
 
                     b.HasIndex("UserName");
 
-                    b.ToTable("PROXIES");
+                    b.ToTable("PROXIES", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Sources.TgEfSourceEntity", b =>
@@ -383,7 +383,7 @@ namespace TgStorage.Migrations
 
                     b.HasIndex("UserName");
 
-                    b.ToTable("SOURCES");
+                    b.ToTable("SOURCES", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Versions.TgEfVersionEntity", b =>
@@ -416,7 +416,7 @@ namespace TgStorage.Migrations
                     b.HasIndex("Version")
                         .IsUnique();
 
-                    b.ToTable("VERSIONS");
+                    b.ToTable("VERSIONS", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Apps.TgEfAppEntity", b =>
