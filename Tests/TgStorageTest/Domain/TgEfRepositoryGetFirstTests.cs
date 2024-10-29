@@ -8,11 +8,11 @@ internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void GetFirst<T>(ITgEfRepository<T> repo) where T : TgEfEntityBase, new()
+	private void GetFirst<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			T item = repo.GetFirst(isNoTracking: true).Item;
+			TEntity item = repo.GetFirst(isNoTracking: true).Item;
 			TestContext.WriteLine($"Found {item.ToDebugString()}");
 		});
 	}

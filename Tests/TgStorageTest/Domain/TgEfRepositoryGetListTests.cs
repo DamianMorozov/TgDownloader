@@ -8,32 +8,32 @@ internal sealed class TgEfRepositoryGetListTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void GetList<T>(ITgEfRepository<T> repo, TgEnumTableTopRecords count = TgEnumTableTopRecords.Top20) 
-		where T : TgEfEntityBase, new()
+	private void GetList<TEntity>(ITgEfRepository<TEntity> repo, TgEnumTableTopRecords count = TgEnumTableTopRecords.Top20) 
+		where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			TgEfOperResult<T> operResult = repo.GetList(count, 0, isNoTracking: true);
-			TestContext.WriteLine($"Found {operResult.Items.Count()} items.");
-			foreach (T item in operResult.Items)
+			TgEfStorageResult<TEntity> storageResult = repo.GetList(count, 0, isNoTracking: true);
+			TestContext.WriteLine($"Found {storageResult.Items.Count()} items.");
+			foreach (TEntity item in storageResult.Items)
 			{
-				T itemFind = repo.Get(item, isNoTracking: true).Item;
+				TEntity itemFind = repo.Get(item, isNoTracking: true).Item;
 				Assert.That(itemFind, Is.Not.Null);
                 TestContext.WriteLine(itemFind.ToDebugString());
 			}
 		});
 	}
 
-	private void GetListAsync<T>(ITgEfRepository<T> repo, TgEnumTableTopRecords count = TgEnumTableTopRecords.Top20) 
-		where T : TgEfEntityBase, new()
+	private void GetListAsync<TEntity>(ITgEfRepository<TEntity> repo, TgEnumTableTopRecords count = TgEnumTableTopRecords.Top20) 
+		where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<T> operResult = await repo.GetListAsync(count, 0, isNoTracking: true);
-			TestContext.WriteLine($"Found {operResult.Items.Count()} items.");
-			foreach (T item in operResult.Items)
+			TgEfStorageResult<TEntity> storageResult = await repo.GetListAsync(count, 0, isNoTracking: true);
+			TestContext.WriteLine($"Found {storageResult.Items.Count()} items.");
+			foreach (TEntity item in storageResult.Items)
 			{
-				T itemFind = (await repo.GetAsync(item, isNoTracking: true)).Item;
+				TEntity itemFind = (await repo.GetAsync(item, isNoTracking: true)).Item;
 				Assert.That(itemFind, Is.Not.Null);
                 TestContext.WriteLine(itemFind.ToDebugString());
 			}

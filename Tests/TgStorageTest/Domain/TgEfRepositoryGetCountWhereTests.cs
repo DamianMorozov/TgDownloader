@@ -8,20 +8,20 @@ internal sealed class TgEfRepositoryGetCountWhereTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void GetCountWhere<T>(ITgEfRepository<T> repo) where T : TgEfEntityBase, new()
+	private void GetCountWhere<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			int count = repo.GetCount(TgEfUtils.WhereUidNotEmpty<T>());
+			int count = repo.GetCount(TgEfUtils.WhereUidNotEmpty<TEntity>());
 			TestContext.WriteLine($"Found {count} items.");
 		});
 	}
 
-	private void GetCountWhereAsync<T>(ITgEfRepository<T> repo) where T : TgEfEntityBase, new()
+	private void GetCountWhereAsync<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			int count = await repo.GetCountAsync(TgEfUtils.WhereUidNotEmpty<T>());
+			int count = await repo.GetCountAsync(TgEfUtils.WhereUidNotEmpty<TEntity>());
 			TestContext.WriteLine($"Found {count} items.");
 		});
 	}

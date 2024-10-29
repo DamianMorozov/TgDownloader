@@ -13,11 +13,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfAppEntity> operResult = await new TgEfAppRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfAppEntity> storageResult = await new TgEfAppRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfAppEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfAppEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -27,11 +27,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfDocumentEntity> operResult = await new TgEfDocumentRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfDocumentEntity> storageResult = await new TgEfDocumentRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfDocumentEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -41,11 +41,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfFilterEntity> operResult = await new TgEfFilterRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfFilterEntity> storageResult = await new TgEfFilterRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfFilterEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -55,11 +55,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfMessageEntity> operResult = await new TgEfMessageRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfMessageEntity> storageResult = await new TgEfMessageRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfMessageEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -69,11 +69,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfProxyEntity> operResult = await new TgEfProxyRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfProxyEntity> storageResult = await new TgEfProxyRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfProxyEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -83,11 +83,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfSourceEntity> operResult = await new TgEfSourceRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfSourceEntity> storageResult = await new TgEfSourceRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfSourceEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}
@@ -97,11 +97,11 @@
 //	{
 //		Assert.DoesNotThrowAsync(async () =>
 //		{
-//			TgEfOperResult<TgEfVersionEntity> operResult = await new TgEfVersionRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
-//			if (operResult.IsExists)
+//			TgEfStorageResult<TgEfVersionEntity> storageResult = await new TgEfVersionRepository(TgEfUtils.EfContext).GetFirstAsync(isNoTracking: true);
+//			if (storageResult.IsExists)
 //			{
-//				operResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(operResult.Item.Uid);
-//				Assert.That(operResult.State == TgEnumEntityState.IsExecuted);
+//				storageResult = await CreateEfContext().UpdateTableUidUpperCaseAsync<TgEfVersionEntity>(storageResult.Item.Uid);
+//				Assert.That(storageResult.State == TgEnumEntityState.IsExecuted);
 //			}
 //		});
 //	}

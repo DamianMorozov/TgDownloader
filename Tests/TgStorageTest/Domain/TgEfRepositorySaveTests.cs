@@ -8,38 +8,38 @@ internal sealed class TgEfRepositorySaveTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void SaveItem<T>(ITgEfRepository<T> repo) 
-		where T : TgEfEntityBase, new()
+	private void SaveItem<TEntity>(ITgEfRepository<TEntity> repo) 
+		where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			TgEfOperResult<T> operResult = repo.GetFirst(isNoTracking: true);
-			if (operResult.IsExists)
+			TgEfStorageResult<TEntity> storageResult = repo.GetFirst(isNoTracking: true);
+			if (storageResult.IsExists)
 			{
-				T itemFind = repo.Get(operResult.Item, isNoTracking: true).Item;
+				TEntity itemFind = repo.Get(storageResult.Item, isNoTracking: false).Item;
 				Assert.That(itemFind, Is.Not.Null);
 				TestContext.WriteLine(itemFind.ToDebugString());
 				// Save
-				operResult = repo.Save(itemFind);
-				Assert.That(operResult.IsExists);
+				storageResult = repo.Save(itemFind);
+				Assert.That(storageResult.IsExists);
 			}
 		});
 	}
 
-	private void SaveItemAsync<T>(ITgEfRepository<T> repo) 
-		where T : TgEfEntityBase, new()
+	private void SaveItemAsync<TEntity>(ITgEfRepository<TEntity> repo) 
+		where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfOperResult<T> operResult = await repo.GetFirstAsync(isNoTracking: true);
-			if (operResult.IsExists)
+			TgEfStorageResult<TEntity> storageResult = await repo.GetFirstAsync(isNoTracking: true);
+			if (storageResult.IsExists)
 			{
-				T itemFind = (await repo.GetAsync(operResult.Item, isNoTracking: true)).Item;
+				TEntity itemFind = (await repo.GetAsync(storageResult.Item, isNoTracking: false)).Item;
 				Assert.That(itemFind, Is.Not.Null);
 				TestContext.WriteLine(itemFind.ToDebugString());
 				// Save
-				operResult = await repo.SaveAsync(itemFind);
-				Assert.That(operResult.IsExists);
+				storageResult = await repo.SaveAsync(itemFind);
+				Assert.That(storageResult.IsExists);
 			}
 		});
 	}

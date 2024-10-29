@@ -8,7 +8,7 @@ internal sealed class TgEfRepositoryGetCountTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void GetCount<T>(ITgEfRepository<T> repo) where T : TgEfEntityBase, new()
+	private void GetCount<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrow(() =>
 		{
@@ -17,7 +17,7 @@ internal sealed class TgEfRepositoryGetCountTests : TgDbContextTestsBase
 		});
 	}
 
-	private void GetCountAsync<T>(ITgEfRepository<T> repo) where T : TgEfEntityBase, new()
+	private void GetCountAsync<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{

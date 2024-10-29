@@ -58,13 +58,13 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
         });
     }
 
-    private async Task CreateNewItemAndDeleteAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
+    private async Task CreateNewItemAndDeleteAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
     {
-		TgEfOperResult<T> operResult = await repository.CreateNewAsync();
-		Assert.That(operResult.IsExists);
-		TestContext.WriteLine(operResult.Item.ToDebugString());
-		operResult = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-		Assert.That(!operResult.IsExists);
+		TgEfStorageResult<TEntity> storageResult = await repository.CreateNewAsync();
+		Assert.That(storageResult.IsExists);
+		TestContext.WriteLine(storageResult.Item.ToDebugString());
+		storageResult = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+		Assert.That(!storageResult.IsExists);
     }
 
 	[Test]
@@ -104,19 +104,19 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
         });
     }
 
-	private async Task GetNewItemsAndDeleteAsync<T>(ITgEfRepository<T> repository) where T : TgEfEntityBase, ITgDbEntity, new()
+	private async Task GetNewItemsAndDeleteAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
-		TgEfOperResult<T> operResult;
+		TgEfStorageResult<TEntity> storageResult;
 		do
 		{
-			operResult = await repository.GetNewAsync(isNoTracking: false);
-			if (operResult.IsExists)
+			storageResult = await repository.GetNewAsync(isNoTracking: false);
+			if (storageResult.IsExists)
 			{
-				TestContext.WriteLine(operResult.Item.ToDebugString());
-				TgEfOperResult<T> operResultDelete = await repository.DeleteAsync(operResult.Item, isSkipFind: false);
-				Assert.That(!operResultDelete.IsExists);
+				TestContext.WriteLine(storageResult.Item.ToDebugString());
+				TgEfStorageResult<TEntity> storageResultDelete = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+				Assert.That(!storageResultDelete.IsExists);
 			}
-		} while (operResult.IsExists);
+		} while (storageResult.IsExists);
 	}
 
 	#endregion
