@@ -80,6 +80,7 @@ public sealed class TgLocaleHelper : ObservableObject
     public string MenuAutoDownload => "Auto download";
 	public string MenuAutoViewEvents => "Auto view events";
 	public string MenuDownloadException => "Download exception";
+	public string MenuDownloadSetCountThreads => "Count of threads";
 	public string MenuDownloadSetFolder => "Setup download folder";
 	public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
 	public string MenuDownloadSetIsAutoUpdate => "Enable auto update";
@@ -166,12 +167,13 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuStorageDbBackup => "Create backup";
 	public string MenuStorageDbCreateNew => "Create new storage";
 	public string MenuStorageDbDeleteExists => "Delete exists storage";
+	public string MenuStorageDbUpgradeUid => "Update the UID field";
 	public string MenuStorageExitProgram => "Exit the program";
 	public string MenuStoragePerformSteps => "Perform the following set of steps";
 	public string MenuStorageTablesClear => "Clear tables";
 	public string MenuStorageTablesClearFinished => "Clear tables was finished";
-	public string MenuStorageTablesCompactFinished => "Compact storage was finished";
 	public string MenuStorageTablesCompact => "Compact storage";
+	public string MenuStorageTablesCompactFinished => "Compact storage was finished";
 	public string MenuStorageTablesVersionsView => "Versions info";
 
 	#endregion
@@ -263,12 +265,13 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuStorageDbIsNotFound(string fileName) => $"Storage was not found: {fileName}!";
 	public string MenuStorageDbIsZeroSize(string fileName) => $"Storage is zero size: {fileName}!";
 	public string MenuStorageDeleteExistsInfo(string fileName) => $"Manual delete the file: {fileName}";
+	public string MenuStorageUpgradeUid(string fileName) => $"Update the UID field in the storage: {fileName}!";
 
-    #endregion
+	#endregion
 
 	#region Fields
 
-    public string FieldDescription => "Description";
+	public string FieldDescription => "Description";
     public string FieldFilterType => "Filter type";
     public string FieldHostname=> "Host name";
     public string FieldIsEnabled => "Enabled";
