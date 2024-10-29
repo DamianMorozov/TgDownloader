@@ -106,8 +106,8 @@ internal partial class TgMenuHelper
 	private void ViewSources(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgEfOperResult<TgEfSourceEntity> operResult = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
-		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, operResult.Items);
+		TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;

@@ -80,6 +80,10 @@ void DataTransferBetweenStorages()
 {
 	using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
 	if (TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine).GetAwaiter().GetResult()) return;
+	
+	if (!File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage)) return;
+	using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
+	if (!TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine).GetAwaiter().GetResult()) return;
 
 	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
 		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
@@ -87,11 +91,11 @@ void DataTransferBetweenStorages()
 		.AddChoices(new List<string> { TgLocaleHelper.Instance.MenuIsFalse, TgLocaleHelper.Instance.MenuIsTrue }));
 	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
 
-	using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
 	tgLog.WriteLine("Storage transfer ...");
 	TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine).GetAwaiter().GetResult();
 	tgLog.WriteLine("Storage transfer success");
 }
+
 
 bool Setup()
 {

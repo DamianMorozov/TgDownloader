@@ -6,7 +6,6 @@ global using System.Diagnostics;
 global using System.Globalization;
 global using System.Reflection;
 global using System.Text;
-global using Microsoft.EntityFrameworkCore;
 global using TgDownloader.Helpers;
 global using TgDownloader.Models;
 global using TgDownloaderConsole.Helpers;

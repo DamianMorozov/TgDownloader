@@ -335,15 +335,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	internal void FillTableRowsDownload(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		// Download.
+		// Download
 		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
 			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-		// Source info.
+		// Source info
 		FillTableRowsDownloadedSources(tgDownloadSettings, table);
 
-		// Destination dir.
+		// Destination dir
 		if (string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceDirectory))
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsDestDirectory)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
@@ -351,30 +351,33 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
 				new Markup(tgDownloadSettings.SourceVm.SourceDirectory));
 
-		// First/last ID.
+		// First/last ID
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
 			new Markup($"{tgDownloadSettings.SourceVm.SourceFirstId} / {tgDownloadSettings.SourceVm.SourceLastId}"));
 
-		// Rewrite files.
+		// Rewrite files
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
 			new Markup(tgDownloadSettings.IsRewriteFiles.ToString()));
 
-		// Rewrite messages.
+		// Rewrite messages
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteMessages)),
 			new Markup(tgDownloadSettings.IsRewriteMessages.ToString()));
 
-		// Join message ID.
+		// Join message ID
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsJoinFileNameWithMessageId)),
 			new Markup(tgDownloadSettings.IsJoinFileNameWithMessageId.ToString()));
 
-		// Enable auto update.
+		// Enable auto update
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
-        // Enabled filters.
+        // Enabled filters
         IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
+
+        // Count of threads
+		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetCountThreads)), new Markup($"{tgDownloadSettings.CountThreads}"));
 	}
 
 	internal void FillTableRowsAdvanced(TgDownloadSettingsViewModel tgDownloadSettings, Table table)

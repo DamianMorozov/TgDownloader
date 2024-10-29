@@ -79,9 +79,9 @@ internal partial class TgMenuHelper
 			proxy.HostName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyHostName}:"));
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
-		TgEfOperResult<TgEfProxyEntity> operResult = await ProxyRepository.GetAsync(
+		TgEfStorageResult<TgEfProxyEntity> storageResult = await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false);
-		if (!operResult.IsExists)
+		if (!storageResult.IsExists)
 			await ProxyRepository.SaveAsync(proxy);
 		proxy = (await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
