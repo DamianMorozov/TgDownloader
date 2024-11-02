@@ -183,7 +183,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
 		//// Ingore
-		//modelBuilder.Ignore<TgEfEntityBase>();
 		//modelBuilder.Entity<TgEfAppEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfDocumentEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfFilterEntity>().Ignore(TgEfConstants.ColumnRowVersion);
@@ -191,6 +190,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		//modelBuilder.Entity<TgEfProxyEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		
 		// FOREIGN KEY: Apps
 		modelBuilder.Entity<TgEfAppEntity>()
 			.HasOne(app => app.Proxy)
@@ -220,13 +220,11 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
 
 	/// <summary> Check table exists </summary>
-	/// <param name="tableName"></param>
 	public bool IsTableExists(string tableName)
 	{
-		string? result = Database.SqlQuery<string>(
-			$"SELECT [name] AS [Value] FROM [sqlite_master]")
-			.Where(x => x == tableName)
-			.SingleOrDefault();
+		string? result = Database
+			.SqlQuery<string>($"SELECT [name] AS [Value] FROM [sqlite_master]")
+			.SingleOrDefault(x => x == tableName);
 		return tableName == result;
 	}
 

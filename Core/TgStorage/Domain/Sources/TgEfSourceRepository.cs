@@ -15,14 +15,14 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfSourceEntity? itemFind = isNoTracking
-			? EfContext.Sources.AsNoTracking()
-				.Where(x => x.Id == item.Id)
-				.SingleOrDefault()
-			: EfContext.Sources.AsTracking()
-				.Where(x => x.Id == item.Id)
-				.SingleOrDefault();
+			? EfContext.Sources
+				.AsNoTracking()
+				.SingleOrDefault(x => x.Id == item.Id)
+			: EfContext.Sources
+				.AsTracking()
+				.SingleOrDefault(x => x.Id == item.Id);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -41,7 +41,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -51,7 +51,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 			? EfContext.Sources.AsNoTracking().FirstOrDefault()
 			: EfContext.Sources.AsTracking().FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -61,7 +61,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 			? await EfContext.Sources.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
 			: await EfContext.Sources.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -80,7 +80,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 				? EfContext.Sources.AsNoTracking().ToList()
 				: EfContext.Sources.AsTracking().ToList();
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, bool isNoTracking)
@@ -99,7 +99,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 				? EfContext.Sources.AsNoTracking().ToList()
 				: EfContext.Sources.AsTracking().ToList();
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfSourceEntity> GetList(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isNoTracking)
@@ -125,7 +125,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isNoTracking)
@@ -152,7 +152,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Sources.AsNoTracking().Count();
@@ -185,7 +185,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> DeleteAllAsync()
@@ -198,7 +198,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfStorageResult<TgEfSourceEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

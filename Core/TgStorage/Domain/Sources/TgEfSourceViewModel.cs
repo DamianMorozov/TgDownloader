@@ -38,7 +38,7 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 		set
 		{
 			TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.Get(
-				new TgEfSourceEntity { Uid = value }, isNoTracking: false);
+				new() { Uid = value }, isNoTracking: false);
 			Item = storageResult.IsExists
 				? storageResult.Item
 				: SourceRepository.GetNew(isNoTracking: false).Item;

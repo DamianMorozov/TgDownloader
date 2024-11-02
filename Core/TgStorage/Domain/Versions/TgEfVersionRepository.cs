@@ -15,14 +15,14 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfVersionEntity? itemFind = isNoTracking
-			? EfContext.Versions.AsNoTracking()
-				.Where(x => x.Version == item.Version)
-				.SingleOrDefault()
-			: EfContext.Versions.AsTracking()
-				.Where(x => x.Version == item.Version)
-				.SingleOrDefault();
+			? EfContext.Versions
+				.AsNoTracking()
+				.SingleOrDefault(x => x.Version == item.Version)
+			: EfContext.Versions
+				.AsTracking()
+				.SingleOrDefault(x => x.Version == item.Version);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -41,7 +41,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -51,7 +51,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			? EfContext.Versions.AsNoTracking().FirstOrDefault()
 			: EfContext.Versions.AsTracking().FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -61,7 +61,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			? await EfContext.Versions.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
 			: await EfContext.Versions.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -81,7 +81,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				: EfContext.Versions.AsTracking().ToList();
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(
+		return new(
 			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -102,7 +102,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				: EfContext.Versions.AsTracking().ToList();
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(
+		return new(
 			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -130,7 +130,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 					.ToList();
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(
+		return new(
 			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -159,7 +159,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 					.ToList();
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(
+		return new(
 			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -195,7 +195,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			}
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(storageResult.IsExists
+		return new(storageResult.IsExists
 			? TgEnumEntityState.IsDeleted
 			: TgEnumEntityState.NotDeleted);
 	}
@@ -212,7 +212,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			}
 		}
 
-		return new TgEfStorageResult<TgEfVersionEntity>(storageResult.IsExists
+		return new(storageResult.IsExists
 			? TgEnumEntityState.IsDeleted
 			: TgEnumEntityState.NotDeleted);
 	}

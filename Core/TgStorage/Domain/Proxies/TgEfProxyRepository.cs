@@ -15,14 +15,14 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfProxyEntity? itemFind = isNoTracking
-			? EfContext.Proxies.AsNoTracking()
-				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
-				.SingleOrDefault()
-			: EfContext.Proxies.AsTracking()
-				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
-				.SingleOrDefault();
+			? EfContext.Proxies
+				.AsNoTracking()
+				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
+			: EfContext.Proxies
+				.AsTracking()
+				.SingleOrDefault(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -41,7 +41,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -51,7 +51,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			? EfContext.Proxies.AsNoTracking().FirstOrDefault()
 			: EfContext.Proxies.AsTracking().FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -61,7 +61,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			? await EfContext.Proxies.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
 			: await EfContext.Proxies.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -80,7 +80,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 				? EfContext.Proxies.AsNoTracking().ToList()
 				: EfContext.Proxies.AsTracking().ToList();
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isNoTracking)
@@ -99,7 +99,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 				? EfContext.Proxies.AsNoTracking().ToList()
 				: EfContext.Proxies.AsTracking().ToList();
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfProxyEntity> GetList(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
@@ -125,7 +125,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
@@ -152,7 +152,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 					.Where(where)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Proxies.AsNoTracking().Count();
@@ -185,7 +185,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> DeleteAllAsync()
@@ -198,7 +198,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfStorageResult<TgEfProxyEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion
@@ -208,21 +208,21 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 	public TgEfStorageResult<TgEfProxyEntity> GetCurrentProxy(TgEfStorageResult<TgEfAppEntity> storageResult)
 	{
 		if (!storageResult.IsExists)
-			return new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+			return new(TgEnumEntityState.NotExists);
 
 		TgEfStorageResult<TgEfProxyEntity> storageResultProxy = Get(
-			new TgEfProxyEntity { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
-		return storageResultProxy.IsExists ? storageResultProxy : new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+			new() { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
+		return storageResultProxy.IsExists ? storageResultProxy : new(TgEnumEntityState.NotExists);
 	}
 
 	public async Task<TgEfStorageResult<TgEfProxyEntity>> GetCurrentProxyAsync(TgEfStorageResult<TgEfAppEntity> storageResult)
 	{
 		if (!storageResult.IsExists)
-			return new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+			return new(TgEnumEntityState.NotExists);
 
 		TgEfStorageResult<TgEfProxyEntity> storageResultProxy = await GetAsync(
-			new TgEfProxyEntity { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
-		return storageResultProxy.IsExists ? storageResultProxy : new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists);
+			new() { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
+		return storageResultProxy.IsExists ? storageResultProxy : new(TgEnumEntityState.NotExists);
 	}
 
 	public Guid GetCurrentProxyUid(TgEfStorageResult<TgEfAppEntity> storageResult) => GetCurrentProxy(storageResult).Item.Uid;
