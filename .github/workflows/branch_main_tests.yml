@@ -18,10 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.2
+        uses: microsoft/setup-msbuild@latest
   
       - name: Setup Nuget Cache
-        uses: actions/cache@v3.2.0
+        uses: actions/cache@latest
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
