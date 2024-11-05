@@ -26,7 +26,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				//.DefaultIfEmpty()
 				.SingleOrDefault();
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -51,7 +51,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -67,7 +67,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -83,7 +83,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -110,7 +110,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isNoTracking)
@@ -137,7 +137,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfDocumentEntity> GetList(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
@@ -167,7 +167,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
@@ -198,7 +198,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Documents.AsNoTracking().Count();
@@ -231,7 +231,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> DeleteAllAsync()
@@ -244,7 +244,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfStorageResult<TgEfDocumentEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

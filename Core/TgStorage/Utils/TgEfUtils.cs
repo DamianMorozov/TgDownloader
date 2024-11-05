@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Threading.Tasks;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace TgStorage.Utils;
@@ -56,7 +57,7 @@ public static class TgEfUtils
 			TgEfSourceEntity source => new TgEfSourceValidator().Validate(source),
 			TgEfProxyEntity proxy => new TgEfProxyValidator().Validate(proxy),
 			TgEfVersionEntity version => new TgEfVersionValidator().Validate(version),
-			_ => new ValidationResult { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
+			_ => new() { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
 		};
 
 	public static void Normilize<TEntity>(TEntity item) where TEntity : ITgDbFillEntity<TEntity>, new()
@@ -65,23 +66,17 @@ public static class TgEfUtils
 		{
 			case TgEfAppEntity app:
 				if (app.ProxyUid == Guid.Empty)
-				{
 					app.ProxyUid = null;
-				}
 				break;
 			case TgEfDocumentEntity document:
 				if (document.SourceId == 0)
-				{
 					document.SourceId = null;
-				}
 				break;
 			case TgEfFilterEntity filter:
 				break;
 			case TgEfMessageEntity message:
 				if (message.SourceId == 0)
-				{
 					message.SourceId = null;
-				}
 				break;
 			case TgEfSourceEntity source:
 				break;
@@ -90,6 +85,8 @@ public static class TgEfUtils
 			case TgEfVersionEntity version:
 				break;
 		}
+		if (item.Uid == Guid.Empty)
+			item.Uid = Guid.NewGuid();
 	}
 
 	public static TgEfContext EfContext => CreateEfContext();
@@ -130,13 +127,7 @@ public static class TgEfUtils
 		using TgEfContext efContext = CreateEfContext();
 		efContext.CreateAndUpdateDb();
 		TgEfVersionRepository versionRepository = new(efContext);
-		//TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
-		//if (versionLast.Version < 25)
-		//{
-		//	//await UpgradeDbAsync();
-		//	UpdateDbTableUidUpperCase();
-		//}
-		CheckDbTables(efContext);
+		//CheckDbTables(efContext);
 		versionRepository.FillTableVersions();
 		efContext.CompactDb();
 	}
@@ -147,23 +138,16 @@ public static class TgEfUtils
 		await using TgEfContext efContext = CreateEfContext();
 		await efContext.CreateAndUpdateDbAsync();
 		TgEfVersionRepository versionRepository = new(efContext);
-		TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
-		//if (versionLast.Version < 25)
-		//{
-		//	//await UpgradeDbAsync();
-		//	await UpdateDbTableUidUpperCaseAsync();
-		//}
-		await CheckDbTablesAsync(efContext);
+		//await CheckDbTablesAsync(efContext);
 		await versionRepository.FillTableVersionsAsync();
 		await efContext.CompactDbAsync();
 	}
 
-	public static async Task<bool> IsDataExistsInTablesAsync(TgEfContext efContextTo, Action<string> logWrite)
+	public static async Task<bool> IsDataExistsInTablesAsync(TgEfContext efContext, Action<string> logWrite)
 	{
-		if (await new TgEfAppRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfAppEntity>()).ConfigureAwait(false) > 0) return true;
-		if (await new TgEfFilterRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfFilterEntity>()).ConfigureAwait(false) > 0) return true;
-		if (await new TgEfProxyRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfProxyEntity>()).ConfigureAwait(false) > 0) return true;
-		if (await new TgEfSourceRepository(efContextTo).GetCountAsync(WhereUidNotEmpty<TgEfSourceEntity>()).ConfigureAwait(false) > 0) return true;
+		var dataCountApps = await new TgEfAppRepository(efContext).GetCountAsync(WhereUidNotEmpty<TgEfAppEntity>());
+		var dataCountSources = await new TgEfSourceRepository(efContext).GetCountAsync(WhereUidNotEmpty<TgEfSourceEntity>());
+		if (dataCountApps > 0 && dataCountSources > 0) return true;
 		logWrite("No data found in tables!");
 		return false;
 	}
@@ -171,128 +155,72 @@ public static class TgEfUtils
 	/// <summary> Data transfer between storages </summary>
 	public static async Task DataTransferBetweenStoragesAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite)
 	{
-		await DataTransferAppsAsync(efContextFrom, efContextTo, logWrite);
-		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfAppEntity>();
-		await DataTransferFilters(efContextFrom, efContextTo, logWrite);
-		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfFilterEntity>();
-		await DataTransferProxies(efContextFrom, efContextTo, logWrite);
-		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
-		await DataTransferSources(efContextFrom, efContextTo, logWrite);
-		await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
-		//await DataTransferMessages(efContextFrom, efContextTo, logWrite);
-		//await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfMessageEntity>();
-		//await DataTransferDocuments(efContextFrom, efContextTo, logWrite);
-		//await efContextTo.UpdateTableUidUpperCaseAllAsync<TgEfDocumentEntity>();
+		// Transferring apps
+		await DataTransferCoreAsync(new TgEfAppRepository(efContextFrom), new TgEfAppRepository(efContextTo), logWrite, TgEfConstants.TableApps);
+		// Transferring filters
+		await DataTransferCoreAsync(new TgEfFilterRepository(efContextFrom), new TgEfFilterRepository(efContextTo), logWrite, TgEfConstants.TableFilters);
+		// Transferring proxies
+		await DataTransferCoreAsync(new TgEfProxyRepository(efContextFrom), new TgEfProxyRepository(efContextTo), logWrite, TgEfConstants.TableProxies);
+		// Transferring sources
+		await DataTransferCoreAsync(new TgEfSourceRepository(efContextFrom), new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableSources);
+		// Transferring messages
+		//await DataTransferCoreAsync(new TgEfMessageRepository(efContextFrom), new TgEfMessageRepository(efContextTo), logWrite, TgEfConstants.TableMessages);
+		// Transferring documents
+		//await DataTransferCoreAsync(new TgEfDocumentRepository(efContextFrom), new TgEfDocumentRepository(efContextTo), logWrite, TgEfConstants.TableDocuments);
 	}
 
-	private static async Task DataTransferAppsAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfAppRepository(efContextFrom), new TgEfAppRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableApps);
-
-	private static async Task DataTransferDocuments(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfDocumentRepository(efContextFrom), new TgEfDocumentRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableDocuments);
-
-	private static async Task DataTransferFilters(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfFilterRepository(efContextFrom), new TgEfFilterRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableFilters);
-
-	private static async Task DataTransferMessages(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfMessageRepository(efContextFrom), new TgEfMessageRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableMessages);
-
-	private static async Task DataTransferProxies(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfProxyRepository(efContextFrom), new TgEfProxyRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableProxies);
-
-	private static async Task DataTransferSources(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite) =>
-		await DataTransferCoreAsync(new TgEfSourceRepository(efContextFrom), new TgEfSourceRepository(efContextTo),
-			new TgEfSourceRepository(efContextTo), logWrite, TgEfConstants.TableSources);
-
 	private static async Task DataTransferCoreAsync<TEntity>(ITgEfRepository<TEntity> repoFrom, ITgEfRepository<TEntity> repoTo, 
-		ITgEfRepository<TgEfSourceEntity> repoSourceTo, Action<string> logWrite, string tableName) where TEntity : ITgDbFillEntity<TEntity>, new()
+		Action<string> logWrite, string tableName) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
-		logWrite($"Transfering table {tableName}: ...");
+		logWrite($"Transferring table {tableName}: ...");
 		int batchSizeFrom = 100;
 		//const int batchSizeTo = 100;
-		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
-		int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(false);
+		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<TEntity>());
+		//int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(true);
 
 		for (int i = 0; i < countFrom; i += batchSizeFrom)
 		{
 			try
 			{
-				TgEfStorageResult<TEntity> storageResultFrom = await repoFrom.GetListAsync(batchSizeFrom, i, WhereUidNotEmpty<TEntity>(), isNoTracking: false).ConfigureAwait(false);
-				TgEfStorageResult<TEntity> storageResultTo = await repoTo.GetListAsync(countTo, 0, WhereUidNotEmpty<TEntity>(), isNoTracking: false).ConfigureAwait(false);
+				TgEfStorageResult<TEntity> storageResultFrom = await repoFrom.GetListAsync(
+					batchSizeFrom, i, WhereUidNotEmpty<TEntity>(), isNoTracking: false);
 				if (storageResultFrom.IsExists)
 				{
-					List<TEntity> itemsTo = storageResultTo.Items.ToList();
-					List<TEntity> itemsFrom = storageResultFrom.Items.Where(itemFrom => itemsTo.All(itemTo => itemTo.Uid != itemFrom.Uid)).ToList();
+					//List<TEntity> itemsTo = storageResultTo.Items.ToList();
+					//List<TEntity> itemsFrom = storageResultFrom.Items.Where(itemFrom => itemsTo.All(itemTo => itemTo.Uid != itemFrom.Uid)).ToList();
+					//List<TEntity> itemsFrom = storageResultFrom.Items.ToList();
 					int countErrors = 0;
-					if (itemsFrom.Any())
+					//await using var transaction = await repoTo.BeginTransactionAsync();
+					var tasks = new List<Task>();
+					if (storageResultFrom.Items.Any())
 					{
-						try
+						foreach (TEntity itemFrom in storageResultFrom.Items)
 						{
-							//switch (typeof(TEntity))
-							//{
-							//	case var cls when cls == typeof(TgEfDocumentRepository):
-							//		foreach (TEntity itemFrom in itemsFrom)
-							//		{
-							//			if (itemFrom is TgEfDocumentEntity document)
-							//			{
-							//				TgEfStorageResult<TgEfSourceEntity> storageResultSource = new(TgEnumEntityState.Unknown);
-							//				if (document.Source is not null)
-							//				{
-							//					storageResultSource = await repoSourceTo.GetAsync(document.Source, isNoTracking: false);
-							//				}
-							//				if (!storageResultSource.IsExists || document.Source is null)
-							//				{
-							//					document.Source = null;
-							//					document.SourceId = null;
-							//				}
-							//			}
-							//		}
-							//		itemsFrom.RemoveAll(item => item is TgEfDocumentEntity { Source: null, SourceId: null });
-							//		break;
-							//	case var cls when cls == typeof(TgEfMessageEntity):
-							//		foreach (TEntity itemFrom in itemsFrom)
-							//		{
-							//			if (itemFrom is TgEfMessageEntity message)
-							//			{
-							//				TgEfStorageResult<TgEfSourceEntity> storageResultSource = new(TgEnumEntityState.Unknown);
-							//				if (message.Source is not null)
-							//				{
-							//					storageResultSource = await repoSourceTo.GetAsync(message.Source, isNoTracking: false);
-							//				}
-							//				if (!storageResultSource.IsExists || message.Source is null)
-							//				{
-							//					message.Source = null;
-							//					message.SourceId = null;
-							//				}
-							//			}
-							//		}
-							//		itemsFrom.RemoveAll(item => item is TgEfMessageEntity { Source: null, SourceId: null });
-							//		break;
-							//}
-							foreach (TEntity itemFrom in itemsFrom)
+							tasks.Add(Task.Run(async () =>
 							{
-								await repoTo.SaveAsync(itemFrom).ConfigureAwait(false);
-							}
-						}
-						catch (Exception ex)
-						{
-							Interlocked.Increment(ref countErrors);
+								try
+								{
+									await repoTo.SaveAsync(itemFrom);
+								}
+								catch (Exception ex)
+								{
+									Interlocked.Increment(ref countErrors);
 #if DEBUG
-							logWrite(ex.Message);
-							if (ex.InnerException is not null)
-								logWrite(ex.InnerException.Message);
+									logWrite(ex.Message);
+									if (ex.InnerException is not null)
+										logWrite(ex.InnerException.Message);
 #endif
+								}
+							}));
 						}
+						// Ожидаем завершения всех задач
+						await Task.WhenAll(tasks);
 					}
-					if (itemsFrom.Count > 0)
-						logWrite($"Transfering table {tableName}: copied {itemsFrom.Count} records");
+					var countSuccess = storageResultFrom.Items.Count() - countErrors;
+					if (countSuccess > 0)
+						logWrite($"Transferring table {tableName}: copied {countSuccess} records");
 					if (countErrors > 0)
-						logWrite($"Transfering table {tableName}: errors in {countErrors} records");
+						logWrite($"Transferring table {tableName}: errors in {countErrors} records");
 				}
 			}
 			catch (Exception ex)
@@ -303,7 +231,7 @@ public static class TgEfUtils
 				throw;
 			}
 		}
-		logWrite($"Transfering table {tableName}: completed");
+		logWrite($"Transferring table {tableName}: completed");
 	}
 
 	public static Expression<Func<TEntity, bool>> WhereUidNotEmpty<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new() => x => x.Uid != Guid.Empty;

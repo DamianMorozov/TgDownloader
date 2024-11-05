@@ -11,21 +11,15 @@ public sealed class TgEfSourceValidator : TgEfValidatorBase<TgEfSourceEntity>
 	public TgEfSourceValidator()
 	{
 		RuleFor(item => item.Id)
-				.GreaterThan(0);
-		RuleFor(item => item.UserName)
-				.NotNull();
+			.GreaterThan(0);
 		RuleFor(item => item.Title)
-				.NotNull();
+			.NotNull();
 		RuleFor(item => item.About)
-				.NotNull();
+			.NotNull();
 		RuleFor(item => item.Count)
-				.GreaterThan(0);
-		//RuleFor(item => item.Directory)
-		//		.NotNull();
+			.GreaterThan(0);
 		RuleFor(item => item.FirstId)
 			.GreaterThan(0);
-		//RuleFor(item => item.IsAutoUpdate)
-		//	.NotNull();
 	}
 
 	#endregion

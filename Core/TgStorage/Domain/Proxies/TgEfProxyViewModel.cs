@@ -17,7 +17,7 @@ public sealed class TgEfProxyViewModel : TgViewModelBase
 	    set
 	    {
 		    TgEfStorageResult<TgEfProxyEntity> storageResult = ProxyRepository.Get(
-			    new TgEfProxyEntity { Uid = value }, isNoTracking: false);
+			    new() { Uid = value }, isNoTracking: false);
 		    Item = storageResult.IsExists
 			    ? storageResult.Item
 			    : ProxyRepository.GetNew(isNoTracking: false).Item;

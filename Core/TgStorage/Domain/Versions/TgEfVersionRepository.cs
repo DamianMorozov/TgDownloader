@@ -320,6 +320,9 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				case 23:
 					Save(new() { Version = 24, Description = "Updating the UID field in the versions table" });
 					break;
+				case 24:
+					Save(new() { Version = 25, Description = "Migrated to EF Core" });
+					break;
 			}
 			if (versionLast.Version >= LastVersion)
 				isLast = true;

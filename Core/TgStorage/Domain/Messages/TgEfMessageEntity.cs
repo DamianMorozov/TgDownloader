@@ -26,7 +26,7 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnSourceId, TypeName = "LONG(20)")]
     public long? SourceId { get; set; }
 
     public TgEfSourceEntity? Source { get; set; }

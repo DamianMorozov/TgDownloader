@@ -28,7 +28,7 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 
 	[DefaultValue(1)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
 	public long Id { get; set; }
 
 	[DefaultValue("UserName")]

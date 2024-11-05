@@ -26,7 +26,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				//.DefaultIfEmpty()
 				.SingleOrDefault();
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -49,7 +49,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -65,7 +65,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -81,7 +81,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -108,7 +108,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 					.Include(x => x.Proxy)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> GetListAsync(int take, int skip, bool isNoTracking)
@@ -135,7 +135,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 					.Include(x => x.Proxy)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfAppEntity> GetList(int take, int skip, Expression<Func<TgEfAppEntity, bool>> where, bool isNoTracking)
@@ -165,7 +165,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 					.Include(x => x.Proxy)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfAppEntity, bool>> where, bool isNoTracking)
@@ -196,7 +196,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 					.Include(x => x.Proxy)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Apps.AsNoTracking().Count();
@@ -229,7 +229,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> DeleteAllAsync()
@@ -242,7 +242,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfStorageResult<TgEfAppEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion
@@ -258,7 +258,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is not null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, item)
+			? new(TgEnumEntityState.IsExists, item)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists, new TgEfAppEntity());
 	}
 
@@ -271,7 +271,7 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync();
 		return item is not null
-			? new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, item)
+			? new(TgEnumEntityState.IsExists, item)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.NotExists, new TgEfAppEntity());
 	}
 

@@ -26,7 +26,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				//.DefaultIfEmpty()
 				.SingleOrDefault();
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -49,7 +49,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				.SingleOrDefaultAsync()
 				.ConfigureAwait(false);
 		return itemFind is not null
-			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, itemFind)
+			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
 	}
 
@@ -65,7 +65,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
-			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -81,7 +81,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync().ConfigureAwait(false);
 		return item is null
-			? new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists)
+			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
@@ -108,7 +108,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
@@ -135,7 +135,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfMessageEntity> GetList(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
@@ -165,7 +165,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
@@ -198,7 +198,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 					.Include(x => x.Source)
 					.ToList();
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Messages.AsNoTracking().Count();
@@ -231,7 +231,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				Delete(item, isSkipFind: true);
 			}
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> DeleteAllAsync()
@@ -244,7 +244,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
 			}
 		}
-		return new TgEfStorageResult<TgEfMessageEntity>(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
+		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
 	}
 
 	#endregion

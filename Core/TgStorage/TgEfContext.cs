@@ -284,9 +284,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Drop sql table </summary>
@@ -307,9 +307,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = Database.ExecuteSqlRaw(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Drop sql table </summary>
@@ -330,9 +330,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	public TgEfStorageResult<TEntity> AlterTableNoCaseUid<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
@@ -350,9 +350,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 			_ => string.Empty
 		};
 		if (string.IsNullOrEmpty(cmd))
-			return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+			return new(TgEnumEntityState.NotExecuted);
 		int result = Database.ExecuteSqlRaw(cmd);
-		return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
 	public async Task<TgEfStorageResult<TEntity>> AlterTableNoCaseUidAsync<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new()
@@ -370,9 +370,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 			_ => string.Empty
 		};
 		if (string.IsNullOrEmpty(cmd))
-			return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+			return new(TgEnumEntityState.NotExecuted);
 		int result = await Database.ExecuteSqlRawAsync(cmd);
-		return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+		return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 	}
 
 	public void CompactDb()
@@ -406,9 +406,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = Database.ExecuteSqlRaw(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Update UID field to upper case </summary>
@@ -429,9 +429,9 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Update UID field to upper case </summary>
@@ -462,18 +462,15 @@ public sealed class TgEfContext : DbContext, IDisposable
 		if (!string.IsNullOrEmpty(cmd))
 		{
 			int result = await Database.ExecuteSqlRawAsync(cmd);
-			return new TgEfStorageResult<TEntity>(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
+			return new(result > 0 ? TgEnumEntityState.IsExecuted : TgEnumEntityState.NotExecuted);
 		}
-		return new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExecuted);
+		return new(TgEnumEntityState.NotExecuted);
 	}
 
 	/// <summary> Create and update storage </summary>
 	public void CreateAndUpdateDb()
 	{
 		CheckIfDisposed();
-		//if (!Database.GetPendingMigrations().Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		//	Database.EnsureCreated();
-		//else
 		Database.Migrate();
 	}
 
@@ -481,9 +478,6 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public async Task CreateAndUpdateDbAsync()
 	{
 		CheckIfDisposed();
-		//if (!(await Database.GetPendingMigrationsAsync()).Any() || !TgAppSettings.AppXml.IsExistsEfStorage)
-		//	await Database.EnsureCreatedAsync();
-		//else
 		await Database.MigrateAsync();
 	}
 

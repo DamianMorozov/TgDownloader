@@ -11,6 +11,14 @@ public interface ITgEfRepository<TEntity> where TEntity : ITgDbFillEntity<TEntit
 
 	#endregion
 
+	#region Public and private methods
+
+	Task<IDbContextTransaction> BeginTransactionAsync();
+	Task CommitTransactionAsync();
+	Task RollbackTransactionAsync();
+
+	#endregion
+
 	#region Public and private methods - Read
 
 	public TgEfStorageResult<TEntity> Get(TEntity item, bool isNoTracking);
