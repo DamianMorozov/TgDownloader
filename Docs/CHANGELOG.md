@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.5.150] - 2024-11-05
+## [0.5.160] - 2024-11-05
 ### Fixed
 - Created EF Core entities
 - Fixed test execution
-- Fixed workflows actions
+- GitHub workflows actions
 ## Changed
 - Using EF Core instead of DevExpress XPO
 ## Added projects

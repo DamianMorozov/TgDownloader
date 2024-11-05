@@ -11,7 +11,7 @@
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
-    <Version>0.5.150.0</Version>
+    <Version>0.5.160.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
