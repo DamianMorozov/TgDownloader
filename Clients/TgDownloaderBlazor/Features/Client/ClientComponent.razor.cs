@@ -84,9 +84,9 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
             //}
             IsBlazorLoading = false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            NotificationService.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to load Apps" });
+            NotificationService.Notify(new() { Severity = NotificationSeverity.Error, Summary = "Error", Detail = "Unable to load Apps" });
         }
     }
 
@@ -176,7 +176,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			//await TgClient.ConnectSessionAsync(efContext.ProxyRepo.CreateNew());
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -184,7 +184,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			});
 		}, () =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = TgLocale.MenuClientMessage,
@@ -201,7 +201,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			TgClient.Disconnect();
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -209,7 +209,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			});
 		}, () =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = TgLocale.MenuClientMessage,
@@ -227,7 +227,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			Item = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -235,7 +235,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			});
 		}, () =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = TgLocale.MenuClientMessage,
@@ -256,7 +256,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			}
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -265,7 +265,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		}, () =>
 		{
 			if (isNotificationService)
-				NotificationService.Notify(new NotificationMessage
+				NotificationService.Notify(new()
 				{
 					Severity = NotificationSeverity.Info,
 					Summary = TgLocale.MenuClientMessage,
@@ -282,10 +282,10 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			Item = new TgEfAppEntity();
+			Item = new();
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -293,7 +293,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			});
 		}, () =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = TgLocale.MenuClientMessage,
@@ -311,7 +311,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			//await efContext.AppsRepo.DeleteAllItemsAsync();
 		}, message =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Error,
 				Summary = message,
@@ -319,7 +319,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			});
 		}, () =>
 		{
-			NotificationService.Notify(new NotificationMessage
+			NotificationService.Notify(new()
 			{
 				Severity = NotificationSeverity.Info,
 				Summary = TgLocale.MenuClientMessage,

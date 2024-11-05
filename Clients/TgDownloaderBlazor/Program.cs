@@ -16,7 +16,7 @@ builder.Services.AddHttpClient();
 // Register TgEfContext as the DbContext for EF Core
 builder.Services.AddDbContextFactory<TgEfContext>(options => options
 	.UseSqlite(b => b.MigrationsAssembly(nameof(TgDownloaderBlazor))));
-TgEfUtils.CreateAndUpdateDb();
+TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
 
 WebApplication app = builder.Build();
 
