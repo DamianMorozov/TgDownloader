@@ -71,8 +71,7 @@ internal partial class TgMenuHelper
 
 	private void TgStorageBackupDb()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup))
-			return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbBackup)) return;
 		TgLog.WriteLine($"{TgLocale.MenuStorageBackupDirectory}: {Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}");
 		(bool IsSuccess, string FileName) backupResult = EfContext.BackupDb();
 		TgLog.WriteLine($"{TgLocale.MenuStorageBackupFile}: {backupResult.FileName}");
@@ -83,9 +82,8 @@ internal partial class TgMenuHelper
 
 	private void TgStorageCreateNewDb()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew))
-			return;
-		TgEfUtils.CreateAndUpdateDb();
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageDbCreateNew)) return;
+		TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
 	}
 
 	private void TgStorageDeleteExistsDb()
@@ -106,10 +104,9 @@ internal partial class TgMenuHelper
 
 	private void TgStorageTablesClear()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear))
-			return;
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear)) return;
 		EfContext.DeleteTables();
-		TgEfUtils.CreateAndUpdateDb();
+		TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
 		Console.ReadKey();
 	}

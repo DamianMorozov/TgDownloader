@@ -8,11 +8,11 @@ ConsoleInit();
 
 // Register TgEfContext as the DbContext for EF Core
 tgLog.WriteLine("EF Core init ...");
-TgEfUtils.CreateAndUpdateDb();
+await TgEfUtils.CreateAndUpdateDbAsync();
 tgLog.WriteLine("EF Core init success");
 
 // Transfer data from previous TgDownloader.db into TgStorage.db
-DataTransferBetweenStorages();
+await DataTransferBetweenStoragesAsync();
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
@@ -76,14 +76,14 @@ do
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
 
-void DataTransferBetweenStorages()
+async Task DataTransferBetweenStoragesAsync()
 {
-	using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
-	if (TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine).GetAwaiter().GetResult()) return;
+	await using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
+	if (await TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine)) return;
 	
 	if (!File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage)) return;
-	using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
-	if (!TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine).GetAwaiter().GetResult()) return;
+	await using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
+	//if (! await TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine)) return;
 
 	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
 		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
@@ -92,7 +92,7 @@ void DataTransferBetweenStorages()
 	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
 
 	tgLog.WriteLine("Storage transfer ...");
-	TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine).GetAwaiter().GetResult();
+	await TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine);
 	tgLog.WriteLine("Storage transfer success");
 }
 

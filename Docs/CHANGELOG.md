@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.5.150] - 2024-04-28
+## [0.5.150] - 2024-11-05
 ### Fixed
 - Created EF Core entities
+- Fixed test execution
+- Fixed workflows actions
+## Changed
 - Using EF Core instead of DevExpress XPO
-- Test execution
+## Added projects
+- Added TgDownloaderWinUI app
 
 ## [0.4.150] - 2024-03-27
 ## Added projects

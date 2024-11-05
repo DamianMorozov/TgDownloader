@@ -205,7 +205,7 @@ internal partial class TgMenuHelper
 	public void ClientConnect(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsoleAsync(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
+		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

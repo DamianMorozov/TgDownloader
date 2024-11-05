@@ -45,7 +45,7 @@ internal partial class TgMenuHelper
             .AutoClear(true)
             .HideCompleted(true)
             .Columns(GetProgressColumns())
-			.StartAsync(async context =>
+			.Start(context =>
 			{
 				Stopwatch sw = Stopwatch.StartNew();
 				Stopwatch swFileRefresh = Stopwatch.StartNew();
@@ -176,8 +176,8 @@ internal partial class TgMenuHelper
 					if (string.IsNullOrEmpty(message))
 						return;
 					statusContext.Status(TgLog.GetMarkupString(isScanCount
-						? $"{GetStatus(tgDownloadSettings.SourceVm.SourceScanCount, messageId)} | {message} | " +
-							$"Progress {tgDownloadSettings.SourceVm.ProgressPercentString}"
+						//? $"{GetStatus(tgDownloadSettings.SourceVm.SourceScanCount, messageId)} | {message} | Progress {tgDownloadSettings.SourceVm.ProgressPercentString}"
+						? $"{GetStatus(tgDownloadSettings.SourceVm.SourceScanCount, messageId)} | {message}"
 						: GetFileStatus(message)));
 					statusContext.Refresh();
 				}
