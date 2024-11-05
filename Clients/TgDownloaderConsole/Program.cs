@@ -23,8 +23,8 @@ do
 	try
 	{
 		menu.ShowTableMain(tgDownloadSettings);
-		tgLog.MarkupLine(tgLocale.TypeAnyKeyForReturn);
-		Console.ReadKey();
+		//tgLog.MarkupLine(tgLocale.TypeAnyKeyForReturn);
+		//Console.ReadKey();
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")

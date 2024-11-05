@@ -15,6 +15,7 @@
 - GitHub workflows actions
 ## Изменено
 - Использование EF Core вместо DevExpress XPO
+- Исправлено сохранение имен файлов с неподдерживаемыми символами под Windows / Linux / MacOS
 ## Добавлено
 - Добавлен проект TgDownloaderWinUI
 

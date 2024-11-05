@@ -1180,7 +1180,9 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         }
     }
 
-    public async Task DownloadAllDataAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+    //private readonly object _lockObject = new();
+
+	public async Task DownloadAllDataAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
         TgDownloadSmartSource smartSource = CreateSmartSource(tgDownloadSettings, false);
         await TryCatchFuncAsync(async () =>
@@ -1206,19 +1208,22 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
             tgDownloadSettings.SourceVm.SetIsDownload(true);
             bool isAccessToMessages = await Client.Channels_ReadMessageContents(smartSource.ChatBase as TlChannel);
+            var sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
+            var sourceLastId = tgDownloadSettings.SourceVm.SourceLastId;
             if (isAccessToMessages)
             {
 	            List<Task> downloadTasks = new();
-				while (tgDownloadSettings.SourceVm.SourceFirstId <= tgDownloadSettings.SourceVm.SourceLastId)
+				while (sourceFirstId <= sourceLastId)
 	            {
 		            if (Client is null) break;
 		            if ((Client is not null && Client.Disconnected) || !tgDownloadSettings.SourceVm.IsDownload) break;
 		            await TryCatchFuncAsync(async () =>
 		            {
-			            Messages_MessagesBase messages = smartSource.ChatBase is not null
-					            ? await Client.Channels_GetMessages(smartSource.ChatBase as TlChannel, tgDownloadSettings.SourceVm.SourceFirstId)
-					            : await Client.GetMessages(smartSource.ChatBase, tgDownloadSettings.SourceVm.SourceFirstId);
-			            await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceLastId, tgDownloadSettings.SourceVm.SourceFirstId):#00.00} %");
+			            if (Client is null) return;
+						Messages_MessagesBase messages = smartSource.ChatBase is not null
+					        ? await Client.Channels_GetMessages(smartSource.ChatBase as TlChannel, sourceFirstId)
+					        : await Client.GetMessages(smartSource.ChatBase, sourceFirstId);
+			            await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(sourceLastId, sourceFirstId):#00.00} %");
 			            foreach (MessageBase message in messages.Messages)
 			            {
 							// Check message exists.
@@ -1227,20 +1232,20 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 								: UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, message.ID,
 						            $"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.SourceId}!"));
 			            }
-			            tgDownloadSettings.SourceVm.SourceFirstId++;
-						// CountThreads
-						if (downloadTasks.Count == tgDownloadSettings.CountThreads ||
-			                tgDownloadSettings.SourceVm.SourceFirstId == tgDownloadSettings.SourceVm.SourceLastId)
-			            {
-				            await Task.WhenAll(downloadTasks);
-				            downloadTasks.Clear();
-				            downloadTasks = new();
-			            }
 		            }, isLoginConsole: true);
+			        sourceFirstId++;
+		            // CountThreads
+		            if (downloadTasks.Count == tgDownloadSettings.CountThreads ||
+		                sourceFirstId == sourceLastId)
+		            {
+			            await Task.WhenAll(downloadTasks).ConfigureAwait(true);
+			            downloadTasks.Clear();
+			            downloadTasks = new();
+		            }
 	            }
 			}
-            tgDownloadSettings.SourceVm.SourceFirstId = tgDownloadSettings.SourceVm.SourceLastId;
-            tgDownloadSettings.SourceVm.SourceFirstId = tgDownloadSettings.SourceVm.SourceLastId;
+            tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;
+            tgDownloadSettings.SourceVm.SourceFirstId = sourceLastId;
             tgDownloadSettings.SourceVm.SetIsDownload(false);
 		}, isLoginConsole: true);
 		await UpdateTitleAsync(string.Empty);
@@ -1325,39 +1330,49 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         }, isLoginConsole: true);
     }
 
-    private (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] GetFiles(MessageMedia messageMedia)
+    private TgMediaInfoModel GetMediaInfo(MessageMedia messageMedia, TgDownloadSettingsViewModel tgDownloadSettings, MessageBase messageBase)
     {
         string extensionName = string.Empty;
-        switch (messageMedia)
+        TgMediaInfoModel? mediaInfo = null;
+		switch (messageMedia)
         {
             case MessageMediaDocument mediaDocument:
 	            if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0 && mediaDocument.document is TlDocument document)
 	            {
 		            if (!string.IsNullOrEmpty(document.Filename) && (Path.GetExtension(document.Filename).TrimStart('.') is { } str))
 			            extensionName = str;
-		            if (!string.IsNullOrEmpty(document.Filename) && CheckFileAtFilter(document.Filename, extensionName, document.size))
-			            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { (document.Filename, document.size,
-				            document.date, string.Empty, string.Empty) };
+		            if (!string.IsNullOrEmpty(document.Filename) &&
+		                CheckFileAtFilter(document.Filename, extensionName, document.size))
+		            {
+			            mediaInfo = new(document.Filename, document.size, document.date);
+                        break;
+		            }
 		            if (document.attributes.Length > 0)
 		            {
 			            if (document.attributes.Any(x => x is DocumentAttributeVideo))
 			            {
 				            extensionName = "mp4";
 				            if (CheckFileAtFilter(string.Empty, extensionName, document.size))
-					            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
-						            document.date, string.Empty, string.Empty) };
-			            }
+				            {
+					            mediaInfo = new($"{document.ID}.{extensionName}", document.size, document.date);
+                                break;
+				            }
+						}
 			            if (document.attributes.Any(x => x is DocumentAttributeAudio))
 			            {
 				            extensionName = "mp3";
 				            if (CheckFileAtFilter(string.Empty, extensionName, document.size))
-					            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
-						            document.date, string.Empty, string.Empty) };
+				            {
+					            mediaInfo = new($"{document.ID}.{extensionName}", document.size, document.date);
+                                break;
+				            }
 			            }
 		            }
 		            if (string.IsNullOrEmpty(document.Filename) && CheckFileAtFilter(string.Empty, extensionName, document.size))
-			            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{document.ID}.{extensionName}", document.size,
-				            document.date, string.Empty, string.Empty) };
+		            {
+			            mediaInfo = new($"{document.ID}.{extensionName}", document.size, document.date);
+                        break;
+		            }
 	            }
 				break;
             case MessageMediaPhoto mediaPhoto:
@@ -1366,12 +1381,30 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		            extensionName = "jpg";
 		            //return photo.sizes.Select(x => ($"{photo.ID} {x.Width}x{x.Height}.{GetPhotoExt(x.Type)}", Convert.ToInt64(x.FileSize), photo.date, string.Empty, string.Empty)).ToArray();
 		            if (CheckFileAtFilter(string.Empty, extensionName, photo.sizes.Last().FileSize))
-			            return new (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] { ($"{photo.ID}.{extensionName}", photo.sizes.Last().FileSize,
-				            photo.date, string.Empty, string.Empty) };
+		            {
+			            mediaInfo = new($"{photo.ID}.{extensionName}", photo.sizes.Last().FileSize, photo.date);
+                        break;
+		            }
 	            }
 				break;
         }
-        return Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>();
+        mediaInfo ??= new();
+        // Join ID
+        mediaInfo.LocalFileWithNumber = tgDownloadSettings.SourceVm.SourceLastId switch
+        {
+            < 1000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 10000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 100000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 1000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 10000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 100000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            < 1000000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000000} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber,
+            _ => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID} {mediaInfo.LocalFileWithoutNumber}" : mediaInfo.LocalFileWithoutNumber
+		};
+        // Join tgDownloadSettings.DestDirectory.
+        mediaInfo.LocalPath = tgDownloadSettings.SourceVm.SourceDirectory;
+        mediaInfo.Normalize();
+		return mediaInfo;
     }
 
     public bool CheckFileAtFilter(string fileName, string extensionName, long size)
@@ -1423,48 +1456,19 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
         return true;
     }
 
-    private void SetFilesLocalNames(TgDownloadSettingsViewModel tgDownloadSettings, MessageBase messageBase,
-        ref (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files)
-    {
-        // Join ID.
-        for (int i = 0; i < files.Length; i++)
-        {
-            files[i].Join = tgDownloadSettings.SourceVm.SourceLastId switch
-            {
-                < 1000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000} {files[i].Remote}" : files[i].Remote,
-                < 10000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000} {files[i].Remote}" : files[i].Remote,
-                < 100000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000} {files[i].Remote}" : files[i].Remote,
-                < 1000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000} {files[i].Remote}" : files[i].Remote,
-                < 10000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:0000000} {files[i].Remote}" : files[i].Remote,
-                < 100000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:00000000} {files[i].Remote}" : files[i].Remote,
-                < 1000000000 => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID:000000000} {files[i].Remote}" : files[i].Remote,
-                _ => tgDownloadSettings.IsJoinFileNameWithMessageId ? $"{messageBase.ID} {files[i].Remote}" : files[i].Remote
-            };
-        }
-        // Join tgDownloadSettings.DestDirectory.
-        for (int i = 0; i < files.Length; i++)
-        {
-            files[i].Local = Path.Combine(tgDownloadSettings.SourceVm.SourceDirectory, files[i].Remote);
-            files[i].Join = Path.Combine(tgDownloadSettings.SourceVm.SourceDirectory, files[i].Join);
-        }
-    }
-
-    private async Task DeleteExistsFilesAsync(TgDownloadSettingsViewModel tgDownloadSettings,
-          (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files)
+    private async Task DeleteExistsFilesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
     {
         await TryCatchFuncAsync(async() =>
         {
             await Task.Delay(TimeSpan.FromMilliseconds(1));
-            for (int i = 0; i < files.Length; i++)
+            //string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? mediaInfo.Join : mediaInfo.Local;
+            string fileName = mediaInfo.LocalFullWithNumber;
+            if (File.Exists(fileName))
             {
-                string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
-                if (File.Exists(fileName))
+                long fileSize = TgFileUtils.CalculateFileSize(fileName);
+                if (tgDownloadSettings.IsRewriteFiles && fileSize < mediaInfo.Size || fileSize == 0)
                 {
-                    long fileSize = TgFileUtils.CalculateFileSize(fileName);
-                    if (tgDownloadSettings.IsRewriteFiles && fileSize < files[i].Size || fileSize == 0)
-                    {
-                        File.Delete(fileName);
-                    }
+                    File.Delete(fileName);
                 }
             }
         }, isLoginConsole: true);
@@ -1472,10 +1476,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
     private async Task DownloadDataCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings, MessageBase messageBase, MessageMedia messageMedia)
     {
-        (string Remote, long Size, DateTime DtCreate, string Local, string Join)[] files = GetFiles(messageMedia);
-        if (Equals(files, Array.Empty<(string Remote, long Size, DateTime DtCreate, string Local, string Join)>()))
-            return;
-        SetFilesLocalNames(tgDownloadSettings, messageBase, ref files);
+        var mediaInfo = GetMediaInfo(messageMedia, tgDownloadSettings, messageBase);
+		if (string.IsNullOrEmpty(mediaInfo.LocalFileWithNumber)) return;
 		long accessHash = messageMedia switch
         {
 	        MessageMediaDocument mediaDocument => 
@@ -1483,93 +1485,67 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	        MessageMediaPhoto mediaPhoto => mediaPhoto is { photo: Photo photo } ? photo.access_hash : 0,
 	        _ => 0
         };
-
-		// Delete files.
-		await DeleteExistsFilesAsync(tgDownloadSettings, files);
-
-        // Download file.
-        for (int i = 0; i < files.Length; i++)
+		// Delete files
+		await DeleteExistsFilesAsync(tgDownloadSettings, mediaInfo);
+        // Move exists file
+        if (tgDownloadSettings.IsJoinFileNameWithMessageId)
         {
-            // Move exists file.
-            if (tgDownloadSettings.IsJoinFileNameWithMessageId)
+            if (File.Exists(mediaInfo.LocalFileWithoutNumber) && !File.Exists(mediaInfo.LocalFullWithNumber))
+                File.Move(mediaInfo.LocalFileWithoutNumber, mediaInfo.LocalFullWithNumber);
+        }
+        // Scanning subdirectories for downloaded files to move them to the root directory
+        foreach (string directory in Directory.GetDirectories(tgDownloadSettings.SourceVm.SourceDirectory))
+        {
+            string fileAtSubDir = Path.Combine(directory, mediaInfo.LocalFileWithoutNumber);
+            if (File.Exists(fileAtSubDir) && !File.Exists(mediaInfo.LocalFullWithNumber))
+                File.Move(fileAtSubDir, mediaInfo.LocalFullWithNumber);
+        }
+        // Download new file
+        if (!File.Exists(mediaInfo.LocalFullWithNumber))
+        {
+            await using FileStream localFileStream = File.Create(mediaInfo.LocalFullWithNumber);
+            if (Client is { })
             {
-                if (File.Exists(files[i].Local) && !File.Exists(files[i].Join))
-                    File.Move(files[i].Local, files[i].Join);
-            }
-            // FileName.
-            string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? files[i].Join : files[i].Local;
-            // Scanning subdirectories for downloaded files to move them to the root directory.
-            foreach (string directory in Directory.GetDirectories(tgDownloadSettings.SourceVm.SourceDirectory))
-            {
-                string fileSubDir = Path.Combine(directory, files[i].Remote);
-                if (File.Exists(fileSubDir) && !File.Exists(fileName))
-                    File.Move(fileSubDir, fileName);
-            }
-            // Download new file.
-            if (!File.Exists(fileName))
-            {
-                await using FileStream localFileStream = File.Create(fileName);
-                if (Client is { })
+                switch (messageMedia)
                 {
-	                switch (messageMedia)
-	                {
-                        case MessageMediaDocument mediaDocument:
-	                        if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0 && mediaDocument.document is TlDocument document)
+                    case MessageMediaDocument mediaDocument:
+                        if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0 && mediaDocument.document is TlDocument document)
+                        {
+	                        await Client.DownloadFileAsync(document, localFileStream, null,
+		                        CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalFullWithNumber));
+	                        TgEfDocumentEntity doc = new()
 	                        {
-		                        await Client.DownloadFileAsync(document, localFileStream, null,
-			                        CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, files[i].Join));
-		                        TgEfDocumentEntity doc = new()
-		                        {
-			                        Id = document.ID,
-			                        SourceId = tgDownloadSettings.SourceVm.SourceId,
-			                        MessageId = messageBase.ID,
-			                        FileName = fileName,
-			                        FileSize = files[i].Size,
-			                        AccessHash = accessHash
-								};
-		                        await DocumentRepository.SaveAsync(doc);
-	                        }
-							break;
-                        case MessageMediaPhoto mediaPhoto:
-	                        if (mediaPhoto is { photo: Photo photo })
-	                        {
-		                        //WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
-		                        //    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
-		                        await Client.DownloadFileAsync(photo, localFileStream, null,
-			                        CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, string.Empty));
-	                        }
-							break;
-	                }
-				}
-                localFileStream.Close();
-            }
-			// Store message.
-			await MessageSaveAsync(tgDownloadSettings, messageBase.ID, files[i].DtCreate, files[i].Size, files[i].Remote, TgEnumMessageType.Document);
-			//switch (messageMedia)
-   //         {
-			//	case MessageMediaDocument:
-			//		await MessageRepository.SaveAsync(messageBase.ID, tgDownloadSettings.SourceVm.SourceId, files[i].DtCreate,
-			//			TgEnumMessageType.Document, files[i].Size, files[i].Remote);
-			//		break;
-			//	case MessageMediaPhoto:
-			//		if ((isExistsMessage && tgDownloadSettings.IsRewriteMessages) || !isExistsMessage)
-			//		{
-			//			await MessageRepository.SaveAsync(messageBase.ID, tgDownloadSettings.SourceVm.SourceId, files[i].DtCreate,
-			//				TgEnumMessageType.Photo, files[i].Size, files[i].Remote);
-			//		}
-			//		break;
-			//}
-            // Set file date time.
-            if (File.Exists(fileName))
-            {
-                //File.SetCreationTime(fileName, files[i].DtCreate);
-                FileInfo fileInfo = new(fileName)
-                {
-                    CreationTimeUtc = files[i].DtCreate,
-                    LastAccessTimeUtc = files[i].DtCreate,
-                    LastWriteTimeUtc = files[i].DtCreate
-                };
-            }
+		                        Id = document.ID,
+		                        SourceId = tgDownloadSettings.SourceVm.SourceId,
+		                        MessageId = messageBase.ID,
+		                        FileName = mediaInfo.LocalFullWithNumber,
+		                        FileSize = mediaInfo.Size,
+		                        AccessHash = accessHash
+							};
+	                        await DocumentRepository.SaveAsync(doc);
+                        }
+						break;
+                    case MessageMediaPhoto mediaPhoto:
+                        if (mediaPhoto is { photo: Photo photo })
+                        {
+	                        //WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
+	                        //    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
+	                        await Client.DownloadFileAsync(photo, localFileStream, null,
+		                        CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalFileWithNumber));
+                        }
+						break;
+                }
+			}
+            localFileStream.Close();
+        }
+		// Store message.
+		await MessageSaveAsync(tgDownloadSettings, messageBase.ID, mediaInfo.DtCreate, mediaInfo.Size, mediaInfo.Remote, TgEnumMessageType.Document);
+        // Set file date time.
+        if (File.Exists(mediaInfo.LocalFullWithNumber))
+        {
+			File.SetCreationTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
+			File.SetLastAccessTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
+			File.SetLastWriteTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
         }
     }
 

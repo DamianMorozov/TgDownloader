@@ -452,7 +452,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			item = new();
 			item.Fill(itemBackup, true);
 			Delete(item, isSkipFind: false);
-			return Save(itemBackup);
+			//return Save(itemBackup);
 #if DEBUG
 			Debug.WriteLine(ex);
 #endif
@@ -471,7 +471,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		{
 			TEntity itemBackup = item;
 			await DeleteAsync(item, isSkipFind: true);
-			return await SaveAsync(itemBackup);
+			//return await SaveAsync(itemBackup);
 #if DEBUG
 			Debug.WriteLine(ex);
 #endif

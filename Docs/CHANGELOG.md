@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflows actions
 ## Changed
 - Using EF Core instead of DevExpress XPO
+- Fixed saving file names with unsupported characters on Windows / Linux / MacOS
 ## Added projects
 - Added TgDownloaderWinUI app
 
