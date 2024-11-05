@@ -23,6 +23,10 @@
 <p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
 
 
+## [0.5.160] - 2024-11-05
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.5.160/TgDownloaderConsole.png"></p>
+
 ## [0.4.150] - 2024-03-27
 ### TgDownloaderBlazor
 <p align="center"><img src="Assets/v0.4.150/TgDownloaderBlazor_Home.png"></p>
