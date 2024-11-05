@@ -80,7 +80,7 @@ public sealed class TgLocaleHelper : ObservableObject
     public string MenuAutoDownload => "Auto download";
 	public string MenuAutoViewEvents => "Auto view events";
 	public string MenuDownloadException => "Download exception";
-	public string MenuDownloadSetCountThreads => "Count of threads";
+	public string MenuDownloadSetCountThreads => "Count of threads (1-20)";
 	public string MenuDownloadSetFolder => "Setup download folder";
 	public string MenuDownloadSetIsAddMessageId => "Enable join message ID with file name";
 	public string MenuDownloadSetIsAutoUpdate => "Enable auto update";

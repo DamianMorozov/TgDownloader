@@ -113,7 +113,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
 		{
@@ -170,7 +170,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
 		{

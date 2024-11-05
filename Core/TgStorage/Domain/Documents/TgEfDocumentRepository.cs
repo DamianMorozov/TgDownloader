@@ -115,7 +115,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{
@@ -172,7 +172,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{

@@ -22,7 +22,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	private async Task<TgEfStorageResult<TEntity>> UseOverrideMethodAsync()
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		await Task.Delay(1);
 		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 	}
 
@@ -253,11 +253,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		return storageResult;
 	}
 
-	private static readonly SemaphoreSlim _transactionSemaphore = new SemaphoreSlim(1, 1);
+	private static readonly SemaphoreSlim TransactionSemaphore = new(1, 1);
 
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity? item)
 	{
-		await _transactionSemaphore.WaitAsync();
+		await TransactionSemaphore.WaitAsync();
 		IDbContextTransaction transaction = await EfContext.Database.BeginTransactionAsync();
 		await using (transaction)
 		{
@@ -296,7 +296,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			}
 			finally
 			{
-				_transactionSemaphore.Release();
+				TransactionSemaphore.Release();
 			}
 			return storageResult;
 		}
@@ -328,14 +328,14 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 		finally
 		{
-			_transactionSemaphore.Release();
+			TransactionSemaphore.Release();
 		}
 		return storageResult;
 	}
 
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveListAsync(List<TEntity> items)
 	{
-		await _transactionSemaphore.WaitAsync();
+		await TransactionSemaphore.WaitAsync();
 		IDbContextTransaction transaction = await EfContext.Database.BeginTransactionAsync();
 		await using (transaction)
 		{
@@ -362,7 +362,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			}
 			finally
 			{
-				_transactionSemaphore.Release();
+				TransactionSemaphore.Release();
 			}
 			return storageResult;
 		}
@@ -403,7 +403,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveWithoutTransactionAsync(TEntity item)
 	{
-		await _transactionSemaphore.WaitAsync();
+		await TransactionSemaphore.WaitAsync();
 		TgEfStorageResult<TEntity> storageResult;
 		try
 		{
@@ -434,7 +434,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 		finally
 		{
-			_transactionSemaphore.Release();
+			TransactionSemaphore.Release();
 		}
 		return storageResult;
 	}
@@ -462,7 +462,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveOrRecreateAsync(TEntity item, string tableName)
 	{
-		await _transactionSemaphore.WaitAsync();
+		await TransactionSemaphore.WaitAsync();
 		try
 		{
 			return await SaveAsync(item);
@@ -479,7 +479,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 		finally
 		{
-			_transactionSemaphore.Release();
+			TransactionSemaphore.Release();
 		}
 	}
 
@@ -527,7 +527,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public virtual async Task<TgEfStorageResult<TEntity>> DeleteAsync(TEntity item, bool isSkipFind)
 	{
-		await _transactionSemaphore.WaitAsync();
+		await TransactionSemaphore.WaitAsync();
 		IDbContextTransaction transaction = await EfContext.Database.BeginTransactionAsync();
 		await using (transaction)
 		{
@@ -552,7 +552,6 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			catch (Exception ex)
 			{
 				await transaction.RollbackAsync();
-				throw;
 #if DEBUG
 				Debug.WriteLine(ex);
 #endif
@@ -560,7 +559,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			}
 			finally
 			{
-				_transactionSemaphore.Release();
+				TransactionSemaphore.Release();
 			}
 		}
 	}
