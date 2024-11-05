@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -54,7 +56,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuDownload.Return;
 	}
 
-	public void SetupDownload(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task SetupDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuDownload menu;
 		do
@@ -67,7 +69,7 @@ internal partial class TgMenuHelper
 					tgDownloadSettings = SetupDownloadSource();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					RunActionStatus(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, isSkipCheckTgSettings: true, 
+					await RunActionStatusAsync(tgDownloadSettings, SetupDownloadSourceFirstIdAuto, isSkipCheckTgSettings: true, 
 						isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
@@ -94,11 +96,14 @@ internal partial class TgMenuHelper
 					SetTgDownloadCountThreads(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SettingsSave:
-					RunActionStatus(tgDownloadSettings, UpdateSourceWithSettings, isSkipCheckTgSettings: true, 
-						isScanCount: false, isWaitComplete: false);
+					await RunActionStatusAsync(tgDownloadSettings, 
+						tgDownloadSettings2 => UpdateSourceWithSettingsAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
+						isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					RunActionProgress(tgDownloadSettings, ManualDownload, false, isScanCount: false);
+					await RunActionProgressAsync(tgDownloadSettings,
+						tgDownloadSettings2 => ManualDownloadAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
+						isSkipCheckTgSettings: false, isScanCount: false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -199,13 +204,17 @@ internal partial class TgMenuHelper
 		do
 		{
 			tgDownloadSettings.CountThreads = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetCountThreads}:"));
+			if (tgDownloadSettings.CountThreads < 1)
+				tgDownloadSettings.CountThreads = 1;
+			else if (tgDownloadSettings.CountThreads > 20)
+				tgDownloadSettings.CountThreads = 20;
 		} while (!tgDownloadSettings.SourceVm.IsReadySourceFirstId);
 		LoadTgClientSettings(tgDownloadSettings, true, true);
 	}
 
-	private void UpdateSourceWithSettings(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task UpdateSourceWithSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		tgDownloadSettings.UpdateSourceWithSettings();
+		await tgDownloadSettings.UpdateSourceWithSettingsAsync();
 		// Refresh.
 		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource)
 			.GetAwaiter().GetResult();
@@ -223,12 +232,12 @@ internal partial class TgMenuHelper
 			tgDownloadSettings.SourceVm.SourceDirectory = sourceDirectory;
 	}
 
-	private void ManualDownload(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
 		TgClient.DownloadAllDataAsync(tgDownloadSettings).GetAwaiter().GetResult();
 		// Don't move up.
-		UpdateSourceWithSettings(tgDownloadSettings);
+		await UpdateSourceWithSettingsAsync(tgDownloadSettings);
 	}
 
 	private void MarkHistoryReadCore(TgDownloadSettingsViewModel tgDownloadSettings)

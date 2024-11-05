@@ -16,15 +16,13 @@ await DataTransferBetweenStoragesAsync();
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
-if (!Setup()) return;
+if (!await SetupAsync()) return;
 
 do
 {
 	try
 	{
 		menu.ShowTableMain(tgDownloadSettings);
-		//tgLog.MarkupLine(tgLocale.TypeAnyKeyForReturn);
-		//Console.ReadKey();
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")
@@ -38,7 +36,7 @@ do
 		if (prompt.Equals(tgLocale.MenuMainApp))
 		{
 			menu.Value = TgEnumMenuMain.AppSettings;
-			menu.SetupAppSettings(tgDownloadSettings);
+			await menu.SetupAppSettingsAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainStorage))
 		{
@@ -48,7 +46,7 @@ do
 		if (prompt.Equals(tgLocale.MenuMainClient))
 		{
 			menu.Value = TgEnumMenuMain.Client;
-			menu.SetupClient(tgDownloadSettings);
+			await menu.SetupClientAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainFilters))
 		{
@@ -58,12 +56,12 @@ do
 		if (prompt.Equals(tgLocale.MenuMainDownload))
 		{
 			menu.Value = TgEnumMenuMain.Download;
-			menu.SetupDownload(tgDownloadSettings);
+			await menu.SetupDownloadAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainAdvanced))
 		{
 			menu.Value = TgEnumMenuMain.Advanced;
-			menu.SetupAdvanced(tgDownloadSettings);
+			await menu.SetupAdvancedAsync(tgDownloadSettings);
 		}
 	}
 	catch (Exception ex)
@@ -97,7 +95,7 @@ async Task DataTransferBetweenStoragesAsync()
 }
 
 
-bool Setup()
+async Task<bool> SetupAsync()
 {
 	// App
 	TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
@@ -115,16 +113,16 @@ bool Setup()
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}
-	// Storage is exist.
+	// Storage is existing
 	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.XmlEfStorage), (long)0))
 	{
 		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.XmlEfStorage));
 		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
 			return false;
 	}
-	// Client.
+	// Client
 	tgLog.WriteLine("TG client connect ...");
-	menu.ClientConnectConsole();
+	await menu.ClientConnectConsoleAsync();
 	tgLog.WriteLine("TG client connect success");
 	return true;
 }

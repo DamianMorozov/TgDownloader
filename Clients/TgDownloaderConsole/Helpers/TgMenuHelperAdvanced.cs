@@ -42,7 +42,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuDownload.Return;
 	}
 
-	public void SetupAdvanced(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task SetupAdvancedAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuDownload menu;
 		do
@@ -52,22 +52,24 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.AutoDownload:
-					RunActionStatus(tgDownloadSettings, AutoDownload, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
+					await RunActionStatusAsync(tgDownloadSettings,
+						tgDownloadSettings2 => AutoDownloadAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
+						isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.AutoViewEvents:
-					RunActionStatus(tgDownloadSettings, AutoViewEvents, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
+					await RunActionStatusAsync(tgDownloadSettings, AutoViewEvents, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.ScanChats:
-					ScanSources(tgDownloadSettings, TgEnumSourceType.Chat);
+					await ScanSourcesAsync(tgDownloadSettings, TgEnumSourceType.Chat);
 					break;
 				case TgEnumMenuDownload.ScanDialogs:
-					ScanSources(tgDownloadSettings, TgEnumSourceType.Dialog);
+					await ScanSourcesAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
 					break;
 				case TgEnumMenuDownload.MarkHistoryRead:
-					MarkHistoryRead(tgDownloadSettings);
+					await MarkHistoryReadAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.ViewSources:
-                    ViewSources(tgDownloadSettings);
+                    await ViewSourcesAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.ViewVersions:
                     ViewVersions(tgDownloadSettings);
@@ -76,7 +78,7 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
-	private void ScanSources(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
+	private async Task ScanSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		ShowTableAdvanced(tgDownloadSettings);
 		if (!TgClient.IsReady)
@@ -89,10 +91,10 @@ internal partial class TgMenuHelper
 		switch (sourceType)
 		{
 			case TgEnumSourceType.Chat:
-				RunActionStatus(tgDownloadSettings, ScanSourcesChatsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				await RunActionStatusAsync(tgDownloadSettings, ScanSourcesChatsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 			case TgEnumSourceType.Dialog:
-				RunActionStatus(tgDownloadSettings, ScanSourcesDialogsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				await RunActionStatusAsync(tgDownloadSettings, ScanSourcesDialogsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 		}
 	}
@@ -103,16 +105,16 @@ internal partial class TgMenuHelper
 	private void ScanSourcesDialogsWithSave(TgDownloadSettingsViewModel tgDownloadSettings) =>
         TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog).GetAwaiter().GetResult();
 
-	private void ViewSources(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task ViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;
             tgDownloadSettings = SetupDownloadSource(source.Id);
-			SetupDownload(tgDownloadSettings);
+			await SetupDownloadAsync(tgDownloadSettings);
 		}
 	}
 
@@ -123,14 +125,12 @@ internal partial class TgMenuHelper
 			VersionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items);
 	}
 
-	private void MarkHistoryRead(TgDownloadSettingsViewModel tgDownloadSettings)
-	{
-		RunActionStatus(tgDownloadSettings, MarkHistoryReadCore, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
-	}
+	private async Task MarkHistoryReadAsync(TgDownloadSettingsViewModel tgDownloadSettings) => 
+		await RunActionStatusAsync(tgDownloadSettings, MarkHistoryReadCore, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 
-	private void AutoDownload(TgDownloadSettingsViewModel _)
+	private async Task AutoDownloadAsync(TgDownloadSettingsViewModel _)
 	{
-		IEnumerable<TgEfSourceEntity> sources = SourceRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items;
+		IEnumerable<TgEfSourceEntity> sources = (await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items;
 		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
             TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSource(source.Id);
@@ -143,7 +143,7 @@ internal partial class TgMenuHelper
 	            .GetAwaiter().GetResult();
 			// ManualDownload.
 			if (source.Count > 0)
-				ManualDownload(tgDownloadSettings);
+				await ManualDownloadAsync(tgDownloadSettings);
 		}
 	}
 

@@ -29,7 +29,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuClient.Return;
 	}
 
-	public void SetupClient(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task SetupClientAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuClient menu;
 		do
@@ -40,10 +40,10 @@ internal partial class TgMenuHelper
 			{
 				case TgEnumMenuClient.SetProxy:
 					SetupClientProxyAsync().GetAwaiter().GetResult();
-					AskClientConnect(tgDownloadSettings);
+					await AskClientConnectAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuClient.Connect:
-					ClientConnect(tgDownloadSettings, false);
+					await ClientConnectAsync(tgDownloadSettings, false);
 					break;
 				case TgEnumMenuClient.Disconnect:
 					ClientDisconnect(tgDownloadSettings);
@@ -182,14 +182,11 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public void ClientConnectConsole() =>
-		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
-
 	public async Task ClientConnectConsoleAsync() => 
 		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync(
 			await AppRepository.GetCurrentAppAsync())).Item);
 
-	private void AskClientConnect(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task AskClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
@@ -199,13 +196,14 @@ internal partial class TgMenuHelper
 				.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
 		bool isConnect = prompt.Equals(TgLocale.MenuYes);
 		if (isConnect)
-			ClientConnect(tgDownloadSettings, false);
+			await ClientConnectAsync(tgDownloadSettings, false);
 	}
 
-	public void ClientConnect(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
+	public async Task ClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
 		ShowTableClient(tgDownloadSettings);
-		TgClient.ConnectSessionConsole(ConfigConsole, ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item);
+		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (
+			await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

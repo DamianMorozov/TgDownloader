@@ -36,7 +36,7 @@ internal partial class TgMenuHelper
 		return TgEnumMenuAppSettings.Return;
 	}
 
-	public void SetupAppSettings(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task SetupAppSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgEnumMenuAppSettings menu;
 		do
@@ -59,7 +59,7 @@ internal partial class TgMenuHelper
 					break;
 				case TgEnumMenuAppSettings.SetUseProxy:
 					SetUseProxy();
-					AskClientConnect(tgDownloadSettings);
+					await AskClientConnectAsync(tgDownloadSettings);
 					break;
 			}
 		} while (menu is not TgEnumMenuAppSettings.Return);
