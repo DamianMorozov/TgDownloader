@@ -57,7 +57,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
             TgEfProxyEntity proxy = (await ProxyRepository.GetAsync(new TgEfProxyEntity { Uid = ProxyUid }, isNoTracking: false)).Item;
@@ -71,7 +71,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (ItemProxyVm.ProxyUid != Guid.Empty)
                 ProxyUid = ItemProxyVm.ProxyUid;
             ItemProxyVm.Item = (await ProxyRepository.GetNewAsync(isNoTracking: false)).Item;
@@ -84,7 +84,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await ProxyRepository.SaveAsync(ItemProxyVm.Item);
         }, false);
     }
@@ -95,7 +95,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 navigationWindow.ShowWindow();

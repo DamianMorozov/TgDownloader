@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System;
+
 namespace TgDownloaderWinDesktop.Common;
 
 /// <summary>
@@ -38,6 +40,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 
     protected virtual async Task InitializeViewModelAsync()
     {
+        await Task.Delay(1);
         IsInitialized = true;
     }
 
@@ -49,7 +52,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateConnectDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateConnectMsg = message;
         }, false);
@@ -63,7 +66,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateProxyDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateProxyMsg = message;
         }, false);
@@ -80,7 +83,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateExceptionMsg = $"Line {lineNumber} | Member {memberName} | {message}";
         }, false);
@@ -94,7 +97,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateExceptionMsg = message;
         }, false);
@@ -115,7 +118,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
 	    }
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateSourceMsg = $"{sourceId} | {messageId} | {message}";
         }, false);
@@ -129,7 +132,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1));
+	        await Task.Delay(1);
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
             StateSourceMsg = message;
         }, false);

@@ -54,7 +54,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgEfStorageResult<TgEfProxyEntity> storageResult = await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false);
 			SetOrderProxies(storageResult.Items);
         }, false).ConfigureAwait(false);
@@ -66,7 +66,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             ProxiesVms = new();
         }, false).ConfigureAwait(true);
 	}
@@ -77,7 +77,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await ProxyRepository.DeleteAsync(proxyVm.Item, isSkipFind: false);
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
@@ -90,7 +90,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(proxyVm);
@@ -106,7 +106,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 TgDesktopUtils.TgItemProxyVm.SetItemProxyVm(new TgEfProxyViewModel(new TgEfProxyEntity()));

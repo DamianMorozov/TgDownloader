@@ -55,7 +55,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         //{
         //    await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         //    {
-        //        await Task.Delay(TimeSpan.FromMilliseconds(1));
+        //        await Task.Delay(1);
         //        SourceUid = Guid.Empty;
         //        TgSqlTableSourceModel source = await ContextManager.SourceRepository.GetNewAsync();
         //        SetItemSourceVm(source, source.Uid);
@@ -76,7 +76,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (ItemSourceVm.SourceUid != SourceUid)
                 SourceUid = ItemSourceVm.SourceUid;
             TgEfSourceEntity source = (await SourceRepository.GetAsync(new TgEfSourceEntity() { Uid = SourceUid }, isNoTracking: false)).Item;
@@ -84,22 +84,13 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         }, true);
     }
 
-    /// <summary>
-    /// Update download file state.
-    /// </summary>
-    /// <param name="sourceId"></param>
-    /// <param name="messageId"></param>
-    /// <param name="fileName"></param>
-    /// <param name="fileSize"></param>
-    /// <param name="transmitted"></param>
-    /// <param name="fileSpeed"></param>
-    /// <param name="isFileNewDownload"></param>
-    /// <returns></returns>
-	private async Task UpdateStateFileAsync(long sourceId, int messageId, string fileName, long fileSize, long transmitted, long fileSpeed, bool isFileNewDownload)
+    /// <summary> Update download file state </summary>
+    private async Task UpdateStateFileAsync(long sourceId, int messageId, string fileName, long fileSize, long transmitted, long fileSpeed, bool isFileNewDownload,
+	    int threadNumber)
     {
 	    await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
 	    {
-		    await Task.Delay(TimeSpan.FromMilliseconds(1));
+		    await Task.Delay(1);
 			// Download job.
 			if (!string.IsNullOrEmpty(fileName) && !isFileNewDownload && ItemSourceVm.SourceId.Equals(sourceId))
             {
@@ -157,7 +148,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (ItemSourceVm.SourceUid != SourceUid)
 				SourceUid = ItemSourceVm.SourceUid;
             // Collect chats from Telegram.
@@ -187,7 +178,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         bool result = true;
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             // Check directory.
             if (!Directory.Exists(ItemSourceVm.Item.Directory))
             {
@@ -218,7 +209,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         bool result = true;
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-	        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+	        await Task.Delay(1).ConfigureAwait(false);
 	        ItemSourceVm.SetIsDownload(false);
         }, true);
 
@@ -232,7 +223,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
             ItemSourceVm.Item = (await SourceRepository.GetNewAsync(isNoTracking: false)).Item;
@@ -245,7 +236,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await SourceRepository.SaveAsync(ItemSourceVm.Item);
         }, false);
 
@@ -258,7 +249,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 navigationWindow.ShowWindow();
@@ -273,7 +264,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     {
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
-		    await Task.Delay(TimeSpan.FromMilliseconds(1));
+		    await Task.Delay(1);
 		    string value = fieldName switch
 		    {
 			    nameof(ItemSourceVm.SourceId) => ItemSourceVm.SourceId.ToString(),

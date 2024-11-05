@@ -36,7 +36,7 @@ public sealed partial class TgSettingsViewModel : TgPageViewModelBase, INavigati
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             switch (parameter)
             {
                 case "theme_light":

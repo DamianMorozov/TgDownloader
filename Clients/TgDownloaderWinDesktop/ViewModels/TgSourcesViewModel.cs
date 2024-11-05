@@ -90,7 +90,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 			List<TgEfSourceEntity> sources = storageResult.IsExists ? storageResult.Items.ToList() : [];
             //if (!sources.Any())
@@ -117,7 +117,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             foreach (TgEfSourceViewModel sourceVm in SourcesVms)
                 await OnUpdateSourceFromTelegramAsync(sourceVm);
         }, false);
@@ -132,7 +132,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Chat, LoadFromTelegramAsync);
             await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Dialog, LoadFromTelegramAsync);
         }, false);
@@ -147,7 +147,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
         }, false);
     }
@@ -158,7 +158,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             SourcesVms = new();
         }, false);
     }
@@ -169,7 +169,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             SetOrderSources(SourcesVms.Select(x => x.Item).ToList());
         }, false);
     }
@@ -183,7 +183,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             // Checks.
             if (!SourcesVms.Any())
             {
@@ -201,7 +201,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
 			TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
             if (!storageResult.IsExists)
             {
@@ -224,7 +224,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             for (int i = 0; i < SourcesVms.Count; i++)
             {
                 if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
@@ -252,7 +252,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
             TgDesktopUtils.TgItemSourceVm.ViewModel = this;
             if (await TgDesktopUtils.TgItemSourceVm.OnDownloadSourceAsync())
@@ -266,7 +266,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (Application.Current.MainWindow is MainWindow navigationWindow)
             {
                 TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);

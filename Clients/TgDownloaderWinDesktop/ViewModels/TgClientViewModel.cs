@@ -108,7 +108,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
 	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
             ProxiesVms = new();
@@ -128,7 +128,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             //TgDesktopUtils.TgClient.UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
             //    ? TgDesktopUtils.TgLocale.MenuClientIsConnected : TgDesktopUtils.TgLocale.MenuClientIsDisconnected);
             IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
@@ -205,7 +205,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             if (!TgEfUtils.GetEfValid<TgEfAppEntity>(AppVm.App).IsValid)
                 return;
             await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Item ?? ProxyVm.Item);
@@ -221,7 +221,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgDesktopUtils.TgClient.Disconnect();
         }, false).ConfigureAwait(false);
     }
@@ -232,7 +232,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
-		    await Task.Delay(TimeSpan.FromMilliseconds(1));
+		    await Task.Delay(1);
 		    AppVm.App = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 	    }, false).ConfigureAwait(false);
     }
@@ -243,7 +243,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await AppRepository.DeleteAllAsync();
             await AppRepository.SaveAsync(AppVm.App);
         }, false).ConfigureAwait(false);
@@ -255,7 +255,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             AppVm.App = (await AppRepository.GetNewAsync(isNoTracking: false)).Item;
         }, false).ConfigureAwait(true);
     }
@@ -266,7 +266,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             await AppRepository.DeleteAllAsync();
         }, false).ConfigureAwait(true);
 

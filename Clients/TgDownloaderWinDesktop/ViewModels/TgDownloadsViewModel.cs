@@ -57,7 +57,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 			{
 				SourceId = sourceVm.Item.Id,
 				SourceFirstId = sourceVm.Item.FirstId,
-				SourceDirectory = sourceVm.Item.Directory
+				SourceDirectory = sourceVm.Item.Directory ?? string.Empty,
 			}
 		};
         if (!DownloadVms.Any())
@@ -77,7 +77,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             SetOrderJobs(DownloadVms.ToList());
         }, false);
     }
@@ -88,7 +88,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgEfDownloadViewModel? findJobVm = DownloadVms
 				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
 				.SingleOrDefault();
@@ -105,7 +105,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgEfDownloadViewModel? findJobVm = DownloadVms
 				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
 				.SingleOrDefault();

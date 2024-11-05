@@ -41,7 +41,7 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgAppSettings.DefaultXmlSettings();
         }, false).ConfigureAwait(false);
 	}
@@ -52,7 +52,7 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
 	{
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(1));
+            await Task.Delay(1);
             TgAppSettings.StoreXmlSettingsUnsafe();
             TgAppSettings.LoadXmlSettings();
         }, false).ConfigureAwait(false);
