@@ -19,26 +19,26 @@ public sealed partial class Index : TgPageComponentBase
 		if (!IsBlazorLoading)
 			return;
 		
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		IsBlazorLoading = false;
 	}
 
 	private async Task ResetToDefault(MouseEventArgs arg)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		await Task.Delay(1);
 		AppSettings.DefaultXmlSettings();
 	}
 
 	private async Task SaveToXml(MouseEventArgs arg)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		await Task.Delay(1);
 		AppSettings.StoreXmlSettingsUnsafe();
 		AppSettings.LoadXmlSettings();
 	}
 
 	private async Task CreateNewStorage(MouseEventArgs arg)
 	{
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		await Task.Delay(1);
 		ConfirmOptions confirmOptions = GetConfirmOptions();
 		bool? result = await DialogService.Confirm(TgLocale.MenuStorageDbCreateNew, "", confirmOptions);
 		if (result == true)

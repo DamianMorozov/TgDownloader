@@ -40,7 +40,7 @@ public class TgJsService
 
     public async Task OpenLink(string url)
     {
-        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+        await Task.Delay(1).ConfigureAwait(false);
         await JsRuntime.InvokeVoidAsync("open", url, "_blank");
         NotificationService.Notify(new NotificationMessage
         {

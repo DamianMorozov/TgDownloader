@@ -35,7 +35,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 
 	private async Task GridLoadData(LoadDataArgs args)
     {
-	    await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+	    await Task.Delay(1).ConfigureAwait(false);
 		try
         {
             //var result = await TgStorageService.GetApps(filter: $@"(contains(UID,""{SearchString}"") or contains(API_HASH,""{search}"") or contains(PHONE_NUMBER,""{search}"") or contains(PROXY_UID,""{search}"")) and {(string.IsNullOrEmpty(args.Filter) ? "true" : args.Filter)}", orderby: $"{args.OrderBy}", top: args.Top, skip: args.Skip, count: args.Top != null && args.Skip != null);
@@ -92,7 +92,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 
     private async Task Search(ChangeEventArgs args)
     {
-		await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+		await Task.Delay(1).ConfigureAwait(false);
 		SearchString = $"{args.Value}";
         await Grid.GoToPage(0);
         await Grid.Reload();
@@ -162,7 +162,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 
 	private async Task ClientConnect()
 	{
-        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+        await Task.Delay(1).ConfigureAwait(false);
 
 		await OnClientSave(false);
 
@@ -171,7 +171,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 			//if (!TgSqlUtils.GetValidXpLite(Item).IsValid)
 			// return;
 			//await TgClient.ConnectSessionAsync(proxyVm ?? ProxyVm);
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			//await TgClient.ConnectSessionAsync(efContext.ProxyRepo.CreateNew());
 		}, message =>
@@ -197,7 +197,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			TgClient.Disconnect();
 		}, message =>
 		{
@@ -222,7 +222,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			Item = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		}, message =>
@@ -248,7 +248,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			if (Item is not null)
 			{
@@ -280,7 +280,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			Item = new();
 		}, message =>
@@ -306,7 +306,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	{
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
-			await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
 			//await efContext.AppsRepo.DeleteAllItemsAsync();
 		}, message =>

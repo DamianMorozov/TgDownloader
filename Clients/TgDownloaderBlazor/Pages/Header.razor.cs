@@ -16,7 +16,7 @@ public sealed partial class Header : RadzenHeader
 
 	private async Task ShowAppInfo()
 	{
-        await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
+        await Task.Delay(1).ConfigureAwait(false);
         NotificationService.Notify(new NotificationMessage
         {
             Severity = NotificationSeverity.Info,
