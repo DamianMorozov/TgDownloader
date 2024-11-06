@@ -9,7 +9,7 @@ global using System.Text;
 global using TgDownloader.Helpers;
 global using TgDownloader.Models;
 global using TgDownloaderConsole.Helpers;
-global using TgLocalization.Helpers;
+global using TgInfrastructure.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;

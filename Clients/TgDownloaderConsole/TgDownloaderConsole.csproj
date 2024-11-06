@@ -52,7 +52,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
-	  <ProjectReference Include="..\..\Core\TgLocalization\TgLocalization.csproj" />
+	  <ProjectReference Include="..\..\Core\TgInfrastructure\TgInfrastructure.csproj" />
 	  <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
 	</ItemGroup>
 	<ItemGroup>

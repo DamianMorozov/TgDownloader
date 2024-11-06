@@ -21,7 +21,7 @@
     <PackageReference Include="WTelegramClient" Version="4.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
+    <ProjectReference Include="..\TgInfrastructure\TgInfrastructure.csproj" />
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
   </ItemGroup>
   <ItemGroup>

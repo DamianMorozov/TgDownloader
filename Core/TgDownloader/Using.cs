@@ -7,7 +7,7 @@ global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Runtime.CompilerServices;
 global using TgDownloader.Models;
-global using TgLocalization.Helpers;
+global using TgInfrastructure.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;

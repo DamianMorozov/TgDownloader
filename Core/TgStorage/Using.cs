@@ -21,7 +21,7 @@ global using System.Text;
 global using System.Xml.Linq;
 global using System.Xml.Serialization;
 global using System.Xml;
-global using TgLocalization.Helpers;
+global using TgInfrastructure.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;

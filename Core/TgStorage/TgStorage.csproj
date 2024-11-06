@@ -32,7 +32,7 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
+    <ProjectReference Include="..\TgInfrastructure\TgInfrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="TgDownloader.session">

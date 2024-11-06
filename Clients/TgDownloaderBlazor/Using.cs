@@ -14,7 +14,7 @@ global using TgDownloaderBlazor.Common;
 global using TgDownloaderBlazor.Pages;
 global using TgDownloaderBlazor.Services;
 global using TgDownloaderBlazor.Utils;
-global using TgLocalization.Helpers;
+global using TgInfrastructure.Helpers;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;
 global using TgStorage.Domain.Filters;
