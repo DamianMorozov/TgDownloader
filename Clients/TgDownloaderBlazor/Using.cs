@@ -8,7 +8,6 @@ global using Microsoft.JSInterop;
 global using Radzen.Blazor;
 global using Radzen;
 global using System.Diagnostics;
-global using System.Reflection.Metadata;
 global using System.Reflection;
 global using TgDownloader.Helpers;
 global using TgDownloaderBlazor.Common;

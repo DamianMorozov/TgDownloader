@@ -32,7 +32,7 @@ public static class TgBlazorUtils
 		catch (Exception ex)
 		{
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeSystem);
 			Console.WriteLine(ex);
 #endif
 			if (ex.InnerException is null)
