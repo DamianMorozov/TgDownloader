@@ -24,4 +24,7 @@
     <ProjectReference Include="..\TgLocalization\TgLocalization.csproj" />
     <ProjectReference Include="..\TgStorage\TgStorage.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
+  </ItemGroup>
 </Project>

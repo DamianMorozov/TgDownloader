@@ -246,7 +246,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		{
 			transaction.Rollback();
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -290,7 +290,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
-				Debug.WriteLine(ex);
+				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 				throw;
 			}
@@ -322,7 +322,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		{
 			transaction.Rollback();
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -356,7 +356,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
-				Debug.WriteLine(ex);
+				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 				throw;
 			}
@@ -394,7 +394,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		catch (Exception ex)
 		{
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -428,7 +428,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		catch (Exception ex)
 		{
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -454,7 +454,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			Delete(item, isSkipFind: false);
 			//return Save(itemBackup);
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -473,7 +473,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			await DeleteAsync(item, isSkipFind: true);
 			//return await SaveAsync(itemBackup);
 #if DEBUG
-			Debug.WriteLine(ex);
+			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 			throw;
 		}
@@ -518,7 +518,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			{
 				transaction.Rollback();
 #if DEBUG
-				Debug.WriteLine(ex);
+				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 				throw;
 			}
@@ -553,7 +553,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
-				Debug.WriteLine(ex);
+				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
 				throw;
 			}

@@ -79,7 +79,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 		lock (_locker)
 		{
 #if DEBUG
-			Debug.WriteLine($"{nameof(ContextId)} {ContextId}: context disposed");
+			Debug.WriteLine($"{nameof(ContextId)} {ContextId}: context disposed", TgConstants.LogTypeStorage);
 #endif
 			// Base Dispose.
 			base.Dispose();
@@ -97,7 +97,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	public override ValueTask DisposeAsync()
 	{
 #if DEBUG
-		Debug.WriteLine($"{nameof(ContextId)} {ContextId}: context disposed async");
+		Debug.WriteLine($"{nameof(ContextId)} {ContextId}: context disposed async", TgConstants.LogTypeStorage);
 #endif
 		// Base Dispose.
 		var result = base.DisposeAsync();
@@ -117,7 +117,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	{
 		FileStorage = string.Empty;
 #if DEBUG
-		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}", TgConstants.LogTypeStorage);
 #endif
 	}
 
@@ -125,7 +125,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	{
 		FileStorage = fileStorage;
 #if DEBUG
-		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}", TgConstants.LogTypeStorage);
 #endif
 	}
 
@@ -136,7 +136,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 	{
 		FileStorage = string.Empty;
 #if DEBUG
-		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}");
+		Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}", TgConstants.LogTypeStorage);
 #endif
 	}
 
@@ -148,7 +148,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 			: $"{TgLocaleHelper.Instance.SqliteDataSource}={FileStorage}";
 		optionsBuilder
 #if DEBUG
-			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}"), LogLevel.Information)
+			.LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}", TgConstants.LogTypeStorage), LogLevel.Debug)
 			.EnableDetailedErrors()
 			.EnableSensitiveDataLogging()
 #endif
@@ -157,7 +157,7 @@ public sealed class TgEfContext : DbContext, IDisposable
 			.UseSqlite(storagePath)
 		;
 #if DEBUG
-		Debug.WriteLine(storagePath);
+		Debug.WriteLine(storagePath, TgConstants.LogTypeStorage);
 #endif
 	}
 
