@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -235,8 +233,8 @@ internal partial class TgMenuHelper
 	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableDownload(tgDownloadSettings);
-		TgClient.DownloadAllDataAsync(tgDownloadSettings).GetAwaiter().GetResult();
-		// Don't move up.
+		await UpdateSourceWithSettingsAsync(tgDownloadSettings);
+		await TgClient.DownloadAllDataAsync(tgDownloadSettings);
 		await UpdateSourceWithSettingsAsync(tgDownloadSettings);
 	}
 
