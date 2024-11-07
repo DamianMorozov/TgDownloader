@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "TgDownloaderDesktop (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "TgDownloaderDesktop (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

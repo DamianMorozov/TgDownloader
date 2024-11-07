@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Help menu
 - Russian localization
 
-## [0.5.160] - 2024-11-05
+## [0.5.170] - 2024-11-07
 ### Fixed
 - Created EF Core entities
 - Fixed test execution
@@ -17,8 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Using EF Core instead of DevExpress XPO
 - Fixed saving file names with unsupported characters on Windows / Linux / MacOS
 ## Added
-- Added TgDownloaderWinUI app
 - Added multithreading for TgDownloaderConsole
+- Added TgDownloaderDesktop app (WinUI)
+- Added TgDownloaderDesktop.Core app (WinUI)
+- Added TgDownloaderDesktop.Tests.MSTest app (WinUI)
 
 ## [0.4.150] - 2024-03-27
 ## Added projects
