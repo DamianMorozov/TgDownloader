@@ -18,7 +18,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="ProxyLib" Version="1.0.2" />
-    <PackageReference Include="WTelegramClient" Version="4.2.1" />
+    <PackageReference Include="WTelegramClient" Version="4.2.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgInfrastructure\TgInfrastructure.csproj" />
