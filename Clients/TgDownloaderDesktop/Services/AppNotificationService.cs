@@ -1,71 +1,66 @@
-﻿using System.Collections.Specialized;
-using System.Web;
-
-using Microsoft.Windows.AppNotifications;
-
-using TgDownloaderDesktop.Contracts.Services;
-using TgDownloaderDesktop.ViewModels;
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgDownloaderDesktop.Notifications;
 
 public class AppNotificationService : IAppNotificationService
 {
-    private readonly INavigationService _navigationService;
+	private readonly INavigationService _navigationService;
 
-    public AppNotificationService(INavigationService navigationService)
-    {
-        _navigationService = navigationService;
-    }
+	public AppNotificationService(INavigationService navigationService)
+	{
+		_navigationService = navigationService;
+	}
 
-    ~AppNotificationService()
-    {
-        Unregister();
-    }
+	~AppNotificationService()
+	{
+		Unregister();
+	}
 
-    public void Initialize()
-    {
-        AppNotificationManager.Default.NotificationInvoked += OnNotificationInvoked;
+	public void Initialize()
+	{
+		AppNotificationManager.Default.NotificationInvoked += OnNotificationInvoked;
 
-        AppNotificationManager.Default.Register();
-    }
+		AppNotificationManager.Default.Register();
+	}
 
-    public void OnNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
-    {
-        // TODO: Handle notification invocations when your app is already running.
+	public void OnNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
+	{
+		// TODO: Handle notification invocations when your app is already running.
 
-        //// // Navigate to a specific page based on the notification arguments.
-        //// if (ParseArguments(args.Argument)["action"] == "Settings")
-        //// {
-        ////    App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-        ////    {
-        ////        _navigationService.NavigateTo(typeof(SettingsViewModel).FullName!);
-        ////    });
-        //// }
+		//// // Navigate to a specific page based on the notification arguments.
+		//// if (ParseArguments(args.Argument)["action"] == "Settings")
+		//// {
+		////    App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+		////    {
+		////        _navigationService.NavigateTo(typeof(SettingsViewModel).FullName!);
+		////    });
+		//// }
 
-        App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-        {
-            App.MainWindow.ShowMessageDialogAsync("TODO: Handle notification invocations when your app is already running.", "Notification Invoked");
+		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+		{
+			App.MainWindow.ShowMessageDialogAsync("TODO: Handle notification invocations when your app is already running.", "Notification Invoked");
 
-            App.MainWindow.BringToFront();
-        });
-    }
+			App.MainWindow.BringToFront();
+		});
+	}
 
-    public bool Show(string payload)
-    {
-        var appNotification = new AppNotification(payload);
+	public bool Show(string payload)
+	{
+		var appNotification = new AppNotification(payload);
 
-        AppNotificationManager.Default.Show(appNotification);
+		AppNotificationManager.Default.Show(appNotification);
 
-        return appNotification.Id != 0;
-    }
+		return appNotification.Id != 0;
+	}
 
-    public NameValueCollection ParseArguments(string arguments)
-    {
-        return HttpUtility.ParseQueryString(arguments);
-    }
+	public NameValueCollection ParseArguments(string arguments)
+	{
+		return HttpUtility.ParseQueryString(arguments);
+	}
 
-    public void Unregister()
-    {
-        AppNotificationManager.Default.Unregister();
-    }
+	public void Unregister()
+	{
+		AppNotificationManager.Default.Unregister();
+	}
 }

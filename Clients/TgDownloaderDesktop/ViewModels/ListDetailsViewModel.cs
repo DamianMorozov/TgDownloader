@@ -1,46 +1,41 @@
-﻿using System.Collections.ObjectModel;
-
-using CommunityToolkit.Mvvm.ComponentModel;
-
-using TgDownloaderDesktop.Contracts.ViewModels;
-using TgDownloaderDesktop.Core.Contracts.Services;
-using TgDownloaderDesktop.Core.Models;
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgDownloaderDesktop.ViewModels;
 
 public partial class ListDetailsViewModel : ObservableRecipient, INavigationAware
 {
-    private readonly ISampleDataService _sampleDataService;
+	private readonly ISampleDataService _sampleDataService;
 
-    [ObservableProperty]
-    private SampleOrder? selected;
+	[ObservableProperty]
+	private SampleOrder? selected;
 
-    public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
+	public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
 
-    public ListDetailsViewModel(ISampleDataService sampleDataService)
-    {
-        _sampleDataService = sampleDataService;
-    }
+	public ListDetailsViewModel(ISampleDataService sampleDataService)
+	{
+		_sampleDataService = sampleDataService;
+	}
 
-    public async void OnNavigatedTo(object parameter)
-    {
-        SampleItems.Clear();
+	public async void OnNavigatedTo(object parameter)
+	{
+		SampleItems.Clear();
 
-        // TODO: Replace with real data.
-        var data = await _sampleDataService.GetListDetailsDataAsync();
+		// TODO: Replace with real data.
+		var data = await _sampleDataService.GetListDetailsDataAsync();
 
-        foreach (var item in data)
-        {
-            SampleItems.Add(item);
-        }
-    }
+		foreach (var item in data)
+		{
+			SampleItems.Add(item);
+		}
+	}
 
-    public void OnNavigatedFrom()
-    {
-    }
+	public void OnNavigatedFrom()
+	{
+	}
 
-    public void EnsureItemSelected()
-    {
-        Selected ??= SampleItems.First();
-    }
+	public void EnsureItemSelected()
+	{
+		Selected ??= SampleItems.First();
+	}
 }

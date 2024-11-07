@@ -1,10 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-
-using Microsoft.Web.WebView2.Core;
-
-using TgDownloaderDesktop.Contracts.Services;
-using TgDownloaderDesktop.Contracts.ViewModels;
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgDownloaderDesktop.ViewModels;
 
@@ -14,97 +9,97 @@ namespace TgDownloaderDesktop.ViewModels;
 // https://docs.microsoft.com/microsoft-edge/webview2/concepts/distribution
 public partial class WebViewViewModel : ObservableRecipient, INavigationAware
 {
-    // TODO: Set the default URL to display.
-    [ObservableProperty]
-    private Uri source = new("https://docs.microsoft.com/windows/apps/");
+	// TODO: Set the default URL to display.
+	[ObservableProperty]
+	private Uri source = new("https://docs.microsoft.com/windows/apps/");
 
-    [ObservableProperty]
-    private bool isLoading = true;
+	[ObservableProperty]
+	private bool isLoading = true;
 
-    [ObservableProperty]
-    private bool hasFailures;
+	[ObservableProperty]
+	private bool hasFailures;
 
-    public IWebViewService WebViewService
-    {
-        get;
-    }
+	public IWebViewService WebViewService
+	{
+		get;
+	}
 
-    public WebViewViewModel(IWebViewService webViewService)
-    {
-        WebViewService = webViewService;
-    }
+	public WebViewViewModel(IWebViewService webViewService)
+	{
+		WebViewService = webViewService;
+	}
 
-    [RelayCommand]
-    private async Task OpenInBrowser()
-    {
-        if (WebViewService.Source != null)
-        {
-            await Windows.System.Launcher.LaunchUriAsync(WebViewService.Source);
-        }
-    }
+	[RelayCommand]
+	private async Task OpenInBrowser()
+	{
+		if (WebViewService.Source != null)
+		{
+			await Windows.System.Launcher.LaunchUriAsync(WebViewService.Source);
+		}
+	}
 
-    [RelayCommand]
-    private void Reload()
-    {
-        WebViewService.Reload();
-    }
+	[RelayCommand]
+	private void Reload()
+	{
+		WebViewService.Reload();
+	}
 
-    [RelayCommand(CanExecute = nameof(BrowserCanGoForward))]
-    private void BrowserForward()
-    {
-        if (WebViewService.CanGoForward)
-        {
-            WebViewService.GoForward();
-        }
-    }
+	[RelayCommand(CanExecute = nameof(BrowserCanGoForward))]
+	private void BrowserForward()
+	{
+		if (WebViewService.CanGoForward)
+		{
+			WebViewService.GoForward();
+		}
+	}
 
-    private bool BrowserCanGoForward()
-    {
-        return WebViewService.CanGoForward;
-    }
+	private bool BrowserCanGoForward()
+	{
+		return WebViewService.CanGoForward;
+	}
 
-    [RelayCommand(CanExecute = nameof(BrowserCanGoBack))]
-    private void BrowserBack()
-    {
-        if (WebViewService.CanGoBack)
-        {
-            WebViewService.GoBack();
-        }
-    }
+	[RelayCommand(CanExecute = nameof(BrowserCanGoBack))]
+	private void BrowserBack()
+	{
+		if (WebViewService.CanGoBack)
+		{
+			WebViewService.GoBack();
+		}
+	}
 
-    private bool BrowserCanGoBack()
-    {
-        return WebViewService.CanGoBack;
-    }
+	private bool BrowserCanGoBack()
+	{
+		return WebViewService.CanGoBack;
+	}
 
-    public void OnNavigatedTo(object parameter)
-    {
-        WebViewService.NavigationCompleted += OnNavigationCompleted;
-    }
+	public void OnNavigatedTo(object parameter)
+	{
+		WebViewService.NavigationCompleted += OnNavigationCompleted;
+	}
 
-    public void OnNavigatedFrom()
-    {
-        WebViewService.UnregisterEvents();
-        WebViewService.NavigationCompleted -= OnNavigationCompleted;
-    }
+	public void OnNavigatedFrom()
+	{
+		WebViewService.UnregisterEvents();
+		WebViewService.NavigationCompleted -= OnNavigationCompleted;
+	}
 
-    private void OnNavigationCompleted(object? sender, CoreWebView2WebErrorStatus webErrorStatus)
-    {
-        IsLoading = false;
-        BrowserBackCommand.NotifyCanExecuteChanged();
-        BrowserForwardCommand.NotifyCanExecuteChanged();
+	private void OnNavigationCompleted(object? sender, CoreWebView2WebErrorStatus webErrorStatus)
+	{
+		IsLoading = false;
+		BrowserBackCommand.NotifyCanExecuteChanged();
+		BrowserForwardCommand.NotifyCanExecuteChanged();
 
-        if (webErrorStatus != default)
-        {
-            HasFailures = true;
-        }
-    }
+		if (webErrorStatus != default)
+		{
+			HasFailures = true;
+		}
+	}
 
-    [RelayCommand]
-    private void OnRetry()
-    {
-        HasFailures = false;
-        IsLoading = true;
-        WebViewService?.Reload();
-    }
+	[RelayCommand]
+	private void OnRetry()
+	{
+		HasFailures = false;
+		IsLoading = true;
+		WebViewService?.Reload();
+	}
 }

@@ -1,20 +1,20 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgDownloaderDesktop.Helpers;
 
 public class RuntimeHelper
 {
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder? packageFullName);
+	[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+	private static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder? packageFullName);
 
-    public static bool IsMSIX
-    {
-        get
-        {
-            var length = 0;
+	public static bool IsMSIX
+	{
+		get
+		{
+			var length = 0;
 
-            return GetCurrentPackageFullName(ref length, null) != 15700L;
-        }
-    }
+			return GetCurrentPackageFullName(ref length, null) != 15700L;
+		}
+	}
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-
-using TgDownloaderDesktop.ViewModels;
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgDownloaderDesktop.Views;
 
@@ -8,14 +7,14 @@ namespace TgDownloaderDesktop.Views;
 // For more details, see the documentation at https://docs.microsoft.com/windows/communitytoolkit/controls/datagrid.
 public sealed partial class DataGridPage : Page
 {
-    public DataGridViewModel ViewModel
-    {
-        get;
-    }
+	public DataGridViewModel ViewModel
+	{
+		get;
+	}
 
-    public DataGridPage()
-    {
-        ViewModel = App.GetService<DataGridViewModel>();
-        InitializeComponent();
-    }
+	public DataGridPage()
+	{
+		ViewModel = App.GetService<DataGridViewModel>();
+		InitializeComponent();
+	}
 }
