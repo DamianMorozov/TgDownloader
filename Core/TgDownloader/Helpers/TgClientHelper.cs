@@ -1523,7 +1523,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			}
 		});
 	}
-
+	/// <summary> Move existing files at the current directory </summary>
 	private static void MoveExistsFilesAtCurrentDir(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
 	{
 		if (!tgDownloadSettings.IsJoinFileNameWithMessageId) return;
