@@ -121,17 +121,6 @@ public static class TgEfUtils
 	}
 
 	/// <summary> Create and update storage </summary>
-	public static void CreateAndUpdateDb()
-	{
-		using TgEfContext efContext = CreateEfContext();
-		efContext.CreateAndUpdateDb();
-		TgEfVersionRepository versionRepository = new(efContext);
-		//CheckDbTables(efContext);
-		versionRepository.FillTableVersions();
-		efContext.CompactDb();
-	}
-
-	/// <summary> Create and update storage </summary>
 	public static async Task CreateAndUpdateDbAsync()
 	{
 		await using TgEfContext efContext = CreateEfContext();

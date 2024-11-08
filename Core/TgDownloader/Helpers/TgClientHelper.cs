@@ -1383,7 +1383,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		}
 		mediaInfo ??= new();
 		// Join ID
-		if (!string.IsNullOrEmpty(mediaInfo.LocalFile))
+		if (!string.IsNullOrEmpty(mediaInfo.LocalNameOnly))
 			mediaInfo.Number = tgDownloadSettings.SourceVm.SourceLastId switch
 			{
 				< 1000 => $"{messageBase.ID:000}",
@@ -1396,7 +1396,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				_ => $"{messageBase.ID}"
 			};
 		// Join tgDownloadSettings.DestDirectory
-		mediaInfo.LocalPath = tgDownloadSettings.SourceVm.SourceDirectory;
+		mediaInfo.LocalPathOnly = tgDownloadSettings.SourceVm.SourceDirectory;
 		mediaInfo.Normalize(tgDownloadSettings.IsJoinFileNameWithMessageId);
 		return mediaInfo;
 	}
@@ -1450,37 +1450,20 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		return true;
 	}
 
-	private async Task DeleteExistsFilesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
-	{
-		await TryCatchFuncAsync(async () =>
-		{
-			await Task.Delay(1);
-			//string fileName = tgDownloadSettings.IsJoinFileNameWithMessageId ? mediaInfo.Join : mediaInfo.Local;
-			if (File.Exists(mediaInfo.LocalFullWithNumber))
-			{
-				long fileSize = TgFileUtils.CalculateFileSize(mediaInfo.LocalFullWithNumber);
-				if (tgDownloadSettings.IsRewriteFiles && fileSize < mediaInfo.Size || fileSize == 0)
-					File.Delete(mediaInfo.LocalFullWithNumber);
-			}
-		}, isLoginConsole: true);
-	}
-
 	private async Task DownloadDataCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings, MessageBase messageBase, MessageMedia messageMedia, int threadNumber)
 	{
 		var mediaInfo = GetMediaInfo(messageMedia, tgDownloadSettings, messageBase);
-		if (string.IsNullOrEmpty(mediaInfo.LocalFile)) return;
+		if (string.IsNullOrEmpty(mediaInfo.LocalNameOnly)) return;
 		// Delete files
-		await DeleteExistsFilesAsync(tgDownloadSettings, mediaInfo);
+		DeleteExistsFiles(tgDownloadSettings, mediaInfo);
 		// Move exists file at current directory
 		MoveExistsFilesAtCurrentDir(tgDownloadSettings, mediaInfo);
-		// Move exists file at subdirectories
-		//MoveExistsFileAtSubDir(tgDownloadSettings, mediaInfo);
 		// Download new file
-		if (!File.Exists(mediaInfo.LocalFullWithNumber))
+		if (!File.Exists(mediaInfo.LocalPathWithNumber))
 		{
-			await using var localFileStream = File.Create(mediaInfo.LocalFullWithNumber);
+			await using var localFileStream = File.Create(mediaInfo.LocalPathWithNumber);
 #if DEBUG
-			Debug.WriteLine($"{nameof(DownloadDataCoreAsync)} | {mediaInfo.LocalFullWithNumber}", TgConstants.LogTypeSystem);
+			Debug.WriteLine($"{nameof(DownloadDataCoreAsync)} | {mediaInfo.LocalPathWithNumber}", TgConstants.LogTypeSystem);
 #endif
 			if (Client is not null)
 			{
@@ -1490,14 +1473,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 						if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0 && mediaDocument.document is TlDocument document)
 						{
 							await Client.DownloadFileAsync(document, localFileStream, null,
-								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalFileWithNumber, threadNumber));
+								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
 							TgEfDocumentEntity doc = new()
 							{
 								Id = document.ID,
 								SourceId = tgDownloadSettings.SourceVm.SourceId,
 								MessageId = messageBase.ID,
-								FileName = mediaInfo.LocalFullWithNumber,
-								FileSize = mediaInfo.Size,
+								FileName = mediaInfo.LocalPathWithNumber,
+								FileSize = mediaInfo.RemoteSize,
 								AccessHash = document.access_hash
 							};
 							await DocumentRepository.SaveAsync(doc);
@@ -1509,7 +1492,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 							//WClient.DownloadFileAsync(photo, localFileStream, new PhotoSize
 							//    { h = photo.sizes[i].Height, w = photo.sizes[i].Width, size = photo.sizes[i].FileSize, type = photo.sizes[i].Type })
 							await Client.DownloadFileAsync(photo, localFileStream, null,
-								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalFileWithNumber, threadNumber));
+								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
 						}
 						break;
 				}
@@ -1517,57 +1500,47 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			localFileStream.Close();
 		}
 		// Store message
-		await MessageSaveAsync(tgDownloadSettings, messageBase.ID, mediaInfo.DtCreate, mediaInfo.Size, mediaInfo.Remote, TgEnumMessageType.Document, threadNumber);
+		await MessageSaveAsync(tgDownloadSettings, messageBase.ID, mediaInfo.DtCreate, mediaInfo.RemoteSize, mediaInfo.RemoteName, TgEnumMessageType.Document, threadNumber);
 		// Set file date time
-		if (File.Exists(mediaInfo.LocalFullWithNumber))
+		if (File.Exists(mediaInfo.LocalPathWithNumber))
 		{
-			File.SetCreationTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
-			File.SetLastAccessTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
-			File.SetLastWriteTimeUtc(mediaInfo.LocalFullWithNumber, mediaInfo.DtCreate);
+			File.SetCreationTimeUtc(mediaInfo.LocalPathWithNumber, mediaInfo.DtCreate);
+			File.SetLastAccessTimeUtc(mediaInfo.LocalPathWithNumber, mediaInfo.DtCreate);
+			File.SetLastWriteTimeUtc(mediaInfo.LocalPathWithNumber, mediaInfo.DtCreate);
 		}
+	}
+
+	private void DeleteExistsFiles(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
+	{
+		if (!tgDownloadSettings.IsRewriteFiles) return;
+		TryCatchAction(() =>
+		{
+			if (File.Exists(mediaInfo.LocalPathWithNumber))
+			{
+				long fileSize = TgFileUtils.CalculateFileSize(mediaInfo.LocalPathWithNumber);
+				if (fileSize == 0 || fileSize < mediaInfo.RemoteSize)
+					File.Delete(mediaInfo.LocalPathWithNumber);
+			}
+		});
 	}
 
 	private static void MoveExistsFilesAtCurrentDir(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
 	{
-		if (!tgDownloadSettings.IsJoinFileNameWithMessageId)
+		if (!tgDownloadSettings.IsJoinFileNameWithMessageId) return;
+		// File is already exists and size is correct
+		var currentFileName = mediaInfo.LocalPathWithNumber;
+		var fileSize = TgFileUtils.CalculateFileSize(currentFileName);
+		if (File.Exists(currentFileName) && fileSize == mediaInfo.RemoteSize)
 			return;
-		//if (!tgDownloadSettings.IsRewriteFiles) return;
-		if (File.Exists(mediaInfo.LocalFile))
+		// Other existing files
+		var files = Directory.GetFiles(mediaInfo.LocalPathOnly, mediaInfo.LocalNameOnly).ToList();
+		if (!files.Any()) return;
+		foreach (var file in files)
 		{
-			if (!File.Exists(mediaInfo.LocalFullWithNumber))
-				File.Move(mediaInfo.LocalFile, mediaInfo.LocalFullWithNumber);
-			else
-			{
-				long fileSize = TgFileUtils.CalculateFileSize(mediaInfo.LocalFile);
-				if (fileSize > 0)
-					File.Move(mediaInfo.LocalFile, mediaInfo.LocalFullWithNumber, overwrite: true);
-			}
-		}
-		foreach (var file in Directory.GetFiles(mediaInfo.LocalPath))
-		{
-			var currentFileName = Path.GetFileName(file);
-			if (currentFileName.Contains(Path.GetFileNameWithoutExtension(mediaInfo.LocalFile)))
-			{
-				if (!File.Exists(mediaInfo.LocalFullWithNumber))
-					File.Move(file, mediaInfo.LocalFullWithNumber);
-				else
-				{
-					long fileSize = TgFileUtils.CalculateFileSize(file);
-					if (fileSize > 0)
-						File.Move(file, mediaInfo.LocalFullWithNumber, overwrite: true);
-				}
-			}
-		}
-	}
-
-	private static void MoveExistsFileAtSubDir(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
-	{
-		foreach (string directory in Directory.GetDirectories(tgDownloadSettings.SourceVm.SourceDirectory))
-		{
-			//MoveExistsFilesAtCurrentDir(tgDownloadSettings, mediaInfo);
-			string fileAtSubDir = Path.Combine(directory, mediaInfo.LocalFile);
-			if (File.Exists(fileAtSubDir) && !File.Exists(mediaInfo.LocalFullWithNumber))
-				File.Move(fileAtSubDir, mediaInfo.LocalFullWithNumber);
+			fileSize = TgFileUtils.CalculateFileSize(file);
+			// Find other file with name and size
+			if (fileSize == mediaInfo.RemoteSize)
+				File.Move(file, mediaInfo.LocalPathWithNumber, overwrite: true);
 		}
 	}
 
