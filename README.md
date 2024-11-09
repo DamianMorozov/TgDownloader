@@ -31,9 +31,9 @@ Please click the `star` button if this tool was helpful to you.
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 
-## Telegram support
+## Support
 - [TgDownloader News](https://t.me/TgDownloader)
-- [TgDownloader Chat Global](https://t.me/TgDownloaderChat)
+- [TgDownloader Global Chat](https://t.me/TgDownloaderChat)
 
 ## Docker images
 - [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)

@@ -3,9 +3,7 @@
 
 namespace TgStorage.Utils;
 
-/// <summary>
-/// Data format utilities.
-/// </summary>
+/// <summary> Data format utilities </summary>
 public static class TgDataFormatUtils
 {
 	#region Public and private methods - ISerializable

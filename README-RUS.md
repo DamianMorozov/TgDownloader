@@ -31,7 +31,7 @@
 - [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 
-## Поддержка Telegram
+## Поддержка
 - [Новости TgDownloader](https://t.me/TgDownloader)
 - [Русскоязычный чат TgDownloader](https://t.me/TgDownloaderChatRus)
 

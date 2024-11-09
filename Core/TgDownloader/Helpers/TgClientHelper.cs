@@ -1524,24 +1524,28 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		});
 	}
 	/// <summary> Move existing files at the current directory </summary>
-	private static void MoveExistsFilesAtCurrentDir(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
+	private void MoveExistsFilesAtCurrentDir(TgDownloadSettingsViewModel tgDownloadSettings, TgMediaInfoModel mediaInfo)
 	{
 		if (!tgDownloadSettings.IsJoinFileNameWithMessageId) return;
-		// File is already exists and size is correct
-		var currentFileName = mediaInfo.LocalPathWithNumber;
-		var fileSize = TgFileUtils.CalculateFileSize(currentFileName);
-		if (File.Exists(currentFileName) && fileSize == mediaInfo.RemoteSize)
-			return;
-		// Other existing files
-		var files = Directory.GetFiles(mediaInfo.LocalPathOnly, mediaInfo.LocalNameOnly).ToList();
-		if (!files.Any()) return;
-		foreach (var file in files)
+		TryCatchAction(() =>
 		{
-			fileSize = TgFileUtils.CalculateFileSize(file);
-			// Find other file with name and size
-			if (fileSize == mediaInfo.RemoteSize)
-				File.Move(file, mediaInfo.LocalPathWithNumber, overwrite: true);
-		}
+			// File is already exists and size is correct
+			var currentFileName = mediaInfo.LocalPathWithNumber;
+			var fileSize = TgFileUtils.CalculateFileSize(currentFileName);
+			if (File.Exists(currentFileName) && fileSize == mediaInfo.RemoteSize)
+				return;
+			// Other existing files
+			var files = Directory.GetFiles(mediaInfo.LocalPathOnly, mediaInfo.LocalNameOnly).ToList();
+			if (!files.Any())
+				return;
+			foreach (var file in files)
+			{
+				fileSize = TgFileUtils.CalculateFileSize(file);
+				// Find other file with name and size
+				if (fileSize == mediaInfo.RemoteSize)
+					File.Move(file, mediaInfo.LocalPathWithNumber, overwrite: true);
+			}
+		});
 	}
 
 	private async Task MessageSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings, int messageId, DateTime dtCreated, long size, string message,

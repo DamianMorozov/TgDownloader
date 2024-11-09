@@ -75,7 +75,7 @@ public sealed class TgAppSettingsHelper : ITgHelper
 
 	public void StoreXmlSettingsUnsafe(Encoding? encoding = null)
 	{
-		string xml = TgDataFormatUtils.SerializeAsXmlDocument(AppXml, true).InnerXml;
+		var xml = TgDataFormatUtils.SerializeAsXmlDocument(AppXml, isAddEmptyNamespace: true).InnerXml;
 		xml = TgDataFormatUtils.GetPrettyXml(xml);
 		using FileStream fileStream = new(TgFileUtils.FileAppXmlSettings, FileMode.Create);
 		using StreamWriter streamWriter = new(fileStream, encoding ?? Encoding.Unicode);

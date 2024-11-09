@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Using EF Core instead of DevExpress XPO
 - Fixed saving file names with unsupported characters on Windows / Linux / MacOS
+- Fixed moving existing files in the current directory
 ## Added
 - Added multithreading for TgDownloaderConsole
 - Added TgDownloaderDesktop app (WinUI)
