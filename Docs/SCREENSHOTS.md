@@ -1,5 +1,14 @@
 # Screenshots
 
+## Actual screenshots TgDownloaderConsole
+
+<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
+
+## Actual screenshots TgDownloaderDesktop
+
+<p align="center"><img src="Assets/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/TgDownloaderDesktopSettings.png"></p>
+
 ## Actual screenshots TgDownloaderBlazor
 
 <p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
@@ -17,10 +26,6 @@
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
 <p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
-
-## Actual screenshots TgDownloaderConsole
-
-<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
 
 
 ## [0.5.170] - 2024-11-09

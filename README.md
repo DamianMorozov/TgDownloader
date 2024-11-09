@@ -1,7 +1,7 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
+## <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Docs/Changelog</a> | <a href="RELEASE.md">Docs/Releases</a> | <a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="Docs/CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASE.md">Релизы</a> | <a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
 
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
