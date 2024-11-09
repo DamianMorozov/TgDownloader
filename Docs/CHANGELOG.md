@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-- Help menu
-- Russian localization
-
 ## [0.5.170] - 2024-11-07
 ### Fixed
 - Created EF Core entities
@@ -22,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added TgDownloaderDesktop app (WinUI)
 - Added TgDownloaderDesktop.Core app (WinUI)
 - Added TgDownloaderDesktop.Tests.MSTest app (WinUI)
+- Added settings page for TgDownloaderDesktop
 
 ## [0.4.150] - 2024-03-27
 ## Added projects

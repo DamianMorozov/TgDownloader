@@ -4,10 +4,6 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Неизданное]
-- Справочное меню
-- Русская локализация
-
 ## [0.5.170] - 2024-11-07
 ### Исправлено
 - Созданы сущности EF Core
@@ -22,6 +18,7 @@
 - Добавлено приложение TgDownloaderDesktop (WinUI)
 - Добавлено приложение TgDownloaderDesktop.Core (WinUI)
 - Добавлено приложение TgDownloaderDesktop.Tests.MSTest (WinUI)
+- Добавлена страница настроек для TgDownloaderDesktop
 
 ## [0.4.150] - 2024-03-27
 ### Добавлены приложения
