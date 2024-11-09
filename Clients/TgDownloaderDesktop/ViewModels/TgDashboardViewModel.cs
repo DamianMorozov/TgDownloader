@@ -3,9 +3,7 @@
 
 namespace TgDownloaderDesktop.ViewModels;
 
-public partial class MainViewModel : ObservableRecipient
+[DebuggerDisplay("{ToDebugString()}")]
+public sealed partial class TgDashboardViewModel : TgPageViewModelBase
 {
-	public MainViewModel()
-	{
-	}
 }

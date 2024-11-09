@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgStorage.Enums;
+
 namespace TgDownloaderDesktop.Services;
 
 public class ActivationService : IActivationService
@@ -21,20 +23,16 @@ public class ActivationService : IActivationService
 	{
 		// Execute tasks before activation.
 		await InitializeAsync();
-
 		// Set the MainWindow Content.
 		if (App.MainWindow.Content == null)
 		{
 			_shell = App.GetService<ShellPage>();
 			App.MainWindow.Content = _shell ?? new Frame();
 		}
-
 		// Handle activation via ActivationHandlers.
 		await HandleActivationAsync(activationArgs);
-
 		// Activate the MainWindow.
 		App.MainWindow.Activate();
-
 		// Execute tasks after activation.
 		await StartupAsync();
 	}
@@ -42,12 +40,10 @@ public class ActivationService : IActivationService
 	private async Task HandleActivationAsync(object activationArgs)
 	{
 		var activationHandler = _activationHandlers.FirstOrDefault(h => h.CanHandle(activationArgs));
-
 		if (activationHandler != null)
 		{
 			await activationHandler.HandleAsync(activationArgs);
 		}
-
 		if (_defaultHandler.CanHandle(activationArgs))
 		{
 			await _defaultHandler.HandleAsync(activationArgs);
@@ -62,6 +58,12 @@ public class ActivationService : IActivationService
 
 	private async Task StartupAsync()
 	{
+		// Register TgEfContext as the DbContext for EF Core
+		await TgEfUtils.CreateAndUpdateDbAsync();
+
+		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
+		//TgDesktopUtils.SetupClient();
+
 		await _themeSelectorService.SetRequestedThemeAsync();
 		await Task.CompletedTask;
 	}

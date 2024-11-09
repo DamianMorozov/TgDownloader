@@ -20,27 +20,25 @@ public class AppNotificationService : IAppNotificationService
 	public void Initialize()
 	{
 		AppNotificationManager.Default.NotificationInvoked += OnNotificationInvoked;
-
 		AppNotificationManager.Default.Register();
 	}
 
 	public void OnNotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
 	{
 		// TODO: Handle notification invocations when your app is already running.
-
 		//// // Navigate to a specific page based on the notification arguments.
 		//// if (ParseArguments(args.Argument)["action"] == "Settings")
 		//// {
 		////    App.MainWindow.DispatcherQueue.TryEnqueue(() =>
 		////    {
-		////        _navigationService.NavigateTo(typeof(SettingsViewModel).FullName!);
+		////        _navigationService.NavigateTo(typeof(TgSettingsViewModel).FullName!);
 		////    });
 		//// }
-
 		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
 		{
-			App.MainWindow.ShowMessageDialogAsync("TODO: Handle notification invocations when your app is already running.", "Notification Invoked");
-
+			App.MainWindow.ShowMessageDialogAsync(
+				$"{TgLocaleHelper.Instance.AppVersion}: v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}", 
+				TgConstants.AppTitleDesktop);
 			App.MainWindow.BringToFront();
 		});
 	}

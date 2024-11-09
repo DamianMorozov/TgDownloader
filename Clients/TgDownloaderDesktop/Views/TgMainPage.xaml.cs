@@ -3,17 +3,24 @@
 
 namespace TgDownloaderDesktop.Views;
 
-public sealed partial class ContentGridPage : Page
+public sealed partial class TgMainPage : Page
 {
 	#region Public and private fields, properties, constructor
 
-	public ContentGridViewModel ViewModel { get; }
+	public TgMainViewModel ViewModel { get; }
 
-	public ContentGridPage()
+	public TgMainPage()
 	{
-		ViewModel = App.GetService<ContentGridViewModel>();
+		ViewModel = App.GetService<TgMainViewModel>();
 		InitializeComponent();
+		Loaded += OnLoaded;
 	}
+
+	#endregion
+
+	#region Public and private methods
+
+	private void OnLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	#endregion
 }

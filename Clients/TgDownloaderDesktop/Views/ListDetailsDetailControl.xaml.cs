@@ -5,6 +5,8 @@ namespace TgDownloaderDesktop.Views;
 
 public sealed partial class ListDetailsDetailControl : UserControl
 {
+	#region Public and private fields, properties, constructor
+
 	public SampleOrder? ListDetailsMenuItem
 	{
 		get => GetValue(ListDetailsMenuItemProperty) as SampleOrder;
@@ -18,6 +20,10 @@ public sealed partial class ListDetailsDetailControl : UserControl
 		InitializeComponent();
 	}
 
+	#endregion
+
+	#region Public and private methods
+
 	private static void OnListDetailsMenuItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
 		if (d is ListDetailsDetailControl control)
@@ -25,4 +31,6 @@ public sealed partial class ListDetailsDetailControl : UserControl
 			control.ForegroundElement.ChangeView(0, 0, 1);
 		}
 	}
+
+	#endregion
 }

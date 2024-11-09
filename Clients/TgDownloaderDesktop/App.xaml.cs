@@ -6,6 +6,8 @@ namespace TgDownloaderDesktop;
 // To learn more about WinUI 3, see https://docs.microsoft.com/windows/apps/winui/winui3/.
 public partial class App : Application
 {
+	#region Public and private fields, properties, constructor
+
 	// The .NET Generic Host provides dependency injection, configuration, logging, and other services.
 	// https://docs.microsoft.com/dotnet/core/extensions/generic-host
 	// https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
@@ -37,28 +39,23 @@ public partial class App : Application
 		{
 			// Default Activation Handler
 			services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
-
 			// Other Activation Handlers
 			services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
-
 			// Services
 			services.AddSingleton<IAppNotificationService, AppNotificationService>();
 			services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
 			services.AddSingleton<IThemeSelectorService, ThemeSelectorService>();
 			services.AddTransient<IWebViewService, WebViewService>();
 			services.AddTransient<INavigationViewService, NavigationViewService>();
-
 			services.AddSingleton<IActivationService, ActivationService>();
 			services.AddSingleton<IPageService, PageService>();
 			services.AddSingleton<INavigationService, NavigationService>();
-
 			// Core Services
 			services.AddSingleton<ISampleDataService, SampleDataService>();
 			services.AddSingleton<IFileService, FileService>();
-
 			// Views and ViewModels
-			services.AddTransient<SettingsViewModel>();
-			services.AddTransient<SettingsPage>();
+			services.AddTransient<TgSettingsViewModel>();
+			services.AddTransient<TgSettingsPage>();
 			services.AddTransient<DataGridViewModel>();
 			services.AddTransient<DataGridPage>();
 			services.AddTransient<ContentGridDetailViewModel>();
@@ -69,20 +66,28 @@ public partial class App : Application
 			services.AddTransient<ListDetailsPage>();
 			services.AddTransient<WebViewViewModel>();
 			services.AddTransient<WebViewPage>();
-			services.AddTransient<MainViewModel>();
-			services.AddTransient<MainPage>();
+			services.AddTransient<TgMainViewModel>();
+			services.AddTransient<TgMainPage>();
 			services.AddTransient<ShellPage>();
 			services.AddTransient<ShellViewModel>();
-
+			services.AddTransient<TgDashboardViewModel>();
+			services.AddTransient<TgDashboardPage>();
 			// Configuration
 			services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 		}).
 		Build();
-
 		App.GetService<IAppNotificationService>().Initialize();
-
 		UnhandledException += App_UnhandledException;
 	}
+
+	~App()
+	{
+		Host.Dispose();
+	}
+
+	#endregion
+
+	#region Public and private methods
 
 	private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
 	{
@@ -93,9 +98,9 @@ public partial class App : Application
 	protected override async void OnLaunched(LaunchActivatedEventArgs args)
 	{
 		base.OnLaunched(args);
-
 		App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
-
 		await App.GetService<IActivationService>().ActivateAsync(args);
 	}
+
+	#endregion
 }

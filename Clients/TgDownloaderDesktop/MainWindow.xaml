@@ -6,9 +6,9 @@
 	xmlns:local="using:TgDownloaderDesktop"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:windowex="using:WinUIEx"
-	Width="800"
+	Width="1000"
 	Height="600"
-	MinWidth="800"
+	MinWidth="1000"
 	MinHeight="600"
 	PersistenceId="MainWindow"
 	mc:Ignorable="d">

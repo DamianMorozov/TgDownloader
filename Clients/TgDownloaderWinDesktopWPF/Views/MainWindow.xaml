@@ -3,12 +3,12 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:TgDownloaderWinDesktopWPF.Views.Controls"
+	xmlns:controls1="clr-namespace:TgDownloaderWinDesktopWPF.Views.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktopWPF.Utils"
 	xmlns:views="clr-namespace:TgDownloaderWinDesktopWPF.Views"
-	xmlns:controls1="clr-namespace:TgDownloaderWinDesktopWPF.Views.Controls"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgDashboardVm}, Path=AppVersionTitle, Mode=OneWay, IsAsync=True}"
 	Width="1300"
 	Height="800"
@@ -56,7 +56,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						Appearance="Transparent"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgConst}, Path=AppTitleWinDesktop, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgConst}, Path=AppTitleDesktop, Mode=OneWay, IsAsync=True}" />
 					<ui:Hyperlink
 						Grid.Column="1"
 						Margin="2"

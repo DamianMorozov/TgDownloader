@@ -35,7 +35,7 @@ public class AppNotificationActivationHandler : ActivationHandler<LaunchActivate
 		////     // Queue navigation with low priority to allow the UI to initialize.
 		////     App.MainWindow.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
 		////     {
-		////         _navigationService.NavigateTo(typeof(SettingsViewModel).FullName!);
+		////         _navigationService.NavigateTo(typeof(TgSettingsViewModel).FullName!);
 		////     });
 		//// }
 

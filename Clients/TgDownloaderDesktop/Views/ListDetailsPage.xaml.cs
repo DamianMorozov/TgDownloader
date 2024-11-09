@@ -5,16 +5,19 @@ namespace TgDownloaderDesktop.Views;
 
 public sealed partial class ListDetailsPage : Page
 {
-	public ListDetailsViewModel ViewModel
-	{
-		get;
-	}
+	#region Public and private fields, properties, constructor
+
+	public ListDetailsViewModel ViewModel { get; }
 
 	public ListDetailsPage()
 	{
 		ViewModel = App.GetService<ListDetailsViewModel>();
 		InitializeComponent();
 	}
+
+	#endregion
+
+	#region Public and private methods
 
 	private void OnViewStateChanged(object sender, ListDetailsViewState e)
 	{
@@ -23,4 +26,6 @@ public sealed partial class ListDetailsPage : Page
 			ViewModel.EnsureItemSelected();
 		}
 	}
+
+	#endregion
 }

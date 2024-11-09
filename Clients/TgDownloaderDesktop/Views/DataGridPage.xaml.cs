@@ -7,14 +7,15 @@ namespace TgDownloaderDesktop.Views;
 // For more details, see the documentation at https://docs.microsoft.com/windows/communitytoolkit/controls/datagrid.
 public sealed partial class DataGridPage : Page
 {
-	public DataGridViewModel ViewModel
-	{
-		get;
-	}
+	#region Public and private fields, properties, constructor
+
+	public DataGridViewModel ViewModel { get; }
 
 	public DataGridPage()
 	{
 		ViewModel = App.GetService<DataGridViewModel>();
 		InitializeComponent();
 	}
+
+	#endregion
 }

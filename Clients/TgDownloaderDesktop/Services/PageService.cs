@@ -9,13 +9,14 @@ public class PageService : IPageService
 
 	public PageService()
 	{
-		Configure<MainViewModel, MainPage>();
+		Configure<TgMainViewModel, TgMainPage>();
+		Configure<TgDashboardViewModel, TgDashboardPage>();
 		Configure<WebViewViewModel, WebViewPage>();
 		Configure<ListDetailsViewModel, ListDetailsPage>();
 		Configure<ContentGridViewModel, ContentGridPage>();
 		Configure<ContentGridDetailViewModel, ContentGridDetailPage>();
 		Configure<DataGridViewModel, DataGridPage>();
-		Configure<SettingsViewModel, SettingsPage>();
+		Configure<TgSettingsViewModel, TgSettingsPage>();
 	}
 
 	public Type GetPageType(string key)
@@ -28,7 +29,6 @@ public class PageService : IPageService
 				throw new ArgumentException($"Page not found: {key}. Did you forget to call PageService.Configure?");
 			}
 		}
-
 		return pageType;
 	}
 

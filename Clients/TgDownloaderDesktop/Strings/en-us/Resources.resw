@@ -67,6 +67,12 @@
   <data name="Shell_Main.Content" xml:space="preserve">
     <value>Main</value>
   </data>
+  <data name="Shell_Home.Content" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Shell_Dashboard.Content" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Loading...</value>
   </data>
@@ -124,23 +130,62 @@
   <data name="Settings_Theme_Light.Content" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="SettingsThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
   <data name="Settings_Theme_Dark.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="SettingsThemeDark" xml:space="preserve">
     <value>Dark</value>
   </data>
   <data name="Settings_Theme_Default.Content" xml:space="preserve">
     <value>Default</value>
   </data>
+  <data name="SettingsThemeDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="Settings_About.Text" xml:space="preserve">
-    <value>About this application</value>
+    <value>TgDownloader - Telegram Files Downloader</value>
   </data>
   <data name="Settings_AboutDescription.Text" xml:space="preserve">
     <value>TODO: Replace with your app description.</value>
   </data>
-  <data name="SettingsPage_PrivacyTermsLink.Content" xml:space="preserve">
-    <value>Privacy Statement</value>
+  <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
+    <value>TgDownloader repository</value>
   </data>
-  <data name="SettingsPage_PrivacyTermsLink.NavigateUri" xml:space="preserve">
-    <value>https://YourPrivacyUrlGoesHere/</value>
+  <data name="SettingsPage_GitHub_TgDownloader.NavigateUri" xml:space="preserve">
+    <value>https://github.com/DamianMorozov/TgDownloader/</value>
+  </data>
+  <data name="SettingsPage_GitHub_ReportBug.Content" xml:space="preserve">
+    <value>Report a bug</value>
+  </data>
+  <data name="SettingsPage_GitHub_ReportBug.NavigateUri" xml:space="preserve">
+    <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
+  </data>
+  <data name="SettingsPage_GitHub_Discussions.Content" xml:space="preserve">
+    <value>Discussions</value>
+  </data>
+  <data name="SettingsPage_GitHub_Discussions.NavigateUri" xml:space="preserve">
+    <value>https://github.com/DamianMorozov/TgDownloader/discussions</value>
+  </data>
+  <data name="SettingsPage_GitHub_Ideas.Content" xml:space="preserve">
+    <value>Ideas</value>
+  </data>
+  <data name="SettingsPage_GitHub_Ideas.NavigateUri" xml:space="preserve">
+    <value>https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas</value>
+  </data>
+  <data name="SettingsPage_GitHub_TgDownloaderNews.Content" xml:space="preserve">
+    <value>TgDownloader News</value>
+  </data>
+  <data name="SettingsPage_GitHub_TgDownloaderNews.NavigateUri" xml:space="preserve">
+    <value>https://t.me/TgDownloader</value>
+  </data>
+  <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.Content" xml:space="preserve">
+    <value>TgDownloader Global Chat</value>
+  </data>
+  <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.NavigateUri" xml:space="preserve">
+    <value>https://t.me/TgDownloaderChat</value>
   </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
@@ -148,12 +193,57 @@
     &lt;binding template="ToastGeneric"&gt;
       &lt;text&gt;App Notification&lt;/text&gt;
       &lt;text&gt;&lt;/text&gt;
-      &lt;image placement="appLogoOverride" hint-crop="circle" src="{0}Assets/WindowIcon.ico"/&gt;
+      &lt;image placement="appLogoOverride" hint-crop="circle" src="{0}Assets/applicationIcon.ico"/&gt;
     &lt;/binding&gt;
   &lt;/visual&gt;
   &lt;actions&gt;
     &lt;action content="Settings" arguments="action=Settings"/&gt;
   &lt;/actions&gt;
 &lt;/toast&gt;</value>
+  </data>
+  <data name="HomeResetToDefault.Content" xml:space="preserve">
+    <value>Reset to default</value>
+  </data>
+  <data name="HomeSaveToXml.Content" xml:space="preserve">
+    <value>Save to XML</value>
+  </data>
+  <data name="SettingsPage_GitHub.Text" xml:space="preserve">
+    <value>Github</value>
+  </data>
+  <data name="SettingsPage_GitHub_Support.Text" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="SettingName.Text" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="SettingCheck.Text" xml:space="preserve">
+    <value>Check</value>
+  </data>
+  <data name="SettingValue.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SettingEfStorage.Text" xml:space="preserve">
+    <value>EF storage</value>
+  </data>
+  <data name="SettingTgSession.Text" xml:space="preserve">
+    <value>TG session</value>
+  </data>
+  <data name="SettingAppTheme.Text" xml:space="preserve">
+    <value>App theme</value>
+  </data>
+  <data name="AskSettingsDefault" xml:space="preserve">
+    <value>Reset settings to default?</value>
+  </data>
+  <data name="AskSettingsSave" xml:space="preserve">
+    <value>Save settings?</value>
+  </data>
+  <data name="YesButton" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="NoButton" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

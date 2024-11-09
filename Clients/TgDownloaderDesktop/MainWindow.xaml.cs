@@ -12,7 +12,7 @@ public sealed partial class MainWindow : WindowEx
     {
         InitializeComponent();
 
-        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/WindowIcon.ico"));
+        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/applicationIcon.ico"));
         Content = null;
         Title = "AppDisplayName".GetLocalized();
 
@@ -22,8 +22,7 @@ public sealed partial class MainWindow : WindowEx
         _settings.ColorValuesChanged += Settings_ColorValuesChanged; // cannot use FrameworkElement.ActualThemeChanged event
     }
 
-    // this handles updating the caption button colors correctly when indows system theme is changed
-    // while the app is open
+    // this handles updating the caption button colors correctly when Windows system theme is changed while the app is open
     private void Settings_ColorValuesChanged(UISettings sender, object args)
     {
         // This calls comes off-thread, hence we will need to dispatch it to current app's thread

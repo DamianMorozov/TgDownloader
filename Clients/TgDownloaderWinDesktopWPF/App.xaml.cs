@@ -77,7 +77,7 @@ public partial class App
 		await TgEfUtils.CreateAndUpdateDbAsync();
 
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
-		await Host.StartAsync().ConfigureAwait(false);
+		await Host.StartAsync();
 		TgDesktopUtils.SetupClient();
 	}
 

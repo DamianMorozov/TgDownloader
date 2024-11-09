@@ -6,11 +6,17 @@ namespace TgDownloaderDesktop.Helpers;
 // Helper class to workaround custom title bar bugs.
 // DISCLAIMER: The resource key names and color values used below are subject to change. Do not depend on them.
 // https://github.com/microsoft/TemplateStudio/issues/4516
-internal class TitleBarHelper
+internal sealed class TitleBarHelper
 {
+	#region Public and private fields, properties, constructor
+
 	private const int WAINACTIVE = 0x00;
 	private const int WAACTIVE = 0x01;
 	private const int WMACTIVATE = 0x0006;
+
+	#endregion
+
+	#region Public and private methods
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetActiveWindow();
@@ -26,14 +32,12 @@ internal class TitleBarHelper
 			{
 				var uiSettings = new UISettings();
 				var background = uiSettings.GetColorValue(UIColorType.Background);
-
 				theme = background == Colors.White ? ElementTheme.Light : ElementTheme.Dark;
 			}
-
-			if (theme == ElementTheme.Default)
-			{
-				theme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
-			}
+			//if (theme == ElementTheme.Default)
+			//{
+			//	theme = Application.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
+			//}
 
 			App.MainWindow.AppWindow.TitleBar.ButtonForegroundColor = theme switch
 			{
@@ -87,4 +91,6 @@ internal class TitleBarHelper
 			UpdateTitleBar(frame.ActualTheme);
 		}
 	}
+
+	#endregion
 }

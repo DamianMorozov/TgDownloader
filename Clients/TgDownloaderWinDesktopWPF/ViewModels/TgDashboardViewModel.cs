@@ -18,7 +18,7 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
 
     public TgDashboardViewModel()
     {
-        AppVersionTitle = $"{TgConstants.AppTitleWinDesktop} " +
+        AppVersionTitle = $"{TgConstants.AppTitleDesktop} " +
                           $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
         AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
         AppVersionFull = $"{TgDesktopUtils.TgLocale.AppVersion}: {AppVersionShort}";

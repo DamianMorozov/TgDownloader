@@ -5,6 +5,8 @@ namespace TgDownloaderDesktop.Services;
 
 public class ThemeSelectorService : IThemeSelectorService
 {
+	#region Public and private fields, properties, constructor
+
 	private const string SettingsKey = "AppBackgroundRequestedTheme";
 
 	public ElementTheme Theme { get; set; } = ElementTheme.Default;
@@ -16,6 +18,10 @@ public class ThemeSelectorService : IThemeSelectorService
 		_localSettingsService = localSettingsService;
 	}
 
+	#endregion
+
+	#region Public and private methods
+
 	public async Task InitializeAsync()
 	{
 		Theme = await LoadThemeFromSettingsAsync();
@@ -25,7 +31,6 @@ public class ThemeSelectorService : IThemeSelectorService
 	public async Task SetThemeAsync(ElementTheme theme)
 	{
 		Theme = theme;
-
 		await SetRequestedThemeAsync();
 		await SaveThemeInSettingsAsync(Theme);
 	}
@@ -35,7 +40,6 @@ public class ThemeSelectorService : IThemeSelectorService
 		if (App.MainWindow.Content is FrameworkElement rootElement)
 		{
 			rootElement.RequestedTheme = Theme;
-
 			TitleBarHelper.UpdateTitleBar(Theme);
 		}
 
@@ -58,4 +62,6 @@ public class ThemeSelectorService : IThemeSelectorService
 	{
 		await _localSettingsService.SaveSettingAsync(SettingsKey, theme.ToString());
 	}
+
+	#endregion
 }

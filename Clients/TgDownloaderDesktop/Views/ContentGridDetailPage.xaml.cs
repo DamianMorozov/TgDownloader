@@ -5,16 +5,19 @@ namespace TgDownloaderDesktop.Views;
 
 public sealed partial class ContentGridDetailPage : Page
 {
-	public ContentGridDetailViewModel ViewModel
-	{
-		get;
-	}
+	#region Public and private fields, properties, constructor
+
+	public ContentGridDetailViewModel ViewModel { get; }
 
 	public ContentGridDetailPage()
 	{
 		ViewModel = App.GetService<ContentGridDetailViewModel>();
 		InitializeComponent();
 	}
+
+	#endregion
+
+	#region Public and private methods
 
 	protected override void OnNavigatedTo(NavigationEventArgs e)
 	{
@@ -35,4 +38,6 @@ public sealed partial class ContentGridDetailPage : Page
 			}
 		}
 	}
+
+	#endregion
 }

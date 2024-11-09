@@ -3,15 +3,18 @@
 
 namespace TgDownloaderDesktop.Views;
 
-public sealed partial class ContentGridPage : Page
+/// <summary>
+/// Interaction logic for TgDashboardPage.xaml
+/// </summary>
+public partial class TgDashboardPage
 {
 	#region Public and private fields, properties, constructor
 
-	public ContentGridViewModel ViewModel { get; }
+	public TgDashboardViewModel ViewModel { get; }
 
-	public ContentGridPage()
+	public TgDashboardPage()
 	{
-		ViewModel = App.GetService<ContentGridViewModel>();
+		ViewModel = App.GetService<TgDashboardViewModel>();
 		InitializeComponent();
 	}
 
