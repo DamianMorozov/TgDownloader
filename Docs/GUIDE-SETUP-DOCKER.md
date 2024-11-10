@@ -18,7 +18,6 @@ services:
     environment:
      - TZ=Europe/Rome
     volumes:
-     - d:\DATABASES\SQLITE\TgDownloader.db:/app/TgDownloader.db:rw # optional
      - d:\DATABASES\SQLITE\TgStorage.db:/app/TgStorage.db:rw # optional
      - d:\DATABASES\SQLITE\TgDownloader.xml:/app/TgDownloader.xml:rw # optional
      - .\TgDownloader.session:/app/TgDownloader.session:rw # optional
