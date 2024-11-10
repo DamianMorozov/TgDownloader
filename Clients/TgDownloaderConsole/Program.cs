@@ -1,6 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+// App
+TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
+tgAppSettings.SetVersion(Assembly.GetExecutingAssembly());
 // Console
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
 TgLogHelper tgLog = TgLogHelper.Instance;
@@ -12,7 +15,7 @@ await TgEfUtils.CreateAndUpdateDbAsync();
 tgLog.WriteLine("EF Core init success");
 
 // Transfer data from previous TgDownloader.db into TgStorage.db
-await DataTransferBetweenStoragesAsync();
+//await DataTransferBetweenStoragesAsync();
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
@@ -74,52 +77,48 @@ do
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
 
-async Task DataTransferBetweenStoragesAsync()
-{
-	await using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
-	if (await TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine)) return;
+//async Task DataTransferBetweenStoragesAsync()
+//{
+//	await using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
+//	if (await TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine)) return;
 	
-	if (!File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage)) return;
-	await using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
-	//if (! await TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine)) return;
+//	if (!File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage)) return;
+//	await using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
+//	//if (! await TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine)) return;
 
-	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
-		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
-		.PageSize(Console.WindowHeight - 17)
-		.AddChoices(new List<string> { TgLocaleHelper.Instance.MenuIsFalse, TgLocaleHelper.Instance.MenuIsTrue }));
-	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
+//	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
+//		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
+//		.PageSize(Console.WindowHeight - 17)
+//		.AddChoices(new List<string> { TgLocaleHelper.Instance.MenuIsFalse, TgLocaleHelper.Instance.MenuIsTrue }));
+//	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
 
-	tgLog.WriteLine("Storage transfer ...");
-	await TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine);
-	tgLog.WriteLine("Storage transfer success");
-}
+//	tgLog.WriteLine("Storage transfer ...");
+//	await TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine);
+//	tgLog.WriteLine("Storage transfer success");
+//}
 
 
 async Task<bool> SetupAsync()
 {
-	// App
-	TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
-	tgAppSettings.SetVersion(Assembly.GetExecutingAssembly());
-
 	// Menu
 	tgLog.WriteLine("Menu init ...");
 	TgAsyncUtils.SetAppType(TgEnumAppType.Console);
 	tgLog.WriteLine("Menu init success");
 
 	// Create new storage?
-	if (!tgAppSettings.AppXml.IsExistsEfStorage)
-	{
-		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.XmlEfStorage));
-		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
-			return false;
-	}
-	// Storage is existing
-	else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.XmlEfStorage), (long)0))
-	{
-		AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.XmlEfStorage));
-		if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
-			return false;
-	}
+	//if (!tgAppSettings.AppXml.IsExistsEfStorage)
+	//{
+	//	AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.XmlEfStorage));
+	//	if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
+	//		return false;
+	//}
+	//// Storage is existing
+	//else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.XmlEfStorage), (long)0))
+	//{
+	//	AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.XmlEfStorage));
+	//	if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
+	//		return false;
+	//}
 	// Client
 	tgLog.WriteLine("TG client connect ...");
 	await menu.ClientConnectConsoleAsync();

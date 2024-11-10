@@ -20,7 +20,7 @@ internal partial class TgMenuHelper
 					TgLocale.MenuStorageDbCreateNew,
 					TgLocale.MenuStorageDbDeleteExists,
 					TgLocale.MenuStorageTablesVersionsView,
-					TgLocale.MenuStorageTablesClear,
+					//TgLocale.MenuStorageTablesClear,
 					TgLocale.MenuStorageTablesCompact
 				));
 		if (prompt.Equals(TgLocale.MenuStorageDbBackup))
@@ -31,8 +31,8 @@ internal partial class TgMenuHelper
 			return TgEnumMenuStorage.DbDeleteExists;
 		if (prompt.Equals(TgLocale.MenuStorageTablesVersionsView))
 			return TgEnumMenuStorage.TablesVersionsView;
-		if (prompt.Equals(TgLocale.MenuStorageTablesClear))
-			return TgEnumMenuStorage.TablesClear;
+		//if (prompt.Equals(TgLocale.MenuStorageTablesClear))
+		//	return TgEnumMenuStorage.TablesClear;
 		if (prompt.Equals(TgLocale.MenuStorageTablesCompact))
 			return TgEnumMenuStorage.TablesCompact;
 		return TgEnumMenuStorage.Return;
@@ -59,11 +59,11 @@ internal partial class TgMenuHelper
 				case TgEnumMenuStorage.TablesVersionsView:
 					TgStorageTablesVersionsView();
 					break;
-				case TgEnumMenuStorage.TablesClear:
-					TgStorageTablesClear();
-					break;
+				//case TgEnumMenuStorage.TablesClear:
+				//	TgStorageTablesClear();
+				//	break;
 				case TgEnumMenuStorage.TablesCompact:
-					TgStorageTablesCompact();
+					TgStorageTablesCompactAsync().GetAwaiter().GetResult();
 					break;
 			}
 		} while (menu is not TgEnumMenuStorage.Return);
@@ -102,20 +102,10 @@ internal partial class TgMenuHelper
 		Console.ReadKey();
 	}
 
-	private void TgStorageTablesClear()
+	private async Task TgStorageTablesCompactAsync()
 	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesClear)) return;
-		EfContext.DeleteTables();
-		TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
-		TgLog.WriteLine(TgLocale.MenuStorageTablesClearFinished);
-		Console.ReadKey();
-	}
-
-	private void TgStorageTablesCompact()
-	{
-		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesCompact))
-			return;
-		EfContext.CompactDb();
+		if (AskQuestionReturnNegative(TgLocale.MenuStorageTablesCompact)) return;
+		await EfContext.CompactDbAsync();
 		TgLog.WriteLine(TgLocale.MenuStorageTablesCompactFinished);
 		Console.ReadKey();
 	}

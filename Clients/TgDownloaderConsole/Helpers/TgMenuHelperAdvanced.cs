@@ -126,7 +126,8 @@ internal partial class TgMenuHelper
 	}
 
 	private async Task MarkHistoryReadAsync(TgDownloadSettingsViewModel tgDownloadSettings) => 
-		await RunActionStatusAsync(tgDownloadSettings, MarkHistoryReadCore, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
+		await RunActionStatusAsync(tgDownloadSettings, tgDownloadSettings2 => MarkHistoryReadCoreAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
+			isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 
 	private async Task AutoDownloadAsync(TgDownloadSettingsViewModel _)
 	{

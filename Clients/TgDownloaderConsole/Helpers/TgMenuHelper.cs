@@ -147,12 +147,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.FileSession)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlFileSession)));
 
-		// File storage is exists.
+		// File storage is existing
 		if (TgAppSettings.AppXml.IsExistsEfStorage)
-			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.FileStorage)),
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.EfStorage)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlEfStorage)));
 		else
-			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.FileStorage)),
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.EfStorage)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlEfStorage)));
 
 		// Usage proxy.

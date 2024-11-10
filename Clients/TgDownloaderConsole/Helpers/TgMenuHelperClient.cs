@@ -164,6 +164,8 @@ internal partial class TgMenuHelper
 			case "last_name":
 				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupLastName}:"));
 			case "session_pathname":
+				if (string.IsNullOrEmpty(TgAppSettings.AppXml.XmlFileSession))
+					TgAppSettings.AppXml.XmlFileSession = TgFileUtils.FileSession;
 				string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.XmlFileSession);
 				return sessionPath;
 			case "password":
