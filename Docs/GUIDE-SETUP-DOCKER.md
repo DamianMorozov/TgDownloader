@@ -1,15 +1,33 @@
 # Guide to setup the docker version
 
-- Get image:									`docker pull frezeen/tgdownloader`
-- Run container v1:								`docker run -v <Folder>:/mnt/SQLITE --name tgdownloader_console -d frezeen/tgdownloader`
-- Or run container v2							`docker run --mount type=bind,source=<Folder>\,target=/mnt/SQLITE,bind-propagation=shared --name tgdownloader_console -d frezeen/tgdownloader`
-- Exec bash										`docker exec -it tgdownloader_console /bin/bash`
-- View mount folder								`ls -lh /mnt/SQLITE`
-- Copy config into the host						`cp /root/TgDownloaderConsole-AnyCPU/TgDownloader.xml /mnt/SQLITE`
-- Edit config on the host						`<Folder>\TgDownloader.xml`
-- Copy config into the container				`cp /mnt/SQLITE/TgDownloader.xml /root/TgDownloaderConsole-AnyCPU/ -f`
-- Copy session into the container (if exists)	`cp /mnt/SQLITE/TgDownloader.session /root/TgDownloaderConsole-AnyCPU -f`
-- View files in the container					`ls -lh /root/TgDownloaderConsole-AnyCPU`
-- Run program									`./run.sh`
-- Stop container								`docker stop tgdownloader_console`
-- Start container								`docker start tgdownloader_console`
+## Docker compose usage
+```
+docker pull damianmorozov/tgdownloader-console:latest
+d: && cd d:\Dockers\tgdownloader-console
+docker-compose down tgdownloader-console
+docker-compose up -d tgdownloader-console
+```
+
+## File d:\Dockers\tgdownloader-console\docker-compose.yml
+```
+services:
+  tgdownloader-console:
+    image: damianmorozov/tgdownloader-console:latest
+    ports:
+     - "7681:7681"
+    environment:
+     - TZ=Europe/Rome
+    volumes:
+     - d:\DATABASES\SQLITE\TgDownloader.db:/app/TgDownloader.db:rw # optional
+     - d:\DATABASES\SQLITE\TgStorage.db:/app/TgStorage.db:rw # optional
+     - d:\DATABASES\SQLITE\TgDownloader.xml:/app/TgDownloader.xml:rw # optional
+     - .\TgDownloader.session:/app/TgDownloader.session:rw # optional
+    container_name: tgdownloader-console
+    restart: on-failure
+```
+
+## Using in a web browser
+http://localhost:7681
+```
+dotnet TgDownloaderConsole.dll
+```

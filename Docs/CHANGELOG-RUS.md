@@ -4,15 +4,16 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.170] - 2024-11-07
+## [0.5.180] - 2024-11-10
 ### Исправлено
 - Созданы сущности EF Core
 - Выполнение тестов
 - GitHub workflows actions
-## Изменено
-- Использование EF Core вместо DevExpress XPO
 - Исправлено сохранение имен файлов с неподдерживаемыми символами под Windows / Linux / MacOS
 - Исправлено перемещение существующих файлов в текущем каталоге
+- Исправлено создание хранилища TgStorage
+## Изменено
+- Использование EF Core вместо DevExpress XPO
 ## Добавлено
 - Добавлена многопоточность для TgDownloaderConsole
 - Добавлено приложение TgDownloaderDesktop (WinUI)

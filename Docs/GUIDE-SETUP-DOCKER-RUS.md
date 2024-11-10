@@ -1,15 +1,27 @@
 # Руководство по настройке докер версии
 
-- Скачать образ:								`docker pull frezeen/tgdownloader`
-- Запустить контейнер в1:						`docker run -v <Folder>:/mnt/SQLITE --name tgdownloader_console -d frezeen/tgdownloader`
-- Или Запустить контейнер в2:					`docker run --mount type=bind,source=<Folder>\,target=/mnt/SQLITE,bind-propagation=shared --name tgdownloader_console -d frezeen/tgdownloader`
-- Выполнить баш:								`docker exec -it tgdownloader_console /bin/bash`
-- Смотреть смонтированный каталог:				`ls -lh /mnt/SQLITE`
-- Скопировать конфиг на хост:					`cp /root/TgDownloaderConsole-AnyCPU/TgDownloader.xml /mnt/SQLITE`
-- Править конфиг на хосте:						`<Folder>\TgDownloader.xml`
-- Скопировать конфиг в контейнер:				`cp /mnt/SQLITE/TgDownloader.xml /root/TgDownloaderConsole-AnyCPU/ -f`
-- Скопировать сессию в контейнер (если есть):	`cp /mnt/SQLITE/TgDownloader.session /root/TgDownloaderConsole-AnyCPU -f`
-- Просмотреть файлы в контейнере:				`ls -lh /root/TgDownloaderConsole-AnyCPU`
-- Запусить программу:							`./run.sh`
-- Остановить контейнер:							`docker stop tgdownloader_console`
-- Запустить контейнер:							`docker start tgdownloader_console`
+## Docker compose usage
+```
+docker pull damianmorozov/tgdownloader-console:latest
+d: && cd d:\Dockers\tgdownloader-console
+docker-compose down tgdownloader-console
+docker-compose up -d tgdownloader-console
+```
+
+## Файл d:\Dockers\tgdownloader-console\docker-compose.yml
+```
+services:
+  tgdownloader-console:
+    image: damianmorozov/tgdownloader-console:latest
+    ports:
+     - "7681:7681"
+    environment:
+     - TZ=Europe/Rome
+    volumes:
+     - d:\DATABASES\SQLITE\TgDownloader.db:/app/TgDownloader.db:rw # optional
+     - d:\DATABASES\SQLITE\TgStorage.db:/app/TgStorage.db:rw # optional
+     - d:\DATABASES\SQLITE\TgDownloader.xml:/app/TgDownloader.xml:rw # optional
+     - .\TgDownloader.session:/app/TgDownloader.session:rw # optional
+    container_name: tgdownloader-console
+    restart: on-failure
+```

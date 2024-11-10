@@ -141,7 +141,7 @@
 					Margin="2"
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
-					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=FileStorage, Mode=OneWay, IsAsync=True}"
+					Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=EfStorage, Mode=OneWay, IsAsync=True}"
 					FontWeight="Bold" />
 				<CheckBox
 					Grid.Row="2"

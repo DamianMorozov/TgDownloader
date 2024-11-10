@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.170] - 2024-11-07
+## [0.5.180] - 2024-11-10
 ### Fixed
 - Created EF Core entities
 - Fixed test execution
 - GitHub workflows actions
-## Changed
-- Using EF Core instead of DevExpress XPO
 - Fixed saving file names with unsupported characters on Windows / Linux / MacOS
 - Fixed moving existing files in the current directory
+- Fixed creating TgStorage
+## Changed
+- Using EF Core instead of DevExpress XPO
 ## Added
 - Added multithreading for TgDownloaderConsole
 - Added TgDownloaderDesktop app (WinUI)

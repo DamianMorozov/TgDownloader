@@ -1,6 +1,8 @@
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgStorage.Domain;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
@@ -14,9 +16,10 @@ builder.Services.AddScoped<TgJsService>();
 builder.Services.AddHttpClient();
 
 // Register TgEfContext as the DbContext for EF Core
-builder.Services.AddDbContextFactory<TgEfContext>(options => options
+builder.Services
+	.AddDbContextFactory<TgEfContext>(options => options
 	.UseSqlite(b => b.MigrationsAssembly(nameof(TgDownloaderBlazor))));
-TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
+await TgEfUtils.CreateAndUpdateDbAsync();
 
 WebApplication app = builder.Build();
 
