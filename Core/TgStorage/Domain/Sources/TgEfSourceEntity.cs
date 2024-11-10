@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableSources)]
+//able(TgEfConstants.TableSources)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(UserName))]

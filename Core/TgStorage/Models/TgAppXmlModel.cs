@@ -21,11 +21,11 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 	public string XmlEfStorage { get; set; }
 	[XmlIgnore]
 	public bool IsExistsEfStorage => File.Exists(XmlEfStorage) && new FileInfo(XmlEfStorage).Length > 0;
-	[DefaultValue("")]
-	[XmlElement("FileStorage")]
-	public string XmlFileStorage { get; set; }
-	[XmlIgnore]
-	public bool IsExistsDeprecatedStorage => File.Exists(XmlFileStorage) && new FileInfo(XmlFileStorage).Length > 0;
+	//[DefaultValue("")]
+	//[XmlElement("FileStorage")]
+	//public string XmlFileStorage { get; set; }
+	//[XmlIgnore]
+	//public bool IsExistsDeprecatedStorage => File.Exists(XmlFileStorage) && new FileInfo(XmlFileStorage).Length > 0;
 	[XmlIgnore]
 	public bool IsReady => IsExistsFileSession && IsExistsEfStorage;
 
@@ -33,7 +33,7 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 	{
 		XmlFileSession = this.GetDefaultPropertyString(nameof(XmlFileSession));
 		XmlEfStorage = this.GetDefaultPropertyString(nameof(XmlEfStorage));
-		XmlFileStorage = this.GetDefaultPropertyString(nameof(XmlFileStorage));
+		//XmlFileStorage = this.GetDefaultPropertyString(nameof(XmlFileStorage));
 	}
 
 	#endregion
@@ -41,7 +41,7 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 	#region Public and private methods
 
     public string ToDebugString() =>
-	    $"{TgCommonUtils.GetIsReady(IsReady)} | {nameof(XmlFileSession)}: {XmlFileSession} | {nameof(XmlEfStorage)}: {XmlEfStorage} | {nameof(XmlFileStorage)}: {XmlFileStorage}";
+	    $"{TgCommonUtils.GetIsReady(IsReady)} | {nameof(XmlFileSession)}: {XmlFileSession} | {nameof(XmlEfStorage)}: {XmlEfStorage}";
 
 	/// <summary>
 	///  Set path for file session.
@@ -71,18 +71,17 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 		}
 	}
 
-	/// <summary> Set path for deprecated storage </summary>
-	/// <param name="path"></param>
-	public void SetDeprecatedStoragePath(string path)
-	{
-		XmlFileStorage = !File.Exists(path) && Directory.Exists(path)
-			? Path.Combine(path, TgFileUtils.FileDeprecatedStorage)
-			: path;
-		if (!IsExistsDeprecatedStorage)
-		{
-			XmlFileStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.FileDeprecatedStorage);
-		}
-	}
+	///// <summary> Set path for deprecated storage </summary>
+	//public void SetDeprecatedStoragePath(string path)
+	//{
+	//	XmlFileStorage = !File.Exists(path) && Directory.Exists(path)
+	//		? Path.Combine(path, TgFileUtils.FileDeprecatedStorage)
+	//		: path;
+	//	if (!IsExistsDeprecatedStorage)
+	//	{
+	//		XmlFileStorage = Path.Combine(Directory.GetCurrentDirectory(), TgFileUtils.FileDeprecatedStorage);
+	//	}
+	//}
 
 	#endregion
 }

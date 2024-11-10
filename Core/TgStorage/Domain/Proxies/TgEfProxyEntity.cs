@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Proxies;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableProxies)]
+//[Table(TgEfConstants.TableProxies)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Type))]
 [Index(nameof(HostName))]
@@ -32,7 +32,7 @@ public sealed class TgEfProxyEntity : ITgDbProxy, ITgDbEntity, ITgDbFillEntity<T
     [DefaultValue("No proxy")]
     [ConcurrencyCheck]
     [MaxLength(128)]
-    [Column(TgEfConstants.ColumnHostName, TypeName = "INT")]
+    [Column(TgEfConstants.ColumnHostName, TypeName = "NVARCHAR(128)")]
     public string HostName { get; set; } = default!;
 
     [DefaultValue(404)]

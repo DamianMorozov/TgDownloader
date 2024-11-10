@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Filters;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableFilters)]
+//[Table(TgEfConstants.TableFilters)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(IsEnabled))]
 [Index(nameof(FilterType))]
@@ -48,7 +48,7 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSize, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnSize, TypeName = "LONG(20)")]
     public long Size { get; set; }
 
     [NotMapped]

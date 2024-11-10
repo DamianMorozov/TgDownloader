@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TgStorage.Migrations
 {
-	/// <inheritdoc />
-	public partial class InitialMigration : Migration
+    /// <inheritdoc />
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +20,7 @@ namespace TgStorage.Migrations
                     FILTER_TYPE = table.Column<int>(type: "INT", nullable: false),
                     NAME = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: false),
                     MASK = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: false),
-                    SIZE = table.Column<long>(type: "INT(20)", nullable: false),
+                    SIZE = table.Column<long>(type: "LONG(20)", nullable: false),
                     SIZE_TYPE = table.Column<int>(type: "INT", nullable: false)
                 },
                 constraints: table =>
@@ -33,7 +34,7 @@ namespace TgStorage.Migrations
                 {
                     UID = table.Column<Guid>(type: "CHAR(36)", nullable: false),
                     TYPE = table.Column<int>(type: "INT", nullable: false),
-                    HOST_NAME = table.Column<string>(type: "INT", maxLength: 128, nullable: false),
+                    HOST_NAME = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: false),
                     PORT = table.Column<ushort>(type: "INT(5)", nullable: false),
                     USER_NAME = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: false),
                     PASSWORD = table.Column<string>(type: "NVARCHAR(128)", maxLength: 128, nullable: false),
@@ -49,7 +50,7 @@ namespace TgStorage.Migrations
                 columns: table => new
                 {
                     UID = table.Column<Guid>(type: "CHAR(36)", nullable: false),
-                    ID = table.Column<long>(type: "INT(20)", nullable: false),
+                    ID = table.Column<long>(type: "LONG(20)", nullable: false),
                     USER_NAME = table.Column<string>(type: "NVARCHAR(128)", maxLength: 256, nullable: true),
                     TITLE = table.Column<string>(type: "NVARCHAR(256)", maxLength: 1024, nullable: true),
                     ABOUT = table.Column<string>(type: "NVARCHAR(1024)", nullable: true),
@@ -85,7 +86,7 @@ namespace TgStorage.Migrations
                     UID = table.Column<Guid>(type: "CHAR(36)", nullable: false),
                     API_HASH = table.Column<Guid>(type: "CHAR(36)", nullable: false),
                     API_ID = table.Column<int>(type: "INT", nullable: false),
-                    PHONE_NUMBER = table.Column<string>(type: "NVARCHAR(16)", maxLength: 16, nullable: false),
+                    PHONE_NUMBER = table.Column<string>(type: "CHAR(20)", maxLength: 20, nullable: false),
                     PROXY_UID = table.Column<Guid>(type: "CHAR(36)", nullable: true)
                 },
                 constraints: table =>
@@ -103,12 +104,12 @@ namespace TgStorage.Migrations
                 columns: table => new
                 {
                     UID = table.Column<Guid>(type: "CHAR(36)", nullable: false),
-                    SOURCE_ID = table.Column<long>(type: "INT(20)", nullable: true),
-                    ID = table.Column<long>(type: "INT(20)", nullable: false),
-                    MESSAGE_ID = table.Column<long>(type: "INT(20)", nullable: false),
-                    FILE_NAME = table.Column<string>(type: "NVARCHAR(100)", maxLength: 256, nullable: false),
-                    FILE_SIZE = table.Column<long>(type: "INT(20)", nullable: false),
-                    ACCESS_HASH = table.Column<long>(type: "INT(20)", nullable: false)
+                    SOURCE_ID = table.Column<long>(type: "LONG(20)", nullable: true),
+                    ID = table.Column<long>(type: "LONG(20)", nullable: false),
+                    MESSAGE_ID = table.Column<long>(type: "LONG(20)", nullable: false),
+                    FILE_NAME = table.Column<string>(type: "NVARCHAR(256)", maxLength: 256, nullable: false),
+                    FILE_SIZE = table.Column<long>(type: "LONG(20)", nullable: false),
+                    ACCESS_HASH = table.Column<long>(type: "LONG(20)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,11 +126,11 @@ namespace TgStorage.Migrations
                 columns: table => new
                 {
                     UID = table.Column<Guid>(type: "CHAR(36)", nullable: false),
-                    SOURCE_ID = table.Column<long>(type: "INT(20)", nullable: true),
-                    ID = table.Column<long>(type: "INT(20)", nullable: false),
+                    SOURCE_ID = table.Column<long>(type: "LONG(20)", nullable: true),
+                    ID = table.Column<long>(type: "LONG(20)", nullable: false),
                     DT_CREATED = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     TYPE = table.Column<int>(type: "INT", nullable: false),
-                    SIZE = table.Column<long>(type: "INT(20)", nullable: false),
+                    SIZE = table.Column<long>(type: "LONG(20)", nullable: false),
                     MESSAGE = table.Column<string>(type: "NVARCHAR(100)", nullable: false)
                 },
                 constraints: table =>

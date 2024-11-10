@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Versions;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableVersions)]
+//[Table(TgEfConstants.TableVersions)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Version), IsUnique = true)]
 [Index(nameof(Description))]

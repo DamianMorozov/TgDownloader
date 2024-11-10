@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Apps;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableApps)]
+//[Table(TgEfConstants.TableApps)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(ApiHash), IsUnique = true)]
 [Index(nameof(ApiId))]
@@ -49,8 +49,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 
 	[DefaultValue("+00000000000")]
 	[ConcurrencyCheck]
-	[MaxLength(16)]
-	[Column(TgEfConstants.ColumnPhoneNumber, TypeName = "NVARCHAR(16)")]
+	[MaxLength(20)]
+	[Column(TgEfConstants.ColumnPhoneNumber, TypeName = "CHAR(20)")]
 	public string PhoneNumber { get; set; } = default!;
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]

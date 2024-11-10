@@ -58,7 +58,7 @@ public sealed class TgAppSettingsHelper : ITgHelper
 	{
 		AppXml.XmlFileSession = TgFileUtils.FileSession;
 		AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
-		AppXml.XmlFileStorage = TgFileUtils.FileDeprecatedStorage;
+		//AppXml.XmlFileStorage = TgFileUtils.FileDeprecatedStorage;
 		StoreXmlSettingsUnsafe(encoding);
 	}
 

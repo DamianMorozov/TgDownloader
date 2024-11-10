@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Documents;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableDocuments)]
+//[Table(TgEfConstants.TableDocuments)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
@@ -26,7 +26,7 @@ public sealed class TgEfDocumentEntity : ITgDbEntity, ITgDbFillEntity<TgEfDocume
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSourceId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnSourceId, TypeName = "LONG(20)")]
     public long? SourceId { get; set; }
 
 	[NotMapped]
@@ -34,12 +34,12 @@ public sealed class TgEfDocumentEntity : ITgDbEntity, ITgDbFillEntity<TgEfDocume
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
     public long Id { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnMessageId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnMessageId, TypeName = "LONG(20)")]
     public long MessageId { get; set; }
 
     [DefaultValue("")]
@@ -50,12 +50,12 @@ public sealed class TgEfDocumentEntity : ITgDbEntity, ITgDbFillEntity<TgEfDocume
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnFileSize, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnFileSize, TypeName = "LONG(20)")]
     public long FileSize { get; set; }
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnAccessHash, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnAccessHash, TypeName = "LONG(20)")]
     public long AccessHash { get; set; }
 
     public TgEfDocumentEntity() : base()

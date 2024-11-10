@@ -4,7 +4,7 @@
 namespace TgStorage.Domain.Messages;
 
 [DebuggerDisplay("{ToDebugString()}")]
-[Table(TgEfConstants.TableMessages)]
+//able(TgEfConstants.TableMessages)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
@@ -33,7 +33,7 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
 
 	[DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnId, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
     public long Id { get; set; }
 
 	[DefaultValue("0001-01-01 00:00:00")]
@@ -48,7 +48,7 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
 
     [DefaultValue(0)]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnSize, TypeName = "INT(20)")]
+    [Column(TgEfConstants.ColumnSize, TypeName = "LONG(20)")]
     public long Size { get; set; }
 
     [DefaultValue("")]

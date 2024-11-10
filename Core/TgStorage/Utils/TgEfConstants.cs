@@ -16,17 +16,6 @@ public static class TgEfConstants
 	public const string TableSources = "SOURCES";
 	public const string TableVersions = "VERSIONS";
 
-	public static IEnumerable<string> GetTableNames()
-    {
-        yield return TableApps;
-        yield return TableDocuments;
-        yield return TableFilters;
-        yield return TableMessages;
-        yield return TableProxies;
-        yield return TableSources;
-        yield return TableVersions;
-    }
-
     #endregion
 
 	#region Public and private fields, properties, constructor - Columns

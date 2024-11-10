@@ -191,7 +191,7 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "The directory is not exists!" : $"The directory \"{dir}\" is not exists!";
 	public string Empty => "Empty";
 	public string FileSession => "File session";
-	public string FileStorage => "File storage";
+	public string EfStorage => "EF storage";
 	public string Load=> "Load";
 	public string MoveUpDown => "(Move up and down to switch select)";
 	public string ObjectHasBeenDisposedOff => "object has been disposed off";
