@@ -4,6 +4,7 @@
 
 namespace TgStorage.Domain;
 
+/// <summary> DB context </summary>
 public sealed class TgEfContext : DbContext
 {
     #region Public and private fields, properties, constructor
@@ -43,7 +44,6 @@ public sealed class TgEfContext : DbContext
     }
 
     /// <summary> Inject options </summary>
-    /// <param name="options"></param>
     // For using: services.AddDbContextFactory<TgEfContext>
     public TgEfContext(DbContextOptions<TgEfContext> options) : base(options)
     {
@@ -57,12 +57,6 @@ public sealed class TgEfContext : DbContext
         LoggerFactory factory = new();
         if (string.IsNullOrEmpty(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage))
 			TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
-#if DEBUG
-        // dotnet ef migrations add
-        //string efStorageTemplate = "d:\\DATABASES\\SQLITE\\TgStorage.db";
-        //if (File.Exists(efStorageTemplate))
-        //    EfStorage = efStorageTemplate;
-#endif
         string storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
         optionsBuilder
 #if DEBUG

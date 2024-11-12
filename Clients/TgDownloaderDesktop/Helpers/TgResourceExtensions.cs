@@ -3,13 +3,13 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public static class ResourceExtensions
+public static class TgResourceExtensions
 {
     #region Public and private fields, properties, constructor
 
-    private static readonly ResourceLoader _resourceLoader = new();
+    private static ResourceLoader LocalResourceLoader { get; } = new();
 
-    public static string GetLocalized(this string resourceKey) => _resourceLoader.GetString(resourceKey);
+    public static string GetLocalized(this string resourceKey) => LocalResourceLoader.GetString(resourceKey);
 
 	#endregion
 

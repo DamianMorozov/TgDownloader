@@ -8,9 +8,11 @@ public interface ITgSettingsService
 	ElementTheme Theme { get; }
 	string EfStorage { get; }
 	string TgSession { get; }
-	Task SetThemeAsync(ElementTheme theme);
-	Task SetEfStorageAsync(string efStorage);
-	Task SetTgSessionAsync(string tgSession);
+	string AppLanguage { get; }
+	Task SetAppThemeAsync(ElementTheme theme);
+	Task SetAppEfStorageAsync(string efStorage);
+	Task SetAppTgSessionAsync(string tgSession);
+	Task SetAppLanguageAsync(string appLanguage);
 	Task SetRequestedThemeAsync();
 	void Default();
 	Task LoadAsync();

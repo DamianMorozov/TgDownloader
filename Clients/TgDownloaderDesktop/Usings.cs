@@ -45,6 +45,7 @@ global using TgDownloaderDesktop.Services;
 global using TgDownloaderDesktop.Utils;
 global using TgDownloaderDesktop.ViewModels;
 global using TgDownloaderDesktop.Views;
+global using TgInfrastructure.Common;
 global using TgInfrastructure.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Domain.Apps;

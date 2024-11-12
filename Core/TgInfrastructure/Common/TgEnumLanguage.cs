@@ -5,6 +5,7 @@ namespace TgInfrastructure.Common;
 
 public enum TgEnumLanguage
 {
-	English = 0,
-	//Russian = 1,
+	Default = 0,
+	English = 1,
+	Russian = 2,
 }

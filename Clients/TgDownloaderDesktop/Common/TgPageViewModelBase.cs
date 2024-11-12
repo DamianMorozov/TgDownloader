@@ -103,7 +103,5 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		});
 	}
 
-	//public bool CheckClientReady() => TgDesktopUtils.TgClient.CheckClientIsReady();
-
 	#endregion
 }

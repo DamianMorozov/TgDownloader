@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Common;
+
 namespace TgDownloaderDesktop.Services;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -11,9 +13,11 @@ public sealed class TgSettingsService : ITgSettingsService
 	private const string SettingsKeyTheme = "AppBackgroundRequestedTheme";
 	private const string SettingsKeyEfStorage = "EfStorage ";
 	private const string SettingsKeyTgSession = "TgSession";
+	private const string SettingsKeyAppLanguage = "AppLanguage";
 	public ElementTheme Theme { get; set; }
 	public string EfStorage { get; set; } = default!;
 	public string TgSession { get; set; } = default!;
+	public string AppLanguage { get; set; } = default!;
 
 	private const string DefaultApplicationDataFolder = "TgDownloaderDesktop/ApplicationData";
 	private const string DefaultLocalSettingsFile = "TgLocalSettings.json";
@@ -42,23 +46,29 @@ public sealed class TgSettingsService : ITgSettingsService
 	public string ToDebugString() =>
 		$"{nameof(Theme)}: {Theme} | {nameof(EfStorage)}: {EfStorage} | {nameof(TgSession)}: {TgSession}";
 
-	public async Task SetThemeAsync(ElementTheme theme)
+	public async Task SetAppThemeAsync(ElementTheme theme)
 	{
 		Theme = theme;
 		await SetRequestedThemeAsync();
 		await SaveThemeInSettingsAsync(Theme);
 	}
 
-	public async Task SetEfStorageAsync(string efStorage)
+	public async Task SetAppEfStorageAsync(string efStorage)
 	{
 		EfStorage = efStorage;
 		await SaveEfStorageInSettingsAsync(EfStorage);
 	}
 
-	public async Task SetTgSessionAsync(string tgSession)
+	public async Task SetAppTgSessionAsync(string tgSession)
 	{
 		TgSession = tgSession;
 		await SaveTgSessionInSettingsAsync(TgSession);
+	}
+
+	public async Task SetAppLanguageAsync(string appLanguage)
+	{
+		AppLanguage = appLanguage;
+		await SaveAppLanguageInSettingsAsync(AppLanguage);
 	}
 
 	public async Task SetRequestedThemeAsync()
@@ -85,17 +95,22 @@ public sealed class TgSettingsService : ITgSettingsService
 
 	private async Task<string> LoadTgSessionFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyTgSession) ?? TgFileUtils.FileTgSession;
 
+	private async Task<string> LoadAppLanguageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppLanguage) ?? nameof(TgEnumLanguage.Default);
+
 	private async Task SaveThemeInSettingsAsync(ElementTheme theme) => await SaveSettingAsync(SettingsKeyTheme, theme.ToString());
 
 	private async Task SaveEfStorageInSettingsAsync(string efStorage) => await SaveSettingAsync(SettingsKeyEfStorage, efStorage);
 
 	private async Task SaveTgSessionInSettingsAsync(string tgSession) => await SaveSettingAsync(SettingsKeyTgSession, tgSession);
 
+	private async Task SaveAppLanguageInSettingsAsync(string appLanguage) => await SaveSettingAsync(SettingsKeyAppLanguage, appLanguage);
+
 	public void Default()
 	{
 		Theme = ElementTheme.Default;
 		EfStorage = TgFileUtils.FileEfStorage;
 		TgSession = TgFileUtils.FileTgSession;
+		AppLanguage = nameof(TgEnumLanguage.Default);
 #if DEBUG
 		EfStorage = _options.EfStorage ?? TgFileUtils.FileEfStorage;
 		TgSession = _options.TgSession ?? TgFileUtils.FileTgSession;
@@ -107,6 +122,7 @@ public sealed class TgSettingsService : ITgSettingsService
 		Theme = await LoadThemeFromSettingsAsync();
 		EfStorage = await LoadEfStorageFromSettingsAsync();
 		TgSession = await LoadTgSessionFromSettingsAsync();
+		AppLanguage = await LoadAppLanguageFromSettingsAsync();
 		await Task.CompletedTask;
 	}
 

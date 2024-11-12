@@ -253,7 +253,7 @@ public sealed class TgLocaleHelper : ObservableObject
 
 	#region Public and private fields, properties, constructor
 
-	public TgEnumLanguage Language { get; set; } = TgEnumLanguage.English;
+	public TgEnumLanguage Language { get; set; } = TgEnumLanguage.Default;
 	public string InfoMessage(string message, bool isUseX = false) => !isUseX ? $"[green]v {message}[/]" : $"[green]x {message}[/]";
 	public string WarningMessage(string message) => $"[red]x {message}[/]";
 

@@ -13,7 +13,7 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 	[ObservableProperty]
 	private ElementTheme _elementTheme;
 	[ObservableProperty]
-	private ObservableCollection<string> _appThemes;
+	private ObservableCollection<string> _appThemes = default!;
 	[ObservableProperty]
 	private string _appTheme = default!;
 	private string _appEfStorage = default!;
@@ -24,7 +24,7 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 		{
 			if (SetProperty(ref _appEfStorage, value))
 			{
-				SetEfStorageAsync().ConfigureAwait(false);
+				SettingsService.SetAppEfStorageAsync(AppEfStorage).ConfigureAwait(false);
 			}
 			IsExistsEfStorage = File.Exists(value);
 		}
@@ -39,70 +39,76 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 		{
 			if (SetProperty(ref _appTgSession, value))
 			{
-				SetTgSessionAsync().ConfigureAwait(false);
+				SettingsService.SetAppTgSessionAsync(AppTgSession).ConfigureAwait(false);
 			}
 			IsExistsTgSession = File.Exists(value);
 		}
 	}
 	[ObservableProperty]
 	private bool _isExistsTgSession;
+	[ObservableProperty]
+	private ObservableCollection<string> _languages = default!;
+	private string _appLanguage = default!;
+	public string AppLanguage
+	{
+		get => _appLanguage;
+		set
+		{
+			if (SetProperty(ref _appLanguage, value))
+			{
+				SettingsService.SetAppLanguageAsync(AppLanguage).ConfigureAwait(false);
+			}
+			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = value switch
+			{
+				nameof(TgEnumLanguage.Russian) => "ru-RU",
+				nameof(TgEnumLanguage.English) => "en-US",
+				_ => "en-US",
+			};
+		}
+	}
 
 	public ICommand SettingsDefaultCommand { get; }
-	public ICommand SwitchThemeCommand { get; }
 
 	public TgSettingsViewModel(ITgSettingsService settingsService)
 	{
 		SettingsService = settingsService;
-		AppThemes =
-			[ResourceExtensions.GetSettingsThemeLight(), ResourceExtensions.GetSettingsThemeDark(), ResourceExtensions.GetSettingsThemeDefault()];
-		Load();
-
+		Default();
 		SettingsDefaultCommand = new RelayCommand(async () => await SettingsDefaultAsync());
-		SwitchThemeCommand = new RelayCommand<ElementTheme>(async theme => await SetThemeAsync(theme));
 	}
 
 	#endregion
 
 	#region Public and private methods
 
-	private void Load()
+	private void Default()
 	{
+		AppThemes = [TgResourceExtensions.GetSettingsThemeDefault(), TgResourceExtensions.GetSettingsThemeLight(), TgResourceExtensions.GetSettingsThemeDark()];
+		Languages = [nameof(TgEnumLanguage.Default), nameof(TgEnumLanguage.English), nameof(TgEnumLanguage.Russian)];
 		ElementTheme = SettingsService.Theme;
 		AppTheme = ElementTheme.ToString();
 		AppEfStorage = SettingsService.EfStorage;
 		AppTgSession = SettingsService.TgSession;
+		AppLanguage = SettingsService.AppLanguage;
 	}
 
-	public async Task SetThemeAsync()
+	public async Task SetAppThemeAsync()
 	{
 		var theme = ElementTheme.Default;
-		if (AppTheme == ResourceExtensions.GetSettingsThemeLight())
+		if (AppTheme == TgResourceExtensions.GetSettingsThemeLight())
 			theme = ElementTheme.Light;
-		else if (AppTheme == ResourceExtensions.GetSettingsThemeDark())
+		else if (AppTheme == TgResourceExtensions.GetSettingsThemeDark())
 			theme = ElementTheme.Dark;
-		await SetThemeAsync(theme);
+		await SetAppThemeAsync(theme);
 	}
 
-	public async Task SetThemeAsync(ElementTheme theme)
+	public async Task SetAppThemeAsync(ElementTheme theme)
 	{
 		if (ElementTheme != theme)
 		{
 			ElementTheme = theme;
-			await SettingsService.SetThemeAsync(ElementTheme);
+			await SettingsService.SetAppThemeAsync(ElementTheme);
 			AppTheme = ElementTheme.ToString();
 		}
-	}
-
-	public async Task SetEfStorageAsync()
-	{
-		await SettingsService.SetEfStorageAsync(AppEfStorage);
-		await Task.CompletedTask;
-	}
-
-	public async Task SetTgSessionAsync()
-	{
-		await SettingsService.SetTgSessionAsync(AppTgSession);
-		await Task.CompletedTask;
 	}
 
 	private async Task SettingsDefaultAsync()
@@ -111,14 +117,14 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 		ContentDialog dialog = new()
 		{
 			XamlRoot = XamlRootVm,
-			Title = ResourceExtensions.AskSettingsDefault(),
-			PrimaryButtonText = ResourceExtensions.GetYesButton(),
-			CloseButtonText = ResourceExtensions.GetCancelButton(),
+			Title = TgResourceExtensions.AskSettingsDefault(),
+			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
+			CloseButtonText = TgResourceExtensions.GetCancelButton(),
 			DefaultButton = ContentDialogButton.Close,
 			PrimaryButtonCommand = new RelayCommand(() =>
 			{
 				SettingsService.Default();
-				Load();
+				Default();
 			})
 		};
 		_ = await dialog.ShowAsync();

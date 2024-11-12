@@ -1,5 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -61,56 +120,56 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>TgDownloaderDesktop</value>
   </data>
-	<data name="AppDescription" xml:space="preserve">
-		<value>TgDownloaderDesktop</value>
-  	</data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>TgDownloaderDesktop</value>
+  </data>
   <data name="Shell_Main.Content" xml:space="preserve">
-    <value>Main</value>
+    <value>Главная</value>
   </data>
   <data name="Shell_Home.Content" xml:space="preserve">
-    <value>Home</value>
+    <value>Главная</value>
   </data>
   <data name="Shell_Dashboard.Content" xml:space="preserve">
     <value>Dashboard</value>
   </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Загрузка...</value>
   </data>
   <data name="WebView_FailedMessage.Text" xml:space="preserve">
     <value>Page failed to load. Check connection and reload.</value>
   </data>
   <data name="BrowserBackButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Browser back</value>
+    <value>Вернуться назад</value>
   </data>
   <data name="BrowserBackButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
-    <value>Browser back</value>
+    <value>Вернуться назад</value>
   </data>
   <data name="BrowserForwardButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Browser forward</value>
+    <value>Вперёд</value>
   </data>
   <data name="BrowserForwardButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
-    <value>Browser forward</value>
+    <value>Вперёд</value>
   </data>
   <data name="WebView_Reload.Content" xml:space="preserve">
-    <value>Reload</value>
+    <value>Перезагрузка</value>
   </data>
   <data name="ReloadButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Reload</value>
+    <value>Перезагрузка</value>
   </data>
   <data name="ReloadButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
-    <value>Reload</value>
+    <value>Перезагрузка</value>
   </data>
   <data name="OpenInBrowserButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Open in browser</value>
+    <value>Открыть в браузере</value>
   </data>
   <data name="OpenInBrowserButton.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
-    <value>Open in browser</value>
+    <value>Открыть в браузере</value>
   </data>
   <data name="Shell_WebView.Content" xml:space="preserve">
     <value>WebView</value>
   </data>
   <data name="ListDetails_NoSelection.Text" xml:space="preserve">
-    <value>Select an item from the list.</value>
+    <value>Выберите элемент из списка.</value>
   </data>
   <data name="Shell_ListDetails.Content" xml:space="preserve">
     <value>ListDetails</value>
@@ -122,10 +181,10 @@
     <value>DataGrid</value>
   </data>
   <data name="Settings_Personalization.Text" xml:space="preserve">
-    <value>Personalization</value>
+    <value>Персонализация</value>
   </data>
   <data name="Settings_Theme.Text" xml:space="preserve">
-    <value>Theme</value>
+    <value>Тема</value>
   </data>
   <data name="Settings_Theme_Light.Content" xml:space="preserve">
     <value>Light</value>
@@ -164,13 +223,13 @@
     <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
   </data>
   <data name="SettingsPage_GitHub_Discussions.Content" xml:space="preserve">
-    <value>Discussions</value>
+    <value>Обсуждения</value>
   </data>
   <data name="SettingsPage_GitHub_Discussions.NavigateUri" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/discussions</value>
   </data>
   <data name="SettingsPage_GitHub_Ideas.Content" xml:space="preserve">
-    <value>Ideas</value>
+    <value>Идеи</value>
   </data>
   <data name="SettingsPage_GitHub_Ideas.NavigateUri" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas</value>
@@ -202,57 +261,57 @@
 &lt;/toast&gt;</value>
   </data>
   <data name="ActionResetToDefault.Text" xml:space="preserve">
-    <value>Reset to default</value>
+    <value>Сбросить по-умолчанию</value>
   </data>
   <data name="ActionSave.Text" xml:space="preserve">
-    <value>Save</value>
+    <value>Сохранить</value>
   </data>
   <data name="ActionLoad.Text" xml:space="preserve">
-    <value>Load</value>
+    <value>Загрузка</value>
   </data>
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
     <value>Github</value>
   </data>
   <data name="SettingsPage_GitHub_Support.Text" xml:space="preserve">
-    <value>Support</value>
+    <value>Поддержка</value>
   </data>
   <data name="SettingName.Text" xml:space="preserve">
-    <value>Setting</value>
+    <value>Настройка</value>
   </data>
   <data name="SettingCheck.Text" xml:space="preserve">
-    <value>Check</value>
+    <value>Проверка</value>
   </data>
   <data name="SettingValue.Text" xml:space="preserve">
-    <value>Value</value>
+    <value>Значение</value>
   </data>
   <data name="SettingEfStorage.Text" xml:space="preserve">
-    <value>EF storage</value>
+    <value>EF хранилище</value>
   </data>
   <data name="SettingTgSession.Text" xml:space="preserve">
-    <value>TG session</value>
+    <value>TG сессия</value>
   </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
-    <value>App theme</value>
+    <value>Тема приложения</value>
   </data>
   <data name="SettingAppLanguage.Text" xml:space="preserve">
-    <value>App language</value>
+    <value>Язык приложения</value>
   </data>
   <data name="AskSettingsDefault" xml:space="preserve">
-    <value>Reset settings to default?</value>
+    <value>Сбросить настройки по-умолчанию?</value>
   </data>
   <data name="AskSettingsSave" xml:space="preserve">
-    <value>Save settings?</value>
+    <value>Сохранить настройки?</value>
   </data>
   <data name="AskSettingsLoad" xml:space="preserve">
-    <value>Load settings?</value>
+    <value>Загрузить настройки?</value>
   </data>
   <data name="YesButton" xml:space="preserve">
-    <value>Yes</value>
+    <value>Да</value>
   </data>
   <data name="NoButton" xml:space="preserve">
-    <value>No</value>
+    <value>Нет</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Отмена</value>
   </data>
 </root>

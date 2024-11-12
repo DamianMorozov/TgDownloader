@@ -3,9 +3,7 @@
 
 namespace TgStorage.Utils;
 
-/// <summary>
-/// Files utilities.
-/// </summary>
+/// <summary> Files utilities </summary>
 public static class TgFileUtils
 {
 	#region Public and private fields, properties, constructor
@@ -15,7 +13,6 @@ public static class TgFileUtils
 	public static string FileAppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
 	public static string FileTgSession => "TgDownloader.session";
 	public static string FileEfStorage => "TgStorage.db";
-	//public static string FileDeprecatedStorage => "TgDownloader.db";
 
 	#endregion
 
@@ -37,7 +34,6 @@ public static class TgFileUtils
 	{
 		ulong lineCount = 0L;
 		using StreamReader streamReader = new(sourceFile);
-		//Ensure.NotNull(stream, nameof(stream));
 
 		char[] byteBuffer = new char[1024 * 1024];
 		const int bytesAtTheTime = 4;
@@ -106,7 +102,6 @@ public static class TgFileUtils
 		}
 
 		streamReader.Close();
-		streamReader.Dispose();
 		return lineCount;
 	}
 

@@ -33,6 +33,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -41,7 +42,7 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="1*" />
 				</Grid.ColumnDefinitions>
-				<!--  Headers  -->
+				<!--  Row 0 - Headers  -->
 				<TextBlock
 					x:Uid="SettingName"
 					Grid.Row="0"
@@ -66,7 +67,7 @@
 					FontWeight="Bold"
 					HorizontalTextAlignment="Center"
 					TextAlignment="Center" />
-				<!--  Horizontal separator  -->
+				<!--  Row 1 - Horizontal separator  -->
 				<Rectangle
 					Grid.Row="1"
 					Grid.Column="0"
@@ -76,18 +77,38 @@
 				<!--  Vertical separator  -->
 				<Rectangle
 					Grid.Row="0"
-					Grid.RowSpan="5"
+					Grid.RowSpan="6"
 					Grid.Column="1"
 					Width="1"
 					Fill="DimGray" />
 				<!--  Vertical separator  -->
 				<Rectangle
 					Grid.Row="0"
-					Grid.RowSpan="5"
+					Grid.RowSpan="6"
 					Grid.Column="3"
 					Width="1"
 					Fill="DimGray" />
-				<!--  App theme  -->
+				<!--  Row 2 - App language-->
+				<TextBox
+					x:Uid="SettingAppLanguage"
+					Grid.Row="2"
+					Grid.Column="0"
+					Margin="5,0,0,0"
+					Background="Transparent"
+					BorderBrush="Transparent"
+					HorizontalTextAlignment="Left"
+					IsReadOnly="True"
+					TextAlignment="Left" />
+				<ComboBox
+					x:Name="ComboBoxAppLanguages"
+					Grid.Row="2"
+					Grid.Column="4"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					ItemsSource="{x:Bind ViewModel.Languages, Mode=OneWay}"
+					PlaceholderText="App theme"
+					SelectedItem="{x:Bind ViewModel.AppLanguage, Mode=TwoWay}" />
+				<!--  Row 3 - App theme  -->
 				<!--<StackPanel Margin="{StaticResource SmallTopBottomMargin}">
 					<RadioButton
 						x:Uid="Settings_Theme_Light"
@@ -122,7 +143,7 @@
 				</StackPanel>-->
 				<TextBox
 					x:Uid="SettingAppTheme"
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.Column="0"
 					Margin="5,0,0,0"
 					Background="Transparent"
@@ -132,17 +153,17 @@
 					TextAlignment="Left" />
 				<ComboBox
 					x:Name="ComboBoxAppThemes"
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.Column="4"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					ItemsSource="{x:Bind ViewModel.AppThemes, Mode=OneWay}"
 					PlaceholderText="App theme"
 					SelectedItem="{x:Bind ViewModel.AppTheme, Mode=TwoWay}" />
-				<!--  EF storage  -->
+				<!--  Row 4 - EF storage  -->
 				<TextBox
 					x:Uid="SettingEfStorage"
-					Grid.Row="3"
+					Grid.Row="4"
 					Grid.Column="0"
 					Margin="5,0,0,0"
 					Background="Transparent"
@@ -151,7 +172,7 @@
 					IsReadOnly="True"
 					TextAlignment="Left" />
 				<StackPanel
-					Grid.Row="3"
+					Grid.Row="4"
 					Grid.Column="2"
 					Width="50"
 					Margin="2"
@@ -162,17 +183,17 @@
 						IsEnabled="False" />
 				</StackPanel>
 				<TextBox
-					Grid.Row="3"
+					Grid.Row="4"
 					Grid.Column="4"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					HorizontalContentAlignment="Left"
 					Text="{x:Bind ViewModel.AppEfStorage, Mode=TwoWay}" />
-				<!--  File session  -->
+				<!--  Row 5 - TG session  -->
 				<TextBox
 					x:Uid="SettingTgSession"
-					Grid.Row="4"
+					Grid.Row="5"
 					Grid.Column="0"
 					Margin="5,0,0,0"
 					Background="Transparent"
@@ -181,7 +202,7 @@
 					IsReadOnly="True"
 					TextAlignment="Left" />
 				<StackPanel
-					Grid.Row="4"
+					Grid.Row="5"
 					Grid.Column="2"
 					Width="50"
 					Margin="2"
@@ -192,7 +213,7 @@
 						IsEnabled="False" />
 				</StackPanel>
 				<TextBox
-					Grid.Row="4"
+					Grid.Row="5"
 					Grid.Column="4"
 					Margin="2"
 					HorizontalAlignment="Stretch"
