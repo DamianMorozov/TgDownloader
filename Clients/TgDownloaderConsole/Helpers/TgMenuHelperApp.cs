@@ -20,7 +20,6 @@ internal partial class TgMenuHelper
 					TgLocale.MenuMainReset,
 					TgLocale.MenuAppFileSession,
 					TgLocale.MenuAppEfStorage,
-					TgLocale.MenuAppDeprecatedStorage,
 					TgLocale.MenuAppUseProxy
 			));
 		if (prompt.Equals(TgLocale.MenuMainReset))
@@ -29,8 +28,6 @@ internal partial class TgMenuHelper
 			return TgEnumMenuAppSettings.SetFileSession;
 		if (prompt.Equals(TgLocale.MenuAppEfStorage))
 			return TgEnumMenuAppSettings.SetEfStorage;
-		if (prompt.Equals(TgLocale.MenuAppDeprecatedStorage))
-			return TgEnumMenuAppSettings.SetDepreactedStorage;
 		if (prompt.Equals(TgLocale.MenuAppUseProxy))
 			return TgEnumMenuAppSettings.SetUseProxy;
 		return TgEnumMenuAppSettings.Return;
@@ -54,9 +51,6 @@ internal partial class TgMenuHelper
 				case TgEnumMenuAppSettings.SetEfStorage:
 					SetEfStorage();
 					break;
-				//case TgEnumMenuAppSettings.SetDepreactedStorage:
-				//	SetDeprecatedStorage();
-				//	break;
 				case TgEnumMenuAppSettings.SetUseProxy:
 					SetUseProxy();
 					await AskClientConnectAsync(tgDownloadSettings);
@@ -89,13 +83,6 @@ internal partial class TgMenuHelper
 			TgLog.GetLineStampInfo($"{TgLocale.MenuAppEfStorage}:")));
 		SetFileAppSettings();
 	}
-
-	//private void SetDeprecatedStorage()
-	//{
-	//	TgAppSettings.AppXml.SetDeprecatedStoragePath(AnsiConsole.Ask<string>(
-	//		TgLog.GetLineStampInfo($"{TgLocale.MenuAppEfStorage}:")));
-	//	SetFileAppSettings();
-	//}
 
 	private void SetUseProxy()
 	{

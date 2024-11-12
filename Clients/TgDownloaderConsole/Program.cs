@@ -82,7 +82,6 @@ do
 //	await using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
 //	if (await TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine)) return;
 	
-//	if (!File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage)) return;
 //	await using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
 //	//if (! await TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine)) return;
 
