@@ -17,51 +17,6 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<!--  Themes  -->
-		<!--<StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-			<TextBlock x:Uid="Settings_Theme" Style="{ThemeResource SubtitleTextBlockStyle}" />
-			<StackPanel Margin="{StaticResource XSmallTopMargin}">
-				-->
-		<!--  Light theme  -->
-		<!--
-				<RadioButton
-					x:Uid="Settings_Theme_Light"
-					Command="{x:Bind ViewModel.SwitchThemeCommand}"
-					FontSize="15"
-					GroupName="AppTheme"
-					IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}">
-					<RadioButton.CommandParameter>
-						<xaml:ElementTheme>Light</xaml:ElementTheme>
-					</RadioButton.CommandParameter>
-				</RadioButton>
-				-->
-		<!--  Dark theme  -->
-		<!--
-				<RadioButton
-					x:Uid="Settings_Theme_Dark"
-					Command="{x:Bind ViewModel.SwitchThemeCommand}"
-					FontSize="15"
-					GroupName="AppTheme"
-					IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}">
-					<RadioButton.CommandParameter>
-						<xaml:ElementTheme>Dark</xaml:ElementTheme>
-					</RadioButton.CommandParameter>
-				</RadioButton>
-				-->
-		<!--  Default theme  -->
-		<!--
-				<RadioButton
-					x:Uid="Settings_Theme_Default"
-					Command="{x:Bind ViewModel.SwitchThemeCommand}"
-					FontSize="15"
-					GroupName="AppTheme"
-					IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}">
-					<RadioButton.CommandParameter>
-						<xaml:ElementTheme>Default</xaml:ElementTheme>
-					</RadioButton.CommandParameter>
-				</RadioButton>
-			</StackPanel>
-		</StackPanel>-->
 		<!--  Settings  -->
 		<Border
 			Grid.Row="1"
@@ -80,11 +35,11 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="2*" />
 					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="0.5*" />
 					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="5*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="1*" />
 				</Grid.ColumnDefinitions>
 				<!--  Headers  -->
 				<TextBlock
@@ -132,60 +87,42 @@
 					Grid.Column="3"
 					Width="1"
 					Fill="DimGray" />
-				<!--  EF storage  -->
-				<TextBox
-					x:Uid="SettingEfStorage"
-					Grid.Row="2"
-					Grid.Column="0"
-					Margin="5,0,0,0"
-					Background="Transparent"
-					BorderBrush="Transparent"
-					HorizontalTextAlignment="Left"
-					IsReadOnly="True"
-					TextAlignment="Left" />
-				<CheckBox
-					Grid.Row="2"
-					Grid.Column="2"
-					Margin="15,0,15,0"
-					IsChecked="{x:Bind ViewModel.IsExistsEfStorage, Mode=OneWay}"
-					IsEnabled="False" />
-				<TextBox
-					Grid.Row="2"
-					Grid.Column="4"
-					Margin="2"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
-					Text="{x:Bind ViewModel.XmlEfStorage, Mode=TwoWay}" />
-				<!--  File session  -->
-				<TextBox
-					x:Uid="SettingTgSession"
-					Grid.Row="3"
-					Grid.Column="0"
-					Margin="5,0,0,0"
-					Background="Transparent"
-					BorderBrush="Transparent"
-					HorizontalTextAlignment="Left"
-					IsReadOnly="True"
-					TextAlignment="Left" />
-				<CheckBox
-					Grid.Row="3"
-					Grid.Column="2"
-					Margin="15,0,15,0"
-					IsChecked="{x:Bind ViewModel.IsExistsFileSession, Mode=OneWay}"
-					IsEnabled="False" />
-				<TextBox
-					Grid.Row="3"
-					Grid.Column="4"
-					Margin="2"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Center"
-					HorizontalContentAlignment="Left"
-					Text="{x:Bind ViewModel.XmlFileSession, Mode=TwoWay}" />
 				<!--  App theme  -->
+				<!--<StackPanel Margin="{StaticResource SmallTopBottomMargin}">
+					<RadioButton
+						x:Uid="Settings_Theme_Light"
+						Command="{x:Bind ViewModel.SwitchThemeCommand}"
+						FontSize="15"
+						GroupName="AppTheme"
+						IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}">
+						<RadioButton.CommandParameter>
+							<xaml:ElementTheme>Light</xaml:ElementTheme>
+						</RadioButton.CommandParameter>
+					</RadioButton>
+					<RadioButton
+						x:Uid="Settings_Theme_Dark"
+						Command="{x:Bind ViewModel.SwitchThemeCommand}"
+						FontSize="15"
+						GroupName="AppTheme"
+						IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}">
+						<RadioButton.CommandParameter>
+							<xaml:ElementTheme>Dark</xaml:ElementTheme>
+						</RadioButton.CommandParameter>
+					</RadioButton>
+					<RadioButton
+						x:Uid="Settings_Theme_Default"
+						Command="{x:Bind ViewModel.SwitchThemeCommand}"
+						FontSize="15"
+						GroupName="AppTheme"
+						IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}">
+						<RadioButton.CommandParameter>
+							<xaml:ElementTheme>Default</xaml:ElementTheme>
+						</RadioButton.CommandParameter>
+					</RadioButton>
+				</StackPanel>-->
 				<TextBox
 					x:Uid="SettingAppTheme"
-					Grid.Row="4"
+					Grid.Row="2"
 					Grid.Column="0"
 					Margin="5,0,0,0"
 					Background="Transparent"
@@ -195,15 +132,76 @@
 					TextAlignment="Left" />
 				<ComboBox
 					x:Name="ComboBoxAppThemes"
-					Grid.Row="4"
+					Grid.Row="2"
 					Grid.Column="4"
+					Margin="2"
 					HorizontalAlignment="Stretch"
 					ItemsSource="{x:Bind ViewModel.AppThemes, Mode=OneWay}"
 					PlaceholderText="App theme"
-					SelectedItem="{x:Bind ViewModel.CurrentTheme, Mode=TwoWay}" />
+					SelectedItem="{x:Bind ViewModel.AppTheme, Mode=TwoWay}" />
+				<!--  EF storage  -->
+				<TextBox
+					x:Uid="SettingEfStorage"
+					Grid.Row="3"
+					Grid.Column="0"
+					Margin="5,0,0,0"
+					Background="Transparent"
+					BorderBrush="Transparent"
+					HorizontalTextAlignment="Left"
+					IsReadOnly="True"
+					TextAlignment="Left" />
+				<StackPanel
+					Grid.Row="3"
+					Grid.Column="2"
+					Width="50"
+					Margin="2"
+					HorizontalAlignment="Center">
+					<CheckBox
+						Margin="15,0,0,0"
+						IsChecked="{x:Bind ViewModel.IsExistsEfStorage, Mode=OneWay}"
+						IsEnabled="False" />
+				</StackPanel>
+				<TextBox
+					Grid.Row="3"
+					Grid.Column="4"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Text="{x:Bind ViewModel.AppEfStorage, Mode=TwoWay}" />
+				<!--  File session  -->
+				<TextBox
+					x:Uid="SettingTgSession"
+					Grid.Row="4"
+					Grid.Column="0"
+					Margin="5,0,0,0"
+					Background="Transparent"
+					BorderBrush="Transparent"
+					HorizontalTextAlignment="Left"
+					IsReadOnly="True"
+					TextAlignment="Left" />
+				<StackPanel
+					Grid.Row="4"
+					Grid.Column="2"
+					Width="50"
+					Margin="2"
+					HorizontalAlignment="Center">
+					<CheckBox
+						Margin="15,0,0,0"
+						IsChecked="{x:Bind ViewModel.IsExistsTgSession, Mode=OneWay}"
+						IsEnabled="False" />
+				</StackPanel>
+				<TextBox
+					Grid.Row="4"
+					Grid.Column="4"
+					Margin="2"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Text="{x:Bind ViewModel.AppTgSession, Mode=TwoWay}" />
 			</Grid>
 		</Border>
-		<!--  Buttons  -->
+		<!--  Actions  -->
 		<Border
 			Grid.Row="2"
 			Margin="2,15,2,0"
@@ -212,40 +210,18 @@
 			CornerRadius="5"
 			UseLayoutRounding="True">
 			<Grid VerticalAlignment="Top">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="1*" />
-					<ColumnDefinition Width="1*" />
-				</Grid.ColumnDefinitions>
 				<!--  Default button  -->
 				<Button
-					x:Uid="HomeResetToDefault"
-					Grid.Column="0"
 					Margin="2"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch"
 					Command="{x:Bind Path=ViewModel.SettingsDefaultCommand, Mode=OneWay}">
 					<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-						<FontIcon Margin="10,0,10,0" Glyph="&#xE72C;" />
+						<FontIcon Margin="10,0,20,0" Glyph="&#xE72C;" />
 						<TextBlock
-							Margin="5,0,0,0"
-							VerticalAlignment="Center"
-							Text="Reset to Default" />
-					</StackPanel>
-				</Button>
-				<!--  Save button  -->
-				<Button
-					x:Uid="HomeSaveToXml"
-					Grid.Column="1"
-					Margin="2"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch"
-					Command="{x:Bind Path=ViewModel.SettingsSaveCommand, Mode=OneWay}">
-					<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-						<FontIcon Margin="10,0,10,0" Glyph="&#xE74E;" />
-						<TextBlock
-							Margin="5,0,0,0"
-							VerticalAlignment="Center"
-							Text="Save to XML" />
+							x:Uid="ActionResetToDefault"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center" />
 					</StackPanel>
 				</Button>
 			</Grid>

@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Services;
 
-public class WebViewService : IWebViewService
+public sealed class WebViewService : IWebViewService
 {
 	private WebView2? _webView;
 

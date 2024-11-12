@@ -3,7 +3,6 @@
 
 namespace TgDownloaderDesktop.Views;
 
-// TODO: Set the URL for your privacy policy by updating SettingsPage_PrivacyTermsLink.NavigateUri in Resources.resw.
 public sealed partial class TgSettingsPage : Page
 {
 	#region Public and private fields, properties, constructor
@@ -21,16 +20,19 @@ public sealed partial class TgSettingsPage : Page
 
 	#region Public and private methods
 
+	protected override async void OnNavigatedTo(NavigationEventArgs e)
+	{
+		base.OnNavigatedTo(e);
+		await ViewModel.SettingsService.LoadAsync();
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		ViewModel.OnLoaded(XamlRoot);
 		ComboBoxAppThemes.SelectionChanged += Selector_OnSelectionChanged;
 	}
 
-	private async void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-	{
-		await ViewModel.SwitchThemeAsync();
-	}
+	private async void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SetThemeAsync();
 
 	#endregion
 }

@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Notifications;
 
-public class AppNotificationService : IAppNotificationService
+public sealed class AppNotificationService : IAppNotificationService
 {
 	private readonly INavigationService _navigationService;
 

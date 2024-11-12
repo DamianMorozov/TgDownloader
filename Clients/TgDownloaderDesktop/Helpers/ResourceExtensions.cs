@@ -16,6 +16,7 @@ public static class ResourceExtensions
 	#region Public and private methods
 
 	public static string AskAskSettingsSave() => "AskSettingsSave".GetLocalized();
+	public static string AskAskSettingsLoad() => "AskSettingsLoad".GetLocalized();
 	public static string AskSettingsDefault() => "AskSettingsDefault".GetLocalized();
 	public static string GetYesButton() => "YesButton".GetLocalized();
 	public static string GetNoButton() => "NoButton".GetLocalized();

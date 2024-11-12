@@ -1,22 +1,21 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Enums;
-
 namespace TgDownloaderDesktop.Services;
 
-public class ActivationService : IActivationService
+public sealed class ActivationService : IActivationService
 {
 	private readonly ActivationHandler<LaunchActivatedEventArgs> _defaultHandler;
 	private readonly IEnumerable<IActivationHandler> _activationHandlers;
-	private readonly IThemeSelectorService _themeSelectorService;
+	private readonly ITgSettingsService _settingsService;
 	private UIElement? _shell = null;
 
-	public ActivationService(ActivationHandler<LaunchActivatedEventArgs> defaultHandler, IEnumerable<IActivationHandler> activationHandlers, IThemeSelectorService themeSelectorService)
+	public ActivationService(ActivationHandler<LaunchActivatedEventArgs> defaultHandler, IEnumerable<IActivationHandler> activationHandlers, 
+		ITgSettingsService settingsService)
 	{
 		_defaultHandler = defaultHandler;
 		_activationHandlers = activationHandlers;
-		_themeSelectorService = themeSelectorService;
+		_settingsService = settingsService;
 	}
 
 	public async Task ActivateAsync(object activationArgs)
@@ -52,7 +51,7 @@ public class ActivationService : IActivationService
 
 	private async Task InitializeAsync()
 	{
-		await _themeSelectorService.InitializeAsync().ConfigureAwait(false);
+		await _settingsService.LoadAsync();
 		await Task.CompletedTask;
 	}
 
@@ -64,7 +63,7 @@ public class ActivationService : IActivationService
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
 		//TgDesktopUtils.SetupClient();
 
-		await _themeSelectorService.SetRequestedThemeAsync();
+		await _settingsService.SetRequestedThemeAsync();
 		await Task.CompletedTask;
 	}
 }

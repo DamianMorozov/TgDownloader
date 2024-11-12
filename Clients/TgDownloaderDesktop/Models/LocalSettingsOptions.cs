@@ -3,9 +3,10 @@
 
 namespace TgDownloaderDesktop.Models;
 
-public class LocalSettingsOptions
+public sealed class LocalSettingsOptions
 {
     public string? ApplicationDataFolder { get; set; }
-
     public string? LocalSettingsFile { get; set; }
+    public string? EfStorage { get; set; }
+    public string? TgSession { get; set; }
 }

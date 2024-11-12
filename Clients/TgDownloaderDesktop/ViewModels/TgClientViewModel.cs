@@ -1,12 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using Microsoft.UI.Xaml.Media;
-using TgDownloaderDesktop.Utils;
-using TgStorage.Domain.Apps;
-using TgStorage.Domain.Proxies;
-using TgStorage.Enums;
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -113,7 +107,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     public void OnNavigatedTo(object parameter)
     {
         OnLoaded(parameter);
-        IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+        IsTgSession = TgAppSettings.AppXml.IsExistsFileSession;
         LoadProxiesForClientAsync().GetAwaiter().GetResult();
     }
 
@@ -146,7 +140,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             await Task.Delay(1);
             //TgDesktopUtils.TgClient.UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
             //    ? TgDesktopUtils.TgLocale.MenuClientIsConnected : TgDesktopUtils.TgLocale.MenuClientIsDisconnected);
-            IsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
+            IsTgSession = TgAppSettings.AppXml.IsExistsFileSession;
             if (TgDesktopUtils.TgClient.IsReady)
                 ViewModelClearConfig();
             //IsLoad = false;

@@ -53,7 +53,7 @@ public sealed partial class TgDashboardViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            TgAppSettings.StoreXmlSettingsUnsafe();
+            TgAppSettings.StoreXmlSettings();
             TgAppSettings.LoadXmlSettings();
         }, false).ConfigureAwait(false);
 	}

@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TL;
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -11,62 +9,100 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private IThemeSelectorService _themeSelectorService;
+	private ITgSettingsService _settingsService;
 	[ObservableProperty]
 	private ElementTheme _elementTheme;
 	[ObservableProperty]
 	private ObservableCollection<string> _appThemes;
 	[ObservableProperty]
-	private string _currentTheme = default!;
-	[ObservableProperty]
-	private string _xmlEfStorage = default!;
+	private string _appTheme = default!;
+	private string _appEfStorage = default!;
+	public string AppEfStorage
+	{
+		get => _appEfStorage;
+		set
+		{
+			if (SetProperty(ref _appEfStorage, value))
+			{
+				SetEfStorageAsync().ConfigureAwait(false);
+			}
+			IsExistsEfStorage = File.Exists(value);
+		}
+	}
 	[ObservableProperty]
 	private bool _isExistsEfStorage;
+	private string _appTgSession = default!;
+	public string AppTgSession
+	{
+		get => _appTgSession;
+		set
+		{
+			if (SetProperty(ref _appTgSession, value))
+			{
+				SetTgSessionAsync().ConfigureAwait(false);
+			}
+			IsExistsTgSession = File.Exists(value);
+		}
+	}
 	[ObservableProperty]
-	private string _xmlFileSession = default!;
-	[ObservableProperty]
-	private bool _isExistsFileSession;
+	private bool _isExistsTgSession;
 
 	public ICommand SettingsDefaultCommand { get; }
-	public ICommand SettingsSaveCommand { get; }
 	public ICommand SwitchThemeCommand { get; }
 
-	public TgSettingsViewModel(IThemeSelectorService themeSelectorService)
+	public TgSettingsViewModel(ITgSettingsService settingsService)
 	{
-		ThemeSelectorService = themeSelectorService;
-		ElementTheme = ThemeSelectorService.Theme;
+		SettingsService = settingsService;
 		AppThemes =
-			[ ResourceExtensions.GetSettingsThemeLight(), ResourceExtensions.GetSettingsThemeDark(), ResourceExtensions.GetSettingsThemeDefault() ];
-		CurrentTheme = ElementTheme.ToString();
-		LoadXmlSettings();
+			[ResourceExtensions.GetSettingsThemeLight(), ResourceExtensions.GetSettingsThemeDark(), ResourceExtensions.GetSettingsThemeDefault()];
+		Load();
 
-		SwitchThemeCommand = new RelayCommand<ElementTheme>(async theme => await SwitchThemeAsync(theme));
 		SettingsDefaultCommand = new RelayCommand(async () => await SettingsDefaultAsync());
-		SettingsSaveCommand = new RelayCommand(async () => await SettingsSaveAsync());
+		SwitchThemeCommand = new RelayCommand<ElementTheme>(async theme => await SetThemeAsync(theme));
 	}
 
 	#endregion
 
 	#region Public and private methods
 
-	public async Task SwitchThemeAsync()
+	private void Load()
 	{
-		var theme = ElementTheme.Default;
-		if (CurrentTheme == ResourceExtensions.GetSettingsThemeLight())
-			theme = ElementTheme.Light;
-		else if (CurrentTheme == ResourceExtensions.GetSettingsThemeDark())
-			theme = ElementTheme.Dark;
-		await SwitchThemeAsync(theme);
+		ElementTheme = SettingsService.Theme;
+		AppTheme = ElementTheme.ToString();
+		AppEfStorage = SettingsService.EfStorage;
+		AppTgSession = SettingsService.TgSession;
 	}
 
-	public async Task SwitchThemeAsync(ElementTheme theme)
+	public async Task SetThemeAsync()
+	{
+		var theme = ElementTheme.Default;
+		if (AppTheme == ResourceExtensions.GetSettingsThemeLight())
+			theme = ElementTheme.Light;
+		else if (AppTheme == ResourceExtensions.GetSettingsThemeDark())
+			theme = ElementTheme.Dark;
+		await SetThemeAsync(theme);
+	}
+
+	public async Task SetThemeAsync(ElementTheme theme)
 	{
 		if (ElementTheme != theme)
 		{
 			ElementTheme = theme;
-			await ThemeSelectorService.SetThemeAsync(theme);
-			CurrentTheme = theme.ToString();
+			await SettingsService.SetThemeAsync(ElementTheme);
+			AppTheme = ElementTheme.ToString();
 		}
+	}
+
+	public async Task SetEfStorageAsync()
+	{
+		await SettingsService.SetEfStorageAsync(AppEfStorage);
+		await Task.CompletedTask;
+	}
+
+	public async Task SetTgSessionAsync()
+	{
+		await SettingsService.SetTgSessionAsync(AppTgSession);
+		await Task.CompletedTask;
 	}
 
 	private async Task SettingsDefaultAsync()
@@ -81,41 +117,11 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 			DefaultButton = ContentDialogButton.Close,
 			PrimaryButtonCommand = new RelayCommand(() =>
 			{
-				TgAppSettings.DefaultXmlSettings();
-				LoadXmlSettings();
+				SettingsService.Default();
+				Load();
 			})
 		};
 		_ = await dialog.ShowAsync();
-	}
-
-	private async Task SettingsSaveAsync()
-	{
-		if (XamlRootVm is null) return;
-		ContentDialog dialog = new()
-		{
-			XamlRoot = XamlRootVm,
-			Title = ResourceExtensions.AskAskSettingsSave(),
-			PrimaryButtonText = ResourceExtensions.GetYesButton(),
-			CloseButtonText = ResourceExtensions.GetCancelButton(),
-			DefaultButton = ContentDialogButton.Close,
-			PrimaryButtonCommand = new RelayCommand(() =>
-			{
-				TgAppSettings.AppXml.XmlEfStorage = XmlEfStorage;
-				TgAppSettings.AppXml.XmlFileSession = XmlFileSession;
-				TgAppSettings.StoreXmlSettingsUnsafe();
-				LoadXmlSettings();
-			})
-		};
-		_ = await dialog.ShowAsync();
-	}
-
-	private void LoadXmlSettings()
-	{
-		TgAppSettings.LoadXmlSettings();
-		XmlEfStorage = TgAppSettings.AppXml.XmlEfStorage;
-		IsExistsEfStorage = TgAppSettings.AppXml.IsExistsEfStorage;
-		XmlFileSession = TgAppSettings.AppXml.XmlFileSession;
-		IsExistsFileSession = TgAppSettings.AppXml.IsExistsFileSession;
 	}
 
 	#endregion

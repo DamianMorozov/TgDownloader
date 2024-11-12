@@ -10,7 +10,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	public bool IsLoad { get; set; }
-	public bool IsFileSession { get; set; }
+	public bool IsTgSession { get; set; }
 	public string StateConnectDt { get; set; } = string.Empty;
 	public string StateConnectMsg { get; set; } = string.Empty;
 	public string StateExceptionDt { get; set; } = string.Empty;

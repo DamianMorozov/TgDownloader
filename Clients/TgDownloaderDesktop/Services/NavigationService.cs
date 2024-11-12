@@ -5,7 +5,7 @@ namespace TgDownloaderDesktop.Services;
 
 // For more information on navigation between pages see
 // https://github.com/microsoft/TemplateStudio/blob/main/docs/WinUI/navigation.md
-public class NavigationService : INavigationService
+public sealed class NavigationService : INavigationService
 {
 	private readonly IPageService _pageService;
 	private object? _lastParameterUsed;

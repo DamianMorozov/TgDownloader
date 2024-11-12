@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Services;
 
-public class NavigationViewService : INavigationViewService
+public sealed class NavigationViewService : INavigationViewService
 {
 	private readonly INavigationService _navigationService;
 	private readonly IPageService _pageService;

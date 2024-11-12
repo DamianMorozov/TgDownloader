@@ -201,11 +201,14 @@
   &lt;/actions&gt;
 &lt;/toast&gt;</value>
   </data>
-  <data name="HomeResetToDefault.Content" xml:space="preserve">
+  <data name="ActionResetToDefault.Text" xml:space="preserve">
     <value>Reset to default</value>
   </data>
-  <data name="HomeSaveToXml.Content" xml:space="preserve">
-    <value>Save to XML</value>
+  <data name="ActionSave.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ActionLoad.Text" xml:space="preserve">
+    <value>Load</value>
   </data>
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
     <value>Github</value>
@@ -236,6 +239,9 @@
   </data>
   <data name="AskSettingsSave" xml:space="preserve">
     <value>Save settings?</value>
+  </data>
+  <data name="AskSettingsLoad" xml:space="preserve">
+    <value>Load settings?</value>
   </data>
   <data name="YesButton" xml:space="preserve">
     <value>Yes</value>

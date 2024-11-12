@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Services;
 
-public class PageService : IPageService
+public sealed class PageService : IPageService
 {
 	private readonly Dictionary<string, Type> _pages = new();
 
