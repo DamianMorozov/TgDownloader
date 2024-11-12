@@ -32,7 +32,7 @@ public sealed partial class Index : TgPageComponentBase
 	private async Task SaveToXml(MouseEventArgs arg)
 	{
 		await Task.Delay(1);
-		AppSettings.StoreXmlSettingsUnsafe();
+		AppSettings.StoreXmlSettings();
 		AppSettings.LoadXmlSettings();
 	}
 
