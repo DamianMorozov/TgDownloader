@@ -31,7 +31,6 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string From => "from";
 	public string HomeResetToDefault => "Reset to default";
 	public string HomeSaveToXml => "Save to XML";
-	public string MenuAppDeprecatedStorage => "Setting the path to the deprecated storage file";
 	public string MenuAppEfStorage => "Setting the path to the EF Core storage file";
 	public string MenuAppFileSession => "Setting the path to the session file";
 	public string MenuAppUseProxy => "Usage proxy";
