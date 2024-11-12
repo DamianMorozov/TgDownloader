@@ -19,7 +19,9 @@ jobs:
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@2
-  
+        with:
+            vs-prerelease: true
+
       - name: Setup Nuget Cache
         uses: actions/cache@v4
         with:
