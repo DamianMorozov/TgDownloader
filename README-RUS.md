@@ -37,4 +37,3 @@
 
 ## Docker образы
 - [TgDownloader-Console Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
-- [TgDownloader-Blazor Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-blazor/)
