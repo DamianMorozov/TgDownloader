@@ -4,6 +4,10 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.190] - 2024-11-12
+### Добавлено
+- Добавлена языковая локализация для TgDownloaderDesktop
+
 ## [0.5.180] - 2024-11-10
 ### Исправлено
 - Созданы сущности EF Core

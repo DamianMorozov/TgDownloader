@@ -8,7 +8,7 @@ docker-compose down tgdownloader-console
 docker-compose up -d tgdownloader-console
 ```
 
-## Файл d:\Dockers\tgdownloader-console\docker-compose.yml
+## Файл docker-compose.yml
 ```
 services:
   tgdownloader-console:
@@ -23,4 +23,10 @@ services:
      - .\TgDownloader.session:/app/TgDownloader.session:rw # optional
     container_name: tgdownloader-console
     restart: on-failure
+```
+
+## Использование в веб-браузере
+http://localhost:7681
+```
+dotnet TgDownloaderConsole.dll
 ```

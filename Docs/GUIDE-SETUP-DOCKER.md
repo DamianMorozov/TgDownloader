@@ -8,7 +8,7 @@ docker-compose down tgdownloader-console
 docker-compose up -d tgdownloader-console
 ```
 
-## File d:\Dockers\tgdownloader-console\docker-compose.yml
+## File docker-compose.yml
 ```
 services:
   tgdownloader-console:
