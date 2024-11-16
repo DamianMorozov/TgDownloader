@@ -9,7 +9,7 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
+    public TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfSourceEntity Item { get; set; } = default!;
     public float Progress => (float) Item.FirstId * 100 / Item.Count;
     public string ProgressPercentString => Progress == 0 ? "{0:00.00}" : $"{Progress:#00.00} %";
@@ -74,7 +74,7 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
     public string IsReadySourceDirectoryDescription => IsReadySourceDirectory 
         ? $"{TgLocaleHelper.Instance.TgDirectoryIsExists}." : $"{TgLocaleHelper.Instance.TgDirectoryIsNotExists}!";
     public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
-    public bool IsReadySourceId => SourceId != 0;
+    public bool IsReadySourceId => SourceId > 0;
     public bool IsReadySourceFirstId => SourceFirstId > 0;
     public bool IsDownload { get; private set; }
 

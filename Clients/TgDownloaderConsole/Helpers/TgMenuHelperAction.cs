@@ -51,72 +51,74 @@ internal partial class TgMenuHelper
 				Stopwatch sw = Stopwatch.StartNew();
 				Stopwatch swFileRefresh = Stopwatch.StartNew();
 				// ProgressTask
+				ProgressTask progressTaskSource = context.AddTask("Downloading source", new()
+				{
+					AutoStart = false,
+					MaxValue = tgDownloadSettings.SourceVm.SourceLastId
+				});
 				ProgressTask[] progressTaskFiles = new ProgressTask[tgDownloadSettings.CountThreads];
 				for (int i = 0; i < tgDownloadSettings.CountThreads; i++)
 				{
-					progressTaskFiles[i] = context.AddTask(DownloadingFile, new ProgressTaskSettings
+					progressTaskFiles[i] = context.AddTask(DownloadingFile, new()
 					{
 						AutoStart = false,
 						MaxValue = 0,
 					});
 					progressTaskFiles[i].Value = 0;
 				}
-				ProgressTask progressTaskSource = context.AddTask("Downloading source", new ProgressTaskSettings
-				{
-					AutoStart = true,
-					MaxValue = tgDownloadSettings.SourceVm.SourceLastId
-				});
-				// Update console title.
+				// Update console title
 				async Task UpdateConsoleTitleAsync(string title)
 				{
 					await Task.Delay(1);
 					Console.Title = string.IsNullOrEmpty(title) ? $"{TgConstants.AppTitleConsoleShort}" : $"{TgConstants.AppTitleConsoleShort} {title}";
 				}
-				// Update source.
+				// Update source
 				async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
-                {
-	                await Task.Delay(1);
-	                if (string.IsNullOrEmpty(message)) return;
-					progressTaskSource.Description = $"Read the message {messageId} from {tgDownloadSettings.SourceVm.SourceLastId}";
+				{
+					await Task.Delay(1);
+					if (string.IsNullOrEmpty(message)) return;
+					progressTaskSource.Description = $"{message} {messageId} from {tgDownloadSettings.SourceVm.SourceLastId}";
 					progressTaskSource.Value = messageId;
 					context.Refresh();
 				}
-				// Update download file state.
+				// Update source
+				void UpdateStateSource(long sourceId, int messageId, string message) => 
+					UpdateStateSourceAsync(sourceId, messageId, message).GetAwaiter().GetResult();
+				// Update download file state
 				async Task UpdateStateFileAsync(long sourceId, int messageId, string fileName, long fileSize, long transmitted, long fileSpeed, 
 					bool isFileNewDownload, int threadNumber)
-                {
-	                await Task.Delay(1);
+				{
+					await Task.Delay(1);
 	                progressTaskSource.Description = $"Read the message {tgDownloadSettings.SourceVm.SourceFirstId} from {tgDownloadSettings.SourceVm.SourceLastId}";
 	                progressTaskSource.Value = tgDownloadSettings.SourceVm.SourceFirstId;
-					// Download job.
+					// Download job
 					if (!string.IsNullOrEmpty(fileName) && !isFileNewDownload && tgDownloadSettings.SourceVm.SourceId.Equals(sourceId))
 	                {
-						// ProgressTask.
+						if (!progressTaskFiles[threadNumber].IsStarted)
+							progressTaskFiles[threadNumber].StartTask();
 						progressTaskFiles[threadNumber].Description = fileName;
 						progressTaskFiles[threadNumber].Value = transmitted;
 						if (!progressTaskFiles[threadNumber].MaxValue.Equals(fileSize))
 							progressTaskFiles[threadNumber].MaxValue = fileSize;
-						// Download status job.
 						tgDownloadSettings.SourceVm.SourceFirstId = messageId;
 						tgDownloadSettings.SourceVm.CurrentFileName = fileName;
 						tgDownloadSettings.SourceVm.CurrentFileSize = fileSize;
 						tgDownloadSettings.SourceVm.CurrentFileTransmitted = transmitted;
 						tgDownloadSettings.SourceVm.CurrentFileSpeed = fileSpeed;
 	                }
-					// Download reset.
+					// Download reset
 					else
 	                {
-						// ProgressTask.
 						progressTaskFiles[threadNumber].Value = 0;
 						progressTaskFiles[threadNumber].MaxValue = fileSize;
-						// Download status reset.
+						progressTaskFiles[threadNumber].StopTask();
 						tgDownloadSettings.SourceVm.SourceFirstId = messageId;
 						tgDownloadSettings.SourceVm.CurrentFileName = string.Empty;
 						tgDownloadSettings.SourceVm.CurrentFileSize = 0;
 						tgDownloadSettings.SourceVm.CurrentFileTransmitted = 0;
 						tgDownloadSettings.SourceVm.CurrentFileSpeed = 0;
 	                }
-					// State.
+					// State
 					if (!swFileRefresh.IsRunning)
 						swFileRefresh.Start();
 					else if (swFileRefresh.Elapsed > TimeSpan.FromMilliseconds(1_000))
@@ -125,27 +127,26 @@ internal partial class TgMenuHelper
 						context.Refresh();
 					}
 				}
-				// Setup.
+				// Setup
 				TgClient.SetupUpdateTitle(UpdateConsoleTitleAsync);
                 TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
                 TgClient.SetupUpdateStateFile(UpdateStateFileAsync);
-				// Action.
+				// Action
 				action(tgDownloadSettings);
 				sw.Stop();
+				if (progressTaskSource.IsStarted)
+					progressTaskSource.StopTask();
 				foreach (var progressTaskFile in progressTaskFiles)
 				{
-					progressTaskFile.StopTask();
+					if (progressTaskFile.IsStarted)
+						progressTaskFile.StopTask();
 				}
-				progressTaskSource.StopTask();
-                UpdateStateSourceAsync(0, 0, 
+                UpdateStateSource(0, 0, 
                     isScanCount
                         ? $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceScanCount, tgDownloadSettings.SourceVm.SourceScanCurrent)}"
-                        : $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceLastId)}")
-                    .GetAwaiter().GetResult();
+                        : $"{GetStatus(sw, tgDownloadSettings.SourceVm.SourceFirstId, tgDownloadSettings.SourceVm.SourceLastId)}");
             });
 
-		//TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
-		//Console.ReadKey();
 		TgLog.MarkupLine(TgLocale.WaitDownloadComplete);
 		while (!tgDownloadSettings.SourceVm.IsComplete)
 		{

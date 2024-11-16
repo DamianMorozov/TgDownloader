@@ -26,7 +26,7 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
-	[DefaultValue(1)]
+	[DefaultValue(-1)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
 	public long Id { get; set; }
@@ -123,17 +123,18 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
         return this;
 	}
 
-	public string ToConsoleStringShort() =>
-	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} | " +
-	    $"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30))} | " +
-	    $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30))} | " +
-	    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
-
-    public string ToConsoleString() =>
-	    $"{GetPercentCountString()} | {(IsAutoUpdate ? "a" : " ")} | {Id} | " +
-	    $"{(UserName is not null ? TgDataFormatUtils.GetFormatString(UserName, 30) : string.Empty)} | " +
-	    $"{(Title is not null ? TgDataFormatUtils.GetFormatString(Title, 30) : string.Empty)} | " +
-	    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+	public string ToConsoleString()
+	{
+		var userName = string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30).TrimEnd();
+		return string.IsNullOrEmpty(userName)
+            ? $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} " +
+		       $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
+		       $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}"
+            : $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} " +
+		       $"{userName} | " +
+		       $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
+		       $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+	}
 
 	public string GetPercentCountString()
     {

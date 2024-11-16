@@ -89,15 +89,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	internal void FillTableColumns(Table table)
 	{
-		if (table.Columns.Count > 0)
-			return;
-
-		table.AddColumn(new TableColumn(
-			new Markup(TgLocale.AppName, StyleMain))
-		{ Width = 20 }.LeftAligned());
-		table.AddColumn(new TableColumn(
-			new Markup(TgLocale.AppValue, StyleMain))
-		{ Width = 80 }.LeftAligned());
+		if (table.Columns.Count > 0) return;
+		table.AddColumn(new TableColumn(new Markup(TgLocale.AppName, StyleMain)) { Width = 20 }.LeftAligned());
+		table.AddColumn(new TableColumn(new Markup(TgLocale.AppValue, StyleMain)) { Width = 80 }.LeftAligned());
 	}
 
 	internal void FillTableRowsMain(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
@@ -283,10 +277,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = SourceRepository.GetAsync(new TgEfSourceEntity
+			TgEfSourceEntity source = SourceRepository.GetAsync(new() 
 				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
-				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
+				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
 		}
@@ -302,10 +296,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = SourceRepository.GetAsync(new TgEfSourceEntity
-				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			TgEfSourceEntity source = SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
-				new Markup(TgLog.GetMarkupString(source.ToConsoleStringShort())));
+				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
 		}
@@ -349,7 +342,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
-				new Markup(tgDownloadSettings.SourceVm.SourceDirectory));
+				new Markup(TgLogHelper.Instance.GetMarkupString(tgDownloadSettings.SourceVm.SourceDirectory, isReplaceSpec: true)));
 
 		// First/last ID
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
@@ -405,7 +398,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			.Title($"{title}?")
 			.PageSize(Console.WindowHeight - 17)
 			.AddChoices(isTrueFirst
-				? new List<string> { TgLocale.MenuIsTrue, TgLocale.MenuIsFalse }
+				? new() { TgLocale.MenuIsTrue, TgLocale.MenuIsFalse }
 				: new List<string> { TgLocale.MenuIsFalse, TgLocale.MenuIsTrue }));
 		return prompt.Equals(TgLocale.MenuIsTrue);
     }
@@ -429,7 +422,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return SourceRepository.Get(new TgEfSourceEntity { Id = id }, isNoTracking: true).Item;
+					return SourceRepository.Get(new() { Id = id }, isNoTracking: true).Item;
 			}
 		}
 		return SourceRepository.GetNew(isNoTracking: true).Item;

@@ -64,7 +64,7 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.SetSource:
-					tgDownloadSettings = SetupDownloadSource();
+					tgDownloadSettings = await SetupDownloadSourceAsync();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
 					await RunActionStatusAsync(tgDownloadSettings, 
@@ -106,10 +106,10 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
-	private TgDownloadSettingsViewModel SetupDownloadSource(long? id = null)
+	private async Task<TgDownloadSettingsViewModel> SetupDownloadSourceAsync(long? id = null)
 	{
 		TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSourceCore(id);
-		_ = TgClient.CreateSmartSource(tgDownloadSettings, true);
+		_ = await TgClient.CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: true);
 		LoadTgClientSettings(tgDownloadSettings, false, false);
 		return tgDownloadSettings;
 	}
@@ -144,7 +144,7 @@ internal partial class TgMenuHelper
 
 	private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		TgDownloadSmartSource smartSource = TgClient.CreateSmartSource(tgDownloadSettings, true);
+		TgDownloadSmartSource smartSource = await TgClient.CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: false);
 		if (smartSource.ChatBase is not null)
 		{
 			await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase);
@@ -212,7 +212,7 @@ internal partial class TgMenuHelper
 	private async Task UpdateSourceWithSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await tgDownloadSettings.UpdateSourceWithSettingsAsync();
-		// Refresh.
+		// Refresh
 		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource);
 	}
 

@@ -9,7 +9,6 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 	public TgEfSourceViewModel SourceVm { get; set; }
 	public TgEfVersionViewModel VersionVm { get; set; }
 	[DefaultValue(false)]
@@ -18,7 +17,7 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 	public bool IsRewriteMessages { get; set; }
 	[DefaultValue(true)]
 	public bool IsJoinFileNameWithMessageId { get; set; }
-	[DefaultValue(1)]
+	[DefaultValue(5)]
 	public int CountThreads { get; set; }
 
 	public TgDownloadSettingsViewModel()
@@ -40,7 +39,7 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
     public async Task UpdateSourceWithSettingsAsync()
     {
         if (!SourceVm.IsReadySourceId) return;
-        var storageResult = await SourceRepository.SaveAsync(SourceVm.Item);
+        var storageResult = await SourceVm.SourceRepository.SaveAsync(SourceVm.Item);
         if (storageResult.IsExists) 
 	        SourceVm.Item = storageResult.Item;
     }

@@ -41,7 +41,7 @@ public sealed class TgLogHelper : ITgHelper
 
 	public void SetMarkupLineStamp(Action<string> markupLineStamp) => _markupLineStamp = markupLineStamp;
 
-	public string GetMarkupString(string message, bool removeSpec = false) => removeSpec
+	public string GetMarkupString(string message, bool isReplaceSpec = false) => isReplaceSpec
 	? message
 		.Replace("[", "[[").Replace("]", "]]")
 		.Replace("'", "").Replace("/", "")
