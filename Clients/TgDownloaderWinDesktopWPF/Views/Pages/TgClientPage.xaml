@@ -4,11 +4,11 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:common="clr-namespace:TgDownloaderWinDesktopWPF.Common"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:helpers="clr-namespace:TgInfrastructure.Helpers;assembly=TgInfrastructure"
 	xmlns:local="clr-namespace:TgDownloaderWinDesktopWPF.Views.Pages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktopWPF.Utils"
-	xmlns:helpers="clr-namespace:TgInfrastructure.Helpers;assembly=TgInfrastructure"
 	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainClient, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgClientPage,

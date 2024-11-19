@@ -157,7 +157,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 			// Download settings.
             TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
 			// Update source from Telegram.
-			TgDesktopUtils.TgClient.UpdateSourceDb(ItemSourceVm, tgDownloadSettings);
+			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
             await SourceRepository.SaveAsync(ItemSourceVm.Item);
             // Message.
             await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
