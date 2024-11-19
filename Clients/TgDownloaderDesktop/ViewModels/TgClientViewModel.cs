@@ -4,10 +4,11 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigationAware
+public sealed partial class TgClientViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
+    public TgClientHelper TgClient { get; private set; } = TgClientHelper.Instance;
     private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
     private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
     public TgEfAppViewModel AppVm { get; }
@@ -19,62 +20,29 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     public string Password { get; set; }
     public string VerificationCode { get; set; }
     public string ServerMessage { get; set; }
-    public Brush BackgroundVerificationCode { get; set; }
-    public Brush BackgroundPassword { get; set; }
-    public Brush BackgroundFirstName { get; set; }
-    public Brush BackgroundLastName { get; set; }
-    public Brush BackgroundServerMessage { get; set; }
+    [ObservableProperty]
     private bool _isNeedVerificationCode;
-    public bool IsNeedVerificationCode
-    {
-        get => _isNeedVerificationCode;
-        set
-        {
-            _isNeedVerificationCode = value;
-            //BackgroundVerificationCode = value ? new SolidColorBrush(Color.Yellow) : new SolidColorBrush(System.Drawing.Color.Transparent);
-		}
-    }
+    [ObservableProperty]
     private bool _isNeedPassword;
-    public bool IsNeedPassword
-    {
-        get => _isNeedPassword;
-        set
-        {
-            _isNeedPassword = value;
-            //BackgroundPassword = value ? new(System.Drawing.Color.Yellow) : new SolidBrush(System.Drawing.Color.Transparent);
-        }
-    }
+    [ObservableProperty]
     private bool _isNeedFirstName;
-    public bool IsNeedFirstName
-    {
-        get => _isNeedFirstName;
-        set
-        {
-            _isNeedFirstName = value;
-            //BackgroundFirstName = value ? new(System.Drawing.Color.Yellow) : new SolidBrush(System.Drawing.Color.Transparent);
-        }
-    }
+	[ObservableProperty]
     private bool _isNeedLastName;
-    public bool IsNeedLastName
-    {
-        get => _isNeedLastName;
-        set
-        {
-            _isNeedLastName = value;
-            //BackgroundLastName = value ? new(System.Drawing.Color.Yellow) : new SolidBrush(System.Drawing.Color.Transparent);
-        }
-    }
-
+	[ObservableProperty]
+    private bool _isReady;
+	[ObservableProperty]
+    private bool _isNotReady;
+    
     public ICommand ClientConnectCommand { get; }
     public ICommand ClientDisconnectCommand { get; }
     public ICommand AppLoadCommand { get; }
     public ICommand AppSaveCommand { get; }
     public ICommand AppClearCommand { get; }
-    public ICommand AppEmptyCommand { get; }
+    public ICommand AppDeleteCommand { get; }
 
 
-    public TgClientViewModel()
-    {
+    public TgClientViewModel(ITgSettingsService settingsService) : base(settingsService)
+	{
         AppVm = new(AppRepository.GetFirstAsync(isNoTracking: false).GetAwaiter().GetResult().Item);
         ProxyVm = new(new());
         ProxiesVms = new();
@@ -84,53 +52,42 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         Notifications = string.Empty;
         Password = string.Empty;
         VerificationCode = string.Empty;
-        //BackgroundVerificationCode = new SolidBrush(System.Drawing.Color.Transparent);
-        //BackgroundPassword = new SolidBrush(System.Drawing.Color.Transparent);
-        //BackgroundFirstName = new SolidBrush(System.Drawing.Color.Transparent);
-        //BackgroundLastName = new SolidBrush(System.Drawing.Color.Transparent);
-        //BackgroundServerMessage = new SolidBrush(System.Drawing.Color.Transparent);
         StateConnectMsg = string.Empty;
         ServerMessage = string.Empty;
+        AppEfStorage = SettingsService.EfStorage;
+        AppTgSession = SettingsService.TgSession;
 
-        ClientConnectCommand = new RelayCommand<TgEfProxyViewModel>(async (proxyVm) => await ClientConnectAsync(proxyVm));
+		ClientConnectCommand = new RelayCommand<TgEfProxyViewModel>(async proxyVm => await ClientConnectAsync(proxyVm));
         ClientDisconnectCommand = new RelayCommand(async () => await ClientDisconnectAsync());
         AppLoadCommand = new RelayCommand(async () => await AppLoadAsync());
         AppSaveCommand = new RelayCommand(async () => await AppSaveAsync());
         AppClearCommand = new RelayCommand(async () => await AppClearAsync());
-        AppEmptyCommand = new RelayCommand(async () => await AppEmptyAsync());
+        AppDeleteCommand = new RelayCommand(async () => await AppDeleteAsync());
     }
 
     #endregion
 
     #region Public and private methods
 
-    public void OnNavigatedTo(object parameter)
+    public async Task OnNavigatedToAsync(object parameter)
     {
         OnLoaded(parameter);
-        IsTgSession = TgAppSettings.AppXml.IsExistsFileSession;
-        LoadProxiesForClientAsync().GetAwaiter().GetResult();
-    }
-
-	public void OnNavigatedFrom() { }
-
-    public async Task LoadProxiesForClientAsync()
-    {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
-            TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
-	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
-            ProxiesVms = new();
-            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
-            {
-                ProxiesVms.Add(new(proxy));
-            }
-            if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
-            {
-                ProxyVm = new(proxyNew);
-                ProxiesVms.Add(ProxyVm);
-            }
-        }, false);
+	        await Task.Delay(1);
+	        TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
+		        new() { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
+	        ProxiesVms = new();
+	        foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
+	        {
+		        ProxiesVms.Add(new(proxy));
+	        }
+	        if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
+	        {
+		        ProxyVm = new(proxyNew);
+		        ProxiesVms.Add(ProxyVm);
+	        }
+		}, false);
     }
 
     public async Task AfterClientConnectAsync()
@@ -138,9 +95,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            //TgDesktopUtils.TgClient.UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
+            //UpdateStateConnect(TgDesktopUtils.TgClient.IsReady
             //    ? TgDesktopUtils.TgLocale.MenuClientIsConnected : TgDesktopUtils.TgLocale.MenuClientIsDisconnected);
-            IsTgSession = TgAppSettings.AppXml.IsExistsFileSession;
             if (TgDesktopUtils.TgClient.IsReady)
                 ViewModelClearConfig();
             //IsLoad = false;
@@ -149,7 +105,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public string? ConfigClientDesktop(string what)
     {
-        TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
+        TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}").GetAwaiter();
 
         switch (what)
         {
@@ -223,8 +179,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
             TgDesktopUtils.TgClient.Disconnect();
+            await Task.CompletedTask;
         }, false).ConfigureAwait(false);
     }
 
@@ -232,37 +188,37 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
-		    await Task.Delay(1);
 		    AppVm.App = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
-	    }, false).ConfigureAwait(false);
+		    await Task.CompletedTask;
+		}, false).ConfigureAwait(false);
     }
 
     public async Task AppSaveAsync()
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
             await AppRepository.DeleteAllAsync();
             await AppRepository.SaveAsync(AppVm.App);
-        }, false).ConfigureAwait(false);
+            await Task.CompletedTask;
+		}, false).ConfigureAwait(false);
     }
 
     public async Task AppClearAsync()
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
             AppVm.App = (await AppRepository.GetNewAsync(isNoTracking: false)).Item;
-        }, false).ConfigureAwait(true);
+            await Task.CompletedTask;
+		}, false).ConfigureAwait(true);
     }
 
-    public async Task AppEmptyAsync()
+    public async Task AppDeleteAsync()
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
             await AppRepository.DeleteAllAsync();
-        }, false).ConfigureAwait(true);
+            await Task.CompletedTask;
+		}, false).ConfigureAwait(true);
 
         await AppLoadAsync();
     }

@@ -10,7 +10,7 @@ public sealed class PageService : IPageService
 	public PageService()
 	{
 		Configure<TgMainViewModel, TgMainPage>();
-		Configure<TgDashboardViewModel, TgDashboardPage>();
+		Configure<TgClientViewModel, TgClientPage>();
 		Configure<WebViewViewModel, WebViewPage>();
 		Configure<ListDetailsViewModel, ListDetailsPage>();
 		Configure<ContentGridViewModel, ContentGridPage>();

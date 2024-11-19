@@ -69,8 +69,8 @@ public partial class App : Application
 			services.AddTransient<TgMainPage>();
 			services.AddTransient<ShellPage>();
 			services.AddTransient<ShellViewModel>();
-			services.AddTransient<TgDashboardViewModel>();
-			services.AddTransient<TgDashboardPage>();
+			services.AddTransient<TgClientPage>();
+			services.AddTransient<TgClientViewModel>();
 			// Configuration
 			services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 		}).

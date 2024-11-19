@@ -16,14 +16,14 @@ public partial class TgMainViewModel : TgPageViewModelBase
 	[ObservableProperty]
 	private string _appVersionFull = string.Empty;
 
-	public TgMainViewModel()
+	public TgMainViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
 		VersionDescription = GetVersionDescription();
 		AppVersionTitle =
 			$"{TgConstants.AppTitleDesktop} " +
 			$"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 		AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
-		AppVersionFull = $"{TgDesktopUtils.TgLocale.AppVersion}: {AppVersionShort}";
+		AppVersionFull = $"{TgResourceExtensions.GetAppVersion()}: {AppVersionShort}";
 
 	}
 

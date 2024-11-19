@@ -132,6 +132,9 @@
   <data name="Shell_Dashboard.Content" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="Shell_Connect.Content" xml:space="preserve">
+    <value>Подключение</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Загрузка...</value>
   </data>
@@ -246,6 +249,12 @@
   <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.NavigateUri" xml:space="preserve">
     <value>https://t.me/TgDownloaderChat</value>
   </data>
+  <data name="ClientPage_MyTelegram.Content" xml:space="preserve">
+    <value>my.telegram.org</value>
+  </data>
+  <data name="ClientPage_MyTelegram.NavigateUri" xml:space="preserve">
+    <value>"https://my.telegram.org/auth?to=apps"</value>
+  </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
   &lt;visual&gt;
@@ -267,7 +276,13 @@
     <value>Сохранить</value>
   </data>
   <data name="ActionLoad.Text" xml:space="preserve">
-    <value>Загрузка</value>
+    <value>Загрузить</value>
+  </data>
+  <data name="ActionClear.Text" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="ActionDelete.Text" xml:space="preserve">
+    <value>Удалить</value>
   </data>
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
     <value>Github</value>
@@ -313,5 +328,35 @@
   </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Отмена</value>
+  </data>
+  <data name="ClientConnect.Content" xml:space="preserve">
+    <value>Подключить клиент к серверу TG</value>
+  </data>
+  <data name="ClientDisconnect.Content" xml:space="preserve">
+    <value>Отключить клиент от сервера TG</value>
+  </data>
+  <data name="MenuClientIsQuery" xml:space="preserve">
+    <value>Клиент запрашивает данные</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Версия приложения</value>
+  </data>
+  <data name="ClientTgSession.Content" xml:space="preserve">
+    <value>TG сессия</value>
+  </data>
+  <data name="ClientTgSession.Content" xml:space="preserve">
+    <value>TG сессия</value>
+  </data>
+  <data name="ClientApiHash.Text" xml:space="preserve">
+    <value>АПИ хеш</value>
+  </data>
+  <data name="ClientApiId.Text" xml:space="preserve">
+    <value>АПИ ИД</value>
+  </data>
+  <data name="ClientPhoneNumber.Text" xml:space="preserve">
+    <value>Номер телефона</value>
+  </data>
+  <data name="ClientProxy.Text" xml:space="preserve">
+    <value>Прокси</value>
   </data>
 </root>

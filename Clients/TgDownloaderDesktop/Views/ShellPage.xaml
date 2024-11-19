@@ -50,11 +50,11 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--<NavigationViewItem x:Uid="Shell_Dashboard" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgDashboardViewModel">
+				<NavigationViewItem x:Uid="Shell_Connect" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgClientViewModel">
 					<NavigationViewItem.Icon>
-						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;" />
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
-				</NavigationViewItem>-->
+				</NavigationViewItem>
 				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe774;"/>

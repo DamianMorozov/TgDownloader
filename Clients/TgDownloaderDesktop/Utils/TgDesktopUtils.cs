@@ -9,10 +9,7 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-    public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-    public static TgConstants TgConst { get; } = new();
-
-	//public static TgClientViewModel TgClientVm { get; } = new();
+	public static TgClientViewModel TgClientVm { get; } = App.GetService<TgClientViewModel>();
 	//public static TgDashboardViewModel TgDashboardVm { get; } = new();
 	//public static TgFiltersViewModel TgFiltersVm { get; } = new();
 	//public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
@@ -26,9 +23,7 @@ public static class TgDesktopUtils
 
 	#region Public and private methods
 
-	/// <summary>
-	/// Set client state update.
-	/// </summary>
+	/// <summary> Set client state update </summary>
 	public static void SetupClient()
     {
 		//TgClient.SetupUpdateStateConnect(TgClientVm.UpdateStateConnectAsync);
@@ -38,44 +33,43 @@ public static class TgDesktopUtils
 		//TgClient.SetupUpdateStateException(TgClientVm.UpdateStateExceptionAsync);
 		//TgClient.SetupUpdateStateExceptionShort(TgClientVm.UpdateStateExceptionShortAsync);
 		//TgClient.SetupAfterClientConnect(TgClientVm.AfterClientConnectAsync);
-		//TgClient.SetupGetClientDesktopConfig(TgClientVm.ConfigClientDesktop);
     }
 
     #endregion
 
     #region Public and private methods
 
-    public static void RunAction(TgPageViewModelBase viewModel, Action action, bool isUpdateLoad)
-    {
-        void Job()
-        {
-            if (isUpdateLoad)
-                viewModel.IsLoad = true;
-            TgClientViewModel.Exception.Clear();
-            action();
-        }
+    //public static void RunAction(TgPageViewModelBase viewModel, Action action, bool isUpdateLoad)
+    //{
+    //    void Job()
+    //    {
+    //        if (isUpdateLoad)
+    //            viewModel.IsLoad = true;
+    //        TgClientViewModel.Exception.Clear();
+    //        action();
+    //    }
 
-        void JobFinally()
-        {
-            viewModel.IsLoad = false;
-        }
+    //    void JobFinally()
+    //    {
+    //        viewModel.IsLoad = false;
+    //    }
 
-        try
-        {
-	        App.MainWindow.DispatcherQueue.TryEnqueue(Job);
-        }
-        catch (Exception ex)
-        {
-	        App.MainWindow.DispatcherQueue.TryEnqueue(() => { TgClientViewModel.Exception.Set(ex); });
-        }
-        finally
-        {
-            if (isUpdateLoad)
-            {
-	            App.MainWindow.DispatcherQueue.TryEnqueue(JobFinally);
-            }
-        }
-    }
+    //    try
+    //    {
+	   //     App.MainWindow.DispatcherQueue.TryEnqueue(Job);
+    //    }
+    //    catch (Exception ex)
+    //    {
+	   //     App.MainWindow.DispatcherQueue.TryEnqueue(() => { TgClientViewModel.Exception.Set(ex); });
+    //    }
+    //    finally
+    //    {
+    //        if (isUpdateLoad)
+    //        {
+	   //         App.MainWindow.DispatcherQueue.TryEnqueue(JobFinally);
+    //        }
+    //    }
+    //}
 
     //public static async Task RunActionAsync(TgPageViewModelBase viewModel, Action action, bool isUpdateLoad)
     //{

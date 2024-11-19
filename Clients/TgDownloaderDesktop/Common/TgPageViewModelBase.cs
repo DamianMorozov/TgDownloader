@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgDownloaderDesktop.Services;
+
 namespace TgDownloaderDesktop.Common;
 
 /// <summary> Base class for TgViewModel </summary>
@@ -9,8 +11,42 @@ public partial class TgPageViewModelBase : ObservableRecipient
 {
 	#region Public and private fields, properties, constructor
 
+	[ObservableProperty]
+	private ITgSettingsService _settingsService;
+	
+	private string _appEfStorage = default!;
+	public string AppEfStorage
+	{
+		get => _appEfStorage;
+		set
+		{
+			if (SetProperty(ref _appEfStorage, value))
+			{
+				SettingsService.SetAppEfStorageAsync(AppEfStorage).ConfigureAwait(false);
+			}
+			IsExistsEfStorage = File.Exists(value);
+		}
+	}
+	[ObservableProperty]
+	private bool _isExistsEfStorage;
+	private string _appTgSession = default!;
+	public string AppTgSession
+	{
+		get => _appTgSession;
+		set
+		{
+			if (SetProperty(ref _appTgSession, value))
+			{
+				SettingsService.SetAppTgSessionAsync(AppTgSession).ConfigureAwait(false);
+			}
+			IsExistsTgSession = File.Exists(value);
+			OnPropertyChanged();
+		}
+	}
+	[ObservableProperty]
+	private bool _isExistsTgSession;
+
 	public bool IsLoad { get; set; }
-	public bool IsTgSession { get; set; }
 	public string StateConnectDt { get; set; } = string.Empty;
 	public string StateConnectMsg { get; set; } = string.Empty;
 	public string StateExceptionDt { get; set; } = string.Empty;
@@ -24,11 +60,15 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	private XamlRoot? _xamlRootVm;
 
+	public TgPageViewModelBase(ITgSettingsService settingsService)
+	{
+		SettingsService = settingsService;
+	}
+
 	#endregion
 
 	#region Public and private methods
 
-	public override string ToString() => $"{TgDesktopUtils.TgLocale}";
 	public virtual string ToDebugString() => $"{TgCommonUtils.GetIsLoad(IsLoad)}";
 
 	public virtual void OnLoaded(object parameter)

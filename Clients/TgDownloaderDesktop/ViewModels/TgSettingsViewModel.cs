@@ -9,43 +9,11 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private ITgSettingsService _settingsService;
-	[ObservableProperty]
 	private ElementTheme _elementTheme;
 	[ObservableProperty]
 	private ObservableCollection<string> _appThemes = default!;
 	[ObservableProperty]
 	private string _appTheme = default!;
-	private string _appEfStorage = default!;
-	public string AppEfStorage
-	{
-		get => _appEfStorage;
-		set
-		{
-			if (SetProperty(ref _appEfStorage, value))
-			{
-				SettingsService.SetAppEfStorageAsync(AppEfStorage).ConfigureAwait(false);
-			}
-			IsExistsEfStorage = File.Exists(value);
-		}
-	}
-	[ObservableProperty]
-	private bool _isExistsEfStorage;
-	private string _appTgSession = default!;
-	public string AppTgSession
-	{
-		get => _appTgSession;
-		set
-		{
-			if (SetProperty(ref _appTgSession, value))
-			{
-				SettingsService.SetAppTgSessionAsync(AppTgSession).ConfigureAwait(false);
-			}
-			IsExistsTgSession = File.Exists(value);
-		}
-	}
-	[ObservableProperty]
-	private bool _isExistsTgSession;
 	[ObservableProperty]
 	private ObservableCollection<string> _languages = default!;
 	private string _appLanguage = default!;
@@ -64,14 +32,14 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 				nameof(TgEnumLanguage.English) => "en-US",
 				_ => "en-US",
 			};
+			OnPropertyChanged();
 		}
 	}
 
 	public ICommand SettingsDefaultCommand { get; }
 
-	public TgSettingsViewModel(ITgSettingsService settingsService)
+	public TgSettingsViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
-		SettingsService = settingsService;
 		Default();
 		SettingsDefaultCommand = new RelayCommand(async () => await SettingsDefaultAsync());
 	}
@@ -79,6 +47,11 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 	#endregion
 
 	#region Public and private methods
+
+	public async Task OnNavigatedToAsync(NavigationEventArgs navigationEventArgs)
+	{
+		await SettingsService.LoadAsync();
+	}
 
 	private void Default()
 	{

@@ -73,6 +73,9 @@
   <data name="Shell_Dashboard.Content" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="Shell_Connect.Content" xml:space="preserve">
+    <value>Connection</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Loading...</value>
   </data>
@@ -187,6 +190,12 @@
   <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.NavigateUri" xml:space="preserve">
     <value>https://t.me/TgDownloaderChat</value>
   </data>
+  <data name="ClientPage_MyTelegram.Content" xml:space="preserve">
+    <value>my.telegram.org</value>
+  </data>
+  <data name="ClientPage_MyTelegram.NavigateUri" xml:space="preserve">
+    <value>"https://my.telegram.org/auth?to=apps"</value>
+  </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
   &lt;visual&gt;
@@ -209,6 +218,12 @@
   </data>
   <data name="ActionLoad.Text" xml:space="preserve">
     <value>Load</value>
+  </data>
+  <data name="ActionClear.Text" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="ActionDelete.Text" xml:space="preserve">
+    <value>Delete</value>
   </data>
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
     <value>Github</value>
@@ -254,5 +269,32 @@
   </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="ClientConnect.Content" xml:space="preserve">
+    <value>Connect the client to TG server</value>
+  </data>
+  <data name="ClientDisconnect.Content" xml:space="preserve">
+    <value>Disconnect the client from TG server</value>
+  </data>
+  <data name="MenuClientIsQuery" xml:space="preserve">
+    <value>Client requests data</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>App version</value>
+  </data>
+  <data name="ClientTgSession.Content" xml:space="preserve">
+    <value>TG session</value>
+  </data>
+  <data name="ClientApiHash.Text" xml:space="preserve">
+    <value>API hash</value>
+  </data>
+  <data name="ClientApiId.Text" xml:space="preserve">
+    <value>API ID</value>
+  </data>
+  <data name="ClientPhoneNumber.Text" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="ClientProxy.Text" xml:space="preserve">
+    <value>Proxy</value>
   </data>
 </root>

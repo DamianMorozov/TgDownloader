@@ -23,7 +23,7 @@ public sealed partial class TgSettingsPage : Page
 	protected override async void OnNavigatedTo(NavigationEventArgs e)
 	{
 		base.OnNavigatedTo(e);
-		await ViewModel.SettingsService.LoadAsync();
+		await ViewModel.OnNavigatedToAsync(e);
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
