@@ -5,7 +5,7 @@ namespace TgStorage.Domain.Proxies;
 
 /// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgEfProxyViewModel : TgViewModelBase
+public sealed partial class TgEfProxyViewModel : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
@@ -36,8 +36,8 @@ public sealed class TgEfProxyViewModel : TgViewModelBase
     public string ProxyPassword { get => Item.Password; set => Item.Password = value; }
     [DefaultValue("")]
     public string ProxySecret { get => Item.Secret; set => Item.Secret = value; }
-
-    public string PrettyName => $"{Item.Type} | {TgDataFormatUtils.GetFormatString(Item.HostName, 30)} | {Item.Port} | {Item.UserName}";
+    [ObservableProperty]
+	private string _prettyName = default!;
 
     public TgEfProxyViewModel(TgEfProxyEntity item) : base()
 	{
@@ -64,7 +64,10 @@ public sealed class TgEfProxyViewModel : TgViewModelBase
 		ProxyUserName = item.UserName;
 		ProxyPassword = item.Password;
 		ProxySecret = item.Secret;
+		SetPrettyName();
 	}
+
+	private void SetPrettyName() => PrettyName = $"{Item.Type} | {TgDataFormatUtils.GetFormatString(Item.HostName, 30)} | {Item.Port} | {Item.UserName}";
 
 	public override string ToString() => PrettyName;
 

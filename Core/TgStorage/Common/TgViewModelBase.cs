@@ -5,11 +5,12 @@ namespace TgStorage.Common;
 
 /// <summary> Base class for TgMvvmModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public abstract class TgViewModelBase : ObservableObject, ITgViewModelBase
+public abstract partial class TgViewModelBase : ObservableRecipient, ITgViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-	public bool IsLoad { get; set; }
+    [ObservableProperty]
+	private bool _isLoad;
 
     #endregion
 

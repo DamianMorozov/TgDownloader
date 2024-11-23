@@ -46,7 +46,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public Func<string, int, string, string, Task> UpdateStateExceptionAsync { get; private set; }
 	public Func<string, Task> UpdateStateExceptionShortAsync { get; private set; }
 	public Func<Task> AfterClientConnectAsync { get; private set; }
-	public Func<string, string?> ConfigClientDesktop { get; private set; }
+	public Func<string, string> ConfigClientDesktop { get; private set; }
 	public Func<long, Task> UpdateStateItemSourceAsync { get; private set; }
 	public Func<long, int, string, long, long, long, bool, int, Task> UpdateStateFileAsync { get; private set; }
 	public Func<string, Task> UpdateStateMessageAsync { get; private set; }
@@ -76,7 +76,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		UpdateStateExceptionShortAsync = _ => Task.CompletedTask;
 		UpdateStateSourceAsync = (_, _, _) => Task.CompletedTask;
 		AfterClientConnectAsync = () => Task.CompletedTask;
-		ConfigClientDesktop = what => null;
+		ConfigClientDesktop = _ => string.Empty;
 		UpdateStateItemSourceAsync = _ => Task.CompletedTask;
 		UpdateStateFileAsync = (_, _, _, _, _, _, _, _) => Task.CompletedTask;
 		UpdateStateMessageAsync = _ => Task.CompletedTask;
@@ -114,7 +114,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public void SetupAfterClientConnect(Func<Task> afterClientConnectAsync) =>
 		AfterClientConnectAsync = afterClientConnectAsync;
 
-	public void SetupGetClientDesktopConfig(Func<string, string?> getClientDesktopConfig) =>
+	public void SetupGetClientDesktopConfig(Func<string, string> getClientDesktopConfig) =>
 		ConfigClientDesktop = getClientDesktopConfig;
 
 	public void SetupUpdateTitle(Func<string, Task> updateTitleAsync) =>

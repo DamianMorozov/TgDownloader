@@ -5,11 +5,12 @@ namespace TgStorage.Domain.Apps;
 
 /// <summary> View-model for TgSqlTableSourceModel </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgEfAppViewModel(TgEfAppEntity app) : TgViewModelBase
+public sealed partial class TgEfAppViewModel(TgEfAppEntity app) : TgViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
-	public TgEfAppEntity App { get; set; } = app;
+	[ObservableProperty]
+	private TgEfAppEntity _app = app;
 
 	#endregion
 
