@@ -62,7 +62,7 @@ public sealed class ActivationService : IActivationService
 
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
 		var tgClientVm = App.GetService<TgClientViewModel>();
-		TgClientHelper.Instance.SetupGetClientDesktopConfig(tgClientVm.ConfigClientDesktop);
+		TgClientHelper.Instance.SetupGetClientDesktopConfig(what => tgClientVm.ConfigClientDesktop(what).GetAwaiter().GetResult());
 
 		await _settingsService.SetRequestedThemeAsync();
 		await Task.CompletedTask;

@@ -8,7 +8,7 @@ public partial class ContentGridViewModel : ObservableRecipient, INavigationAwar
 	private readonly INavigationService _navigationService;
 	private readonly ISampleDataService _sampleDataService;
 
-	public ObservableCollection<SampleOrder> Source { get; } = new ObservableCollection<SampleOrder>();
+	public ObservableCollection<SampleOrder> Source { get; } = [];
 
 	public ContentGridViewModel(INavigationService navigationService, ISampleDataService sampleDataService)
 	{

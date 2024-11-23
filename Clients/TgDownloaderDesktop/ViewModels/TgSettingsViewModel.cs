@@ -41,7 +41,7 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 	public TgSettingsViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
 		Default();
-		SettingsDefaultCommand = new RelayCommand(async () => await SettingsDefaultAsync());
+		SettingsDefaultCommand = new AsyncRelayCommand(SettingsDefaultAsync);
 	}
 
 	#endregion

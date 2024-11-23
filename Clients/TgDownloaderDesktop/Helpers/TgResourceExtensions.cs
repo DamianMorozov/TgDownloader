@@ -15,9 +15,9 @@ public static class TgResourceExtensions
 
 	#region Public and private methods
 
-	public static string AskAskSettingsLoad() => "AskSettingsLoad".GetLocalized();
-	public static string AskAskSettingsSave() => "AskSettingsSave".GetLocalized();
 	public static string AskSettingsDefault() => "AskSettingsDefault".GetLocalized();
+	public static string AskSettingsLoad() => "AskSettingsLoad".GetLocalized();
+	public static string AskSettingsSave() => "AskSettingsSave".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();
 	public static string GetCancelButton() => "CancelButton".GetLocalized();
 	public static string GetMenuClientIsQuery() => "MenuClientIsQuery".GetLocalized();

@@ -297,4 +297,19 @@
   <data name="ClientProxy.Text" xml:space="preserve">
     <value>Proxy</value>
   </data>
+  <data name="ClientPassword.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ClientVerificationCode.Text" xml:space="preserve">
+    <value>Verification code</value>
+  </data>
+  <data name="ClientFirstName.Text" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="ClientLastName.Text" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="ClientServerMessage.Text" xml:space="preserve">
+    <value>Server message</value>
+  </data>
 </root>

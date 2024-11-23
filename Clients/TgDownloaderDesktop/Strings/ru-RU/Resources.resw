@@ -359,4 +359,19 @@
   <data name="ClientProxy.Text" xml:space="preserve">
     <value>Прокси</value>
   </data>
+  <data name="ClientPassword.Text" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="ClientVerificationCode.Text" xml:space="preserve">
+    <value>Проверочный код</value>
+  </data>
+  <data name="ClientFirstName.Text" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="ClientLastName.Text" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="ClientServerMessage.Text" xml:space="preserve">
+    <value>Сообщение сервера</value>
+  </data>
 </root>

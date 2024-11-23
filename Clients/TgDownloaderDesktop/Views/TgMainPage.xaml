@@ -5,30 +5,32 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
-	<Grid x:Name="ContentArea">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<!--  About  -->
-		<StackPanel Grid.Row="0" Margin="{StaticResource MediumTopMargin}">
-			<TextBlock x:Uid="Settings_About" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-			<TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="{x:Bind ViewModel.AppVersionFull, Mode=OneWay}" />
-		</StackPanel>
-		<!--  GitHub links  -->
-		<StackPanel Grid.Row="1" Margin="{StaticResource MediumTopMargin}">
-			<TextBlock x:Uid="SettingsPage_GitHub" Style="{ThemeResource SubtitleTextBlockStyle}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloader" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_ReportBug" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_Discussions" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_Ideas" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-		</StackPanel>
-		<!--  Support  -->
-		<StackPanel Grid.Row="2" Margin="{StaticResource MediumTopMargin}">
-			<TextBlock x:Uid="SettingsPage_GitHub_Support" Style="{ThemeResource SubtitleTextBlockStyle}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloaderNews" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-			<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloaderGlobalChat" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
-		</StackPanel>
-	</Grid>
+	<ScrollView VerticalScrollMode="Auto">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<!--  About  -->
+			<StackPanel Grid.Row="0" Margin="{StaticResource MediumTopMargin}">
+				<TextBlock x:Uid="Settings_About" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+				<TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="{x:Bind ViewModel.AppVersionFull, Mode=OneWay}" />
+			</StackPanel>
+			<!--  GitHub links  -->
+			<StackPanel Grid.Row="1" Margin="{StaticResource MediumTopMargin}">
+				<TextBlock x:Uid="SettingsPage_GitHub" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloader" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_ReportBug" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_Discussions" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_Ideas" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+			</StackPanel>
+			<!--  Support  -->
+			<StackPanel Grid.Row="2" Margin="{StaticResource MediumTopMargin}">
+				<TextBlock x:Uid="SettingsPage_GitHub_Support" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloaderNews" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+				<HyperlinkButton x:Uid="SettingsPage_GitHub_TgDownloaderGlobalChat" Margin="{StaticResource SettingsPageHyperlinkButtonMargin}" />
+			</StackPanel>
+		</Grid>
+	</ScrollView>
 </Page>

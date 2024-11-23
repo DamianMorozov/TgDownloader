@@ -40,7 +40,6 @@ global using TgDownloaderDesktop.Core.Models;
 global using TgDownloaderDesktop.Core.Services;
 global using TgDownloaderDesktop.Helpers;
 global using TgDownloaderDesktop.Models;
-global using TgDownloaderDesktop.Notifications;
 global using TgDownloaderDesktop.Services;
 global using TgDownloaderDesktop.Utils;
 global using TgDownloaderDesktop.ViewModels;
