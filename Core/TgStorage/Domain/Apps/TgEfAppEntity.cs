@@ -50,7 +50,7 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 	[DefaultValue("+00000000000")]
 	[ConcurrencyCheck]
 	[MaxLength(20)]
-	[Column(TgEfConstants.ColumnPhoneNumber, TypeName = "CHAR(20)")]
+	[Column(TgEfConstants.ColumnPhoneNumber, TypeName = "NVARCHAR(20)")]
 	public string PhoneNumber { get; set; } = default!;
 
     [DefaultValue("00000000-0000-0000-0000-000000000000")]
@@ -61,7 +61,19 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 
 	public TgEfProxyEntity? Proxy { get; set; }
 
-    public TgEfAppEntity() : base()
+	[DefaultValue("")]
+	[ConcurrencyCheck]
+	[MaxLength(64)]
+	[Column(TgEfConstants.ColumnFirstName, TypeName = "NVARCHAR(64)")]
+	public string FirstName { get; set; } = default!;
+
+	[DefaultValue("")]
+	[ConcurrencyCheck]
+	[MaxLength(64)]
+	[Column(TgEfConstants.ColumnLastName, TypeName = "NVARCHAR(64)")]
+	public string LastName { get; set; } = default!;
+
+	public TgEfAppEntity() : base()
     {
 	    Default();
     }
@@ -81,6 +93,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
         PhoneNumber = this.GetDefaultPropertyString(nameof(PhoneNumber));
 		//ProxyUid = this.GetDefaultPropertyGuid(nameof(ProxyUid));
 		ProxyUid = null;
+		FirstName = this.GetDefaultPropertyString(nameof(FirstName));
+		LastName = this.GetDefaultPropertyString(nameof(LastName));
     }
 
 	public TgEfAppEntity Fill(TgEfAppEntity item, bool isUidCopy)
@@ -92,6 +106,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 	    ApiId = item.ApiId;
 	    PhoneNumber = item.PhoneNumber;
 	    ProxyUid = item.ProxyUid;
+	    FirstName = item.FirstName;
+	    LastName = item.LastName;
 		return this;
     }
 

@@ -34,10 +34,12 @@ public static class TgEfConstants
 	public const string ColumnFileSize = "FILE_SIZE";
 	public const string ColumnFilterType = "FILTER_TYPE";
 	public const string ColumnFirstId = "FIRST_ID";
+	public const string ColumnFirstName = "FIRST_NAME";
 	public const string ColumnHostName = "HOST_NAME";
 	public const string ColumnId = "ID";
 	public const string ColumnIsAutoUpdate = "IS_AUTO_UPDATE";
 	public const string ColumnIsEnabled = "IS_ENABLED";
+	public const string ColumnLastName = "LAST_NAME";
 	public const string ColumnMask = "MASK";
 	public const string ColumnMessage = "MESSAGE";
 	public const string ColumnMessageId = "MESSAGE_ID";
@@ -46,6 +48,7 @@ public static class TgEfConstants
 	public const string ColumnPhoneNumber = "PHONE_NUMBER";
 	public const string ColumnPort = "PORT";
 	public const string ColumnProxyUid = "PROXY_UID";
+	public const string ColumnRowVersion = "RowVersion";
 	public const string ColumnSecret = "SECRET";
 	public const string ColumnSize = "SIZE";
 	public const string ColumnSizeType = "SIZE_TYPE";
@@ -55,7 +58,6 @@ public static class TgEfConstants
 	public const string ColumnUid = "UID";
 	public const string ColumnUserName = "USER_NAME";
 	public const string ColumnVersion = "VERSION";
-	public const string ColumnRowVersion = "RowVersion";
 
 	#endregion
 }
