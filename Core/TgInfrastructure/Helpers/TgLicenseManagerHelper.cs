@@ -1,0 +1,43 @@
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
+namespace TgInfrastructure.Helpers;
+
+public sealed class TgLicenseManagerHelper
+{
+	#region Design pattern "Lazy Singleton"
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	private static TgLicenseManagerHelper _instance;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	public static TgLicenseManagerHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
+
+	#endregion
+
+	#region Public and private methods
+
+	public TgLicense CurrentLicense { get; private set; } = default!;
+
+	public void ActivateLicense(string licenseKey = "", string licenseFreeDescription = "Free license", 
+		string licensePaidDescription = "Paid license", string licensePremiumDescription = "Premium license")
+	{
+		if (licenseKey.StartsWith("PAID"))
+		{
+			CurrentLicense = new TgLicensePaid { LicenseKey = licenseKey, ExpirationDate = DateTime.Now.AddYears(1) };
+			CurrentLicense.Description = licensePaidDescription;
+			return;
+		}
+		if (licenseKey.StartsWith("PREMIUM"))
+		{
+			CurrentLicense = new TgLicensePremium { LicenseKey = licenseKey, ExpirationDate = DateTime.Now.AddYears(1), PrioritySupport = true };
+			CurrentLicense.Description = licensePremiumDescription;
+			return;
+		}
+		CurrentLicense = new TgLicenseFree { LicenseKey = licenseKey };
+		CurrentLicense.Description = licenseFreeDescription;
+	}
+
+	public bool IsLicenseValid() => CurrentLicense.IsValid();
+
+	#endregion
+}

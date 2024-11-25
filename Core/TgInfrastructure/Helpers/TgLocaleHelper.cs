@@ -3,9 +3,7 @@
 
 namespace TgInfrastructure.Helpers;
 
-/// <summary>
-/// Localization helper.
-/// </summary>
+/// <summary> Localization helper </summary>
 public sealed class TgLocaleHelper : ObservableObject
 {
 	#region Design pattern "Lazy Singleton"
@@ -16,8 +14,6 @@ public sealed class TgLocaleHelper : ObservableObject
 	public static TgLocaleHelper Instance => LazyInitializer.EnsureInitialized(ref _instance);
 
 	#endregion
-
-	public override string ToString() => $"{Language}";
 
 	#region App
 
