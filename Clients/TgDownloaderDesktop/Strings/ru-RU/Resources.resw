@@ -207,11 +207,11 @@
   <data name="SettingsThemeDefault" xml:space="preserve">
     <value>Default</value>
   </data>
-  <data name="Settings_About.Text" xml:space="preserve">
-    <value>TgDownloader - Telegram Files Downloader</value>
+  <data name="SettingsAbout.Text" xml:space="preserve">
+    <value>TgDownloader - Загрузчик файлов Telegram</value>
   </data>
-  <data name="Settings_AboutDescription.Text" xml:space="preserve">
-    <value>TODO: Replace with your app description.</value>
+  <data name="SettingsLicense.Text" xml:space="preserve">
+    <value>Лицензия</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
     <value>TgDownloader repository</value>
@@ -397,5 +397,14 @@
   </data>
   <data name="ClientSettingsAreNotValid" xml:space="preserve">
     <value>Настройки клиента не валидны</value>
+  </data>
+  <data name="LicenseFreeDescription" xml:space="preserve">
+    <value>Бесплатная лицензия</value>
+  </data>
+  <data name="LicensePaidDescription" xml:space="preserve">
+    <value>Платная лицензия</value>
+  </data>
+  <data name="LicensePremiumDescription" xml:space="preserve">
+    <value>Премиальная лицензия</value>
   </data>
 </root>

@@ -40,7 +40,10 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		}
 	}
 
-	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
+	[ObservableProperty]
+	private TgAppSettingsHelper _appSettings = TgAppSettingsHelper.Instance;
+	[ObservableProperty]
+	private TgLicenseManagerHelper _licenseManager = TgLicenseManagerHelper.Instance;
 	public static TgExceptionModel Exception { get; set; } = new();
 
 	[ObservableProperty]
@@ -71,6 +74,8 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	public TgPageViewModelBase(ITgSettingsService settingsService)
 	{
 		SettingsService = settingsService;
+		LicenseManager.ActivateLicense(string.Empty, TgResourceExtensions.GetLicenseFreeDescription(),
+			TgResourceExtensions.GetLicensePaidDescription(), TgResourceExtensions.GetLicensePremiumDescription());
 	}
 
 	#endregion

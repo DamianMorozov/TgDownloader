@@ -110,7 +110,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
                     IsNeedLastName = true;
                 return LastName;
             case "session_pathname":
-                string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.XmlFileSession);
+                string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), AppSettings.AppXml.XmlFileSession);
                 return sessionPath;
             case "verification_code":
                 if (string.IsNullOrEmpty(VerificationCode))

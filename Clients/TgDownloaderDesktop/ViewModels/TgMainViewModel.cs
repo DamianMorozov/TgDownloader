@@ -15,6 +15,8 @@ public partial class TgMainViewModel : TgPageViewModelBase
 	private string _appVersionShort = string.Empty;
 	[ObservableProperty]
 	private string _appVersionFull = string.Empty;
+	[ObservableProperty]
+	private string _licenseDescription = string.Empty;
 
 	public TgMainViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
@@ -24,7 +26,7 @@ public partial class TgMainViewModel : TgPageViewModelBase
 			$"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 		AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 		AppVersionFull = $"{TgResourceExtensions.GetAppVersion()}: {AppVersionShort}";
-
+		LicenseDescription = LicenseManager.CurrentLicense.Description;
 	}
 
 	#endregion

@@ -148,11 +148,11 @@
   <data name="SettingsThemeDefault" xml:space="preserve">
     <value>Default</value>
   </data>
-  <data name="Settings_About.Text" xml:space="preserve">
+  <data name="SettingsAbout.Text" xml:space="preserve">
     <value>TgDownloader - Telegram Files Downloader</value>
   </data>
-  <data name="Settings_AboutDescription.Text" xml:space="preserve">
-    <value>TODO: Replace with your app description.</value>
+  <data name="SettingsLicense.Text" xml:space="preserve">
+    <value>License</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
     <value>TgDownloader repository</value>
@@ -332,5 +332,14 @@
   </data>
   <data name="ClientSettingsAreNotValid" xml:space="preserve">
     <value>Client settings are not valid</value>
+  </data>
+  <data name="LicenseFreeDescription" xml:space="preserve">
+    <value>Free license</value>
+  </data>
+  <data name="LicensePaidDescription" xml:space="preserve">
+    <value>Paid license</value>
+  </data>
+  <data name="LicensePremiumDescription" xml:space="preserve">
+    <value>Premium license</value>
   </data>
 </root>
