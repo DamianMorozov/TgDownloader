@@ -17,13 +17,19 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	[ObservableProperty]
     private ObservableCollection<TgEfProxyViewModel> _proxiesVms = default!;
 	[ObservableProperty]
+	private Guid _apiHash = default!;
+	[ObservableProperty]
+	private int _apiId = default!;
+	[ObservableProperty]
+	private string _phoneNumber = default!;
+	[ObservableProperty]
 	private string _firstName = default!;
 	[ObservableProperty]
-    private string _lastName = default!;
-    [ObservableProperty]
-    private string _notifications = default!;
-    [ObservableProperty]
-    private string _password = default!;
+	private string _lastName = default!;
+	[ObservableProperty]
+	private Guid? _proxyUid = default!;
+	[ObservableProperty]
+	private string _password = default!;
     [ObservableProperty]
     private string _verificationCode = default!;
     [ObservableProperty]
@@ -50,10 +56,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
 
     public TgClientViewModel(ITgSettingsService settingsService) : base(settingsService)
-	{
-		AppLoadCore().GetAwaiter().GetResult();
-
-		ClientConnectCommand = new AsyncRelayCommand<TgEfProxyViewModel>(ClientConnectAsync);
+    {
+	    AppClearCoreAsync().GetAwaiter().GetResult();
+		ClientConnectCommand = new AsyncRelayCommand(ClientConnectAsync);
         ClientDisconnectCommand = new AsyncRelayCommand(ClientDisconnectAsync);
         AppLoadCommand = new AsyncRelayCommand(AppLoadAsync);
         AppSaveCommand = new AsyncRelayCommand(AppSaveAsync);
@@ -70,19 +75,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
         OnLoaded(parameter);
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-	        await Task.Delay(1);
-	        TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
-		        new() { Uid = App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
-	        ProxiesVms = [];
-	        foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
-	        {
-		        ProxiesVms.Add(new(proxy));
-	        }
-	        if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
-	        {
-		        ProxyVm = new(proxyNew);
-		        ProxiesVms.Add(ProxyVm);
-	        }
+	        await AppLoadCoreAsync();
 		}, false);
     }
 
@@ -98,19 +91,16 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
     public async Task<string> ConfigClientDesktop(string what)
     {
-        //TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}").GetAwaiter();
         await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}");
         switch (what)
         {
             case "api_hash":
-                string apiHash = TgDataFormatUtils.ParseGuidToString(App.ApiHash);
+                string apiHash = TgDataFormatUtils.ParseGuidToString(ApiHash);
                 return apiHash;
             case "api_id":
-                return App.ApiId.ToString();
+                return ApiId.ToString();
             case "phone_number":
-                return App.PhoneNumber;
-            case "notifications":
-                return Notifications;
+                return PhoneNumber;
             case "first_name":
                 if (string.IsNullOrEmpty(FirstName))
                     IsNeedFirstName = true;
@@ -130,15 +120,17 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
                 if (string.IsNullOrEmpty(Password))
                     IsNeedPassword = true;
                 return Password;
+            //case "notifications":
+            //    return Notifications;
             //case "session_key":
-            //case "server_address":
-            //case "device_model":
-            //case "system_version":
-            //case "app_version":
-            //case "system_lang_code":
-            //case "lang_pack":
-            //case "lang_code":
-            default:
+			//case "server_address":
+			//case "device_model":
+			//case "system_version":
+			//case "app_version":
+			//case "system_lang_code":
+			//case "lang_pack":
+			//case "lang_code":
+			default:
                 return string.Empty;
         }
     }
@@ -155,69 +147,111 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
         Password = string.Empty;
     }
 
-    public async Task ClientConnectAsync(TgEfProxyViewModel? proxyVm = null)
-    {
-        await AppSaveAsync();
-        if (!TgEfUtils.GetEfValid(App).IsValid) return;
-        await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Item ?? ProxyVm.Item);
-        ServerMessage = Exception.IsExist ? Exception.Message : string.Empty;
-    }
+    public async Task ClientConnectAsync() => await ContentDialogAsync(ClientConnectCoreAsync, TgResourceExtensions.AskClientConnect());
 
-    public async Task ClientDisconnectAsync()
+    private async Task ClientConnectCoreAsync()
+	{
+        await AppSaveCoreAsync();
+        if (!TgEfUtils.GetEfValid(App).IsValid)
+        {
+	        await ContentDialogAsync(TgResourceExtensions.ClientSettingsAreNotValid());
+	        return;
+        }
+        await TgDesktopUtils.TgClient.ConnectSessionAsync(ProxyVm.Item);
+        ServerMessage = Exception.IsExist ? Exception.Message : string.Empty;
+        await Task.CompletedTask;
+	}
+
+    public async Task ClientDisconnectAsync() => await ContentDialogAsync(ClientDisconnectCoreAsync, TgResourceExtensions.AskClientDisconnect());
+
+    private async Task ClientDisconnectCoreAsync()
     {
         TgDesktopUtils.TgClient.Disconnect();
         await Task.CompletedTask;
     }
 
-    public async Task AppLoadAsync()
-    {
-	    if (XamlRootVm is null) return;
-        ContentDialog dialog = new()
-        {
-            XamlRoot = XamlRootVm,
-            Title = TgResourceExtensions.AskSettingsLoad(),
-            PrimaryButtonText = TgResourceExtensions.GetYesButton(),
-            CloseButtonText = TgResourceExtensions.GetCancelButton(),
-            DefaultButton = ContentDialogButton.Close,
-            PrimaryButtonCommand = new AsyncRelayCommand(AppLoadCore)
-        };
-        _ = await dialog.ShowAsync();
-	    await Task.CompletedTask;
-    }
+    public async Task AppLoadAsync() => await ContentDialogAsync(AppLoadCoreAsync, TgResourceExtensions.AskSettingsLoad());
 
-    private async Task AppLoadCore()
+    public async Task AppLoadCoreAsync()
     {
-	    App = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
-	    ProxyVm = new(new());
-	    ProxiesVms = [];
-	    FirstName = string.Empty;
-	    LastName = string.Empty;
-	    Notifications = string.Empty;
-	    Password = string.Empty;
-	    VerificationCode = string.Empty;
 	    StateConnectMsg = string.Empty;
-	    ServerMessage = string.Empty;
 	    AppEfStorage = SettingsService.EfStorage;
 	    AppTgSession = SettingsService.TgSession;
+
+		var storageResult = await AppRepository.GetFirstAsync(isNoTracking: false);
+		App = storageResult.IsExists ? storageResult.Item : new();
+
+		ProxiesVms = [];
+		TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(new() { Uid = ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
+		foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
+		{
+			ProxiesVms.Add(new(proxy));
+		}
+		if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
+		{
+			ProxyVm = new(proxyNew);
+			ProxiesVms.Add(ProxyVm);
+		}
+		else
+		{
+			ProxyVm = new();
+		}
+
+		await ReloadUiAsync();
+		await Task.CompletedTask;
 	}
 
-	public async Task AppSaveAsync()
+    private async Task ReloadUiAsync()
     {
-        await AppRepository.DeleteAllAsync();
-        await AppRepository.SaveAsync(App);
-        await Task.CompletedTask;
+	    ApiHash = App.ApiHash;
+	    ApiId = App.ApiId;
+	    FirstName = App.FirstName;
+	    LastName = App.LastName;
+	    PhoneNumber = App.PhoneNumber;
+	    ProxyUid = App.ProxyUid;
+
+	    Password = string.Empty;
+		VerificationCode = string.Empty;
+		ServerMessage = string.Empty;
+
+		await Task.CompletedTask;
     }
 
-    public async Task AppClearAsync()
-    {
-        App = (await AppRepository.GetNewAsync(isNoTracking: false)).Item;
-        await Task.CompletedTask;
+	public async Task AppSaveAsync() => await ContentDialogAsync(AppSaveCoreAsync, TgResourceExtensions.AskSettingsSave());
+
+	private async Task AppSaveCoreAsync()
+	{
+		await AppRepository.DeleteAllAsync();
+		
+		App.ApiHash = ApiHash;
+		App.ApiId = ApiId;
+		App.FirstName = FirstName;
+		App.LastName = LastName;
+		App.PhoneNumber = PhoneNumber;
+		App.ProxyUid = ProxyUid;
+		
+		await AppRepository.SaveAsync(App);
+		await Task.CompletedTask;
+	}
+
+    public async Task AppClearAsync() => await ContentDialogAsync(AppClearCoreAsync, TgResourceExtensions.AskSettingsClear());
+
+	private async Task AppClearCoreAsync()
+	{
+		var storageResult = await AppRepository.GetNewAsync(isNoTracking: false);
+        App = storageResult.IsExists ? storageResult.Item : new();
+		ProxiesVms = [];
+		ProxyVm = new();
+        await ReloadUiAsync();
+		await Task.CompletedTask;
     }
 
-    public async Task AppDeleteAsync()
+    public async Task AppDeleteAsync() => await ContentDialogAsync(AppDeleteCoreAsync, TgResourceExtensions.AskSettingsDelete());
+
+    public async Task AppDeleteCoreAsync()
     {
         await AppRepository.DeleteAllAsync();
-        await AppLoadCore();
+        await AppLoadCoreAsync();
         await Task.CompletedTask;
     }
 

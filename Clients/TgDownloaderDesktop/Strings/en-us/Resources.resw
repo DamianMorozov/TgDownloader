@@ -234,6 +234,12 @@
   <data name="SettingName.Text" xml:space="preserve">
     <value>Setting</value>
   </data>
+  <data name="SettingInStorage.Text" xml:space="preserve">
+    <value>Settings in storage</value>
+  </data>
+  <data name="SettingWithoutSaving.Text" xml:space="preserve">
+    <value>Settings without saving</value>
+  </data>
   <data name="SettingCheck.Text" xml:space="preserve">
     <value>Check</value>
   </data>
@@ -253,13 +259,25 @@
     <value>App language</value>
   </data>
   <data name="AskSettingsDefault" xml:space="preserve">
-    <value>Reset settings to default?</value>
+    <value>Reset the settings to default?</value>
   </data>
   <data name="AskSettingsSave" xml:space="preserve">
-    <value>Save settings?</value>
+    <value>Save the settings?</value>
   </data>
   <data name="AskSettingsLoad" xml:space="preserve">
-    <value>Load settings?</value>
+    <value>Load the settings?</value>
+  </data>
+  <data name="AskSettingsClear" xml:space="preserve">
+    <value>Clear the settings?</value>
+  </data>
+  <data name="AskSettingsDelete" xml:space="preserve">
+    <value>Delete the settings?</value>
+  </data>
+  <data name="AskClientConnect" xml:space="preserve">
+    <value>Connect the client?</value>
+  </data>
+  <data name="AskClientDisconnect" xml:space="preserve">
+    <value>Disconnect the client?</value>
   </data>
   <data name="YesButton" xml:space="preserve">
     <value>Yes</value>
@@ -311,5 +329,8 @@
   </data>
   <data name="ClientServerMessage.Text" xml:space="preserve">
     <value>Server message</value>
+  </data>
+  <data name="ClientSettingsAreNotValid" xml:space="preserve">
+    <value>Client settings are not valid</value>
   </data>
 </root>

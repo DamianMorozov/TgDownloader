@@ -14,7 +14,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<!--  0 row - Actions  -->
+			<!--  Actions  -->
 			<Border
 				Grid.Row="0"
 				Margin="2"
@@ -54,10 +54,10 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}"
-							IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}">
+							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}">
 							<FontIcon Glyph="&#xE703;" />
 						</Button>
+						<!--  IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}"  -->
 						<!--  Button Disconnect  -->
 						<Button
 							x:Uid="ClientDisconnect"
@@ -65,14 +65,14 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}"
-							IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}">
+							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}">
 							<FontIcon Glyph="&#xE8BB;" />
 						</Button>
+						<!--  IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}"  -->
 					</Grid>
 				</Grid>
 			</Border>
-			<!--  1 row - Client settings  -->
+			<!--  Settings in storage  -->
 			<Border
 				Grid.Row="1"
 				Margin="2"
@@ -92,27 +92,18 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="5*" />
 					</Grid.ColumnDefinitions>
-					<!--  Headers  -->
+					<!--  Header  -->
 					<TextBlock
-						x:Uid="SettingName"
+						x:Uid="SettingInStorage"
 						Grid.Row="0"
 						Grid.Column="0"
-						Margin="2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBlock
-						x:Uid="SettingValue"
-						Grid.Row="0"
-						Grid.Column="2"
+						Grid.ColumnSpan="3"
 						Margin="2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
@@ -126,8 +117,8 @@
 						Fill="DimGray" />
 					<!--  Vertical separator  -->
 					<Rectangle
-						Grid.Row="0"
-						Grid.RowSpan="11"
+						Grid.Row="2"
+						Grid.RowSpan="6"
 						Grid.Column="1"
 						Width="1"
 						Fill="DimGray" />
@@ -147,7 +138,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.App.ApiHash, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay}" />
 					<!--  API ID  -->
 					<TextBlock
 						x:Uid="ClientApiId"
@@ -164,7 +155,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.App.ApiId, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.ApiId, Mode=TwoWay}" />
 					<!--  Phone number  -->
 					<TextBlock
 						x:Uid="ClientPhoneNumber"
@@ -181,7 +172,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.App.PhoneNumber, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay}" />
 					<!--  Proxy  -->
 					<TextBlock
 						x:Uid="ClientProxy"
@@ -207,51 +198,17 @@
 							</DataTemplate>
 						</ComboBox.ItemTemplate>
 					</ComboBox>
-					<!--  Password  -->
-					<TextBlock
-						x:Uid="ClientPassword"
-						Grid.Row="7"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<PasswordBox
-						Grid.Row="7"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
-					<!--  Verification code  -->
-					<TextBlock
-						x:Uid="ClientVerificationCode"
-						Grid.Row="8"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="8"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
 					<!--  First name  -->
 					<TextBlock
 						x:Uid="ClientFirstName"
-						Grid.Row="9"
+						Grid.Row="6"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="9"
+						Grid.Row="6"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -261,14 +218,14 @@
 					<!--  Last name  -->
 					<TextBlock
 						x:Uid="ClientLastName"
-						Grid.Row="10"
+						Grid.Row="7"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="10"
+						Grid.Row="7"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -277,7 +234,7 @@
 						Text="{x:Bind ViewModel.LastName, Mode=TwoWay}" />
 				</Grid>
 			</Border>
-			<!--  2 row - Server  -->
+			<!--  Settings without saving  -->
 			<Border
 				Grid.Row="2"
 				Margin="2"
@@ -287,28 +244,87 @@
 				CornerRadius="5"
 				UseLayoutRounding="True">
 				<Grid Margin="2" Background="Transparent">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="5*" />
 					</Grid.ColumnDefinitions>
+					<!--  Header  -->
+					<TextBlock
+						x:Uid="SettingWithoutSaving"
+						Grid.Row="0"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Margin="2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<!--  Horizontal separator  -->
+					<Rectangle
+						Grid.Row="1"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Height="1"
+						Fill="DimGray" />
 					<!--  Vertical separator  -->
 					<Rectangle
-						Grid.Row="0"
+						Grid.Row="2"
+						Grid.RowSpan="3"
 						Grid.Column="1"
 						Width="1"
 						Fill="DimGray" />
+					<!--  Password  -->
+					<TextBlock
+						x:Uid="ClientPassword"
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<PasswordBox
+						Grid.Row="2"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+					<!--  Verification code  -->
+					<TextBlock
+						x:Uid="ClientVerificationCode"
+						Grid.Row="3"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<PasswordBox
+						Grid.Row="3"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
 					<!--  Server message  -->
 					<TextBlock
 						x:Uid="ClientServerMessage"
-						Grid.Row="0"
+						Grid.Row="4"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="0"
+						Grid.Row="4"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -317,7 +333,7 @@
 						Text="{x:Bind ViewModel.ServerMessage, Mode=TwoWay}" />
 				</Grid>
 			</Border>
-			<!--  3 row - TG session  -->
+			<!--  TG session  -->
 			<Border
 				Grid.Row="3"
 				Margin="2"
@@ -345,7 +361,8 @@
 						<CheckBox
 							x:Uid="ClientTgSession"
 							Margin="15,3,0,0"
-							IsChecked="{x:Bind ViewModel.IsExistsTgSession, Mode=OneWay}" />
+							IsChecked="{x:Bind ViewModel.IsExistsTgSession, Mode=OneWay}"
+							IsEnabled="False" />
 					</StackPanel>
 					<!--  Grid  -->
 					<Grid Column="2">

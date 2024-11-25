@@ -24,15 +24,15 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 		{
 			if (SetProperty(ref _appLanguage, value))
 			{
-				SettingsService.SetAppLanguageAsync(AppLanguage).ConfigureAwait(false);
+				App.MainWindow.DispatcherQueue.TryEnqueue(async () => await SettingsService.SetAppLanguageAsync(AppLanguage));
+				Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = value switch
+				{
+					nameof(TgEnumLanguage.Russian) => "ru-RU",
+					nameof(TgEnumLanguage.English) => "en-US",
+					_ => "en-US",
+				};
+				OnPropertyChanged();
 			}
-			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = value switch
-			{
-				nameof(TgEnumLanguage.Russian) => "ru-RU",
-				nameof(TgEnumLanguage.English) => "en-US",
-				_ => "en-US",
-			};
-			OnPropertyChanged();
 		}
 	}
 
@@ -84,23 +84,13 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 		}
 	}
 
-	private async Task SettingsDefaultAsync()
+	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsDefaultCoreAsync, TgResourceExtensions.AskSettingsDefault());
+
+	private async Task SettingsDefaultCoreAsync()
 	{
-		if (XamlRootVm is null) return;
-		ContentDialog dialog = new()
-		{
-			XamlRoot = XamlRootVm,
-			Title = TgResourceExtensions.AskSettingsDefault(),
-			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
-			CloseButtonText = TgResourceExtensions.GetCancelButton(),
-			DefaultButton = ContentDialogButton.Close,
-			PrimaryButtonCommand = new RelayCommand(() =>
-			{
-				SettingsService.Default();
-				Default();
-			})
-		};
-		_ = await dialog.ShowAsync();
+		SettingsService.Default();
+		Default();
+		await Task.CompletedTask;
 	}
 
 	#endregion

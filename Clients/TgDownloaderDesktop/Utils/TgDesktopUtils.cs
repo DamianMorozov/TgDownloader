@@ -9,7 +9,7 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-	public static TgClientViewModel TgClientVm { get; } = App.GetService<TgClientViewModel>();
+	//public static TgClientViewModel TgClientVm { get; } = App.GetService<TgClientViewModel>();
 	//public static TgDashboardViewModel TgDashboardVm { get; } = new();
 	//public static TgFiltersViewModel TgFiltersVm { get; } = new();
 	//public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
@@ -182,7 +182,6 @@ public static class TgDesktopUtils
     public static async Task RunFuncAsync(TgPageViewModelBase viewModel, Func<Task> action, bool isUpdateLoad)
     {
         await Task.Delay(1).ConfigureAwait(false);
-
         async Task Job()
         {
             if (isUpdateLoad)

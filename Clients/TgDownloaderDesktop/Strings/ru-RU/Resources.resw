@@ -293,6 +293,15 @@
   <data name="SettingName.Text" xml:space="preserve">
     <value>Настройка</value>
   </data>
+  <data name="SettingInStorage.Text" xml:space="preserve">
+    <value>Настройки в хранилище</value>
+  </data>
+  <data name="SettingInStorage.Text" xml:space="preserve">
+    <value>Настройки в хранилище</value>
+  </data>
+  <data name="SettingWithoutSaving.Text" xml:space="preserve">
+    <value>Настройки без сохранения</value>
+  </data>
   <data name="SettingCheck.Text" xml:space="preserve">
     <value>Проверка</value>
   </data>
@@ -319,6 +328,18 @@
   </data>
   <data name="AskSettingsLoad" xml:space="preserve">
     <value>Загрузить настройки?</value>
+  </data>
+  <data name="AskSettingsClear" xml:space="preserve">
+    <value>Очистить настройки?</value>
+  </data>
+  <data name="AskSettingsDelete" xml:space="preserve">
+    <value>Удалить настройки?</value>
+  </data>
+  <data name="AskClientConnect" xml:space="preserve">
+    <value>Подключить клиент?</value>
+  </data>
+  <data name="AskClientDisconnect" xml:space="preserve">
+    <value>Отключить клиент?</value>
   </data>
   <data name="YesButton" xml:space="preserve">
     <value>Да</value>
@@ -373,5 +394,8 @@
   </data>
   <data name="ClientServerMessage.Text" xml:space="preserve">
     <value>Сообщение сервера</value>
+  </data>
+  <data name="ClientSettingsAreNotValid" xml:space="preserve">
+    <value>Настройки клиента не валидны</value>
   </data>
 </root>

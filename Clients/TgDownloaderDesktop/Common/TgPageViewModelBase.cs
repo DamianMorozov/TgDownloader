@@ -25,8 +25,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			IsExistsEfStorage = File.Exists(value);
 		}
 	}
-	[ObservableProperty]
-	private bool _isExistsEfStorage;
 	private string _appTgSession = default!;
 	public string AppTgSession
 	{
@@ -41,20 +39,32 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			OnPropertyChanged();
 		}
 	}
-	[ObservableProperty]
-	private bool _isExistsTgSession;
 
-	public bool IsLoad { get; set; }
-	public string StateConnectDt { get; set; } = string.Empty;
-	public string StateConnectMsg { get; set; } = string.Empty;
-	public string StateExceptionDt { get; set; } = string.Empty;
-	public string StateExceptionMsg { get; set; } = string.Empty;
-	public string StateProxyDt { get; set; } = string.Empty;
-	public string StateProxyMsg { get; set; } = string.Empty;
-	public string StateSourceDt { get; set; } = string.Empty;
-	public string StateSourceMsg { get; set; } = string.Empty;
 	public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	public static TgExceptionModel Exception { get; set; } = new();
+
+	[ObservableProperty]
+	private bool _isExistsEfStorage;
+	[ObservableProperty]
+	private bool _isExistsTgSession;
+	[ObservableProperty]
+	private bool _isLoad;
+	[ObservableProperty]
+	private string _stateConnectDt = string.Empty;
+	[ObservableProperty]
+	private string _stateConnectMsg = string.Empty;
+	[ObservableProperty]
+	private string _stateExceptionDt = string.Empty;
+	[ObservableProperty]
+	private string _stateExceptionMsg = string.Empty;
+	[ObservableProperty]
+	private string _stateProxyDt = string.Empty;
+	[ObservableProperty]
+	private string _stateProxyMsg = string.Empty;
+	[ObservableProperty]
+	private string _stateSourceDt = string.Empty;
+	[ObservableProperty]
+	private string _stateSourceMsg = string.Empty;
 	[ObservableProperty]
 	private XamlRoot? _xamlRootVm;
 
@@ -139,6 +149,37 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 			StateSourceMsg = message;
 		});
+	}
+
+	protected async Task ContentDialogAsync(string title)
+	{
+		if (XamlRootVm is null) return;
+		ContentDialog dialog = new()
+		{
+			XamlRoot = XamlRootVm,
+			Title = title,
+			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
+			CloseButtonText = TgResourceExtensions.GetCancelButton(),
+			DefaultButton = ContentDialogButton.Close,
+		};
+		_ = await dialog.ShowAsync();
+		await Task.CompletedTask;
+	}
+
+	protected async Task ContentDialogAsync(Func<Task> task, string title)
+	{
+		if (XamlRootVm is null) return;
+		ContentDialog dialog = new()
+		{
+			XamlRoot = XamlRootVm,
+			Title = title,
+			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
+			CloseButtonText = TgResourceExtensions.GetCancelButton(),
+			DefaultButton = ContentDialogButton.Close,
+			PrimaryButtonCommand = new AsyncRelayCommand(task)
+		};
+		_ = await dialog.ShowAsync();
+		await Task.CompletedTask;
 	}
 
 	#endregion
