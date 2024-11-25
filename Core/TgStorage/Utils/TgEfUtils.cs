@@ -151,7 +151,7 @@ public static class TgEfUtils
 		int batchSizeFrom = 100;
 		//const int batchSizeTo = 100;
 		int countFrom = await repoFrom.GetCountAsync(WhereUidNotEmpty<TEntity>());
-		//int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>()).ConfigureAwait(true);
+		//int countTo = await repoTo.GetCountAsync(WhereUidNotEmpty<TEntity>());
 
 		for (int i = 0; i < countFrom; i += batchSizeFrom)
 		{

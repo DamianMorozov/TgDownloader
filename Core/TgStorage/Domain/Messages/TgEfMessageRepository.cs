@@ -32,22 +32,18 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetAsync(TgEfMessageEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfMessageEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfMessageEntity? itemFind = isNoTracking
 			? await EfContext.Messages.AsNoTracking()
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
 				.SingleOrDefaultAsync()
-				.ConfigureAwait(false)
 			: await EfContext.Messages
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				.SingleOrDefaultAsync()
-				.ConfigureAwait(false);
+				.SingleOrDefaultAsync();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
@@ -74,12 +70,10 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		TgEfMessageEntity? item = isNoTracking
 			? await EfContext.Messages.AsTracking()
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				.FirstOrDefaultAsync().ConfigureAwait(false)
+				.FirstOrDefaultAsync()
 			: await EfContext.Messages
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				.FirstOrDefaultAsync().ConfigureAwait(false);
+				.FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
@@ -113,7 +107,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
 		{
@@ -170,7 +164,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfMessageEntity> items;
 		if (take > 0)
 		{
@@ -203,13 +197,13 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override int GetCount() => EfContext.Messages.AsNoTracking().Count();
 
-	public override async Task<int> GetCountAsync() => await EfContext.Messages.AsNoTracking().CountAsync().ConfigureAwait(false);
+	public override async Task<int> GetCountAsync() => await EfContext.Messages.AsNoTracking().CountAsync();
 
 	public override int GetCount(Expression<Func<TgEfMessageEntity, bool>> where) => 
 		EfContext.Messages.AsNoTracking().Where(where).Count();
 
 	public override async Task<int> GetCountAsync(Expression<Func<TgEfMessageEntity, bool>> where) => 
-		await EfContext.Messages.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
+		await EfContext.Messages.AsNoTracking().Where(where).CountAsync();
 
 	#endregion
 
@@ -236,12 +230,12 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfMessageEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfMessageEntity item in storageResult.Items)
 			{
-				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
+				await DeleteAsync(item, isSkipFind: true);
 			}
 		}
 		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);

@@ -32,24 +32,18 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetAsync(TgEfDocumentEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfDocumentEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		TgEfStorageResult<TgEfDocumentEntity> storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfDocumentEntity? itemFind = isNoTracking
 			? await EfContext.Documents.AsNoTracking()
 				.Where(x => x != null && x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				//.DefaultIfEmpty()
 				.SingleOrDefaultAsync()
-				.ConfigureAwait(false)
 			: await EfContext.Documents.AsTracking()
 				.Where(x => x != null && x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				//.DefaultIfEmpty()
-				.SingleOrDefaultAsync()
-				.ConfigureAwait(false);
+				.SingleOrDefaultAsync();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists, item);
@@ -76,12 +70,10 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		TgEfDocumentEntity? item = isNoTracking
 			? await EfContext.Documents.AsNoTracking()
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				.FirstOrDefaultAsync().ConfigureAwait(false)
+				.FirstOrDefaultAsync()
 			: await EfContext.Documents.AsTracking()
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
-				.FirstOrDefaultAsync().ConfigureAwait(false);
+				.FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
@@ -115,7 +107,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{
@@ -172,7 +164,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{
@@ -203,13 +195,13 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override int GetCount() => EfContext.Documents.AsNoTracking().Count();
 
-	public override async Task<int> GetCountAsync() => await EfContext.Documents.AsNoTracking().CountAsync().ConfigureAwait(false);
+	public override async Task<int> GetCountAsync() => await EfContext.Documents.AsNoTracking().CountAsync();
 
 	public override int GetCount(Expression<Func<TgEfDocumentEntity, bool>> where) => 
 		EfContext.Documents.AsNoTracking().Where(where).Count();
 
 	public override async Task<int> GetCountAsync(Expression<Func<TgEfDocumentEntity, bool>> where) => 
-		await EfContext.Documents.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
+		await EfContext.Documents.AsNoTracking().Where(where).CountAsync();
 
 	#endregion
 
@@ -236,12 +228,12 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfDocumentEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		TgEfStorageResult<TgEfDocumentEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfDocumentEntity item in storageResult.Items)
 			{
-				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
+				await DeleteAsync(item, isSkipFind: true);
 			}
 		}
 		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);

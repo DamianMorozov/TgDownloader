@@ -28,18 +28,16 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetAsync(TgEfSourceEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfSourceEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		TgEfStorageResult<TgEfSourceEntity> storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfSourceEntity? itemFind = isNoTracking
 			? await EfContext.Sources.AsNoTracking()
 				.Where(x => x.Id == item.Id)
 				.SingleOrDefaultAsync()
-				.ConfigureAwait(false)
 			: await EfContext.Sources.AsTracking()
 				.Where(x => x.Id == item.Id)
-				.SingleOrDefaultAsync()
-				.ConfigureAwait(false);
+				.SingleOrDefaultAsync();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists, item);
@@ -58,8 +56,8 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfSourceEntity? item = isNoTracking
-			? await EfContext.Sources.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Sources.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Sources.AsNoTracking().FirstOrDefaultAsync()
+			: await EfContext.Sources.AsTracking().FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, item);
@@ -85,7 +83,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfSourceEntity> items;
 		if (take > 0)
 		{
@@ -130,7 +128,7 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfSourceEntity> items;
 		if (take > 0)
 		{
@@ -157,13 +155,13 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override int GetCount() => EfContext.Sources.AsNoTracking().Count();
 
-	public override async Task<int> GetCountAsync() => await EfContext.Sources.AsNoTracking().CountAsync().ConfigureAwait(false);
+	public override async Task<int> GetCountAsync() => await EfContext.Sources.AsNoTracking().CountAsync();
 
 	public override int GetCount(Expression<Func<TgEfSourceEntity, bool>> where) => 
 		EfContext.Sources.AsNoTracking().Where(where).Count();
 
 	public override async Task<int> GetCountAsync(Expression<Func<TgEfSourceEntity, bool>> where) => 
-		await EfContext.Sources.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
+		await EfContext.Sources.AsNoTracking().Where(where).CountAsync();
 
 	#endregion
 
@@ -190,12 +188,12 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfSourceEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		TgEfStorageResult<TgEfSourceEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfSourceEntity item in storageResult.Items)
 			{
-				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
+				await DeleteAsync(item, isSkipFind: true);
 			}
 		}
 		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);

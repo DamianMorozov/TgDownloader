@@ -28,18 +28,16 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetAsync(TgEfProxyEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await base.GetAsync(item, isNoTracking).ConfigureAwait(false);
+		TgEfStorageResult<TgEfProxyEntity> storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
 		TgEfProxyEntity? itemFind = isNoTracking
 			? await EfContext.Proxies.AsNoTracking()
 				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
 				.SingleOrDefaultAsync()
-				.ConfigureAwait(false)
 			: await EfContext.Proxies.AsTracking()
 				.Where(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port)
-				.SingleOrDefaultAsync()
-				.ConfigureAwait(false);
+				.SingleOrDefaultAsync();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists, item);
@@ -58,8 +56,8 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetFirstAsync(bool isNoTracking)
 	{
 		TgEfProxyEntity? item = isNoTracking
-			? await EfContext.Proxies.AsNoTracking().FirstOrDefaultAsync().ConfigureAwait(false)
-			: await EfContext.Proxies.AsTracking().FirstOrDefaultAsync().ConfigureAwait(false);
+			? await EfContext.Proxies.AsNoTracking().FirstOrDefaultAsync()
+			: await EfContext.Proxies.AsTracking().FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
@@ -85,7 +83,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfProxyEntity> items;
 		if (take > 0)
 		{
@@ -130,7 +128,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1).ConfigureAwait(false);
+		await Task.Delay(1);
 		IList<TgEfProxyEntity> items;
 		if (take > 0)
 		{
@@ -157,13 +155,13 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override int GetCount() => EfContext.Proxies.AsNoTracking().Count();
 
-	public override async Task<int> GetCountAsync() => await EfContext.Proxies.AsNoTracking().CountAsync().ConfigureAwait(false);
+	public override async Task<int> GetCountAsync() => await EfContext.Proxies.AsNoTracking().CountAsync();
 
 	public override int GetCount(Expression<Func<TgEfProxyEntity, bool>> where) => 
 		EfContext.Proxies.AsNoTracking().Where(where).Count();
 
 	public override async Task<int> GetCountAsync(Expression<Func<TgEfProxyEntity, bool>> where) => 
-		await EfContext.Proxies.AsNoTracking().Where(where).CountAsync().ConfigureAwait(false);
+		await EfContext.Proxies.AsNoTracking().Where(where).CountAsync();
 
 	#endregion
 
@@ -190,12 +188,12 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false).ConfigureAwait(false);
+		TgEfStorageResult<TgEfProxyEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfProxyEntity item in storageResult.Items)
 			{
-				await DeleteAsync(item, isSkipFind: true).ConfigureAwait(false);
+				await DeleteAsync(item, isSkipFind: true);
 			}
 		}
 		return new(storageResult.IsExists ? TgEnumEntityState.IsDeleted : TgEnumEntityState.NotDeleted);
