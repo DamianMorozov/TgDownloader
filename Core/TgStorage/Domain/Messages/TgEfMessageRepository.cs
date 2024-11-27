@@ -18,12 +18,10 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 			? EfContext.Messages.AsNoTracking()
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
 				.SingleOrDefault()
 			: EfContext.Messages
 				.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
 				.SingleOrDefault();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
@@ -54,11 +52,9 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		TgEfMessageEntity? item = isNoTracking
 			? EfContext.Messages.AsTracking()
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
 				.FirstOrDefault()
 			: EfContext.Messages
 				.Include(x => x.Source)
-				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
 			? new(TgEnumEntityState.NotExists)

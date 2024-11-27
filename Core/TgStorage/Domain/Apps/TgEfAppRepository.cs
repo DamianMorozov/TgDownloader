@@ -18,12 +18,10 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 			? EfContext.Apps.AsNoTracking()
 				.Where(x => x.ApiHash == item.ApiHash)
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.SingleOrDefault()
 			: EfContext.Apps.AsTracking()
 				.Where(x => x.ApiHash == item.ApiHash)
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.SingleOrDefault();
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
@@ -54,11 +52,9 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		TgEfAppEntity? item = isNoTracking
 			? EfContext.Apps.AsNoTracking()
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.FirstOrDefault()
 			: EfContext.Apps.AsTracking()
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
@@ -207,7 +203,6 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 			EfContext.Apps.AsTracking()
 				.Where(x => x.Uid != Guid.Empty)
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.FirstOrDefault();
 		return item is not null
 			? new(TgEnumEntityState.IsExists, item)
@@ -220,7 +215,6 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 			EfContext.Apps.AsTracking()
 				.Where(x => x.Uid != Guid.Empty)
 				.Include(x => x.Proxy)
-				//.DefaultIfEmpty()
 				.FirstOrDefaultAsync();
 		return item is not null
 			? new(TgEnumEntityState.IsExists, item)
