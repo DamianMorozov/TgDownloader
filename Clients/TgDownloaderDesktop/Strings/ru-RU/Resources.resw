@@ -398,6 +398,27 @@
   <data name="ClientSettingsAreNotValid" xml:space="preserve">
     <value>Настройки клиента не валидны</value>
   </data>
+  <data name="ClientIsConnected" xml:space="preserve">
+    <value>Клиент подключен</value>
+  </data>
+  <data name="ClientIsDisconnected" xml:space="preserve">
+    <value>Клиент отключен</value>
+  </data>
+  <data name="ClientConnectionState.Text" xml:space="preserve">
+    <value>Состояние подключения</value>
+  </data>
+  <data name="ClientConnectionDt.Text" xml:space="preserve">
+    <value>Дата время подключения</value>
+  </data>
+  <data name="ClientConnectionException.Text" xml:space="preserve">
+    <value>Исключение подключения</value>
+  </data>
+  <data name="ClientUserName.Text" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="ClientMtProxyUrl.Text" xml:space="preserve">
+    <value>Адрес MT прокси</value>
+  </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Бесплатная лицензия</value>
   </data>

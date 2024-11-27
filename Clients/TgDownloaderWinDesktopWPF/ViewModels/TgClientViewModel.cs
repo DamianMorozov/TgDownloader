@@ -138,10 +138,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         }, false);
     }
 
-    public string? ConfigClientDesktop(string what)
+    public string ConfigClientDesktop(string what)
     {
         TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
-
         switch (what)
         {
             case "api_hash":
@@ -181,7 +180,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             //case "lang_pack":
             //case "lang_code":
             default:
-                return null;
+                return string.Empty;
         }
     }
 

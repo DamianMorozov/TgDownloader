@@ -22,7 +22,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
     public string StateSourceDt { get; set; } = string.Empty;
     public string StateSourceMsg { get; set; } = string.Empty;
     public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
-    public TgExceptionModel Exception { get; set; } = new();
+    public TgExceptionViewModel Exception { get; set; } = new();
     public Dispatcher Dispatcher { get; set; } = Dispatcher.CurrentDispatcher;
 
     #endregion

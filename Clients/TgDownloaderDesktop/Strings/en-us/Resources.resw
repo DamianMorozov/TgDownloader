@@ -333,6 +333,27 @@
   <data name="ClientSettingsAreNotValid" xml:space="preserve">
     <value>Client settings are not valid</value>
   </data>
+  <data name="ClientIsConnected" xml:space="preserve">
+    <value>Client is connected</value>
+  </data>
+  <data name="ClientIsDisconnected" xml:space="preserve">
+    <value>Client is disconnected</value>
+  </data>
+  <data name="ClientConnectionState.Text" xml:space="preserve">
+    <value>Connection state</value>
+  </data>
+  <data name="ClientConnectionDt.Text" xml:space="preserve">
+    <value>Connection date time</value>
+  </data>
+  <data name="ClientConnectionException.Text" xml:space="preserve">
+    <value>Connection exception</value>
+  </data>
+  <data name="ClientUserName.Text" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="ClientMtProxyUrl.Text" xml:space="preserve">
+    <value>MT proxy url</value>
+  </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Free license</value>
   </data>

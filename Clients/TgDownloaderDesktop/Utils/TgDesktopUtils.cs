@@ -186,7 +186,7 @@ public static class TgDesktopUtils
         {
             if (isUpdateLoad)
                 viewModel.IsLoad = true;
-            TgClientViewModel.Exception.Clear();
+            //TgClientViewModel.Exception.Clear();
             await action();
         }
 
@@ -201,7 +201,7 @@ public static class TgDesktopUtils
         }
         catch (Exception ex)
         {
-	        App.MainWindow.DispatcherQueue.TryEnqueue(() => TgClientViewModel.Exception.Set(ex));
+	        //App.MainWindow.DispatcherQueue.TryEnqueue(() => TgClientViewModel.Exception.Set(ex));
         }
         finally
         {

@@ -11,70 +11,10 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<!--  Actions  -->
-			<Border
-				Grid.Row="0"
-				Margin="2"
-				BorderBrush="DimGray"
-				BorderThickness="1"
-				CornerRadius="5"
-				UseLayoutRounding="True">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="5*" />
-					</Grid.ColumnDefinitions>
-					<!--  Vertical separator  -->
-					<Rectangle
-						Grid.Row="0"
-						Grid.Column="1"
-						Width="1"
-						Fill="DimGray" />
-					<!--  Link  -->
-					<Border Grid.Column="0" Margin="12,-1,2,2">
-						<HyperlinkButton
-							x:Uid="ClientPage_MyTelegram"
-							Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
-							HorizontalAlignment="Stretch" />
-					</Border>
-					<!--  Grid  -->
-					<Grid Column="2">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1*" />
-							<ColumnDefinition Width="1*" />
-						</Grid.ColumnDefinitions>
-						<!--  Button Connect  -->
-						<Button
-							x:Uid="ClientConnect"
-							Grid.Column="0"
-							Margin="2"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}">
-							<FontIcon Glyph="&#xE703;" />
-						</Button>
-						<!--  IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}"  -->
-						<!--  Button Disconnect  -->
-						<Button
-							x:Uid="ClientDisconnect"
-							Grid.Column="1"
-							Margin="2"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}">
-							<FontIcon Glyph="&#xE8BB;" />
-						</Button>
-						<!--  IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}"  -->
-					</Grid>
-				</Grid>
-			</Border>
 			<!--  Settings in storage  -->
 			<Border
-				Grid.Row="1"
+				Grid.Row="0"
 				Margin="2"
 				VerticalAlignment="Top"
 				BorderBrush="DimGray"
@@ -83,6 +23,7 @@
 				UseLayoutRounding="True">
 				<Grid Margin="2" Background="Transparent">
 					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
@@ -118,7 +59,7 @@
 					<!--  Vertical separator  -->
 					<Rectangle
 						Grid.Row="2"
-						Grid.RowSpan="6"
+						Grid.RowSpan="8"
 						Grid.Column="1"
 						Width="1"
 						Fill="DimGray" />
@@ -232,129 +173,16 @@
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
 						Text="{x:Bind ViewModel.LastName, Mode=TwoWay}" />
-				</Grid>
-			</Border>
-			<!--  Settings without saving  -->
-			<Border
-				Grid.Row="2"
-				Margin="2"
-				VerticalAlignment="Top"
-				BorderBrush="DimGray"
-				BorderThickness="1"
-				CornerRadius="5"
-				UseLayoutRounding="True">
-				<Grid Margin="2" Background="Transparent">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="5*" />
-					</Grid.ColumnDefinitions>
-					<!--  Header  -->
-					<TextBlock
-						x:Uid="SettingWithoutSaving"
-						Grid.Row="0"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Margin="2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
 					<!--  Horizontal separator  -->
 					<Rectangle
-						Grid.Row="1"
+						Grid.Row="8"
 						Grid.Column="0"
 						Grid.ColumnSpan="3"
 						Height="1"
 						Fill="DimGray" />
-					<!--  Vertical separator  -->
-					<Rectangle
-						Grid.Row="2"
-						Grid.RowSpan="3"
-						Grid.Column="1"
-						Width="1"
-						Fill="DimGray" />
-					<!--  Password  -->
-					<TextBlock
-						x:Uid="ClientPassword"
-						Grid.Row="2"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<PasswordBox
-						Grid.Row="2"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
-					<!--  Verification code  -->
-					<TextBlock
-						x:Uid="ClientVerificationCode"
-						Grid.Row="3"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<PasswordBox
-						Grid.Row="3"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
-					<!--  Server message  -->
-					<TextBlock
-						x:Uid="ClientServerMessage"
-						Grid.Row="4"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="4"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.ServerMessage, Mode=TwoWay}" />
-				</Grid>
-			</Border>
-			<!--  TG session  -->
-			<Border
-				Grid.Row="3"
-				Margin="2"
-				BorderBrush="DimGray"
-				BorderThickness="1"
-				CornerRadius="5"
-				UseLayoutRounding="True">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="5*" />
-					</Grid.ColumnDefinitions>
-					<!--  Vertical separator  -->
-					<Rectangle
-						Grid.Row="0"
-						Grid.Column="1"
-						Width="1"
-						Fill="DimGray" />
 					<!--  TG session  -->
 					<StackPanel
+						Grid.Row="9"
 						Grid.Column="0"
 						Margin="2"
 						HorizontalAlignment="Center">
@@ -365,7 +193,7 @@
 							IsEnabled="False" />
 					</StackPanel>
 					<!--  Grid  -->
-					<Grid Column="2">
+					<Grid Grid.Row="9" Column="2">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="1*" />
 							<ColumnDefinition Width="1*" />
@@ -433,6 +261,250 @@
 							</StackPanel>
 						</Button>
 					</Grid>
+				</Grid>
+			</Border>
+			<!--  Settings without saving  -->
+			<Border
+				Grid.Row="1"
+				Margin="2"
+				VerticalAlignment="Top"
+				BorderBrush="DimGray"
+				BorderThickness="1"
+				CornerRadius="5"
+				UseLayoutRounding="True">
+				<Grid Margin="2" Background="Transparent">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="2*" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="5*" />
+					</Grid.ColumnDefinitions>
+					<!--  Header  -->
+					<TextBlock
+						x:Uid="SettingWithoutSaving"
+						Grid.Row="0"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Margin="2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<!--  Horizontal separator  -->
+					<Rectangle
+						Grid.Row="1"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Height="1"
+						Fill="DimGray" />
+					<!--  Vertical separator  -->
+					<Rectangle
+						Grid.Row="2"
+						Grid.RowSpan="12"
+						Grid.Column="1"
+						Width="1"
+						Fill="DimGray" />
+					<!--  Password  -->
+					<TextBlock
+						x:Uid="ClientPassword"
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<PasswordBox
+						Grid.Row="2"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+					<!--  Verification code  -->
+					<TextBlock
+						x:Uid="ClientVerificationCode"
+						Grid.Row="3"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<PasswordBox
+						Grid.Row="3"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
+					<!--  Horizontal separator  -->
+					<Rectangle
+						Grid.Row="4"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Height="1"
+						Fill="DimGray" />
+					<!--  Link  -->
+					<Border
+						Grid.Row="5"
+						Grid.Column="0"
+						Margin="12,-1,2,2">
+						<HyperlinkButton
+							x:Uid="ClientPage_MyTelegram"
+							Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+							HorizontalAlignment="Stretch" />
+					</Border>
+					<!--  Grid  -->
+					<Grid Grid.Row="5" Column="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="1*" />
+							<ColumnDefinition Width="1*" />
+						</Grid.ColumnDefinitions>
+						<!--  Button Connect  -->
+						<Button
+							x:Uid="ClientConnect"
+							Grid.Column="0"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Center"
+							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}">
+							<FontIcon Glyph="&#xE703;" />
+						</Button>
+						<!--  IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}"  -->
+						<!--  Button Disconnect  -->
+						<Button
+							x:Uid="ClientDisconnect"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Center"
+							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}">
+							<FontIcon Glyph="&#xE8BB;" />
+						</Button>
+						<!--  IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}"  -->
+					</Grid>
+					<!--  Horizontal separator  -->
+					<Rectangle
+						Grid.Row="6"
+						Grid.Column="0"
+						Grid.ColumnSpan="3"
+						Height="1"
+						Fill="DimGray" />
+					<!--  User  -->
+					<TextBlock
+						x:Uid="ClientUserName"
+						Grid.Row="7"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="7"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.UserName, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  MtProxyUrl  -->
+					<TextBlock
+						x:Uid="ClientMtProxyUrl"
+						Grid.Row="8"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="8"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.MtProxyUrl, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  Connection dt  -->
+					<TextBlock
+						x:Uid="ClientConnectionDt"
+						Grid.Row="9"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="9"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.StateConnectDt, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  Connection state  -->
+					<TextBlock
+						x:Uid="ClientConnectionState"
+						Grid.Row="10"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="10"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.StateConnectMsg, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  Connection exception  -->
+					<TextBlock
+						x:Uid="ClientConnectionException"
+						Grid.Row="11"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="11"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.Exception.Message, Mode=OneWay}"
+						TextWrapping="Wrap" />
 				</Grid>
 			</Border>
 		</Grid>

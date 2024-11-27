@@ -10,7 +10,7 @@ internal partial class TgMenuHelper
 
 	private TgEnumMenuClient SetMenuClient()
 	{
-		string prompt = AnsiConsole.Prompt(
+		var prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(Console.WindowHeight - 17)
@@ -54,7 +54,7 @@ internal partial class TgMenuHelper
 
 	private async Task<TgEfProxyEntity> AddOrUpdateProxyAsync()
 	{
-		string prompt = AnsiConsole.Prompt(
+		var prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title($"  {TgLocale.MenuSwitchNumber}")
 				.PageSize(Console.WindowHeight - 17)
@@ -79,14 +79,14 @@ internal partial class TgMenuHelper
 			proxy.HostName = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyHostName}:"));
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await ProxyRepository.GetAsync(
+		var storageResult = await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false);
 		if (!storageResult.IsExists)
 			await ProxyRepository.SaveAsync(proxy);
 		proxy = (await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
 
-		TgEfAppEntity app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		var app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
 		app.ProxyUid = proxy.Uid;
 		await AppRepository.SaveAsync(app);
 
@@ -95,17 +95,17 @@ internal partial class TgMenuHelper
 
 	private async Task SetupClientProxyAsync()
 	{
-		TgEfProxyEntity proxy = await AddOrUpdateProxyAsync();
+		var proxy = await AddOrUpdateProxyAsync();
 
 		if (proxy.Type == TgEnumProxyType.MtProto)
 		{
-			string prompt = AnsiConsole.Prompt(
+			var prompt = AnsiConsole.Prompt(
 				new SelectionPrompt<string>()
 					.Title($"  {TgLocale.MenuSwitchNumber}")
 					.PageSize(Console.WindowHeight - 17)
 					.MoreChoicesText(TgLocale.MoveUpDown)
 					.AddChoices("Use secret", "Do not use secret"));
-			bool isSecret = prompt switch
+			var isSecret = prompt switch
 			{
 				"Use secret" => true,
 				_ => false
@@ -119,12 +119,12 @@ internal partial class TgMenuHelper
 
 	private string? ConfigConsole(string what)
 	{
-		TgEfAppEntity appNew = AppRepository.GetNew(isNoTracking: false).Item;
-		TgEfAppEntity app = AppRepository.GetFirst(isNoTracking: false).Item;
+		var appNew = AppRepository.GetNew(isNoTracking: false).Item;
+		var app = AppRepository.GetFirst(isNoTracking: false).Item;
 		switch (what)
 		{
 			case "api_hash":
-				string apiHash = !Equals(app.ApiHash, appNew.ApiHash)
+				var apiHash = !Equals(app.ApiHash, appNew.ApiHash)
 					? TgDataFormatUtils.ParseGuidToString(app.ApiHash)
 					: TgDataFormatUtils.ParseGuidToString(TgDataFormatUtils.ParseStringToGuid(
 						AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupApiHash}:"))));
@@ -135,7 +135,7 @@ internal partial class TgMenuHelper
 				}
 				return apiHash;
 			case "api_id":
-				string apiId = !Equals(app.ApiId, appNew.ApiId)
+				var apiId = !Equals(app.ApiId, appNew.ApiId)
 					? app.ApiId.ToString()
 					: AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupAppId}:"))
 					.ToString();
@@ -146,7 +146,7 @@ internal partial class TgMenuHelper
 				}
 				return apiId;
 			case "phone_number":
-				string phoneNumber = !Equals(app.PhoneNumber, appNew.PhoneNumber)
+				var phoneNumber = !Equals(app.PhoneNumber, appNew.PhoneNumber)
 					? app.PhoneNumber
 					: AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPhone}:"));
 				if (app.PhoneNumber != phoneNumber)
@@ -166,7 +166,7 @@ internal partial class TgMenuHelper
 			case "session_pathname":
 				if (string.IsNullOrEmpty(TgAppSettings.AppXml.XmlFileSession))
 					TgAppSettings.AppXml.XmlFileSession = TgFileUtils.FileTgSession;
-				string sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.XmlFileSession);
+				var sessionPath = Path.Combine(Directory.GetCurrentDirectory(), TgAppSettings.AppXml.XmlFileSession);
 				return sessionPath;
 			case "password":
 				return AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.TgSetupPassword}:"));
@@ -190,13 +190,13 @@ internal partial class TgMenuHelper
 
 	private async Task AskClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		string prompt = AnsiConsole.Prompt(
+		var prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 				.Title(TgLocale.MenuClientConnect)
 				.PageSize(Console.WindowHeight - 17)
 				.MoreChoicesText(TgLocale.MoveUpDown)
 				.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
-		bool isConnect = prompt.Equals(TgLocale.MenuYes);
+		var isConnect = prompt.Equals(TgLocale.MenuYes);
 		if (isConnect)
 			await ClientConnectAsync(tgDownloadSettings, false);
 	}

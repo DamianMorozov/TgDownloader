@@ -44,8 +44,8 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	private TgAppSettingsHelper _appSettings = TgAppSettingsHelper.Instance;
 	[ObservableProperty]
 	private TgLicenseManagerHelper _licenseManager = TgLicenseManagerHelper.Instance;
-	public static TgExceptionModel Exception { get; set; } = new();
-
+	[ObservableProperty]
+	private TgExceptionViewModel _exception = new();
 	[ObservableProperty]
 	private bool _isExistsEfStorage;
 	[ObservableProperty]

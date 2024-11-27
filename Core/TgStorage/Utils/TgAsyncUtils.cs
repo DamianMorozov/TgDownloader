@@ -3,9 +3,7 @@
 
 namespace TgStorage.Utils;
 
-/// <summary>
-/// Async utilities.
-/// </summary>
+/// <summary> Async utilities </summary>
 public static class TgAsyncUtils
 {
     #region Public and private fields, properties, constructor
