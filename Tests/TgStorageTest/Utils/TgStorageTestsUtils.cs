@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma warning disable NUnit1033
 
-using TgStorage.Domain;
-
 namespace TgStorageTest.Utils;
 
 [TestFixture]
@@ -16,15 +14,15 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			using TgEfContext efContext = CreateEfContext();
+			using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
-			versionRepository.FillTableVersions();
+			versionRepository.FillTableVersionsAsync().GetAwaiter().GetResult();
 
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = versionRepository.GetLastVersionAsync().GetAwaiter().GetResult();
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			List<TgEfVersionEntity> versions = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
+			var versions = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 		});
@@ -35,15 +33,15 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			await using TgEfContext efContext = CreateEfContext();
+			await using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
 			await versionRepository.FillTableVersionsAsync();
 
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = await versionRepository.GetLastVersionAsync();
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			List<TgEfVersionEntity> versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count()} items");
 		});
@@ -54,12 +52,12 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			using TgEfContext efContext = CreateEfContext();
+			using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
-			versionRepository.FillTableVersions();
+			versionRepository.FillTableVersionsAsync().GetAwaiter().GetResult();
 
 			versionRepository.CreateNew();
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = versionRepository.GetLastVersionAsync().GetAwaiter().GetResult();
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
@@ -74,16 +72,16 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			await using TgEfContext efContext = CreateEfContext();
+			await using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
 			await versionRepository.FillTableVersionsAsync();
 
 			await versionRepository.CreateNewAsync();
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = await versionRepository.GetLastVersionAsync();
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			List<TgEfVersionEntity> versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 		});
@@ -94,21 +92,21 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrow(() =>
 		{
-			using TgEfContext efContext = CreateEfContext();
+			using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
-			versionRepository.FillTableVersions();
+			versionRepository.FillTableVersionsAsync().GetAwaiter().GetResult();
 
 			versionRepository.DeleteAll();
 			versionRepository.CreateNew();
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = versionRepository.GetLastVersionAsync().GetAwaiter().GetResult();
 
 			Assert.That(versionLast.Version == new TgEfVersionEntity().Version);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			List<TgEfVersionEntity> versions = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
+			var versions = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 			versionRepository.DeleteNew();
-			versionRepository.FillTableVersions();
+			versionRepository.FillTableVersionsAsync().GetAwaiter().GetResult();
 		});
 	}
 	
@@ -117,17 +115,17 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			await using TgEfContext efContext = CreateEfContext();
+			await using var efContext = CreateEfContext();
 			TgEfVersionRepository versionRepository = new(efContext);
 			await versionRepository.FillTableVersionsAsync();
 
 			await versionRepository.DeleteAllAsync();
 			await versionRepository.CreateNewAsync();
-			TgEfVersionEntity versionLast = versionRepository.GetLastVersion();
+			var versionLast = await versionRepository.GetLastVersionAsync();
 
 			Assert.That(versionLast.Version == new TgEfVersionEntity().Version);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			List<TgEfVersionEntity> versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 			await versionRepository.DeleteNewAsync();

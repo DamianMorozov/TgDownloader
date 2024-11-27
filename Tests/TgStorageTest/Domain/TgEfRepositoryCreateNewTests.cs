@@ -37,22 +37,22 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 						break;
                     case var cls when cls == typeof(TgEfDocumentEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
-                        break;
+						break;
                     case var cls when cls == typeof(TgEfFilterEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
-                        break;
+						break;
                     case var cls when cls == typeof(TgEfMessageEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
-                        break;
+						break;
                     case var cls when cls == typeof(TgEfProxyEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
                         break;
                     case var cls when cls == typeof(TgEfSourceEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
-                        break;
+						break;
                     case var cls when cls == typeof(TgEfVersionEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
-                        break;
+						break;
                 }
                 TestContext.WriteLine();
             }

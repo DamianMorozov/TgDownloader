@@ -110,7 +110,7 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(source);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals((long)1, source.Id));
+				Assert.That(Equals((long)-1, source.Id));
 				Assert.That(Equals("UserName", source.UserName));
 				Assert.That(Equals("Title", source.Title));
 				Assert.That(Equals("About", source.About));
