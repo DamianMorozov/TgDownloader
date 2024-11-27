@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 	<Target Name="Optimize" BeforeTargets="Link">
-		<Message Text="Optimizing" />
+		<Message Text="Optimizing Tasks to run before link" />
 	</Target>
 	<Target Name="BeforeBuild">
-		<!-- Insert tasks to run before build here -->
+		<Message Text="Tasks to run before build" />
 	</Target>
 	<Target Name="AfterBuild">
-		<!-- Insert tasks to run after build here -->
+		<Message Text="Tasks to run after build" />
 	</Target>
-	<!-- Uncomment this for clean -->
-	<!--<Target Name="ClearObj" BeforeTargets="Clean">
-        <RemoveDir Directories="./obj" />
-		</Target>-->
+	<Target Name="ClearObj" BeforeTargets="Clean">
+		<Message Text="Tasks to run after build" />
+	</Target>
 	<Target Name="ClearBin" BeforeTargets="Clean">
-		<RemoveDir Directories="./bin" />
+		<RemoveDir Directories="$(TargetDir)" />
 	</Target>
 </Project>
