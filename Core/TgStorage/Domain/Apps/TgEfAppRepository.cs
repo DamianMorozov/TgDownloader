@@ -85,49 +85,32 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking()
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Apps.AsNoTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToList()
+				: EfContext.Apps.AsTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Include(x => x.Proxy)
-					.ToList()
-				: EfContext.Apps.AsTracking()
-					.Include(x => x.Proxy)
-					.ToList();
+				? EfContext.Apps.AsNoTracking().Include(x => x.Proxy).ToList()
+				: EfContext.Apps.AsTracking().Include(x => x.Proxy).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfAppEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking()
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Apps.AsNoTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Apps.AsTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Include(x => x.Proxy)
-					.ToList()
-				: EfContext.Apps.AsTracking()
-					.Include(x => x.Proxy)
-					.ToList();
+				? await EfContext.Apps.AsNoTracking().Include(x => x.Proxy).ToListAsync()
+				: await EfContext.Apps.AsTracking().Include(x => x.Proxy).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -138,57 +121,32 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToList()
+				: EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.ToList()
-				: EfContext.Apps.AsTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.ToList();
+				? EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).ToList()
+				: EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfAppEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfAppEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Apps.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.ToList()
-				: EfContext.Apps.AsTracking()
-					.Where(where)
-					.Include(x => x.Proxy)
-					.ToList();
+				? await EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).ToListAsync()
+				: await EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

@@ -10,8 +10,6 @@ public sealed class TgEfSourceValidator : TgEfValidatorBase<TgEfSourceEntity>
 
 	public TgEfSourceValidator()
 	{
-		RuleFor(item => item.Id)
-			.GreaterThan(0);
 		RuleFor(item => item.Title)
 			.NotNull();
 		RuleFor(item => item.About)

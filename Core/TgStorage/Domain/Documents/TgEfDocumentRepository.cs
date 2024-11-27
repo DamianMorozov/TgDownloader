@@ -85,49 +85,32 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking()
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Documents.AsNoTracking().Include(x => x.Source).Skip(skip).Take(take).ToList()
+				: EfContext.Documents.AsTracking().Include(x => x.Source).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Include(x => x.Source)
-					.ToList()
-				: EfContext.Documents.AsTracking()
-					.Include(x => x.Source)
-					.ToList();
+				? EfContext.Documents.AsNoTracking().Include(x => x.Source).ToList()
+				: EfContext.Documents.AsTracking().Include(x => x.Source).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking()
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Documents.AsNoTracking().Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Documents.AsTracking().Include(x => x.Source).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Include(x => x.Source)
-					.ToList()
-				: EfContext.Documents.AsTracking()
-					.Include(x => x.Source)
-					.ToList();
+				? await EfContext.Documents.AsNoTracking().Include(x => x.Source).ToListAsync()
+				: await EfContext.Documents.AsTracking().Include(x => x.Source).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -138,57 +121,32 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList()
+				: EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.ToList()
-				: EfContext.Documents.AsTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.ToList();
+				? EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).ToList()
+				: EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfDocumentEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Documents.AsNoTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.ToList()
-				: EfContext.Documents.AsTracking()
-					.Where(where)
-					.Include(x => x.Source)
-					.ToList();
+				? await EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).ToListAsync()
+				: await EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

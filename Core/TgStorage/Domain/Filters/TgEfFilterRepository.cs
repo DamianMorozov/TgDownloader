@@ -91,19 +91,18 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfFilterEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking().Skip(skip).Take(take).ToList()
-				: EfContext.Filters.AsTracking().Skip(skip).Take(take).ToList();
+				? await EfContext.Filters.AsNoTracking().Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Filters.AsTracking().Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking().ToList()
-				: EfContext.Filters.AsTracking().ToList();
+				? await EfContext.Filters.AsNoTracking().ToListAsync()
+				: await EfContext.Filters.AsTracking().ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -114,49 +113,32 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Filters.AsTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Filters.AsNoTracking().Where(where).Skip(skip).Take(take).ToList()
+				: EfContext.Filters.AsTracking().Where(where).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: EfContext.Filters.AsTracking()
-					.Where(where)
-					.ToList();
+				? EfContext.Filters.AsNoTracking().Where(where).ToList()
+				: EfContext.Filters.AsTracking().Where(where).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfFilterEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Filters.AsTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Filters.AsNoTracking().Where(where).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Filters.AsTracking().Where(where).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Filters.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: EfContext.Filters.AsTracking()
-					.Where(where)
-					.ToList();
+				? await EfContext.Filters.AsNoTracking().Where(where).ToListAsync()
+				: await EfContext.Filters.AsTracking().Where(where).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

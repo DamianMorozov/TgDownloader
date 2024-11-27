@@ -54,8 +54,9 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
 
 	#region Public and private methods
 
-	private void Default(TgEfProxyEntity item)
+	public void Default(TgEfProxyEntity? item = null)
 	{
+		item ??= new();
 		Item = item;
 		ProxyUid = item.Uid;
 		ProxyType = item.Type;
@@ -70,6 +71,8 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
 	private void SetPrettyName() => PrettyName = $"{Item.Type} | {TgDataFormatUtils.GetFormatString(Item.HostName, 30)} | {Item.Port} | {Item.UserName}";
 
 	public override string ToString() => PrettyName;
+
+	public override string ToDebugString() => PrettyName;
 
 	#endregion
 }

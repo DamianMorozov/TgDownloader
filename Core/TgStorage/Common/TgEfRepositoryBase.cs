@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Domain;
 using ValidationException = FluentValidation.ValidationException;
 
 namespace TgStorage.Common;
@@ -23,7 +22,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	private async Task<TgEfStorageResult<TEntity>> UseOverrideMethodAsync()
 	{
-		await Task.Delay(1);
+		await Task.CompletedTask;
 		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 	}
 

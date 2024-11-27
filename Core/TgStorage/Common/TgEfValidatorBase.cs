@@ -18,7 +18,7 @@ public class TgEfValidatorBase<TEntity> : AbstractValidator<TEntity>, ITgCommon 
 
     #region Public and private methods
 
-    public string ToDebugString() => this is TEntity item ? $"{item.Uid}" : string.Empty;
+    public string ToDebugString() => string.Empty;
 
     #endregion
 }

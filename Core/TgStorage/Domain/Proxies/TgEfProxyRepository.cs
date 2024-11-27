@@ -83,19 +83,18 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfProxyEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().Skip(skip).Take(take).ToList()
-				: EfContext.Proxies.AsTracking().Skip(skip).Take(take).ToList();
+				? await EfContext.Proxies.AsNoTracking().Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Proxies.AsTracking().Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking().ToList()
-				: EfContext.Proxies.AsTracking().ToList();
+				? await EfContext.Proxies.AsNoTracking().ToListAsync()
+				: await EfContext.Proxies.AsTracking().ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -106,49 +105,32 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Proxies.AsTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList();
+				? EfContext.Proxies.AsNoTracking().Where(where).Skip(skip).Take(take).ToList()
+				: EfContext.Proxies.AsTracking().Where(where).Skip(skip).Take(take).ToList();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: EfContext.Proxies.AsTracking()
-					.Where(where)
-					.ToList();
+				? EfContext.Proxies.AsNoTracking().Where(where).ToList()
+				: EfContext.Proxies.AsTracking().Where(where).ToList();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfProxyEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Proxies.AsTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList();
+				? await EfContext.Proxies.AsNoTracking().Where(where).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Proxies.AsTracking().Where(where).Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Proxies.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: EfContext.Proxies.AsTracking()
-					.Where(where)
-					.ToList();
+				? await EfContext.Proxies.AsNoTracking().Where(where).ToListAsync()
+				: await EfContext.Proxies.AsTracking().Where(where).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

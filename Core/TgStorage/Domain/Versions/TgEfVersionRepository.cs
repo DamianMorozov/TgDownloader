@@ -11,10 +11,10 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override TgEfStorageResult<TgEfVersionEntity> Get(TgEfVersionEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfVersionEntity> storageResult = base.Get(item, isNoTracking);
+		var storageResult = base.Get(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfVersionEntity? itemFind = isNoTracking
+		var itemFind = isNoTracking
 			? EfContext.Versions
 				.AsNoTracking()
 				.SingleOrDefault(x => x.Version == item.Version)
@@ -28,10 +28,10 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetAsync(TgEfVersionEntity item, bool isNoTracking)
 	{
-		TgEfStorageResult<TgEfVersionEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		var storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfVersionEntity? itemFind = isNoTracking
+		var itemFind = isNoTracking
 			? await EfContext.Versions.AsNoTracking()
 				.Where(x => x.Version == item.Version)
 				.SingleOrDefaultAsync()
@@ -45,7 +45,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override TgEfStorageResult<TgEfVersionEntity> GetFirst(bool isNoTracking)
 	{
-		TgEfVersionEntity? item = isNoTracking
+		var item = isNoTracking
 			? EfContext.Versions.AsNoTracking().FirstOrDefault()
 			: EfContext.Versions.AsTracking().FirstOrDefault();
 		return item is null
@@ -55,7 +55,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetFirstAsync(bool isNoTracking)
 	{
-		TgEfVersionEntity? item = isNoTracking
+		var item = isNoTracking
 			? await EfContext.Versions.AsNoTracking().FirstOrDefaultAsync()
 			: await EfContext.Versions.AsTracking().FirstOrDefaultAsync();
 		return item is null
@@ -78,30 +78,25 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				? EfContext.Versions.AsNoTracking().ToList()
 				: EfContext.Versions.AsTracking().ToList();
 		}
-
-		return new(
-			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfVersionEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToList()
-				: EfContext.Versions.Skip(skip).Take(take).ToList();
+				? await EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Versions.Skip(skip).Take(take).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().ToList()
-				: EfContext.Versions.AsTracking().ToList();
+				? await EfContext.Versions.AsNoTracking().ToListAsync()
+				: await EfContext.Versions.AsTracking().ToListAsync();
 		}
-
-		return new(
-			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override TgEfStorageResult<TgEfVersionEntity> GetList(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
@@ -134,31 +129,20 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
 	{
-		await Task.Delay(1);
 		IList<TgEfVersionEntity> items;
 		if (take > 0)
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: EfContext.Versions.Take(take)
-					.Where(where)
-					.ToList();
+				? await EfContext.Versions.AsNoTracking().Where(where).Skip(skip).Take(take).ToListAsync()
+				: await EfContext.Versions.Take(take).Where(where).ToListAsync();
 		}
 		else
 		{
 			items = isNoTracking
-				? EfContext.Versions.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: EfContext.Versions.AsTracking()
-					.Where(where)
-					.ToList();
+				? await EfContext.Versions.AsNoTracking().Where(where).ToListAsync()
+				: await EfContext.Versions.AsTracking().Where(where).ToListAsync();
 		}
-
-		return new(
-			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override int GetCount() => EfContext.Versions.AsNoTracking().Count();
@@ -184,15 +168,14 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override TgEfStorageResult<TgEfVersionEntity> DeleteAll()
 	{
-		TgEfStorageResult<TgEfVersionEntity> storageResult = GetList(0, 0, isNoTracking: false);
+		var storageResult = GetList(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
-			foreach (TgEfVersionEntity item in storageResult.Items)
+			foreach (var item in storageResult.Items)
 			{
 				Delete(item, isSkipFind: true);
 			}
 		}
-
 		return new(storageResult.IsExists
 			? TgEnumEntityState.IsDeleted
 			: TgEnumEntityState.NotDeleted);
@@ -200,16 +183,15 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfVersionEntity> storageResult =
+		var storageResult =
 			await GetListAsync(0, 0, isNoTracking: false);
 		if (storageResult.IsExists)
 		{
-			foreach (TgEfVersionEntity item in storageResult.Items)
+			foreach (var item in storageResult.Items)
 			{
 				await DeleteAsync(item, isSkipFind: true);
 			}
 		}
-
 		return new(storageResult.IsExists
 			? TgEnumEntityState.IsDeleted
 			: TgEnumEntityState.NotDeleted);
@@ -219,15 +201,15 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	#region Public and private methods - ITgEfVersionRepository
 
-	public short LastVersion => 24;
+	public short LastVersion => 26;
 
-	public TgEfVersionEntity GetLastVersion()
+	public async Task<TgEfVersionEntity> GetLastVersionAsync()
 	{
 		TgEfVersionEntity versionLast = new();
 		if (EfContext.IsTableExists(TgEfConstants.TableVersions))
 		{
-			short defaultVersion = new TgEfVersionEntity().Version;
-			List<TgEfVersionEntity> versions = GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items
+			var defaultVersion = new TgEfVersionEntity().Version;
+			var versions = (await GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items
 				.Where(x => x.Version != defaultVersion).OrderBy(x => x.Version).ToList();
 			if (versions.Any())
 				versionLast = versions[^1];
@@ -235,183 +217,94 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		return versionLast;
 	}
 
-	public void FillTableVersions()
-	{
-		DeleteNew();
-		bool isLast = false;
-		while (!isLast)
-		{
-			TgEfVersionEntity versionLast = GetLastVersion();
-			if (Equals(versionLast.Version, new TgEfVersionEntity().Version))
-				versionLast.Version = 0;
-			switch (versionLast.Version)
-			{
-				case 0:
-					Save(new() { Version = 1, Description = "Added the versions table" });
-					break;
-				case 1:
-					Save(new() { Version = 2, Description = "Added the apps table" });
-					break;
-				case 2:
-					Save(new() { Version = 3, Description = "Added the documents table" });
-					break;
-				case 3:
-					Save(new() { Version = 4, Description = "Added the filters table" });
-					break;
-				case 4:
-					Save(new() { Version = 5, Description = "Added the messages table" });
-					break;
-				case 5:
-					Save(new() { Version = 6, Description = "Added the proxies table" });
-					break;
-				case 6:
-					Save(new() { Version = 7, Description = "Added the sources table" });
-					break;
-				case 7:
-					Save(new() { Version = 8, Description = "Updated the sources table" });
-					break;
-				case 8:
-					Save(new() { Version = 9, Description = "Updated the versions table" });
-					break;
-				case 9:
-					Save(new() { Version = 10, Description = "Updated the apps table" });
-					break;
-				case 10:
-					Save(new() { Version = 11, Description = "Upgraded storage to XPO framework" });
-					break;
-				case 11:
-					Save(new() { Version = 12, Description = "Updated the apps table" });
-					break;
-				case 12:
-					Save(new() { Version = 13, Description = "Updated the documents table" });
-					break;
-				case 13:
-					Save(new() { Version = 14, Description = "Updated the filters table" });
-					break;
-				case 14:
-					Save(new() { Version = 15, Description = "Updated the messages table" });
-					break;
-				case 15:
-					Save(new() { Version = 16, Description = "Updated the proxies table" });
-					break;
-				case 16:
-					Save(new() { Version = 17, Description = "Updated the sources table" });
-					break;
-				case 17:
-					Save(new() { Version = 18, Description = "Updated the UID field in the apps table" });
-					break;
-				case 18:
-					Save(new() { Version = 19, Description = "Updated the UID field in the documents table" });
-					break;
-				case 19:
-					Save(new() { Version = 20, Description = "Updated the UID field in the filters table" });
-					break;
-				case 20:
-					Save(new() { Version = 21, Description = "Updated the UID field in the messages table" });
-					break;
-				case 21:
-					Save(new() { Version = 22, Description = "Updated the UID field in the proxies table" });
-					break;
-				case 22:
-					Save(new() { Version = 23, Description = "Updated the UID field in the sources table" });
-					break;
-				case 23:
-					Save(new() { Version = 24, Description = "Updated the UID field in the versions table" });
-					break;
-				case 24:
-					Save(new() { Version = 25, Description = "Migrated storage to EF Core" });
-					break;
-				case 25:
-					Save(new() { Version = 26, Description = "Updated the apps table" });
-					break;
-			}
-			if (versionLast.Version >= LastVersion)
-				isLast = true;
-		}
-	}
-
 	public async Task FillTableVersionsAsync()
 	{
 		await DeleteNewAsync();
-		bool isLast = false;
+		var isLast = false;
 		while (!isLast)
 		{
-			TgEfVersionEntity versionLast = GetLastVersion();
+			var versionLast = await GetLastVersionAsync();
 			if (Equals(versionLast.Version, new TgEfVersionEntity().Version))
 				versionLast.Version = 0;
 			switch (versionLast.Version)
 			{
 				case 0:
-					await SaveAsync(new() { Version = 1, Description = "Added versions table" });
+					await SaveAsync(new() { Version = 1, Description = "Added the versions table" });
 					break;
 				case 1:
-					await SaveAsync(new() { Version = 2, Description = "Added apps table" });
+					await SaveAsync(new() { Version = 2, Description = "Added the apps table" });
 					break;
 				case 2:
-					await SaveAsync(new() { Version = 3, Description = "Added documents table" });
+					await SaveAsync(new() { Version = 3, Description = "Added the documents table" });
 					break;
 				case 3:
-					await SaveAsync(new() { Version = 4, Description = "Added filters table" });
+					await SaveAsync(new() { Version = 4, Description = "Added the filters table" });
 					break;
 				case 4:
-					await SaveAsync(new() { Version = 5, Description = "Added messages table" });
+					await SaveAsync(new() { Version = 5, Description = "Added the messages table" });
 					break;
 				case 5:
-					await SaveAsync(new() { Version = 6, Description = "Added proxies table" });
+					await SaveAsync(new() { Version = 6, Description = "Added the proxies table" });
 					break;
 				case 6:
-					await SaveAsync(new() { Version = 7, Description = "Added sources table" });
+					await SaveAsync(new() { Version = 7, Description = "Added the sources table" });
 					break;
 				case 7:
-					await SaveAsync(new() { Version = 8, Description = "Added source settings table" });
+					await SaveAsync(new() { Version = 8, Description = "Updated the sources table" });
 					break;
 				case 8:
-					await SaveAsync(new() { Version = 9, Description = "Upgrade versions table" });
+					await SaveAsync(new() { Version = 9, Description = "Updated the versions table" });
 					break;
 				case 9:
-					await SaveAsync(new() { Version = 10, Description = "Upgrade apps table" });
+					await SaveAsync(new() { Version = 10, Description = "Updated the apps table" });
 					break;
 				case 10:
-					await SaveAsync(new() { Version = 11, Description = "Upgrade storage on XPO framework" });
+					await SaveAsync(new() { Version = 11, Description = "Upgraded storage to XPO framework" });
 					break;
 				case 11:
-					await SaveAsync(new() { Version = 12, Description = "Upgrade apps table" });
+					await SaveAsync(new() { Version = 12, Description = "Updated the apps table" });
 					break;
 				case 12:
-					await SaveAsync(new() { Version = 13, Description = "Upgrade documents table" });
+					await SaveAsync(new() { Version = 13, Description = "Updated the documents table" });
 					break;
 				case 13:
-					await SaveAsync(new() { Version = 14, Description = "Upgrade filters table" });
+					await SaveAsync(new() { Version = 14, Description = "Updated the filters table" });
 					break;
 				case 14:
-					await SaveAsync(new() { Version = 15, Description = "Upgrade messages table" });
+					await SaveAsync(new() { Version = 15, Description = "Updated the messages table" });
 					break;
 				case 15:
-					await SaveAsync(new() { Version = 16, Description = "Upgrade proxies table" });
+					await SaveAsync(new() { Version = 16, Description = "Updated the proxies table" });
 					break;
 				case 16:
-					await SaveAsync(new() { Version = 17, Description = "Upgrade sources table" });
+					await SaveAsync(new() { Version = 17, Description = "Updated the sources table" });
 					break;
 				case 17:
-					await SaveAsync(new() { Version = 18, Description = "Updating the UID field in the apps table" });
+					await SaveAsync(new() { Version = 18, Description = "Updated the UID field in the apps table" });
 					break;
 				case 18:
-					await SaveAsync(new() { Version = 19, Description = "Updating the UID field in the documents table" });
+					await SaveAsync(new() { Version = 19, Description = "Updated the UID field in the documents table" });
 					break;
 				case 19:
-					await SaveAsync(new() { Version = 20, Description = "Updating the UID field in the filters table" });
+					await SaveAsync(new() { Version = 20, Description = "Updated the UID field in the filters table" });
 					break;
 				case 20:
-					await SaveAsync(new() { Version = 21, Description = "Updating the UID field in the messages table" });
+					await SaveAsync(new() { Version = 21, Description = "Updated the UID field in the messages table" });
 					break;
 				case 21:
-					await SaveAsync(new() { Version = 22, Description = "Updating the UID field in the proxies table" });
+					await SaveAsync(new() { Version = 22, Description = "Updated the UID field in the proxies table" });
 					break;
 				case 22:
-					await SaveAsync(new() { Version = 23, Description = "Updating the UID field in the sources table" });
+					await SaveAsync(new() { Version = 23, Description = "Updated the UID field in the sources table" });
 					break;
 				case 23:
-					await SaveAsync(new() { Version = 24, Description = "Updating the UID field in the versions table" });
+					await SaveAsync(new() { Version = 24, Description = "Updated the UID field in the versions table" });
+					break;
+				case 24:
+					await SaveAsync(new() { Version = 25, Description = "Migrated storage to EF Core" });
+					break;
+				case 25:
+					await SaveAsync(new() { Version = 26, Description = "Updated the apps table" });
 					break;
 			}
 			if (versionLast.Version >= LastVersion)
