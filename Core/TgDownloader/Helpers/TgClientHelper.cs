@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using WTelegram;
-
 namespace TgDownloader.Helpers;
 
 /// <summary>
@@ -1009,16 +1007,28 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private async Task UpdateSourceTgAsync(TlChannel channel, string about, int count)
 	{
-		//var storageResult = await SourceRepository.GetAsync(new() { Id = channel.id }, isNoTracking: false);
-		var source = new TgEfSourceEntity
+		var storageResult = await SourceRepository.GetAsync(new() { Id = channel.id }, isNoTracking: true);
+		TgEfSourceEntity sourceNew;
+		if (storageResult.IsExists)
 		{
-			Id = channel.id,
-			UserName = channel.username,
-			Title = channel.title,
-			About = about,
-			Count = count
-		};
-		await SourceRepository.SaveAsync(source);
+			sourceNew = storageResult.Item;
+			sourceNew.UserName = channel.username;
+			sourceNew.Title = channel.title;
+			sourceNew.About = about;
+			sourceNew.Count = count;
+		}
+		else
+		{
+			sourceNew = new()
+			{
+				Id = channel.id,
+				UserName = channel.username,
+				Title = channel.title,
+				About = about,
+				Count = count,
+			};
+		}
+		await SourceRepository.SaveAsync(sourceNew);
 	}
 
 	private async Task UpdateSourceTgAsync(TlChannel channel, int count) =>
