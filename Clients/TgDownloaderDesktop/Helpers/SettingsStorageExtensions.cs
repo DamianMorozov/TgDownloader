@@ -77,14 +77,12 @@ public static class SettingsStorageExtensions
 	public static async Task<byte[]?> ReadFileAsync(this StorageFolder folder, string fileName)
 	{
 		var item = await folder.TryGetItemAsync(fileName).AsTask().ConfigureAwait(false);
-
 		if ((item != null) && item.IsOfType(StorageItemTypes.File))
 		{
 			var storageFile = await folder.GetFileAsync(fileName);
 			var content = await storageFile.ReadBytesAsync();
 			return content;
 		}
-
 		return null;
 	}
 

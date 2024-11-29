@@ -17,11 +17,13 @@ public static class TgResourceExtensions
 
 	public static string AskClientConnect() => "AskClientConnect".GetLocalized();
 	public static string AskClientDisconnect() => "AskClientDisconnect".GetLocalized();
+	public static string AskRestartApp() => "AskRestartApp".GetLocalized();
 	public static string AskSettingsClear() => "AskSettingsClear".GetLocalized();
 	public static string AskSettingsDefault() => "AskSettingsDefault".GetLocalized();
 	public static string AskSettingsDelete() => "AskSettingsDelete".GetLocalized();
 	public static string AskSettingsLoad() => "AskSettingsLoad".GetLocalized();
 	public static string AskSettingsSave() => "AskSettingsSave".GetLocalized();
+	public static string AssertionRestartApp() => "AssertionRestartApp".GetLocalized();
 	public static string ClientSettingsAreNotValid() => "ClientSettingsAreNotValid".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();
 	public static string GetCancelButton() => "CancelButton".GetLocalized();

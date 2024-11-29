@@ -18,24 +18,10 @@ public static class TgDesktopUtils
 	//public static TgSettingsViewModel TgSettingsVm { get; } = new();
 	//public static TgSourcesViewModel TgSourcesVm { get; } = new();
 	//public static TgDownloadsViewModel TgDownloadsVm{ get; } = new();
+	//public static string CurrentPath = Package.Current.InstalledLocation.Path;
+	public static string CurrentPath = AppContext.BaseDirectory;
 
 	#endregion
-
-	#region Public and private methods
-
-	/// <summary> Set client state update </summary>
-	public static void SetupClient()
-    {
-		//TgClient.SetupUpdateStateConnect(TgClientVm.UpdateStateConnectAsync);
-		//TgClient.SetupUpdateStateProxy(TgClientVm.UpdateStateProxyAsync);
-		//TgClient.SetupUpdateStateSource(TgClientVm.UpdateStateSourceAsync);
-		//TgClient.SetupUpdateStateMessage(TgClientVm.UpdateStateMessageAsync);
-		//TgClient.SetupUpdateStateException(TgClientVm.UpdateStateExceptionAsync);
-		//TgClient.SetupUpdateStateExceptionShort(TgClientVm.UpdateStateExceptionShortAsync);
-		//TgClient.SetupAfterClientConnect(TgClientVm.AfterClientConnectAsync);
-    }
-
-    #endregion
 
     #region Public and private methods
 
@@ -73,7 +59,7 @@ public static class TgDesktopUtils
 
     //public static async Task RunActionAsync(TgPageViewModelBase viewModel, Action action, bool isUpdateLoad)
     //{
-    //    await Task.Delay(1).ConfigureAwait(false);
+    //    await Task.Delay(1);
 
     //    void Job()
     //    {
@@ -126,11 +112,11 @@ public static class TgDesktopUtils
 
     //public static async Task RunAction2Async(TgPageViewModelBase viewModel, Action action, bool isUpdateLoad)
     //{
-    //    await Task.Delay(1).ConfigureAwait(false);
+    //    await Task.Delay(1);
 
     //    async Task Job()
     //    {
-    //        await Task.Delay(1).ConfigureAwait(false);
+    //        await Task.Delay(1);
     //        if (isUpdateLoad)
     //            viewModel.IsLoad = true;
     //        TgClientVm.Exception.Clear();
@@ -139,7 +125,7 @@ public static class TgDesktopUtils
 
     //    async Task JobFinally()
     //    {
-    //        await Task.Delay(1).ConfigureAwait(false);
+    //        await Task.Delay(1);
     //        viewModel.IsLoad = false;
     //    }
 
@@ -181,7 +167,6 @@ public static class TgDesktopUtils
 
     public static async Task RunFuncAsync(TgPageViewModelBase viewModel, Func<Task> action, bool isUpdateLoad)
     {
-        await Task.Delay(1).ConfigureAwait(false);
         async Task Job()
         {
             if (isUpdateLoad)
@@ -209,8 +194,21 @@ public static class TgDesktopUtils
             {
 	            App.MainWindow.DispatcherQueue.TryEnqueue(JobFinally);
             }
+            await Task.CompletedTask;
         }
     }
 
-    #endregion
+    public static void FileLog(Exception ex)
+    {
+		var logPath = Path.Combine(CurrentPath, TgFileUtils.FileLog);
+		File.AppendAllText(logPath, $"[{DateTime.Now}] Exception: {ex.Message}{Environment.NewLine}Stack Trace: {ex.StackTrace}{Environment.NewLine}");
+	}
+
+	public static void FileLog(string message)
+    {
+	    var logPath = Path.Combine(CurrentPath, TgFileUtils.FileLog);
+	    File.AppendAllText(logPath, $"[{DateTime.Now}] {message}{Environment.NewLine}");
+    }
+
+	#endregion
 }

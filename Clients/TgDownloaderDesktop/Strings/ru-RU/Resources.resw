@@ -311,8 +311,14 @@
   <data name="SettingEfStorage.Text" xml:space="preserve">
     <value>EF хранилище</value>
   </data>
+  <data name="SettingStorage.Text" xml:space="preserve">
+    <value>Хранилище</value>
+  </data>
   <data name="SettingTgSession.Text" xml:space="preserve">
     <value>TG сессия</value>
+  </data>
+  <data name="SettingSession.Text" xml:space="preserve">
+    <value>Сессия</value>
   </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
     <value>Тема приложения</value>
@@ -340,6 +346,12 @@
   </data>
   <data name="AskClientDisconnect" xml:space="preserve">
     <value>Отключить клиент?</value>
+  </data>
+  <data name="AskRestartApp" xml:space="preserve">
+    <value>Перезапустить приложение?</value>
+  </data>
+  <data name="AssertionRestartApp" xml:space="preserve">
+    <value>Перезапустите приложение.</value>
   </data>
   <data name="YesButton" xml:space="preserve">
     <value>Да</value>

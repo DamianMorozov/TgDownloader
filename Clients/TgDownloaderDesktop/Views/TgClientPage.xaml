@@ -189,7 +189,7 @@
 						<CheckBox
 							x:Uid="ClientTgSession"
 							Margin="15,3,0,0"
-							IsChecked="{x:Bind ViewModel.IsExistsTgSession, Mode=OneWay}"
+							IsChecked="{x:Bind ViewModel.SettingsService.IsExistsAppSession, Mode=OneWay}"
 							IsEnabled="False" />
 					</StackPanel>
 					<!--  Grid  -->

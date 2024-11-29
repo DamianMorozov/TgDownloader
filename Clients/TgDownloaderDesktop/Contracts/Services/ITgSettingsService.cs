@@ -5,18 +5,21 @@ namespace TgDownloaderDesktop.Contracts.Services;
 
 public interface ITgSettingsService
 {
-	ElementTheme Theme { get; }
-	string EfStorage { get; }
-	string TgSession { get; }
-	string AppLanguage { get; }
-	Task SetAppThemeAsync(ElementTheme theme);
-	Task SetAppEfStorageAsync(string efStorage);
-	Task SetAppTgSessionAsync(string tgSession);
-	Task SetAppLanguageAsync(string appLanguage);
-	Task SetRequestedThemeAsync();
+	ObservableCollection<TgEnumTheme> AppThemes { get; }
+	ObservableCollection<TgEnumLanguage> AppLanguages { get; }
+	TgEnumTheme AppTheme { get; set; }
+	TgEnumLanguage AppLanguage { get; set; }
+	string AppStorage { get; set; }
+	string AppSession { get; set; }
+	bool IsExistsAppStorage { get; }
+	bool IsExistsAppSession { get; }
+
+	Task SetAppThemeAsync();
+	Task SetAppLanguageAsync();
 	void Default();
 	Task LoadAsync();
 	Task SaveAsync();
+	void ApplyTheme(TgEnumTheme appTheme);
 	Task<T?> ReadSettingAsync<T>(string key);
 	Task SaveSettingAsync<T>(string key, T value);
 }

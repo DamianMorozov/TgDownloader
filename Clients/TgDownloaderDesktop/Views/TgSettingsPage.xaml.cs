@@ -33,9 +33,9 @@ public sealed partial class TgSettingsPage : Page
 		ComboBoxAppLanguages.SelectionChanged += ComboBoxAppLanguages_OnSelectionChanged;
 	}
 
-	private async void ComboBoxAppThemes_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SetAppThemeAsync();
+	private async void ComboBoxAppThemes_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SettingsService.SetAppThemeAsync();
 
-	private async void ComboBoxAppLanguages_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SettingsService.SetAppLanguageAsync(ViewModel.AppLanguage);
+	private async void ComboBoxAppLanguages_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SettingsService.SetAppLanguageAsync();
 
 	#endregion
 }

@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using WTelegram;
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -123,7 +121,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 			//case "notifications":
 			//    return Notifications;
 			case "session_pathname":
-				var sessionPath = Path.Combine(Package.Current.InstalledLocation.Path, AppSettings.AppXml.XmlFileSession);
+				var sessionPath = Path.Combine(TgDesktopUtils.CurrentPath, SettingsService.AppSession);
 				return sessionPath;
 			//case "session_key":
 			//case "server_address":
@@ -157,7 +155,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 			if (isRetry) return;
 	        if (Exception.Message.Contains("or delete the file to start a new session"))
 	        {
-		        var sessionPath = Path.Combine(Package.Current.InstalledLocation.Path, AppSettings.AppXml.XmlFileSession);
+		        var sessionPath = Path.Combine(TgDesktopUtils.CurrentPath, SettingsService.AppSession);
 				if (File.Exists(sessionPath))
 					File.Delete(sessionPath);
 				await ClientConnectCoreAsync(isRetry: true);
@@ -177,9 +175,6 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
     public async Task AppLoadCoreAsync()
     {
-	    AppEfStorage = SettingsService.EfStorage;
-	    AppTgSession = SettingsService.TgSession;
-
 		var storageResult = await AppRepository.GetFirstAsync(isNoTracking: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 

@@ -31,50 +31,47 @@ public partial class App : Application
 	public App()
 	{
 		InitializeComponent();
-
-		Host = Microsoft.Extensions.Hosting.Host.
-		CreateDefaultBuilder().
-		UseContentRoot(AppContext.BaseDirectory).
-		ConfigureServices((context, services) =>
-		{
-			// Default Activation Handler
-			services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
-			// Other Activation Handlers
-			services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
-			// Services
-			services.AddSingleton<IAppNotificationService, AppNotificationService>();
-			services.AddSingleton<ITgSettingsService, TgSettingsService>();
-			services.AddTransient<IWebViewService, WebViewService>();
-			services.AddTransient<INavigationViewService, NavigationViewService>();
-			services.AddSingleton<IActivationService, ActivationService>();
-			services.AddSingleton<IPageService, PageService>();
-			services.AddSingleton<INavigationService, NavigationService>();
-			// Core Services
-			services.AddSingleton<ISampleDataService, SampleDataService>();
-			services.AddSingleton<IFileService, FileService>();
-			// Views and ViewModels
-			services.AddTransient<TgSettingsViewModel>();
-			services.AddTransient<TgSettingsPage>();
-			services.AddTransient<DataGridViewModel>();
-			services.AddTransient<DataGridPage>();
-			services.AddTransient<ContentGridDetailViewModel>();
-			services.AddTransient<ContentGridDetailPage>();
-			services.AddTransient<ContentGridViewModel>();
-			services.AddTransient<ContentGridPage>();
-			services.AddTransient<ListDetailsViewModel>();
-			services.AddTransient<ListDetailsPage>();
-			services.AddTransient<WebViewViewModel>();
-			services.AddTransient<WebViewPage>();
-			services.AddTransient<TgMainViewModel>();
-			services.AddTransient<TgMainPage>();
-			services.AddTransient<ShellPage>();
-			services.AddTransient<ShellViewModel>();
-			services.AddTransient<TgClientPage>();
-			services.AddTransient<TgClientViewModel>();
-			// Configuration
-			services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
-		}).
-		Build();
+		Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder().UseContentRoot(AppContext.BaseDirectory)
+			.ConfigureServices((context, services) =>
+			{
+				// Default Activation Handler
+				services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
+				// Other Activation Handlers
+				services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
+				// Services
+				services.AddSingleton<IAppNotificationService, AppNotificationService>();
+				services.AddSingleton<ITgSettingsService, TgSettingsService>();
+				services.AddTransient<IWebViewService, WebViewService>();
+				services.AddTransient<INavigationViewService, NavigationViewService>();
+				services.AddSingleton<IActivationService, ActivationService>();
+				services.AddSingleton<IPageService, PageService>();
+				services.AddSingleton<INavigationService, NavigationService>();
+				// Core Services
+				services.AddSingleton<ISampleDataService, SampleDataService>();
+				services.AddSingleton<IFileService, FileService>();
+				// Views and ViewModels
+				services.AddTransient<TgSettingsViewModel>();
+				services.AddTransient<TgSettingsPage>();
+				services.AddTransient<DataGridViewModel>();
+				services.AddTransient<DataGridPage>();
+				services.AddTransient<ContentGridDetailViewModel>();
+				services.AddTransient<ContentGridDetailPage>();
+				services.AddTransient<ContentGridViewModel>();
+				services.AddTransient<ContentGridPage>();
+				services.AddTransient<ListDetailsViewModel>();
+				services.AddTransient<ListDetailsPage>();
+				services.AddTransient<WebViewViewModel>();
+				services.AddTransient<WebViewPage>();
+				services.AddTransient<TgMainViewModel>();
+				services.AddTransient<TgMainPage>();
+				services.AddTransient<ShellPage>();
+				services.AddTransient<ShellViewModel>();
+				services.AddTransient<TgClientPage>();
+				services.AddTransient<TgClientViewModel>();
+				// Configuration
+				services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
+			})
+			.Build();
 		App.GetService<IAppNotificationService>().Initialize();
 		UnhandledException += App_UnhandledException;
 	}
@@ -92,6 +89,9 @@ public partial class App : Application
 	{
 		// TODO: Log and handle exceptions as appropriate.
 		// https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
+		TgDesktopUtils.FileLog(e.Exception);
+		// Set a handled exception to prevent the application from terminating
+		e.Handled = true;
 	}
 
 	protected override async void OnLaunched(LaunchActivatedEventArgs args)

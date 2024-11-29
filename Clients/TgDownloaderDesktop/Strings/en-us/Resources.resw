@@ -249,8 +249,14 @@
   <data name="SettingEfStorage.Text" xml:space="preserve">
     <value>EF storage</value>
   </data>
+  <data name="SettingStorage.Text" xml:space="preserve">
+    <value>Storage</value>
+  </data>
   <data name="SettingTgSession.Text" xml:space="preserve">
     <value>TG session</value>
+  </data>
+  <data name="SettingSession.Text" xml:space="preserve">
+    <value>Session</value>
   </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
     <value>App theme</value>
@@ -278,6 +284,12 @@
   </data>
   <data name="AskClientDisconnect" xml:space="preserve">
     <value>Disconnect the client?</value>
+  </data>
+  <data name="AskRestartApp" xml:space="preserve">
+    <value>Restart the application?</value>
+  </data>
+  <data name="AssertionRestartApp" xml:space="preserve">
+    <value>Restart the application.</value>
   </data>
   <data name="YesButton" xml:space="preserve">
     <value>Yes</value>

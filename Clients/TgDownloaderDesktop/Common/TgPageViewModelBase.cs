@@ -11,45 +11,10 @@ public partial class TgPageViewModelBase : ObservableRecipient
 
 	[ObservableProperty]
 	private ITgSettingsService _settingsService;
-	
-	private string _appEfStorage = default!;
-	public string AppEfStorage
-	{
-		get => _appEfStorage;
-		set
-		{
-			if (SetProperty(ref _appEfStorage, value))
-			{
-				SettingsService.SetAppEfStorageAsync(AppEfStorage).ConfigureAwait(false);
-			}
-			IsExistsEfStorage = File.Exists(value);
-		}
-	}
-	private string _appTgSession = default!;
-	public string AppTgSession
-	{
-		get => _appTgSession;
-		set
-		{
-			if (SetProperty(ref _appTgSession, value))
-			{
-				SettingsService.SetAppTgSessionAsync(AppTgSession).ConfigureAwait(false);
-			}
-			IsExistsTgSession = File.Exists(value);
-			OnPropertyChanged();
-		}
-	}
-
-	[ObservableProperty]
-	private TgAppSettingsHelper _appSettings = TgAppSettingsHelper.Instance;
 	[ObservableProperty]
 	private TgLicenseManagerHelper _licenseManager = TgLicenseManagerHelper.Instance;
 	[ObservableProperty]
 	private TgExceptionViewModel _exception = new();
-	[ObservableProperty]
-	private bool _isExistsEfStorage;
-	[ObservableProperty]
-	private bool _isExistsTgSession;
 	[ObservableProperty]
 	private bool _isLoad;
 	[ObservableProperty]
@@ -82,7 +47,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 
 	#region Public and private methods
 
-	public virtual string ToDebugString() => $"{TgCommonUtils.GetIsLoad(IsLoad)}";
+	public virtual string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
 	public virtual void OnLoaded(object parameter)
 	{
@@ -156,7 +121,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		});
 	}
 
-	protected async Task ContentDialogAsync(string title)
+	protected async Task ContentDialogAsync(string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
 	{
 		if (XamlRootVm is null) return;
 		ContentDialog dialog = new()
@@ -165,13 +130,13 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			Title = title,
 			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
 			CloseButtonText = TgResourceExtensions.GetCancelButton(),
-			DefaultButton = ContentDialogButton.Close,
+			DefaultButton = defaultButton,
 		};
 		_ = await dialog.ShowAsync();
 		await Task.CompletedTask;
 	}
 
-	protected async Task ContentDialogAsync(Func<Task> task, string title)
+	protected async Task ContentDialogAsync(Func<Task> task, string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
 	{
 		if (XamlRootVm is null) return;
 		ContentDialog dialog = new()
@@ -180,8 +145,24 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			Title = title,
 			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
 			CloseButtonText = TgResourceExtensions.GetCancelButton(),
-			DefaultButton = ContentDialogButton.Close,
+			DefaultButton = defaultButton,
 			PrimaryButtonCommand = new AsyncRelayCommand(task)
+		};
+		_ = await dialog.ShowAsync();
+		await Task.CompletedTask;
+	}
+
+	protected async Task ContentDialogAsync(Action action, string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
+	{
+		if (XamlRootVm is null) return;
+		ContentDialog dialog = new()
+		{
+			XamlRoot = XamlRootVm,
+			Title = title,
+			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
+			CloseButtonText = TgResourceExtensions.GetCancelButton(),
+			DefaultButton = defaultButton,
+			PrimaryButtonCommand = new RelayCommand(action)
 		};
 		_ = await dialog.ShowAsync();
 		await Task.CompletedTask;

@@ -3,55 +3,45 @@
 
 namespace TgDownloaderDesktop.Services;
 
-public sealed class ActivationService : IActivationService
+public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs> defaultHandler, IEnumerable<IActivationHandler> activationHandlers,
+	ITgSettingsService settingsService) : IActivationService
 {
-	private readonly ActivationHandler<LaunchActivatedEventArgs> _defaultHandler;
-	private readonly IEnumerable<IActivationHandler> _activationHandlers;
-	private readonly ITgSettingsService _settingsService;
-	private UIElement? _shell = null;
-
-	public ActivationService(ActivationHandler<LaunchActivatedEventArgs> defaultHandler, IEnumerable<IActivationHandler> activationHandlers, 
-		ITgSettingsService settingsService)
-	{
-		_defaultHandler = defaultHandler;
-		_activationHandlers = activationHandlers;
-		_settingsService = settingsService;
-	}
+	private UIElement? _shell;
 
 	public async Task ActivateAsync(object activationArgs)
 	{
-		// Execute tasks before activation.
-		await InitializeAsync();
-		// Set the MainWindow Content.
+		// Execute tasks before activation
+		await LoadAsync();
+		// Set the MainWindow Content
 		if (App.MainWindow.Content == null)
 		{
 			_shell = App.GetService<ShellPage>();
 			App.MainWindow.Content = _shell ?? new Frame();
 		}
-		// Handle activation via ActivationHandlers.
+		// Handle activation via ActivationHandlers
 		await HandleActivationAsync(activationArgs);
-		// Activate the MainWindow.
+		// Activate the MainWindow
 		App.MainWindow.Activate();
-		// Execute tasks after activation.
+		// Execute tasks after activation
 		await StartupAsync();
 	}
 
 	private async Task HandleActivationAsync(object activationArgs)
 	{
-		var activationHandler = _activationHandlers.FirstOrDefault(h => h.CanHandle(activationArgs));
+		var activationHandler = activationHandlers.FirstOrDefault(h => h.CanHandle(activationArgs));
 		if (activationHandler != null)
 		{
 			await activationHandler.HandleAsync(activationArgs);
 		}
-		if (_defaultHandler.CanHandle(activationArgs))
+		if (defaultHandler.CanHandle(activationArgs))
 		{
-			await _defaultHandler.HandleAsync(activationArgs);
+			await defaultHandler.HandleAsync(activationArgs);
 		}
 	}
 
-	private async Task InitializeAsync()
+	private async Task LoadAsync()
 	{
-		await _settingsService.LoadAsync();
+		await settingsService.LoadAsync();
 		await Task.CompletedTask;
 	}
 
@@ -59,10 +49,7 @@ public sealed class ActivationService : IActivationService
 	{
 		// Register TgEfContext as the DbContext for EF Core
 		await TgEfUtils.CreateAndUpdateDbAsync();
-
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
-
-		await _settingsService.SetRequestedThemeAsync();
 		await Task.CompletedTask;
 	}
 }

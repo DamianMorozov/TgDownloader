@@ -4,7 +4,7 @@
 namespace TgDownloaderDesktop.Views;
 
 // TODO: Update NavigationViewItem titles and icons in ShellPage.xaml.
-public sealed partial class ShellPage : Page
+public sealed partial class ShellPage : Microsoft.UI.Xaml.Controls.Page
 {
 	#region Public and private fields, properties, constructor
 
@@ -33,7 +33,10 @@ public sealed partial class ShellPage : Page
 
 	private void OnLoaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
-		TitleBarHelper.UpdateTitleBar(RequestedTheme);
+		var settingsService = App.GetService<ITgSettingsService>();
+		settingsService.ApplyTheme(settingsService.AppTheme);
+		var theme = TgThemeHelper.GetElementTheme(settingsService.AppTheme);
+		TitleBarHelper.UpdateTitleBar(theme);
 		KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu));
 		KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
 	}

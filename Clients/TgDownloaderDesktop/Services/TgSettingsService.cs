@@ -1,21 +1,56 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+#pragma warning disable CA1416
 
 namespace TgDownloaderDesktop.Services;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgSettingsService : ITgSettingsService
+public sealed partial class TgSettingsService : ObservableRecipient, ITgSettingsService
 {
 	#region Public and private fields, properties, constructor
 
-	private const string SettingsKeyTheme = "AppBackgroundRequestedTheme";
-	private const string SettingsKeyEfStorage = "EfStorage ";
-	private const string SettingsKeyTgSession = "TgSession";
-	private const string SettingsKeyAppLanguage = "AppLanguage";
-	public ElementTheme Theme { get; set; }
-	public string EfStorage { get; set; } = default!;
-	public string TgSession { get; set; } = default!;
-	public string AppLanguage { get; set; } = default!;
+	private const string SettingsKeyAppTheme = nameof(LocalSettingsOptions.AppTheme);
+	private const string SettingsKeyAppLanguage = nameof(LocalSettingsOptions.AppLanguage);
+	private const string SettingsKeyAppStorage = nameof(LocalSettingsOptions.AppStorage);
+	private const string SettingsKeyAppSession = nameof(LocalSettingsOptions.AppSession);
+	[ObservableProperty]
+	private ObservableCollection<TgEnumTheme> _appThemes = default!;
+	[ObservableProperty]
+	private TgEnumTheme _appTheme = TgEnumTheme.Default;
+	[ObservableProperty]
+	private ObservableCollection<TgEnumLanguage> _appLanguages = default!;
+	[ObservableProperty]
+	private TgEnumLanguage _appLanguage = TgEnumLanguage.Default;
+	private string _appStorage = default!;
+	public string AppStorage
+	{
+		get => _appStorage;
+		set
+		{
+			if (SetProperty(ref _appStorage, value))
+			{
+				OnPropertyChanged();
+				IsExistsAppStorage = File.Exists(_appStorage) || File.Exists(Path.Combine(TgDesktopUtils.CurrentPath, _appStorage));
+			}
+		}
+	}
+	private string _appSession = default!;
+	public string AppSession
+	{
+		get => _appSession;
+		set
+		{
+			if (SetProperty(ref _appSession, value))
+			{
+				OnPropertyChanged();
+				IsExistsAppSession = File.Exists(_appSession) || File.Exists(Path.Combine(TgDesktopUtils.CurrentPath, _appSession));
+			}
+		}
+	}
+	[ObservableProperty]
+	private bool _isExistsAppStorage;
+	[ObservableProperty]
+	private bool _isExistsAppSession;
 
 	private const string DefaultApplicationDataFolder = "TgDownloaderDesktop/ApplicationData";
 	private const string DefaultLocalSettingsFile = "TgLocalSettings.json";
@@ -25,7 +60,7 @@ public sealed class TgSettingsService : ITgSettingsService
 	private readonly string _localSettingsFile;
 	private IDictionary<string, object> _settings;
 	private bool _isInitialized;
-	private LocalSettingsOptions _options;
+	private readonly LocalSettingsOptions _options;
 
 	public TgSettingsService(IFileService fileService, IOptions<LocalSettingsOptions> options)
 	{
@@ -34,6 +69,8 @@ public sealed class TgSettingsService : ITgSettingsService
 		_applicationDataFolder = Path.Combine(_localApplicationData, _options.ApplicationDataFolder ?? DefaultApplicationDataFolder);
 		_localSettingsFile = _options.LocalSettingsFile ?? DefaultLocalSettingsFile;
 		_settings = new Dictionary<string, object>();
+		AppThemes = [TgEnumTheme.Default, TgEnumTheme.Light, TgEnumTheme.Dark];
+		AppLanguages = [TgEnumLanguage.Default, TgEnumLanguage.English, TgEnumLanguage.Russian];
 		Default();
 	}
 
@@ -41,92 +78,84 @@ public sealed class TgSettingsService : ITgSettingsService
 
 	#region Public and private methods
 
-	public string ToDebugString() =>
-		$"{nameof(Theme)}: {Theme} | {nameof(EfStorage)}: {EfStorage} | {nameof(TgSession)}: {TgSession}";
+	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-	public async Task SetAppThemeAsync(ElementTheme theme)
+	public async Task SetAppThemeAsync()
 	{
-		Theme = theme;
-		await SetRequestedThemeAsync();
-		await SaveThemeInSettingsAsync(Theme);
-	}
-
-	public async Task SetAppEfStorageAsync(string efStorage)
-	{
-		EfStorage = efStorage;
-		await SaveEfStorageInSettingsAsync(EfStorage);
-	}
-
-	public async Task SetAppTgSessionAsync(string tgSession)
-	{
-		TgSession = tgSession;
-		await SaveTgSessionInSettingsAsync(TgSession);
-	}
-
-	public async Task SetAppLanguageAsync(string appLanguage)
-	{
-		AppLanguage = appLanguage;
-		await SaveAppLanguageInSettingsAsync(AppLanguage);
-	}
-
-	public async Task SetRequestedThemeAsync()
-	{
-		if (App.MainWindow.Content is FrameworkElement rootElement)
-		{
-			rootElement.RequestedTheme = Theme;
-			TitleBarHelper.UpdateTitleBar(Theme);
-		}
 		await Task.CompletedTask;
 	}
 
-	private async Task<ElementTheme> LoadThemeFromSettingsAsync()
+	public async Task SetAppLanguageAsync()
 	{
-		var themeName = await ReadSettingAsync<string>(SettingsKeyTheme);
-		if (Enum.TryParse(themeName, out ElementTheme cacheTheme))
-		{
-			return cacheTheme;
-		}
-		return ElementTheme.Default;
+		await Task.CompletedTask;
 	}
 
-	private async Task<string> LoadEfStorageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyEfStorage) ?? TgFileUtils.FileEfStorage;
+	private async Task<TgEnumTheme> LoadAppThemeFromSettingsAsync()
+	{
+		var themeName = await ReadSettingAsync<string>(SettingsKeyAppTheme);
+		return Enum.TryParse(themeName, out TgEnumTheme cacheTheme) ? cacheTheme : TgEnumTheme.Default;
+	}
 
-	private async Task<string> LoadTgSessionFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyTgSession) ?? TgFileUtils.FileTgSession;
+	private async Task<string> LoadAppStorageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppStorage) ?? TgFileUtils.FileEfStorage;
 
-	private async Task<string> LoadAppLanguageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppLanguage) ?? nameof(TgEnumLanguage.Default);
+	private async Task<string> LoadAppSessionFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppSession) ?? TgFileUtils.FileTgSession;
 
-	private async Task SaveThemeInSettingsAsync(ElementTheme theme) => await SaveSettingAsync(SettingsKeyTheme, theme.ToString());
+	private async Task<TgEnumLanguage> LoadAppLanguageFromSettingsAsync()
+	{
+		var appLanguage = await ReadSettingAsync<string>(SettingsKeyAppLanguage) ?? nameof(TgEnumLanguage.Default);
+		return TgEnumUtils.GetLanguageAsEnum(appLanguage);
+	}
 
-	private async Task SaveEfStorageInSettingsAsync(string efStorage) => await SaveSettingAsync(SettingsKeyEfStorage, efStorage);
+	public void ApplyTheme(TgEnumTheme appTheme)
+	{
+		if (App.MainWindow.Content is FrameworkElement rootElement)
+		{
+			rootElement.RequestedTheme = TgThemeHelper.GetElementTheme(AppTheme);
+			TitleBarHelper.UpdateTitleBar(rootElement.RequestedTheme);
+		}
+	}
 
-	private async Task SaveTgSessionInSettingsAsync(string tgSession) => await SaveSettingAsync(SettingsKeyTgSession, tgSession);
+	private async Task SaveAppThemeInSettingsAsync(TgEnumTheme appTheme)
+	{
+		ApplyTheme(appTheme);
+		await SaveSettingAsync(SettingsKeyAppTheme, appTheme.ToString());
+	}
 
-	private async Task SaveAppLanguageInSettingsAsync(string appLanguage) => await SaveSettingAsync(SettingsKeyAppLanguage, appLanguage);
+	private async Task SaveAppLanguageInSettingsAsync(TgEnumLanguage appLanguage)
+	{
+		Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = TgEnumUtils.GetLanguageAsString(AppLanguage);
+		await SaveSettingAsync(SettingsKeyAppLanguage, appLanguage.ToString());
+	}
+
+	private async Task SaveAppStorageInSettingsAsync(string appStorage) => await SaveSettingAsync(SettingsKeyAppStorage, appStorage);
+
+	private async Task SaveAppSessionInSettingsAsync(string appSession) => await SaveSettingAsync(SettingsKeyAppSession, appSession);
 
 	public void Default()
 	{
-		Theme = ElementTheme.Default;
-		EfStorage = TgFileUtils.FileEfStorage;
-		TgSession = TgFileUtils.FileTgSession;
-		AppLanguage = nameof(TgEnumLanguage.Default);
-#if DEBUG
-		EfStorage = _options.EfStorage ?? TgFileUtils.FileEfStorage;
-		TgSession = _options.TgSession ?? TgFileUtils.FileTgSession;
-#endif
+		AppTheme = AppThemes.First(x => x == TgEnumTheme.Default);
+		AppLanguage = AppLanguages.First(x => x == TgEnumLanguage.Default);
+		AppStorage = TgFileUtils.FileEfStorage;
+		AppSession = TgFileUtils.FileTgSession;
 	}
 
 	public async Task LoadAsync()
 	{
-		Theme = await LoadThemeFromSettingsAsync();
-		EfStorage = await LoadEfStorageFromSettingsAsync();
-		TgSession = await LoadTgSessionFromSettingsAsync();
-		AppLanguage = await LoadAppLanguageFromSettingsAsync();
+		var appTheme = await LoadAppThemeFromSettingsAsync();
+		AppTheme = AppThemes.First(x => x == appTheme);
+		var appLanguage = await LoadAppLanguageFromSettingsAsync();
+		AppLanguage = AppLanguages.First(x => x == appLanguage);
+		AppStorage = await LoadAppStorageFromSettingsAsync();
+		AppSession = await LoadAppSessionFromSettingsAsync();
 		await Task.CompletedTask;
 	}
 
 	public async Task SaveAsync()
 	{
-		await SaveThemeInSettingsAsync(Theme);
+		await SaveAppThemeInSettingsAsync(AppTheme);
+		await SaveAppLanguageInSettingsAsync(AppLanguage);
+		await SaveAppStorageInSettingsAsync(AppStorage);
+		await SaveAppSessionInSettingsAsync(AppSession);
 	}
 
 	private async Task InitializeAsync()
