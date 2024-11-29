@@ -151,15 +151,15 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(1);
             if (ItemSourceVm.SourceUid != SourceUid)
 				SourceUid = ItemSourceVm.SourceUid;
-            // Collect chats from Telegram.
+            // Collect chats from Telegram
             if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
                 await TgDesktopUtils.TgClient.CollectAllChatsAsync();
-			// Download settings.
+			// Download settings
             TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
-			// Update source from Telegram.
+			// Update source from Telegram
 			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
             await SourceRepository.SaveAsync(ItemSourceVm.Item);
-            // Message.
+            // Message
             await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Item.Id, ItemSourceVm.Item.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, false);
 

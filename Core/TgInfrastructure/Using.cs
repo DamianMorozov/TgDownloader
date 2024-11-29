@@ -3,5 +3,6 @@
 
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using System.Diagnostics;
+global using System.Reflection;
 global using TgInfrastructure.Common;
 global using TgInfrastructure.License;
