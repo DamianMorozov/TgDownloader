@@ -34,7 +34,7 @@ public sealed class TgAppXmlModel : ObservableObject, ITgCommon
 
 	#region Public and private methods
 
-    public string ToDebugString() =>
+    public string ToDebugString() => 
 	    $"{TgCommonUtils.GetIsReady(IsReady)} | {nameof(XmlFileSession)}: {XmlFileSession} | {nameof(XmlEfStorage)}: {XmlEfStorage}";
 
     public void Default()

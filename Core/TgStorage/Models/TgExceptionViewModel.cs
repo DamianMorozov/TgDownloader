@@ -34,6 +34,12 @@ public sealed partial class TgExceptionViewModel : TgViewModelBase
 		Exception = null;
 	}
 
+	public TgExceptionViewModel(Exception ex) : base()
+	{
+		Message = string.Empty;
+		Exception = ex;
+	}
+
 	#endregion
 
 	#region Public and private methods

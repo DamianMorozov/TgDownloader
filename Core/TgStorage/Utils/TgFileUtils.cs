@@ -13,7 +13,7 @@ public static class TgFileUtils
 	public static string FileAppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
 	public static string FileTgSession => "TgDownloader.session";
 	public static string FileEfStorage => "TgStorage.db";
-	public static string FileLog => "TgStorage.log";
+	public static string AppStorage = string.Empty;
 
 	#endregion
 

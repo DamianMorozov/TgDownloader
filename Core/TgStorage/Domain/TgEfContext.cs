@@ -25,7 +25,7 @@ public sealed class TgEfContext : DbContext
     public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
     public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
-    public bool IsReady =>
+	public bool IsReady =>
         TgAppSettings.AppXml.IsExistsEfStorage &&
         IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
         IsTableExists(TgEfConstants.TableFilters) && IsTableExists(TgEfConstants.TableMessages) &&
@@ -55,9 +55,22 @@ public sealed class TgEfContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         LoggerFactory factory = new();
-        if (string.IsNullOrEmpty(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage))
-			TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
-        string storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
+        var storagePath = string.Empty;
+		// Console app
+		if (TgAsyncUtils.AppType == TgEnumAppType.Default || TgAsyncUtils.AppType == TgEnumAppType.Console)
+        {
+	        if (string.IsNullOrEmpty(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage))
+		        TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
+	        storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
+        }
+		// Desktop app
+		if (TgAsyncUtils.AppType == TgEnumAppType.Desktop)
+		{
+            if (!string.IsNullOrEmpty(TgFileUtils.AppStorage))
+				storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgFileUtils.AppStorage}";
+        }
+		if (string.IsNullOrEmpty(storagePath))
+	        throw new ArgumentException(nameof(storagePath));
         optionsBuilder
 #if DEBUG
             .LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}", TgConstants.LogTypeStorage), LogLevel.Debug)
@@ -172,7 +185,7 @@ public sealed class TgEfContext : DbContext
     /// <summary> Check table exists </summary>
     public bool IsTableExists(string tableName)
     {
-        string? result = Database
+        var result = Database
             .SqlQuery<string>($"SELECT [name] AS [Value] FROM [sqlite_master]")
             .SingleOrDefault(x => x == tableName);
         return tableName == result;
@@ -182,8 +195,8 @@ public sealed class TgEfContext : DbContext
     {
         if (File.Exists(TgAppSettings.AppXml.XmlEfStorage))
         {
-            DateTime dt = DateTime.Now;
-            string fileBackup =
+            var dt = DateTime.Now;
+            var fileBackup =
                 $"{Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}\\" +
                 $"{Path.GetFileNameWithoutExtension(TgAppSettings.AppXml.XmlEfStorage)}_{dt:yyyyMMdd}_{dt:HHmmss}.bak";
             File.Copy(TgAppSettings.AppXml.XmlEfStorage, fileBackup);
@@ -192,18 +205,11 @@ public sealed class TgEfContext : DbContext
         return (false, string.Empty);
     }
 
-    public async Task CompactDbAsync()
-    {
-        await Database.ExecuteSqlRawAsync("VACUUM;");
-    }
+	/// <summary> Shrink storage </summary>
+	public async Task CompactDbAsync() => await Database.ExecuteSqlRawAsync("VACUUM;");
 
     /// <summary> Create and update storage </summary>
-    public async Task CreateAndUpdateDbAsync()
-    {
-        //await Database.EnsureCreatedAsync();
-        //await SaveChangesAsync();
-        await Database.MigrateAsync();
-    }
+    public async Task CreateAndUpdateDbAsync() => await Database.MigrateAsync();
 
     #endregion
 }

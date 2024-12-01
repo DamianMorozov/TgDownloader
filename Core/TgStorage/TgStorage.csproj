@@ -35,14 +35,5 @@
     <ProjectReference Include="..\TgInfrastructure\TgInfrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="TgDownloader.session">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TgDownloader.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Post-build.cmd" />
-  </Target>
 </Project>

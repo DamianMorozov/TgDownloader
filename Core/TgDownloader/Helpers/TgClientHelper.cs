@@ -44,6 +44,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public Func<string, Task> UpdateStateProxyAsync { get; private set; }
 	public Func<long, int, string, Task> UpdateStateSourceAsync { get; private set; }
 	public Func<string, int, string, string, Task> UpdateStateExceptionAsync { get; private set; }
+	public Func<Exception, Task> UpdateExceptionAsync { get; private set; }
 	public Func<string, Task> UpdateStateExceptionShortAsync { get; private set; }
 	public Func<Task> AfterClientConnectAsync { get; private set; }
 	public Func<string, string?> ConfigClientDesktop { get; private set; }
@@ -73,6 +74,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		UpdateStateConnectAsync = _ => Task.CompletedTask;
 		UpdateStateProxyAsync = _ => Task.CompletedTask;
 		UpdateStateExceptionAsync = (_, _, _, _) => Task.CompletedTask;
+		UpdateExceptionAsync = _ => Task.CompletedTask;
 		UpdateStateExceptionShortAsync = _ => Task.CompletedTask;
 		UpdateStateSourceAsync = (_, _, _) => Task.CompletedTask;
 		AfterClientConnectAsync = () => Task.CompletedTask;
@@ -107,6 +109,9 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	public void SetupUpdateStateException(Func<string, int, string, string, Task> updateStateExceptionAsync) =>
 		UpdateStateExceptionAsync = updateStateExceptionAsync;
+
+	public void SetupUpdateException(Func<Exception, Task> updateExceptionAsync) =>
+		UpdateExceptionAsync = updateExceptionAsync;
 
 	public void SetupUpdateStateExceptionShort(Func<string, Task> updateStateExceptionShortAsync) =>
 		UpdateStateExceptionShortAsync = updateStateExceptionShortAsync;
@@ -167,7 +172,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public async Task ConnectSessionConsoleAsync(Func<string, string?>? config, TgEfProxyEntity proxy)
 	{
 		if (IsReady) return;
-		Disconnect();
+		await DisconnectAsync();
 
 		Client = new(config);
 		await ConnectThroughProxyAsync(proxy, false);
@@ -180,7 +185,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public async Task ConnectSessionAsync(ITgDbProxy? proxy)
 	{
 		if (IsReady) return;
-		Disconnect();
+		await DisconnectAsync();
 
 		Client = new(ConfigClientDesktop);
 		await ConnectThroughProxyAsync(proxy, true);
@@ -193,7 +198,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public async Task ConnectSessionDesktopAsync(ITgDbProxy? proxy, Func<string, string?> configClientDesktop)
 	{
 		if (IsReady) return;
-		Disconnect();
+		await DisconnectAsync();
 
 		Client = new(configClientDesktop);
 		await ConnectThroughProxyAsync(proxy, true);
@@ -1755,6 +1760,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
 	{
 		ClientException.Set(ex);
+		await UpdateExceptionAsync(ex);
 		await UpdateStateExceptionAsync(filePath, lineNumber, memberName, ClientException.Message);
 	}
 
@@ -1774,6 +1780,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		[CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = "")
 	{
 		ProxyException.Set(ex);
+		await UpdateExceptionAsync(ex);
 		await UpdateStateExceptionAsync(filePath, lineNumber, memberName, ProxyException.Message);
 	}
 

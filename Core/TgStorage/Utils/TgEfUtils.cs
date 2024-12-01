@@ -88,7 +88,8 @@ public static class TgEfUtils
 			item.Uid = Guid.NewGuid();
 	}
 
-	public static TgEfContext EfContext => CreateEfContext();
+	//public static TgEfContext EfContext => CreateEfContext();
+	public static TgEfContext EfContext = CreateEfContext();
 
 	public static TgEfContext CreateEfContext() => new();
 
