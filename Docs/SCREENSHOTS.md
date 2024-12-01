@@ -8,32 +8,22 @@
 
 <p align="center"><img src="Assets/TgDownloaderDesktopHome.png"></p>
 <p align="center"><img src="Assets/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/TgDownloaderDesktopConnection.png"></p>
 
-## Actual screenshots TgDownloaderBlazor
-
-<p align="center"><img src="Assets/TgDownloaderBlazor_Home.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Client.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Filters.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Proxies.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Sources.png"></p>
-<p align="center"><img src="Assets/TgDownloaderBlazor_Versions.png"></p>
-
-## Actual screenshots TgDownloaderWinDesktop
-
-<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Proxies.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Sources.png"></p>
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_ItemSource.png"></p>
-
-
-## [0.5.170] - 2024-11-09
+## [0.5.230] - 2024-12-01
 ### TgDownloaderConsole
-<p align="center"><img src="Assets/v0.5.170/TgDownloaderConsole.png"></p>
+<p align="center"><img src="Assets/v0.5.230/TgDownloaderConsole.png"></p>
 ### TgDownloaderDesktop
-<p align="center"><img src="Assets/v0.5.170/TgDownloaderDesktopHome.png"></p>
-<p align="center"><img src="Assets/v0.5.170/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/v0.5.230/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.230/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/v0.5.230/TgDownloaderDesktopConnection.png"></p>
+
+## [0.5.180] - 2024-11-10
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.5.180/TgDownloaderConsole.png"></p>
+### TgDownloaderDesktop
+<p align="center"><img src="Assets/v0.5.180/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.180/TgDownloaderDesktopSettings.png"></p>
 
 ## [0.5.160] - 2024-11-05
 ### TgDownloaderConsole

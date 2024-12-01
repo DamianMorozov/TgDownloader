@@ -10,9 +10,6 @@
 ## Описание продукта
 Скачайте файлы каналов или групп Telegram, в которых вы состоите.
 
-### Особая благодарность
-- [wiz0u](https://github.com/wiz0u) за [WTelegramClient](https://github.com/wiz0u/WTelegramClient) NuGet пакет.
-
 ## Требования к установке
 - [Скачать .NET 8.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/8.0)
 - [Скачать .NET 9.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/9.0)

@@ -4,9 +4,20 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.190] - 2024-11-12
+## [0.5.230] - 2024-12-01
+### Исправлено
+- Исправлено отображение спец символов в имени каталога для скачивания для TgDownloaderConsole
+- Исправлено отображение по-умолчанию ID = 1 для TgDownloaderConsole
+- Исправлено сканирование источников для TgDownloaderConsole
+### Изменено
+- Количество потоков скачивания по-умолчанию (с 1 до 5) для TgDownloaderConsole
+- Обновлены NuGet пакеты
+- Улучшена стабильность работы для TgDownloaderConsole
+- Улучшена стабильность работы для TgDownloaderDesktop
 ### Добавлено
 - Добавлена языковая локализация для TgDownloaderDesktop
+- Страница подключения для TgDownloaderDesktop
+- Бесплатная лицензия для TgDownloaderDesktop
 
 ## [0.5.180] - 2024-11-10
 ### Исправлено

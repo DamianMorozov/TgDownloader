@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.190] - 2024-11-12
+## [0.5.230] - 2024-12-01
+### Fixed
+- Fixed display of special characters in download directory name for TgDownloaderConsole
+- Fixed default display of ID = 1 for TgDownloaderConsole
+- Fixed scan sources for TgDownloaderConsole
+### Changed
+- Default number of download threads (from 1 to 5) for TgDownloaderConsole
+- Updated NuGet packages
+- Improved stability of work for TgDownloaderConsole
+- Improved stability of work for TgDownloaderDesktop
 ### Added
 - Added language localization for TgDownloaderDesktop
+- Connection page for TgDownloaderDesktop
+- Free license for TgDownloaderDesktop
 
 ## [0.5.180] - 2024-11-10
 ### Fixed
