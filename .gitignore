@@ -402,3 +402,5 @@ FodyWeavers.xsd
 /TgCore/TgDownloader.xml
 /Core/TgStorage/TgDownloader.session
 /Core/TgStorage/TgDownloader.xml
+/Clients/TgDownloaderConsole/TgDownloader.session
+/Clients/TgDownloaderConsole/TgDownloader.xml

@@ -79,7 +79,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  API ID  -->
 					<TextBlock
 						x:Uid="ClientApiId"
@@ -96,7 +96,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.ApiId, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.ApiId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Phone number  -->
 					<TextBlock
 						x:Uid="ClientPhoneNumber"
@@ -113,7 +113,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Proxy  -->
 					<TextBlock
 						x:Uid="ClientProxy"
@@ -155,7 +155,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.FirstName, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Last name  -->
 					<TextBlock
 						x:Uid="ClientLastName"
@@ -172,7 +172,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.LastName, Mode=TwoWay}" />
+						Text="{x:Bind ViewModel.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Horizontal separator  -->
 					<Rectangle
 						Grid.Row="8"
@@ -288,6 +288,8 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="2*" />
@@ -314,7 +316,7 @@
 					<!--  Vertical separator  -->
 					<Rectangle
 						Grid.Row="2"
-						Grid.RowSpan="12"
+						Grid.RowSpan="14"
 						Grid.Column="1"
 						Width="1"
 						Fill="DimGray" />
@@ -334,7 +336,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
+						Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Verification code  -->
 					<TextBlock
 						x:Uid="ClientVerificationCode"
@@ -351,7 +353,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
+						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<!--  Horizontal separator  -->
 					<Rectangle
 						Grid.Row="4"
@@ -405,9 +407,9 @@
 						Grid.ColumnSpan="3"
 						Height="1"
 						Fill="DimGray" />
-					<!--  User  -->
+					<!--  Connection dt  -->
 					<TextBlock
-						x:Uid="ClientUserName"
+						x:Uid="ClientConnectionDt"
 						Grid.Row="7"
 						Grid.Column="0"
 						Margin="2,7,2,2"
@@ -416,6 +418,66 @@
 						TextAlignment="Center" />
 					<TextBox
 						Grid.Row="7"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.ConnectionDt, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  Connection state  -->
+					<TextBlock
+						x:Uid="ClientConnectionState"
+						Grid.Row="8"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="8"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.ConnectionMsg, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  Connection exception  -->
+					<TextBlock
+						x:Uid="ClientConnectionException"
+						Grid.Row="9"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="9"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.Exception.Message, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  User  -->
+					<TextBlock
+						x:Uid="ClientUserName"
+						Grid.Row="10"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="10"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -428,14 +490,14 @@
 					<!--  MtProxyUrl  -->
 					<TextBlock
 						x:Uid="ClientMtProxyUrl"
-						Grid.Row="8"
+						Grid.Row="11"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="8"
+						Grid.Row="11"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -445,17 +507,17 @@
 						IsReadOnly="True"
 						Text="{x:Bind ViewModel.MtProxyUrl, Mode=OneWay}"
 						TextWrapping="Wrap" />
-					<!--  Connection dt  -->
+					<!--  MaxAutoReconnects  -->
 					<TextBlock
-						x:Uid="ClientConnectionDt"
-						Grid.Row="9"
+						x:Uid="ClientMaxAutoReconnects"
+						Grid.Row="12"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="9"
+						Grid.Row="12"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -463,19 +525,19 @@
 						HorizontalContentAlignment="Left"
 						VerticalContentAlignment="Center"
 						IsReadOnly="True"
-						Text="{x:Bind ViewModel.StateConnectDt, Mode=OneWay}"
+						Text="{x:Bind ViewModel.MaxAutoReconnects, Mode=OneWay}"
 						TextWrapping="Wrap" />
-					<!--  Connection state  -->
+					<!--  MaxCodePwdAttempts  -->
 					<TextBlock
-						x:Uid="ClientConnectionState"
-						Grid.Row="10"
+						x:Uid="ClientMaxCodePwdAttempts"
+						Grid.Row="13"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="10"
+						Grid.Row="13"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -483,19 +545,19 @@
 						HorizontalContentAlignment="Left"
 						VerticalContentAlignment="Center"
 						IsReadOnly="True"
-						Text="{x:Bind ViewModel.StateConnectMsg, Mode=OneWay}"
+						Text="{x:Bind ViewModel.MaxCodePwdAttempts, Mode=OneWay}"
 						TextWrapping="Wrap" />
-					<!--  Connection exception  -->
+					<!--  FloodRetryThreshold  -->
 					<TextBlock
-						x:Uid="ClientConnectionException"
-						Grid.Row="11"
+						x:Uid="ClientFloodRetryThreshold"
+						Grid.Row="14"
 						Grid.Column="0"
 						Margin="2,7,2,2"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
 					<TextBox
-						Grid.Row="11"
+						Grid.Row="14"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
@@ -503,7 +565,27 @@
 						HorizontalContentAlignment="Left"
 						VerticalContentAlignment="Center"
 						IsReadOnly="True"
-						Text="{x:Bind ViewModel.Exception.Message, Mode=OneWay}"
+						Text="{x:Bind ViewModel.FloodRetryThreshold, Mode=OneWay}"
+						TextWrapping="Wrap" />
+					<!--  PingInterval  -->
+					<TextBlock
+						x:Uid="ClientPingInterval"
+						Grid.Row="15"
+						Grid.Column="0"
+						Margin="2,7,2,2"
+						FontWeight="Bold"
+						HorizontalTextAlignment="Center"
+						TextAlignment="Center" />
+					<TextBox
+						Grid.Row="15"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
+						VerticalContentAlignment="Center"
+						IsReadOnly="True"
+						Text="{x:Bind ViewModel.PingInterval, Mode=OneWay}"
 						TextWrapping="Wrap" />
 				</Grid>
 			</Border>

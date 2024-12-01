@@ -18,13 +18,9 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	private bool _isLoad;
 	[ObservableProperty]
-	private string _stateConnectDt = string.Empty;
+	private string _connectionDt = string.Empty;
 	[ObservableProperty]
-	private string _stateConnectMsg = string.Empty;
-	[ObservableProperty]
-	private string _stateExceptionDt = string.Empty;
-	[ObservableProperty]
-	private string _stateExceptionMsg = string.Empty;
+	private string _connectionMsg = string.Empty;
 	[ObservableProperty]
 	private string _stateProxyDt = string.Empty;
 	[ObservableProperty]
@@ -57,16 +53,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	}
 
 	/// <summary> Update state client message </summary>
-	public virtual void UpdateStateConnect(string message)
-	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-		{
-			StateConnectDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-			StateConnectMsg = message;
-		});
-	}
-
-	/// <summary> Update state client message </summary>
 	public virtual void UpdateStateProxy(string message)
 	{
 		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -77,23 +63,10 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	}
 
 	/// <summary> Update exception message </summary>
-	public virtual void UpdateStateException(string filePath, int lineNumber, string memberName, string message)
+	public virtual async Task UpdateExceptionAsync(Exception ex)
 	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-		{
-			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-			StateExceptionMsg = $"Line {lineNumber} | Member {memberName} | {message}";
-		});
-	}
-
-	/// <summary> Update exception message </summary>
-	public virtual void UpdateStateExceptionShort(string message)
-	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-		{
-			StateExceptionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-			StateExceptionMsg = message;
-		});
+		Exception = new(ex);
+		await Task.CompletedTask;
 	}
 
 	/// <summary> Update state source message </summary>
@@ -133,7 +106,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			DefaultButton = defaultButton,
 		};
 		_ = await dialog.ShowAsync();
-		await Task.CompletedTask;
 	}
 
 	protected async Task ContentDialogAsync(Func<Task> task, string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
@@ -149,7 +121,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			PrimaryButtonCommand = new AsyncRelayCommand(task)
 		};
 		_ = await dialog.ShowAsync();
-		await Task.CompletedTask;
 	}
 
 	protected async Task ContentDialogAsync(Action action, string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
@@ -165,7 +136,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			PrimaryButtonCommand = new RelayCommand(action)
 		};
 		_ = await dialog.ShowAsync();
-		await Task.CompletedTask;
 	}
 
 	#endregion

@@ -16,6 +16,17 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <Version>0.5.220.0</Version>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxPackageDir>c:\TgDownloader-Releases\TgDownloaderDesktop-AppPackages\</AppxPackageDir>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Auto</AppxBundle>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppInstallerUri>c:\TgDownloader-Releases\</AppInstallerUri>
+    <PackageCertificateThumbprint>12ADC21F87DF252CACA6ACA3440704BA8FA91CEA</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\TgClientPage.xaml" />

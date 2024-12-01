@@ -11,7 +11,7 @@ public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs
 	public async Task ActivateAsync(object activationArgs)
 	{
 		// Execute tasks before activation
-		await LoadAsync();
+		await settingsService.LoadAsync();
 		// Set the MainWindow Content
 		if (App.MainWindow.Content == null)
 		{
@@ -39,17 +39,11 @@ public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs
 		}
 	}
 
-	private async Task LoadAsync()
+	public async Task StartupAsync()
 	{
-		await settingsService.LoadAsync();
-		await Task.CompletedTask;
-	}
-
-	private async Task StartupAsync()
-	{
-		// Register TgEfContext as the DbContext for EF Core
-		await TgEfUtils.CreateAndUpdateDbAsync();
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
-		await Task.CompletedTask;
+		// Register TgEfContext as the DbContext for EF Core
+		TgFileUtils.AppStorage = App.GetService<ITgSettingsService>().AppStorage;
+		await TgEfUtils.CreateAndUpdateDbAsync();
 	}
 }

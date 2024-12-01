@@ -11,6 +11,7 @@ public interface ITgSettingsService
 	TgEnumLanguage AppLanguage { get; set; }
 	string AppStorage { get; set; }
 	string AppSession { get; set; }
+	string AppFolder { get; }
 	bool IsExistsAppStorage { get; }
 	bool IsExistsAppSession { get; }
 

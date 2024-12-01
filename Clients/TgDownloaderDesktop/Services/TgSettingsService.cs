@@ -21,17 +21,17 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	private ObservableCollection<TgEnumLanguage> _appLanguages = default!;
 	[ObservableProperty]
 	private TgEnumLanguage _appLanguage = TgEnumLanguage.Default;
+	[ObservableProperty]
+	private string _appFolder = default!;
 	private string _appStorage = default!;
 	public string AppStorage
 	{
 		get => _appStorage;
 		set
 		{
-			if (SetProperty(ref _appStorage, value))
-			{
-				OnPropertyChanged();
-				IsExistsAppStorage = File.Exists(_appStorage) || File.Exists(Path.Combine(TgDesktopUtils.CurrentPath, _appStorage));
-			}
+			SetProperty(ref _appStorage, value);
+			OnPropertyChanged();
+			IsExistsAppStorage = TgDesktopUtils.CheckFileStorageExists(AppStorage);
 		}
 	}
 	private string _appSession = default!;
@@ -40,11 +40,9 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		get => _appSession;
 		set
 		{
-			if (SetProperty(ref _appSession, value))
-			{
-				OnPropertyChanged();
-				IsExistsAppSession = File.Exists(_appSession) || File.Exists(Path.Combine(TgDesktopUtils.CurrentPath, _appSession));
-			}
+			SetProperty(ref _appSession, value);
+			IsExistsAppSession = TgDesktopUtils.CheckFileStorageExists(AppSession);
+			OnPropertyChanged();
 		}
 	}
 	[ObservableProperty]
@@ -135,8 +133,9 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	{
 		AppTheme = AppThemes.First(x => x == TgEnumTheme.Default);
 		AppLanguage = AppLanguages.First(x => x == TgEnumLanguage.Default);
-		AppStorage = TgFileUtils.FileEfStorage;
-		AppSession = TgFileUtils.FileTgSession;
+		AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileEfStorage);
+		AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
+		AppFolder = TgDesktopUtils.LocalFolder;
 	}
 
 	public async Task LoadAsync()
@@ -147,7 +146,6 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		AppLanguage = AppLanguages.First(x => x == appLanguage);
 		AppStorage = await LoadAppStorageFromSettingsAsync();
 		AppSession = await LoadAppSessionFromSettingsAsync();
-		await Task.CompletedTask;
 	}
 
 	public async Task SaveAsync()

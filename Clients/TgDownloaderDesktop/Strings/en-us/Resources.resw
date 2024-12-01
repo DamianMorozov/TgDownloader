@@ -259,10 +259,13 @@
     <value>Session</value>
   </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
-    <value>App theme</value>
+    <value>Theme</value>
   </data>
   <data name="SettingAppLanguage.Text" xml:space="preserve">
-    <value>App language</value>
+    <value>Language</value>
+  </data>
+  <data name="SettingFolder.Text" xml:space="preserve">
+    <value>Folder</value>
   </data>
   <data name="AskSettingsDefault" xml:space="preserve">
     <value>Reset the settings to default?</value>
@@ -365,6 +368,18 @@
   </data>
   <data name="ClientMtProxyUrl.Text" xml:space="preserve">
     <value>MT proxy url</value>
+  </data>
+  <data name="ClientMaxAutoReconnects.Text" xml:space="preserve">
+    <value>Max auto reconnects</value>
+  </data>
+  <data name="ClientFloodRetryThreshold.Text" xml:space="preserve">
+    <value>Flood retry threshold</value>
+  </data>
+  <data name="ClientPingInterval.Text" xml:space="preserve">
+    <value>Ping interval</value>
+  </data>
+  <data name="ClientMaxCodePwdAttempts.Text" xml:space="preserve">
+    <value>Max code pwd attempts</value>
   </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Free license</value>

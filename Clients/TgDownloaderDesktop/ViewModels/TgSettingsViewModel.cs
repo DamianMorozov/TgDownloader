@@ -23,24 +23,17 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 
 	public async Task OnNavigatedToAsync(NavigationEventArgs navigationEventArgs) => await SettingsService.LoadAsync();
 
-	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsDefaultCoreAsync, TgResourceExtensions.AskSettingsDefault());
-
-	private async Task SettingsDefaultCoreAsync()
-	{
-		SettingsService.Default();
-		await Task.CompletedTask;
-	}
+	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsService.Default, TgResourceExtensions.AskSettingsDefault());
 
 	private async Task SettingsSaveAsync()
 	{
 		await ContentDialogAsync(SettingsService.SaveAsync, TgResourceExtensions.AskSettingsSave());
 #if DEBUG
-		await ContentDialogAsync(TgResourceExtensions.AssertionRestartApp(), ContentDialogButton.Primary);
+		//await ContentDialogAsync(TgResourceExtensions.AssertionRestartApp(), ContentDialogButton.Primary);
 #else
 		await ContentDialogAsync(async () => { await Windows.ApplicationModel.Core.CoreApplication.RequestRestartAsync(string.Empty); }, 
 			TgResourceExtensions.AskRestartApp());
 #endif
-		await Task.CompletedTask;
 	}
 
 	#endregion

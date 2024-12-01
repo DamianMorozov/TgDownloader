@@ -321,10 +321,13 @@
     <value>Сессия</value>
   </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
-    <value>Тема приложения</value>
+    <value>Тема</value>
   </data>
   <data name="SettingAppLanguage.Text" xml:space="preserve">
-    <value>Язык приложения</value>
+    <value>Язык</value>
+  </data>
+  <data name="SettingFolder.Text" xml:space="preserve">
+    <value>Каталог</value>
   </data>
   <data name="AskSettingsDefault" xml:space="preserve">
     <value>Сбросить настройки по-умолчанию?</value>
@@ -430,6 +433,18 @@
   </data>
   <data name="ClientMtProxyUrl.Text" xml:space="preserve">
     <value>Адрес MT прокси</value>
+  </data>
+  <data name="ClientMaxAutoReconnects.Text" xml:space="preserve">
+    <value>Макс кол-во авто подключений</value>
+  </data>
+  <data name="ClientFloodRetryThreshold.Text" xml:space="preserve">
+    <value>Порог повторных попыток переполнения</value>
+  </data>
+  <data name="ClientPingInterval.Text" xml:space="preserve">
+    <value>Интервал пинга</value>
+  </data>
+  <data name="ClientMaxCodePwdAttempts.Text" xml:space="preserve">
+    <value>Макс кол-во попыток ввода кода</value>
   </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Бесплатная лицензия</value>

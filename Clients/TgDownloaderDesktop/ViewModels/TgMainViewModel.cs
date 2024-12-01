@@ -3,6 +3,7 @@
 
 namespace TgDownloaderDesktop.ViewModels;
 
+[DebuggerDisplay("{ToDebugString()}")]
 public partial class TgMainViewModel : TgPageViewModelBase
 {
 	#region Public and private fields, properties, constructor
@@ -20,7 +21,6 @@ public partial class TgMainViewModel : TgPageViewModelBase
 
 	public TgMainViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
-		TgDesktopUtils.FileLog($"{nameof(TgMainViewModel)} 1");
 		VersionDescription = GetVersionDescription();
 		AppVersionTitle =
 			$"{TgConstants.AppTitleDesktop} " +
@@ -28,7 +28,6 @@ public partial class TgMainViewModel : TgPageViewModelBase
 		AppVersionShort = $"v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 		AppVersionFull = $"{TgResourceExtensions.GetAppVersion()}: {AppVersionShort}";
 		LicenseDescription = LicenseManager.CurrentLicense.Description;
-		TgDesktopUtils.FileLog($"{nameof(TgMainViewModel)} 2");
 	}
 
 	#endregion

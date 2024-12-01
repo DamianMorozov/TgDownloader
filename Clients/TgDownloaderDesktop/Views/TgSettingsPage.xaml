@@ -29,6 +29,7 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
@@ -37,12 +38,12 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="1*" />
 					</Grid.ColumnDefinitions>
-					<!--  Row 0 - Headers  -->
+					<!--  Headers  -->
 					<TextBlock
 						x:Uid="SettingName"
 						Grid.Row="0"
 						Grid.Column="0"
-						Margin="2"
+						Margin="15,5,15,5"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
@@ -50,7 +51,7 @@
 						x:Uid="SettingCheck"
 						Grid.Row="0"
 						Grid.Column="2"
-						Margin="2"
+						Margin="15,5,15,5"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
@@ -58,11 +59,11 @@
 						x:Uid="SettingValue"
 						Grid.Row="0"
 						Grid.Column="4"
-						Margin="2"
+						Margin="15,5,15,5"
 						FontWeight="Bold"
 						HorizontalTextAlignment="Center"
 						TextAlignment="Center" />
-					<!--  Row 1 - Horizontal separator  -->
+					<!--  Horizontal separator  -->
 					<Rectangle
 						Grid.Row="1"
 						Grid.Column="0"
@@ -72,27 +73,25 @@
 					<!--  Vertical separator  -->
 					<Rectangle
 						Grid.Row="0"
-						Grid.RowSpan="6"
+						Grid.RowSpan="7"
 						Grid.Column="1"
 						Width="1"
 						Fill="DimGray" />
 					<!--  Vertical separator  -->
 					<Rectangle
 						Grid.Row="0"
-						Grid.RowSpan="6"
+						Grid.RowSpan="7"
 						Grid.Column="3"
 						Width="1"
 						Fill="DimGray" />
-					<!--  Row 2 - App language  -->
-					<TextBox
+					<!--  Language  -->
+					<TextBlock
 						x:Uid="SettingAppLanguage"
 						Grid.Row="2"
 						Grid.Column="0"
-						Margin="5,0,0,0"
-						Background="Transparent"
-						BorderBrush="Transparent"
+						Margin="15,5,15,5"
+						VerticalAlignment="Center"
 						HorizontalTextAlignment="Left"
-						IsReadOnly="True"
 						TextAlignment="Left" />
 					<ComboBox
 						x:Name="ComboBoxAppLanguages"
@@ -103,16 +102,14 @@
 						ItemsSource="{x:Bind ViewModel.SettingsService.AppLanguages, Mode=OneWay}"
 						PlaceholderText="App language"
 						SelectedItem="{x:Bind ViewModel.SettingsService.AppLanguage, Mode=TwoWay}" />
-					<!--  Row 3 - App theme  -->
-					<TextBox
+					<!--  Theme  -->
+					<TextBlock
 						x:Uid="SettingAppTheme"
 						Grid.Row="3"
 						Grid.Column="0"
-						Margin="5,0,0,0"
-						Background="Transparent"
-						BorderBrush="Transparent"
+						Margin="15,5,15,5"
+						VerticalAlignment="Center"
 						HorizontalTextAlignment="Left"
-						IsReadOnly="True"
 						TextAlignment="Left" />
 					<ComboBox
 						x:Name="ComboBoxAppThemes"
@@ -123,19 +120,35 @@
 						ItemsSource="{x:Bind ViewModel.SettingsService.AppThemes, Mode=OneWay}"
 						PlaceholderText="App theme"
 						SelectedItem="{x:Bind ViewModel.SettingsService.AppTheme, Mode=TwoWay}" />
-					<!--  Row 4 - Storage  -->
-					<TextBox
-						x:Uid="SettingStorage"
+					<!--  Folder  -->
+					<TextBlock
+						x:Uid="SettingFolder"
 						Grid.Row="4"
 						Grid.Column="0"
-						Margin="5,0,0,0"
-						Background="Transparent"
-						BorderBrush="Transparent"
+						Margin="15,5,15,5"
+						VerticalAlignment="Center"
 						HorizontalTextAlignment="Left"
+						TextAlignment="Left" />
+					<TextBox
+						Grid.Row="4"
+						Grid.Column="4"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						HorizontalContentAlignment="Left"
 						IsReadOnly="True"
+						Text="{x:Bind ViewModel.SettingsService.AppFolder, Mode=OneWay}" />
+					<!--  Storage  -->
+					<TextBlock
+						x:Uid="SettingStorage"
+						Grid.Row="5"
+						Grid.Column="0"
+						Margin="15,5,15,5"
+						VerticalAlignment="Center"
+						HorizontalTextAlignment="Left"
 						TextAlignment="Left" />
 					<StackPanel
-						Grid.Row="4"
+						Grid.Row="5"
 						Grid.Column="2"
 						Width="50"
 						Margin="2"
@@ -146,26 +159,24 @@
 							IsEnabled="False" />
 					</StackPanel>
 					<TextBox
-						Grid.Row="4"
+						Grid.Row="5"
 						Grid.Column="4"
 						Margin="2"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
 						Text="{x:Bind ViewModel.SettingsService.AppStorage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Row 5 - Session  -->
-					<TextBox
+					<!--  Session  -->
+					<TextBlock
 						x:Uid="SettingSession"
-						Grid.Row="5"
+						Grid.Row="6"
 						Grid.Column="0"
-						Margin="5,0,0,0"
-						Background="Transparent"
-						BorderBrush="Transparent"
+						Margin="15,5,15,5"
+						VerticalAlignment="Center"
 						HorizontalTextAlignment="Left"
-						IsReadOnly="True"
 						TextAlignment="Left" />
 					<StackPanel
-						Grid.Row="5"
+						Grid.Row="6"
 						Grid.Column="2"
 						Width="50"
 						Margin="2"
@@ -176,7 +187,7 @@
 							IsEnabled="False" />
 					</StackPanel>
 					<TextBox
-						Grid.Row="5"
+						Grid.Row="6"
 						Grid.Column="4"
 						Margin="2"
 						HorizontalAlignment="Stretch"

@@ -38,6 +38,14 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
     private string _mtProxyUrl = default!;
 	[ObservableProperty]
     private string _userName = default!;
+	[ObservableProperty]
+    private string _maxAutoReconnects = default!;
+	[ObservableProperty]
+    private string _floodRetryThreshold = default!;
+	[ObservableProperty]
+    private string _pingInterval = default!;
+	[ObservableProperty]
+    private string _maxCodePwdAttempts = default!;
 
 	public ICommand ClientConnectCommand { get; }
     public ICommand ClientDisconnectCommand { get; }
@@ -75,7 +83,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	    //TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
 	    //TgDesktopUtils.TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
 	    //TgDesktopUtils.TgClient.SetupUpdateStateMessage(UpdateStateMessageAsync);
-	    //TgDesktopUtils.TgClient.SetupUpdateStateException(UpdateStateExceptionAsync);
+	    TgDesktopUtils.TgClient.SetupUpdateException(UpdateExceptionAsync);
 	    //TgDesktopUtils.TgClient.SetupUpdateStateExceptionShort(UpdateStateExceptionShortAsync);
 	    TgDesktopUtils.TgClient.SetupAfterClientConnect(AfterClientConnectAsync);
 		//TgDesktopUtils.TgClient.SetupGetClientDesktopConfig(ConfigClientDesktop);
@@ -83,18 +91,22 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
 	public async Task AfterClientConnectAsync()
 	{
-		UpdateStateConnect(TgDesktopUtils.TgClient.Client is null || TgDesktopUtils.TgClient.Client.Disconnected 
-			? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected());
+		ConnectionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+		ConnectionMsg = TgDesktopUtils.TgClient.Client is null || TgDesktopUtils.TgClient.Client.Disconnected
+			? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
 		if (TgDesktopUtils.TgClient.Client is not null)
 		{
-			UserName = TgDesktopUtils.TgClient.Client.User.MainUsername;
+			UserName = TgDesktopUtils.TgClient.Client.User?.MainUsername ?? string.Empty;
 			MtProxyUrl = TgDesktopUtils.TgClient.Client.MTProxyUrl;
+			MaxAutoReconnects = TgDesktopUtils.TgClient.Client.MaxAutoReconnects.ToString();
+			FloodRetryThreshold = TgDesktopUtils.TgClient.Client.FloodRetryThreshold.ToString();
+			PingInterval = TgDesktopUtils.TgClient.Client.PingInterval.ToString();
+			MaxCodePwdAttempts = TgDesktopUtils.TgClient.Client.MaxCodePwdAttempts.ToString();
 		}
 		else
 		{
-			await ReloadUiAsync();
+			await ReloadUiAsync(isClearPassw: false);
 		}
-		await Task.CompletedTask;
 	}
 
 	public string? ConfigClientDesktop(string what)
@@ -104,25 +116,23 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		switch (what)
 		{
 			case "api_hash":
-				var apiHash = TgDataFormatUtils.ParseGuidToString(ApiHash);
-				return apiHash;
+				return TgDataFormatUtils.ParseGuidToString(_newApiHash);
 			case "api_id":
-				return ApiId.ToString();
+				return _newApiId.ToString();
 			case "phone_number":
-				return PhoneNumber;
+				return _newPhoneNumber;
 			case "first_name":
-				return FirstName;
+				return _newFirstName;
 			case "last_name":
-				return LastName;
+				return _newLastName;
 			case "password":
-				return Password;
+				return _newPassword;
 			case "verification_code":
-				return VerificationCode;
+				return _newVerificationCode;
+			case "session_pathname":
+				return SettingsService.AppSession;
 			//case "notifications":
 			//    return Notifications;
-			case "session_pathname":
-				var sessionPath = Path.Combine(TgDesktopUtils.CurrentPath, SettingsService.AppSession);
-				return sessionPath;
 			//case "session_key":
 			//case "server_address":
 			//case "device_model":
@@ -137,39 +147,43 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		}
     }
 
-    public async Task ClientConnectAsync() => await ClientConnectCoreAsync();
+    public async Task ClientConnectAsync() => await ClientConnectCoreAsync(isRetry: false);
 
-    private async Task ClientConnectCoreAsync() => await ClientConnectCoreAsync(isRetry: false);
-
+    private Guid _newApiHash = Guid.Empty;
+    private int _newApiId = 0;
+    private string _newFirstName = "";
+    private string _newLastName = "";
+    private string _newPassword = "";
+    private string _newPhoneNumber = "";
+    private string _newVerificationCode = "";
 	private async Task ClientConnectCoreAsync(bool isRetry)
 	{
         try
         {
 	        Exception.Default();
+	        _newApiHash = ApiHash;
+	        _newApiId = ApiId;
+	        _newFirstName = FirstName;
+	        _newLastName = LastName;
+	        _newPassword = Password;
+			_newPhoneNumber = PhoneNumber;
+	        _newVerificationCode = VerificationCode;
 			await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Item, ConfigClientDesktop);
-			await Task.CompletedTask;
         }
         catch (Exception ex)
         {
 	        Exception.Set(ex);
+	        await TgDesktopUtils.FileLogAsync(ex);
 			if (isRetry) return;
 	        if (Exception.Message.Contains("or delete the file to start a new session"))
 	        {
-		        var sessionPath = Path.Combine(TgDesktopUtils.CurrentPath, SettingsService.AppSession);
-				if (File.Exists(sessionPath))
-					File.Delete(sessionPath);
+		        await TgDesktopUtils.DeleteFileStorageExistsAsync(SettingsService.AppSession);
 				await ClientConnectCoreAsync(isRetry: true);
 	        }
 		}
 	}
 
-    public async Task ClientDisconnectAsync() => await ContentDialogAsync(ClientDisconnectCoreAsync, TgResourceExtensions.AskClientDisconnect());
-
-    private async Task ClientDisconnectCoreAsync()
-    {
-        await TgDesktopUtils.TgClient.DisconnectAsync();
-        await Task.CompletedTask;
-    }
+    public async Task ClientDisconnectAsync() => await ContentDialogAsync(TgDesktopUtils.TgClient.DisconnectAsync, TgResourceExtensions.AskClientDisconnect());
 
     public async Task AppLoadAsync() => await ContentDialogAsync(AppLoadCoreAsync, TgResourceExtensions.AskSettingsLoad());
 
@@ -178,28 +192,35 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		var storageResult = await AppRepository.GetFirstAsync(isNoTracking: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 
-		await ReloadUiAsync();
-		await Task.CompletedTask;
+		await ReloadUiAsync(isClearPassw: false);
 	}
 
-    private async Task ReloadUiAsync()
+    private async Task ReloadUiAsync(bool isClearPassw)
     {
 	    ApiHash = App.ApiHash;
 	    ApiId = App.ApiId;
-	    FirstName = App.FirstName;
+		PhoneNumber = App.PhoneNumber;
+		FirstName = App.FirstName;
 	    LastName = App.LastName;
-	    PhoneNumber = App.PhoneNumber;
 
-	    Password = string.Empty;
-	    VerificationCode = string.Empty;
+		if (isClearPassw)
+		{
+			Password = string.Empty;
+			VerificationCode = string.Empty;
+		}
+
 	    UserName = string.Empty;
 	    MtProxyUrl = string.Empty;
-	    StateConnectMsg = string.Empty;
-	    StateConnectDt = string.Empty;
+	    MaxAutoReconnects = string.Empty;
+	    FloodRetryThreshold = string.Empty;
+	    PingInterval = string.Empty;
+	    MaxCodePwdAttempts = string.Empty;
+
+		ConnectionDt = string.Empty;
+		ConnectionMsg = string.Empty;
 		Exception.Default();
 
 		await ReloadProxyAsync();
-		await Task.CompletedTask;
     }
 
     private async Task ReloadProxyAsync()
@@ -251,7 +272,6 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 			App.Proxy = null;
 		
 		await AppRepository.SaveAsync(App);
-		await Task.CompletedTask;
 	}
 
     public async Task AppClearAsync() => await ContentDialogAsync(AppClearCoreAsync, TgResourceExtensions.AskSettingsClear());
@@ -263,8 +283,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		ProxiesVms.Clear();
 		ProxyVm?.Default();
         
-		await ReloadUiAsync();
-		await Task.CompletedTask;
+		await ReloadUiAsync(isClearPassw: true);
     }
 
     public async Task AppDeleteAsync() => await ContentDialogAsync(AppDeleteCoreAsync, TgResourceExtensions.AskSettingsDelete());
@@ -273,7 +292,6 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
     {
         await AppRepository.DeleteAllAsync();
         await AppLoadCoreAsync();
-        await Task.CompletedTask;
     }
 
 	#endregion
