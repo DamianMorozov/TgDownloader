@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -23,17 +24,24 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 
 	public async Task OnNavigatedToAsync(NavigationEventArgs navigationEventArgs) => await SettingsService.LoadAsync();
 
-	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsService.Default, TgResourceExtensions.AskSettingsDefault());
+	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsDefaultCoreAsync, TgResourceExtensions.AskSettingsDefault());
+
+	private async Task SettingsDefaultCoreAsync()
+	{
+		SettingsService.Default();
+		await SettingsSaveCoreAsync();
+	}
 
 	private async Task SettingsSaveAsync()
 	{
-		await ContentDialogAsync(SettingsService.SaveAsync, TgResourceExtensions.AskSettingsSave());
-#if DEBUG
-		//await ContentDialogAsync(TgResourceExtensions.AssertionRestartApp(), ContentDialogButton.Primary);
-#else
-		await ContentDialogAsync(async () => { await Windows.ApplicationModel.Core.CoreApplication.RequestRestartAsync(string.Empty); }, 
-			TgResourceExtensions.AskRestartApp());
-#endif
+		await ContentDialogAsync(SettingsSaveCoreAsync, TgResourceExtensions.AskSettingsSave());
+	}
+
+	private async Task SettingsSaveCoreAsync()
+	{
+		await SettingsService.SaveAsync();
+		await ContentDialogAsync(async () => { await Windows.ApplicationModel.Core.CoreApplication.RequestRestartAsync(string.Empty); },
+			TgResourceExtensions.AskRestartApp(), ContentDialogButton.Primary);
 	}
 
 	#endregion

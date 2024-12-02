@@ -20,7 +20,7 @@
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
-				Style="{StaticResource SubtitleTextBlockStyle}">
+				Style="{StaticResource TitleTextBlockStyle}">
 				<Grid Margin="0,-10,0,-10">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="auto" />
@@ -80,7 +80,7 @@
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
-				Style="{StaticResource SubtitleTextBlockStyle}">
+				Style="{StaticResource TitleTextBlockStyle}">
 				<Grid Margin="0,-10,0,-10">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="auto" />
@@ -158,7 +158,7 @@
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
-				Style="{StaticResource SubtitleTextBlockStyle}">
+				Style="{StaticResource TitleTextBlockStyle}">
 				<Grid Margin="0,-10,0,-10">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
@@ -170,7 +170,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsDefaultCommand, Mode=OneWay}"
-						Style="{StaticResource SubtitleTextBlockStyle}">
+						Style="{StaticResource TitleTextBlockStyle}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 							<FontIcon Margin="10,0,20,0" Glyph="&#xE72C;" />
 							<TextBlock
@@ -186,7 +186,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsSaveCommand, Mode=OneWay}"
-						Style="{StaticResource SubtitleTextBlockStyle}">
+						Style="{StaticResource TitleTextBlockStyle}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 							<FontIcon Margin="10,0,20,0" Glyph="&#xE72C;" />
 							<TextBlock

@@ -46,7 +46,7 @@
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True"
-					Style="{StaticResource SubtitleTextBlockStyle}">
+					Style="{StaticResource TitleTextBlockStyle}">
 					<Grid Margin="0,-10,0,-10">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -169,7 +169,7 @@
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True"
-					Style="{StaticResource SubtitleTextBlockStyle}">
+					Style="{StaticResource TitleTextBlockStyle}">
 					<Grid Margin="0,-10,0,-10">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -395,7 +395,7 @@
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True"
-					Style="{StaticResource SubtitleTextBlockStyle}">
+					Style="{StaticResource TitleTextBlockStyle}">
 					<Grid Margin="0,-10,0,-10">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
@@ -487,7 +487,7 @@
 						<Border Grid.Row="1">
 							<HyperlinkButton
 								x:Uid="ClientPage_MyTelegram"
-								Margin="0,5,10,0"
+								Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left" />
 						</Border>
