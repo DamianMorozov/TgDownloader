@@ -12,8 +12,6 @@ public static class TgFileUtils
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
 	public static string FileAppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
 	public static string FileTgSession => "TgDownloader.session";
-	public static string FileEfStorage => "TgStorage.db";
-	public static string AppStorage = string.Empty;
 
 	#endregion
 

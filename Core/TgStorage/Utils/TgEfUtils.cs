@@ -11,6 +11,8 @@ public static class TgEfUtils
 
 	public static TgLogHelper TgLog => TgLogHelper.Instance;
 	public static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+	public static string FileEfStorage => "TgStorage.db";
+	public static string AppStorage = string.Empty;
 
 	#endregion
 
@@ -88,12 +90,9 @@ public static class TgEfUtils
 			item.Uid = Guid.NewGuid();
 	}
 
-	//public static TgEfContext EfContext => CreateEfContext();
 	public static TgEfContext EfContext = CreateEfContext();
 
 	public static TgEfContext CreateEfContext() => new();
-
-	//public static TgEfContext CreateEfContext(string efStorage) => new(efStorage);
 
 	public static void VersionsView()
 	{
@@ -130,6 +129,9 @@ public static class TgEfUtils
 		await versionRepository.FillTableVersionsAsync();
 		await efContext.CompactDbAsync();
 	}
+
+	/// <summary> Recreate </summary>
+	public static void RecreateEfContext() => EfContext = CreateEfContext();
 
 	///// <summary> Data transfer between storages </summary>
 	//public static async Task DataTransferBetweenStoragesAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite)

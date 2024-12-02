@@ -60,14 +60,14 @@ public sealed class TgEfContext : DbContext
 		if (TgAsyncUtils.AppType == TgEnumAppType.Default || TgAsyncUtils.AppType == TgEnumAppType.Console)
         {
 	        if (string.IsNullOrEmpty(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage))
-		        TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgFileUtils.FileEfStorage;
+		        TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgEfUtils.FileEfStorage;
 	        storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
         }
 		// Desktop app
 		if (TgAsyncUtils.AppType == TgEnumAppType.Desktop)
 		{
-            if (!string.IsNullOrEmpty(TgFileUtils.AppStorage))
-				storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgFileUtils.AppStorage}";
+            if (!string.IsNullOrEmpty(TgEfUtils.AppStorage))
+				storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgEfUtils.AppStorage}";
         }
 		if (string.IsNullOrEmpty(storagePath))
 	        throw new ArgumentException(nameof(storagePath));
