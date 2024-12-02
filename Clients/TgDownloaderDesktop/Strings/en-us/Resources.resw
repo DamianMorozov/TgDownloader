@@ -258,8 +258,14 @@
   <data name="SettingSession.Text" xml:space="preserve">
     <value>Session</value>
   </data>
-  <data name="SettingApp.Header" xml:space="preserve">
+  <data name="ExpanderSettingApp.Header" xml:space="preserve">
     <value>App</value>
+  </data>
+  <data name="ExpanderSettingInStorage.Header" xml:space="preserve">
+    <value>Settings in storage</value>
+  </data>
+  <data name="ExpanderSettingWithoutSaving.Header" xml:space="preserve">
+    <value>Settings without saving</value>
   </data>
   <data name="SettingAppFiles.Header" xml:space="preserve">
     <value>Files</value>

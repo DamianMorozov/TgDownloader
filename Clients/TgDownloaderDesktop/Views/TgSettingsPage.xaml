@@ -15,13 +15,13 @@
 			</Grid.RowDefinitions>
 			<!--  App  -->
 			<Expander
-				x:Uid="SettingApp"
+				x:Uid="ExpanderSettingApp"
 				Grid.Row="0"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
 				Style="{StaticResource SubtitleTextBlockStyle}">
-				<Grid>
+				<Grid Margin="0,-10,0,-10">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="auto" />
 						<RowDefinition Height="auto" />
@@ -81,7 +81,7 @@
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
 				Style="{StaticResource SubtitleTextBlockStyle}">
-				<Grid>
+				<Grid Margin="0,-10,0,-10">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="auto" />
 						<RowDefinition Height="auto" />
@@ -159,14 +159,14 @@
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True"
 				Style="{StaticResource SubtitleTextBlockStyle}">
-				<Grid>
+				<Grid Margin="0,-10,0,-10">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<!--  Default button  -->
 					<Button
-						Margin="0,2,5,2"
+						Margin="0,0,5,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsDefaultCommand, Mode=OneWay}"
@@ -182,7 +182,7 @@
 					<!--  Save button  -->
 					<Button
 						Grid.Column="1"
-						Margin="5,2,0,2"
+						Margin="5,0,0,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsSaveCommand, Mode=OneWay}"

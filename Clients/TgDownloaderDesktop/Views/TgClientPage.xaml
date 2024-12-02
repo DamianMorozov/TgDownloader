@@ -17,6 +17,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<!--  Check access to storage  -->
 			<ContentControl
@@ -39,189 +40,390 @@
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="5*" />
-					</Grid.ColumnDefinitions>
-					<!--  Header  -->
-					<TextBlock
-						x:Uid="SettingInStorage"
-						Grid.Row="0"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Margin="2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<!--  Horizontal separator  -->
-					<Rectangle
-						Grid.Row="1"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Height="1"
-						Fill="DimGray" />
-					<!--  Vertical separator  -->
-					<Rectangle
-						Grid.Row="2"
-						Grid.RowSpan="8"
-						Grid.Column="1"
-						Width="1"
-						Fill="DimGray" />
-					<!--  API hash  -->
-					<TextBlock
-						x:Uid="ClientApiHash"
-						Grid.Row="2"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="2"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  API ID  -->
-					<TextBlock
-						x:Uid="ClientApiId"
-						Grid.Row="3"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="3"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.ApiId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Phone number  -->
-					<TextBlock
-						x:Uid="ClientPhoneNumber"
-						Grid.Row="4"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="4"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Proxy  -->
-					<TextBlock
-						x:Uid="ClientProxy"
-						Grid.Row="5"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<ComboBox
-						Grid.Row="5"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						ItemsSource="{x:Bind ViewModel.ProxiesVms, Mode=OneWay}"
-						SelectedIndex="0"
-						SelectedItem="{x:Bind ViewModel.ProxyVm, Mode=TwoWay}">
-						<ComboBox.ItemTemplate>
-							<DataTemplate x:DataType="proxies:TgEfProxyViewModel">
-								<TextBlock Text="{x:Bind PrettyName, Mode=OneWay}" />
-							</DataTemplate>
-						</ComboBox.ItemTemplate>
-					</ComboBox>
-					<!--  First name  -->
-					<TextBlock
-						x:Uid="ClientFirstName"
-						Grid.Row="6"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="6"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Last name  -->
-					<TextBlock
-						x:Uid="ClientLastName"
-						Grid.Row="7"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="7"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Text="{x:Bind ViewModel.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Horizontal separator  -->
-					<Rectangle
-						Grid.Row="8"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Height="1"
-						Fill="DimGray" />
-					<!--  TG session  -->
-					<StackPanel
-						Grid.Row="9"
-						Grid.Column="0"
-						Margin="2"
-						HorizontalAlignment="Center">
-						<CheckBox
-							x:Uid="ClientTgSession"
-							Margin="15,3,0,0"
-							IsChecked="{x:Bind ViewModel.SettingsService.IsExistsAppSession, Mode=OneWay}"
-							IsEnabled="False" />
-					</StackPanel>
-					<!--  Grid  -->
-					<Grid Grid.Row="9" Column="2">
+				<Expander
+					x:Uid="ExpanderSettingInStorage"
+					Grid.Row="0"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					IsExpanded="True"
+					Style="{StaticResource SubtitleTextBlockStyle}">
+					<Grid Margin="0,-10,0,-10">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<!--  API hash  -->
+						<TextBlock
+							x:Uid="ClientApiHash"
+							Grid.Row="0"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  API ID  -->
+						<TextBlock
+							x:Uid="ClientApiId"
+							Grid.Row="0"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="0"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.ApiId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  Phone number  -->
+						<TextBlock
+							x:Uid="ClientPhoneNumber"
+							Grid.Row="1"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  Proxy  -->
+						<TextBlock
+							x:Uid="ClientProxy"
+							Grid.Row="1"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<ComboBox
+							Grid.Row="1"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							ItemsSource="{x:Bind ViewModel.ProxiesVms, Mode=OneWay}"
+							SelectedIndex="0"
+							SelectedItem="{x:Bind ViewModel.ProxyVm, Mode=TwoWay}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate x:DataType="proxies:TgEfProxyViewModel">
+									<TextBlock Text="{x:Bind PrettyName, Mode=OneWay}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<!--  First name  -->
+						<TextBlock
+							x:Uid="ClientFirstName"
+							Grid.Row="2"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  Last name  -->
+						<TextBlock
+							x:Uid="ClientLastName"
+							Grid.Row="2"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+					</Grid>
+				</Expander>
+			</ContentControl>
+			<!--  Settings without saving  -->
+			<ContentControl
+				Grid.Row="2"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch"
+				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
+				<Expander
+					x:Uid="ExpanderSettingWithoutSaving"
+					Grid.Row="0"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					IsExpanded="True"
+					Style="{StaticResource SubtitleTextBlockStyle}">
+					<Grid Margin="0,-10,0,-10">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<!--  Password  -->
+						<TextBlock
+							x:Uid="ClientPassword"
+							Grid.Row="0"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<PasswordBox
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Stretch"
+							Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  Verification code  -->
+						<TextBlock
+							x:Uid="ClientVerificationCode"
+							Grid.Row="0"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<PasswordBox
+							Grid.Row="0"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Stretch"
+							Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<!--  Connection dt  -->
+						<TextBlock
+							x:Uid="ClientConnectionDt"
+							Grid.Row="1"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.ConnectionDt, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  Connection state  -->
+						<TextBlock
+							x:Uid="ClientConnectionState"
+							Grid.Row="1"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="1"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.ConnectionMsg, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  Connection exception  -->
+						<TextBlock
+							x:Uid="ClientConnectionException"
+							Grid.Row="2"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
+							Grid.Column="1"
+							Grid.ColumnSpan="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.Exception.Message, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  User  -->
+						<TextBlock
+							x:Uid="ClientUserName"
+							Grid.Row="3"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="3"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.UserName, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  MtProxyUrl  -->
+						<TextBlock
+							x:Uid="ClientMtProxyUrl"
+							Grid.Row="3"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="3"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.MtProxyUrl, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  MaxAutoReconnects  -->
+						<TextBlock
+							x:Uid="ClientMaxAutoReconnects"
+							Grid.Row="4"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="4"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.MaxAutoReconnects, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  MaxCodePwdAttempts  -->
+						<TextBlock
+							x:Uid="ClientMaxCodePwdAttempts"
+							Grid.Row="4"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="4"
+							Grid.Column="4"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Stretch"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.MaxCodePwdAttempts, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  FloodRetryThreshold  -->
+						<TextBlock
+							x:Uid="ClientFloodRetryThreshold"
+							Grid.Row="5"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="5"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.FloodRetryThreshold, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  PingInterval  -->
+						<TextBlock
+							x:Uid="ClientPingInterval"
+							Grid.Row="5"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="5"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.PingInterval, Mode=OneWay}"
+							TextWrapping="Wrap" />
+					</Grid>
+				</Expander>
+			</ContentControl>
+			<!--  Actions  -->
+			<ContentControl
+				Grid.Row="3"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch">
+				<Expander
+					x:Uid="SettingAppActions"
+					Grid.Row="2"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					IsExpanded="True"
+					Style="{StaticResource SubtitleTextBlockStyle}">
+					<Grid Margin="0,-10,0,-10">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="1*" />
 							<ColumnDefinition Width="1*" />
 							<ColumnDefinition Width="1*" />
 							<ColumnDefinition Width="1*" />
+							<ColumnDefinition Width="1*" />
 						</Grid.ColumnDefinitions>
+						<!--  TG session  -->
+						<StackPanel
+							Grid.Row="0"
+							Margin="10,5,0,0"
+							HorizontalAlignment="Left">
+							<CheckBox
+								x:Uid="ClientTgSession"
+								HorizontalContentAlignment="Left"
+								IsChecked="{x:Bind ViewModel.SettingsService.IsExistsAppSession, Mode=OneWay}"
+								IsEnabled="False" />
+						</StackPanel>
 						<!--  Load  -->
 						<Button
-							Grid.Column="0"
-							Margin="2"
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind Path=ViewModel.AppLoadCommand, Mode=OneWay}">
@@ -235,8 +437,9 @@
 						</Button>
 						<!--  Save  -->
 						<Button
-							Grid.Column="1"
-							Margin="2"
+							Grid.Row="0"
+							Grid.Column="2"
+							Margin="5,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind Path=ViewModel.AppSaveCommand, Mode=OneWay}">
@@ -250,8 +453,9 @@
 						</Button>
 						<!--  Clear  -->
 						<Button
-							Grid.Column="2"
-							Margin="2"
+							Grid.Row="0"
+							Grid.Column="3"
+							Margin="5,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind Path=ViewModel.AppClearCommand, Mode=OneWay}">
@@ -265,8 +469,9 @@
 						</Button>
 						<!--  Empty  -->
 						<Button
-							Grid.Column="3"
-							Margin="2"
+							Grid.Row="0"
+							Grid.Column="4"
+							Margin="5,0,0,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind Path=ViewModel.AppDeleteCommand, Mode=OneWay}">
@@ -278,331 +483,48 @@
 									VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>
-					</Grid>
-				</Grid>
-			</ContentControl>
-			<!--  Settings without saving  -->
-			<ContentControl
-				Grid.Row="2"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="2*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="5*" />
-					</Grid.ColumnDefinitions>
-					<!--  Header  -->
-					<TextBlock
-						x:Uid="SettingWithoutSaving"
-						Grid.Row="0"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Margin="2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<!--  Horizontal separator  -->
-					<Rectangle
-						Grid.Row="1"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Height="1"
-						Fill="DimGray" />
-					<!--  Vertical separator  -->
-					<Rectangle
-						Grid.Row="2"
-						Grid.RowSpan="14"
-						Grid.Column="1"
-						Width="1"
-						Fill="DimGray" />
-					<!--  Password  -->
-					<TextBlock
-						x:Uid="ClientPassword"
-						Grid.Row="2"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<PasswordBox
-						Grid.Row="2"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Verification code  -->
-					<TextBlock
-						x:Uid="ClientVerificationCode"
-						Grid.Row="3"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<PasswordBox
-						Grid.Row="3"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					<!--  Horizontal separator  -->
-					<Rectangle
-						Grid.Row="4"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Height="1"
-						Fill="DimGray" />
-					<!--  Link  -->
-					<Border
-						Grid.Row="5"
-						Grid.Column="0"
-						Margin="12,-1,2,2">
-						<HyperlinkButton
-							x:Uid="ClientPage_MyTelegram"
-							Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
-							HorizontalAlignment="Stretch" />
-					</Border>
-					<!--  Grid  -->
-					<Grid Grid.Row="5" Column="2">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1*" />
-							<ColumnDefinition Width="1*" />
-						</Grid.ColumnDefinitions>
-						<!--  Button Connect  -->
-						<Button
-							x:Uid="ClientConnect"
-							Grid.Column="0"
-							Margin="2"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}">
-							<FontIcon Glyph="&#xE703;" />
-						</Button>
-						<!--  IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}"  -->
-						<!--  Button Disconnect  -->
-						<Button
-							x:Uid="ClientDisconnect"
+						<!--  Link  -->
+						<Border Grid.Row="1">
+							<HyperlinkButton
+								x:Uid="ClientPage_MyTelegram"
+								Margin="0,5,10,0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left" />
+						</Border>
+						<!--  Grid  -->
+						<Grid
+							Grid.Row="1"
 							Grid.Column="1"
-							Margin="2"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}">
-							<FontIcon Glyph="&#xE8BB;" />
-						</Button>
-						<!--  IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}"  -->
+							Grid.ColumnSpan="4"
+							Margin="0,5,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="1*" />
+							</Grid.ColumnDefinitions>
+							<!--  Button Connect  -->
+							<Button
+								x:Uid="ClientConnect"
+								Margin="0,0,5,0"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Center"
+								Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}">
+								<FontIcon Glyph="&#xE703;" />
+							</Button>
+							<!--  IsEnabled="{x:Bind ViewModel.IsNotReady, Mode=OneWay}"  -->
+							<!--  Button Disconnect  -->
+							<Button
+								x:Uid="ClientDisconnect"
+								Grid.Column="1"
+								Margin="5,0,0,0"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Center"
+								Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}">
+								<FontIcon Glyph="&#xE8BB;" />
+							</Button>
+							<!--  IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}"  -->
+						</Grid>
 					</Grid>
-					<!--  Horizontal separator  -->
-					<Rectangle
-						Grid.Row="6"
-						Grid.Column="0"
-						Grid.ColumnSpan="3"
-						Height="1"
-						Fill="DimGray" />
-					<!--  Connection dt  -->
-					<TextBlock
-						x:Uid="ClientConnectionDt"
-						Grid.Row="7"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="7"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.ConnectionDt, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  Connection state  -->
-					<TextBlock
-						x:Uid="ClientConnectionState"
-						Grid.Row="8"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="8"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.ConnectionMsg, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  Connection exception  -->
-					<TextBlock
-						x:Uid="ClientConnectionException"
-						Grid.Row="9"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="9"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.Exception.Message, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  User  -->
-					<TextBlock
-						x:Uid="ClientUserName"
-						Grid.Row="10"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="10"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.UserName, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  MtProxyUrl  -->
-					<TextBlock
-						x:Uid="ClientMtProxyUrl"
-						Grid.Row="11"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="11"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.MtProxyUrl, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  MaxAutoReconnects  -->
-					<TextBlock
-						x:Uid="ClientMaxAutoReconnects"
-						Grid.Row="12"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="12"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.MaxAutoReconnects, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  MaxCodePwdAttempts  -->
-					<TextBlock
-						x:Uid="ClientMaxCodePwdAttempts"
-						Grid.Row="13"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="13"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.MaxCodePwdAttempts, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  FloodRetryThreshold  -->
-					<TextBlock
-						x:Uid="ClientFloodRetryThreshold"
-						Grid.Row="14"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="14"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.FloodRetryThreshold, Mode=OneWay}"
-						TextWrapping="Wrap" />
-					<!--  PingInterval  -->
-					<TextBlock
-						x:Uid="ClientPingInterval"
-						Grid.Row="15"
-						Grid.Column="0"
-						Margin="2,7,2,2"
-						FontWeight="Bold"
-						HorizontalTextAlignment="Center"
-						TextAlignment="Center" />
-					<TextBox
-						Grid.Row="15"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						HorizontalContentAlignment="Left"
-						VerticalContentAlignment="Center"
-						IsReadOnly="True"
-						Text="{x:Bind ViewModel.PingInterval, Mode=OneWay}"
-						TextWrapping="Wrap" />
-				</Grid>
+				</Expander>
 			</ContentControl>
 		</Grid>
 	</ScrollView>
