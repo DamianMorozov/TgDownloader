@@ -34,6 +34,8 @@ public static class TgResourceExtensions
 	public static string GetLicensePremiumDescription() => "LicensePremiumDescription".GetLocalized();
 	public static string GetMenuClientIsQuery() => "MenuClientIsQuery".GetLocalized();
 	public static string GetNoButton() => "NoButton".GetLocalized();
+	public static string GetSettingAppLanguageTooltip => "SettingAppLanguageTooltip".GetLocalized();
+	public static string GetSettingAppThemeTooltip => "SettingAppThemeTooltip".GetLocalized();
 	public static string GetSettingsThemeDark() => "SettingsThemeDark".GetLocalized();
 	public static string GetSettingsThemeDefault() => "SettingsThemeDefault".GetLocalized();
 	public static string GetSettingsThemeLight() => "SettingsThemeLight".GetLocalized();

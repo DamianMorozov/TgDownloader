@@ -35,8 +35,8 @@ public sealed partial class ShellPage : Microsoft.UI.Xaml.Controls.Page
 	{
 		var settingsService = App.GetService<ITgSettingsService>();
 		settingsService.ApplyTheme(settingsService.AppTheme);
-		var theme = TgThemeHelper.GetElementTheme(settingsService.AppTheme);
-		TitleBarHelper.UpdateTitleBar(theme);
+		var theme = TgThemeUtils.GetElementTheme(settingsService.AppTheme);
+		TgTitleBarHelper.UpdateTitleBar(theme);
 		KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.Left, VirtualKeyModifiers.Menu));
 		KeyboardAccelerators.Add(BuildKeyboardAccelerator(VirtualKey.GoBack));
 	}

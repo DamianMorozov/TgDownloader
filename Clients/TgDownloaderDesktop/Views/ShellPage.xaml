@@ -45,32 +45,32 @@
                 TODO: Update item icons by updating FontIcon.Glyph properties.
                 https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
 				-->
-				<NavigationViewItem x:Uid="Shell_Home" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgMainViewModel">
+				<NavigationViewItem x:Uid="Shell_Home" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgMainViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<NavigationViewItem x:Uid="Shell_Connect" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgClientViewModel">
+				<NavigationViewItem x:Uid="Shell_Connect" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgClientViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
+				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe774;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_ListDetails" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ListDetailsViewModel">
+                <NavigationViewItem x:Uid="Shell_ListDetails" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ListDetailsViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_ContentGrid" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ContentGridViewModel">
+                <NavigationViewItem x:Uid="Shell_ContentGrid" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ContentGridViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xf0e2;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_DataGrid" helpers:NavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.DataGridViewModel">
+                <NavigationViewItem x:Uid="Shell_DataGrid" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.DataGridViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe80a;"/>
                     </NavigationViewItem.Icon>

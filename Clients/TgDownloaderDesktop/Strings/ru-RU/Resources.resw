@@ -296,9 +296,6 @@
   <data name="SettingInStorage.Text" xml:space="preserve">
     <value>Настройки в хранилище</value>
   </data>
-  <data name="SettingInStorage.Text" xml:space="preserve">
-    <value>Настройки в хранилище</value>
-  </data>
   <data name="SettingWithoutSaving.Text" xml:space="preserve">
     <value>Настройки без сохранения</value>
   </data>
@@ -320,11 +317,26 @@
   <data name="SettingSession.Text" xml:space="preserve">
     <value>Сессия</value>
   </data>
+  <data name="SettingApp.Header" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="SettingAppFiles.Header" xml:space="preserve">
+    <value>Файлы</value>
+  </data>
+  <data name="SettingAppActions.Header" xml:space="preserve">
+    <value>Действия</value>
+  </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
     <value>Тема</value>
   </data>
+  <data name="SettingAppThemeTooltip" xml:space="preserve">
+    <value>Выберите тему для приложения.</value>
+  </data>
   <data name="SettingAppLanguage.Text" xml:space="preserve">
     <value>Язык</value>
+  </data>
+  <data name="SettingAppLanguageTooltip" xml:space="preserve">
+    <value>Выберите язык для приложения.</value>
   </data>
   <data name="SettingFolder.Text" xml:space="preserve">
     <value>Каталог</value>
@@ -454,5 +466,8 @@
   </data>
   <data name="LicensePremiumDescription" xml:space="preserve">
     <value>Премиальная лицензия</value>
+  </data>
+  <data name="AppStorageNeedToCreate.Text" xml:space="preserve">
+    <value>Необходимо создать хранилище (проверьте настройки)!</value>
   </data>
 </root>

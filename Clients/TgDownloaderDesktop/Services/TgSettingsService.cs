@@ -94,7 +94,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		return Enum.TryParse(themeName, out TgEnumTheme cacheTheme) ? cacheTheme : TgEnumTheme.Default;
 	}
 
-	private async Task<string> LoadAppStorageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppStorage) ?? TgFileUtils.FileEfStorage;
+	private async Task<string> LoadAppStorageFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppStorage) ?? TgEfUtils.FileEfStorage;
 
 	private async Task<string> LoadAppSessionFromSettingsAsync() => await ReadSettingAsync<string>(SettingsKeyAppSession) ?? TgFileUtils.FileTgSession;
 
@@ -108,8 +108,8 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	{
 		if (App.MainWindow.Content is FrameworkElement rootElement)
 		{
-			rootElement.RequestedTheme = TgThemeHelper.GetElementTheme(AppTheme);
-			TitleBarHelper.UpdateTitleBar(rootElement.RequestedTheme);
+			rootElement.RequestedTheme = TgThemeUtils.GetElementTheme(AppTheme);
+			TgTitleBarHelper.UpdateTitleBar(rootElement.RequestedTheme);
 		}
 	}
 
@@ -133,7 +133,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	{
 		AppTheme = AppThemes.First(x => x == TgEnumTheme.Default);
 		AppLanguage = AppLanguages.First(x => x == TgEnumLanguage.Default);
-		AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileEfStorage);
+		AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
 		AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
 		AppFolder = TgDesktopUtils.LocalFolder;
 	}
@@ -145,7 +145,11 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		var appLanguage = await LoadAppLanguageFromSettingsAsync();
 		AppLanguage = AppLanguages.First(x => x == appLanguage);
 		AppStorage = await LoadAppStorageFromSettingsAsync();
+		if (string.IsNullOrEmpty(AppStorage))
+			AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
 		AppSession = await LoadAppSessionFromSettingsAsync();
+		if (string.IsNullOrEmpty(AppSession))
+			AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
 	}
 
 	public async Task SaveAsync()
@@ -167,7 +171,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 
 	public async Task<T?> ReadSettingAsync<T>(string key)
 	{
-		if (RuntimeHelper.IsMSIX)
+		if (TgRuntimeHelper.IsMSIX)
 		{
 			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(key, out var obj))
 			{
@@ -187,7 +191,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 
 	public async Task SaveSettingAsync<T>(string key, T value)
 	{
-		if (RuntimeHelper.IsMSIX)
+		if (TgRuntimeHelper.IsMSIX)
 		{
 			ApplicationData.Current.LocalSettings.Values[key] = await Json.StringifyAsync(value);
 		}

@@ -6,7 +6,7 @@ namespace TgDownloaderDesktop.Helpers;
 // Helper class to workaround custom title bar bugs.
 // DISCLAIMER: The resource key names and color values used below are subject to change. Do not depend on them.
 // https://github.com/microsoft/TemplateStudio/issues/4516
-internal sealed class TitleBarHelper
+internal sealed class TgTitleBarHelper
 {
 	#region Public and private fields, properties, constructor
 

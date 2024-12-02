@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public static class TgThemeHelper
+public static class TgThemeUtils
 {
 	public static string GetThemeName(ElementTheme appTheme) =>
 		appTheme switch

@@ -189,6 +189,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
     public async Task AppLoadCoreAsync()
     {
+		TgEfUtils.AppStorage = SettingsService.AppStorage;
+		TgEfUtils.RecreateEfContext();
+
 		var storageResult = await AppRepository.GetFirstAsync(isNoTracking: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 

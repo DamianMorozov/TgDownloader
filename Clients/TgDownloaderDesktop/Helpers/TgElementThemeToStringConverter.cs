@@ -9,7 +9,7 @@ public class TgElementThemeToStringConverter
 	{
 		if (value is ElementTheme theme)
 		{
-			return TgThemeHelper.GetThemeName(theme);
+			return TgThemeUtils.GetThemeName(theme);
 		}
 		return "Unknown";
 	}

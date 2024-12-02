@@ -6,16 +6,16 @@ namespace TgDownloaderDesktop.Helpers;
 // Helper class to set the navigation target for a NavigationViewItem.
 //
 // Usage in XAML:
-// <NavigationViewItem x:Uid="Shell_Main" Icon="Document" helpers:NavigationHelper.NavigateTo="AppName.ViewModels.TgMainViewModel" />
+// <NavigationViewItem x:Uid="Shell_Main" Icon="Document" helpers:TgNavigationHelper.NavigateTo="AppName.ViewModels.TgMainViewModel" />
 //
 // Usage in code:
-// NavigationHelper.SetNavigateTo(navigationViewItem, typeof(TgMainViewModel).FullName);
-public class NavigationHelper
+// TgNavigationHelper.SetNavigateTo(navigationViewItem, typeof(TgMainViewModel).FullName);
+public sealed class TgNavigationHelper
 {
 	public static string GetNavigateTo(NavigationViewItem item) => (string)item.GetValue(NavigateToProperty);
 
 	public static void SetNavigateTo(NavigationViewItem item, string value) => item.SetValue(NavigateToProperty, value);
 
 	public static readonly DependencyProperty NavigateToProperty =
-		DependencyProperty.RegisterAttached("NavigateTo", typeof(string), typeof(NavigationHelper), new PropertyMetadata(null));
+		DependencyProperty.RegisterAttached("NavigateTo", typeof(string), typeof(TgNavigationHelper), new PropertyMetadata(null));
 }

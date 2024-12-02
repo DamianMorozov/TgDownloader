@@ -3,9 +3,9 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public class EnumToBooleanConverter : IValueConverter
+public sealed class TgEnumToBooleanConverter : IValueConverter
 {
-	public EnumToBooleanConverter()
+	public TgEnumToBooleanConverter()
 	{
 	}
 

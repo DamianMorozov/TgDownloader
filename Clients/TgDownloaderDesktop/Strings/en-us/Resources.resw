@@ -258,11 +258,26 @@
   <data name="SettingSession.Text" xml:space="preserve">
     <value>Session</value>
   </data>
+  <data name="SettingApp.Header" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="SettingAppFiles.Header" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="SettingAppActions.Header" xml:space="preserve">
+    <value>Actions</value>
+  </data>
   <data name="SettingAppTheme.Text" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="SettingAppThemeTooltip" xml:space="preserve">
+    <value>Select the theme for the application.</value>
+  </data>
   <data name="SettingAppLanguage.Text" xml:space="preserve">
     <value>Language</value>
+  </data>
+  <data name="SettingAppLanguageTooltip" xml:space="preserve">
+    <value>Select the language for the application.</value>
   </data>
   <data name="SettingFolder.Text" xml:space="preserve">
     <value>Folder</value>
@@ -389,5 +404,8 @@
   </data>
   <data name="LicensePremiumDescription" xml:space="preserve">
     <value>Premium license</value>
+  </data>
+  <data name="AppStorageNeedToCreate.Text" xml:space="preserve">
+    <value>You need to create a storage (check the settings)!</value>
   </data>
 </root>

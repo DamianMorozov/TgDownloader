@@ -43,7 +43,7 @@ public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs
 	{
 		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
 		// Register TgEfContext as the DbContext for EF Core
-		TgFileUtils.AppStorage = App.GetService<ITgSettingsService>().AppStorage;
+		TgEfUtils.AppStorage = App.GetService<ITgSettingsService>().AppStorage;
 		await TgEfUtils.CreateAndUpdateDbAsync();
 	}
 }
