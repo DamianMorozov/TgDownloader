@@ -7,17 +7,14 @@
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
-## Описание продукта
-Скачайте файлы каналов или групп Telegram, в которых вы состоите.
+## Назначение продукта
+Упорядоченное скачивание файлов из ТГ каналов/групп/чатов (к которым есть доступ под своим аккаунтом). Файлы из каждого источника можно скачивать в отдельный каталог. Можно указать какие источники включить в авто-скачивание. Есть многопоточный режим скачивания. Консольная версия практически завершена (продакшн). Десктоп версии находится в активной стадии разработки (превью).
 
 ## Требования к установке
 - [Скачать .NET 8.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/8.0)
 - [Скачать .NET 9.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/9.0)
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps/)
 - Сохраните значения полей "App api_id" и "App api_hash"
-
-## Статус
-![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
 
 ## Поддержка продукта
 Пожалуйста, нажмите на кнопку `звездочка`, если эта программа была вам полезна.
@@ -34,3 +31,6 @@
 
 ## Docker образы
 - [TgDownloader-Console Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
+
+## Статус
+![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")

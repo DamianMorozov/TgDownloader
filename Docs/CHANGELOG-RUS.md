@@ -4,6 +4,10 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.240] - 2024-12-03
+### Изменено
+- Обновлена страница настроек для TgDownloaderDesktop
+
 ## [0.5.230] - 2024-12-01
 ### Исправлено
 - Исправлено отображение спец символов в имени каталога для скачивания для TgDownloaderConsole

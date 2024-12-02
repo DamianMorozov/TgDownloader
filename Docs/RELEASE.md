@@ -5,7 +5,6 @@
 
 - GitHub all releases       	![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 - GitHub release v0.5.230		![GitHub release v0.5.230](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.230/total?style=social)
-- GitHub release v0.5.200		![GitHub release v0.5.200](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.200/total?style=social)
 - GitHub release v0.5.180		![GitHub release v0.5.180](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.180/total?style=social)
 - GitHub release v0.5.160		![GitHub release v0.5.160](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.160/total?style=social)
 - GitHub release v0.4.150		![GitHub release v0.4.150](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.4.150/total?style=social)
