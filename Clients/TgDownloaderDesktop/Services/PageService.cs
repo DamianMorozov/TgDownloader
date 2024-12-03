@@ -11,6 +11,7 @@ public sealed class PageService : IPageService
 	{
 		Configure<TgMainViewModel, TgMainPage>();
 		Configure<TgClientViewModel, TgClientPage>();
+		Configure<TgSourcesViewModel, TgSourcesPage>();
 		Configure<WebViewViewModel, WebViewPage>();
 		Configure<ListDetailsViewModel, ListDetailsPage>();
 		Configure<ContentGridViewModel, ContentGridPage>();

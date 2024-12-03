@@ -55,6 +55,11 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<NavigationViewItem x:Uid="Shell_Sources" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
 				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe774;"/>

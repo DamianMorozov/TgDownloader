@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.240] - 2024-12-03
 ### Changed
 - Updated settings page for TgDownloaderDesktop
+### Added
+- Added sources page for TgDownloaderDesktop
 
 ## [0.5.230] - 2024-12-01
 ### Fixed

@@ -135,6 +135,9 @@
   <data name="Shell_Connect.Content" xml:space="preserve">
     <value>Подключение</value>
   </data>
+  <data name="Shell_Sources.Content" xml:space="preserve">
+    <value>Источники</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Загрузка...</value>
   </data>

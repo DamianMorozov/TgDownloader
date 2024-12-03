@@ -10,14 +10,6 @@ public static class TgDesktopUtils
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
 	//public static TgClientViewModel TgClientVm { get; } = App.GetService<TgClientViewModel>();
-	//public static TgDashboardViewModel TgDashboardVm { get; } = new();
-	//public static TgFiltersViewModel TgFiltersVm { get; } = new();
-	//public static TgItemProxyViewModel TgItemProxyVm { get; } = new();
-	//public static TgItemSourceViewModel TgItemSourceVm { get; } = new();
-	//public static TgProxiesViewModel TgProxiesVm { get; } = new();
-	//public static TgSettingsViewModel TgSettingsVm { get; } = new();
-	//public static TgSourcesViewModel TgSourcesVm { get; } = new();
-	//public static TgDownloadsViewModel TgDownloadsVm{ get; } = new();
 	public static string BaseDirectory = AppContext.BaseDirectory;
 	public static string LocalFolder = ApplicationData.Current.LocalFolder.Path;
 	public static string InstalledLocation = Package.Current.InstalledLocation.Path;

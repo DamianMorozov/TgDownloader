@@ -47,6 +47,14 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	[ObservableProperty]
     private string _maxCodePwdAttempts = default!;
 
+	private Guid _newApiHash = Guid.Empty;
+	private int _newApiId = 0;
+	private string _newFirstName = "";
+	private string _newLastName = "";
+	private string _newPassword = "";
+	private string _newPhoneNumber = "";
+	private string _newVerificationCode = "";
+
 	public ICommand ClientConnectCommand { get; }
     public ICommand ClientDisconnectCommand { get; }
     public ICommand AppLoadCommand { get; }
@@ -58,35 +66,32 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
     public TgClientViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
 	    AppClearCoreAsync().GetAwaiter().GetResult();
+		// Commands
 		ClientConnectCommand = new AsyncRelayCommand(ClientConnectAsync);
         ClientDisconnectCommand = new AsyncRelayCommand(ClientDisconnectAsync);
         AppLoadCommand = new AsyncRelayCommand(AppLoadAsync);
         AppSaveCommand = new AsyncRelayCommand(AppSaveAsync);
         AppClearCommand = new AsyncRelayCommand(AppClearAsync);
         AppDeleteCommand = new AsyncRelayCommand(AppDeleteAsync);
-        SetupClient();
-    }
+		// Delegates
+		//TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
+		//TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
+		//TgDesktopUtils.TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
+		//TgDesktopUtils.TgClient.SetupUpdateStateMessage(UpdateStateMessageAsync);
+		TgDesktopUtils.TgClient.SetupUpdateException(UpdateExceptionAsync);
+		//TgDesktopUtils.TgClient.SetupUpdateStateExceptionShort(UpdateStateExceptionShortAsync);
+		TgDesktopUtils.TgClient.SetupAfterClientConnect(AfterClientConnectAsync);
+		//TgDesktopUtils.TgClient.SetupGetClientDesktopConfig(ConfigClientDesktop);
+	}
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public async Task OnNavigatedToAsync(object parameter)
+	public async Task OnNavigatedToAsync(object parameter)
     {
         OnLoaded(parameter);
 		await AppLoadCoreAsync();
-	}
-
-    public void SetupClient()
-    {
-	    //TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
-	    //TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
-	    //TgDesktopUtils.TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
-	    //TgDesktopUtils.TgClient.SetupUpdateStateMessage(UpdateStateMessageAsync);
-	    TgDesktopUtils.TgClient.SetupUpdateException(UpdateExceptionAsync);
-	    //TgDesktopUtils.TgClient.SetupUpdateStateExceptionShort(UpdateStateExceptionShortAsync);
-	    TgDesktopUtils.TgClient.SetupAfterClientConnect(AfterClientConnectAsync);
-		//TgDesktopUtils.TgClient.SetupGetClientDesktopConfig(ConfigClientDesktop);
 	}
 
 	public async Task AfterClientConnectAsync()
@@ -111,8 +116,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
 	public string? ConfigClientDesktop(string what)
     {
-	    //TgDownloaderDesktop.App.MainWindow.DispatcherQueue.TryEnqueue(async () => 
-		   // await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}"));
+		// await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}"));
 		switch (what)
 		{
 			case "api_hash":
@@ -149,13 +153,6 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
     public async Task ClientConnectAsync() => await ClientConnectCoreAsync(isRetry: false);
 
-    private Guid _newApiHash = Guid.Empty;
-    private int _newApiId = 0;
-    private string _newFirstName = "";
-    private string _newLastName = "";
-    private string _newPassword = "";
-    private string _newPhoneNumber = "";
-    private string _newVerificationCode = "";
 	private async Task ClientConnectCoreAsync(bool isRetry)
 	{
         try
