@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Filters;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//[Table(TgEfConstants.TableFilters)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(IsEnabled))]
 [Index(nameof(FilterType))]

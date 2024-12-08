@@ -19,9 +19,11 @@ public enum TgEnumMenuDownload
     SetSourceFirstIdAuto,
     SetSourceFirstIdManual,
     SettingsSave,
-    ScanChats,
-    ScanDialogs,
+    SearchChats,
+	SearchDialogs,
+	SearchContacts,
     ViewSources,
+	ViewContacts,
     ViewVersions,
     MarkHistoryRead,
 }

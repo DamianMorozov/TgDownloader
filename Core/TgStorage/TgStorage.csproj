@@ -35,5 +35,6 @@
     <ProjectReference Include="..\TgInfrastructure\TgInfrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Domain\Stories\" />
   </ItemGroup>
 </Project>

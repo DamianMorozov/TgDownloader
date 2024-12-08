@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Documents;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//[Table(TgEfConstants.TableDocuments)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
@@ -63,14 +62,13 @@ public sealed class TgEfDocumentEntity : ITgDbEntity, ITgDbFillEntity<TgEfDocume
 	    Default();
 	}
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public string ToDebugString() =>
-        $"{TgEfConstants.TableDocuments} | {Uid} | {Uid} | {SourceId} | {Id} | {MessageId} | {FileName} | {FileSize} | {AccessHash}";
+	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-    public void Default()
+	public void Default()
     {
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		//SourceId = this.GetDefaultPropertyLong(nameof(SourceId));

@@ -70,13 +70,13 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		{
 			items = isNoTracking
 				? EfContext.Sources.AsNoTracking().Skip(skip).Take(take).ToList()
-				: EfContext.Sources.AsTracking().Skip(skip).Take(take).ToList();
+				: [.. EfContext.Sources.AsTracking().Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Sources.AsNoTracking().ToList()
-				: EfContext.Sources.AsTracking().ToList();
+				: [.. EfContext.Sources.AsTracking()];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -106,13 +106,13 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		{
 			items = isNoTracking
 				? EfContext.Sources.AsNoTracking().Where(where).Skip(skip).Take(take).ToList()
-				: EfContext.Sources.AsTracking().Where(where).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Sources.AsTracking().Where(where).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Sources.AsNoTracking().Where(where).ToList()
-				: EfContext.Sources.AsTracking().Where(where).ToList();
+				: [.. EfContext.Sources.AsTracking().Where(where)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

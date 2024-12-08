@@ -52,6 +52,7 @@ public static class TgEfUtils
 		item switch
 		{
 			TgEfAppEntity app => new TgEfAppValidator().Validate(app),
+			TgEfContactEntity contact => new TgEfContactValidator().Validate(contact),
 			TgEfDocumentEntity document => new TgEfDocumentValidator().Validate(document),
 			TgEfFilterEntity filter => new TgEfFilterValidator().Validate(filter),
 			TgEfMessageEntity message => new TgEfMessageValidator().Validate(message),

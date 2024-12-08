@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//able(TgEfConstants.TableSources)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(UserName))]
@@ -26,6 +25,11 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
+	[DefaultValue("0001-01-01 00:00:00")]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnDtChanged, TypeName = "DATETIME")]
+	public DateTime DtChanged { get; set; }
+
 	[DefaultValue(-1)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
@@ -33,19 +37,20 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 
 	[DefaultValue("UserName")]
     [ConcurrencyCheck]
-    [MaxLength(256)]
+    [MaxLength(128)]
     [Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
     public string? UserName { get; set; }
 
     [DefaultValue("Title")]
     [ConcurrencyCheck]
-    [MaxLength(1024)]
+    [MaxLength(256)]
     [Column(TgEfConstants.ColumnTitle, TypeName = "NVARCHAR(256)")]
     public string? Title { get; set; }
 
     [DefaultValue("About")]
     [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnAbout, TypeName = "NVARCHAR(1024)")]
+	[MaxLength(1024)]
+	[Column(TgEfConstants.ColumnAbout, TypeName = "NVARCHAR(1024)")]
     public string? About { get; set; }
 
     [DefaultValue(1)]
@@ -55,7 +60,7 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 
     [DefaultValue("")]
     [ConcurrencyCheck]
-    [MaxLength(1024)]
+    [MaxLength(256)]
     [Column(TgEfConstants.ColumnDirectory, TypeName = "NVARCHAR(256)")]
     public string? Directory { get; set; }
 
@@ -68,11 +73,6 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnIsAutoUpdate, TypeName = "BIT")]
     public bool IsAutoUpdate { get; set; }
-
-    [DefaultValue("0001-01-01 00:00:00")]
-    [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnDtChanged, TypeName = "DATETIME")]
-	public DateTime DtChanged { get; set; }
 
     public ICollection<TgEfDocumentEntity> Documents { get; set; } = default!;
 
@@ -94,6 +94,7 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
     public void Default()
     {
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
+		DtChanged = this.GetDefaultPropertyDateTime(nameof(DtChanged));
 		Id = this.GetDefaultPropertyLong(nameof(Id));
 	    UserName = this.GetDefaultPropertyString(nameof(UserName));
 	    Title = this.GetDefaultPropertyString(nameof(Title));
@@ -102,7 +103,6 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 	    Directory = this.GetDefaultPropertyString(nameof(Directory));
 	    FirstId = this.GetDefaultPropertyInt(nameof(FirstId));
 	    IsAutoUpdate = this.GetDefaultPropertyBool(nameof(IsAutoUpdate));
-	    DtChanged = this.GetDefaultPropertyDateTime(nameof(DtChanged));
 	    Documents = new List<TgEfDocumentEntity>();
         Messages = new List<TgEfMessageEntity>();
     }
@@ -115,7 +115,7 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 		Id = item.Id;
 		FirstId = item.FirstId;
 		IsAutoUpdate = item.IsAutoUpdate;
-		UserName = string.IsNullOrEmpty(item.UserName) ? "" : item.UserName;
+		UserName = item.UserName;
 		Title = item.Title;
 		About = item.About;
 		Count = item.Count;

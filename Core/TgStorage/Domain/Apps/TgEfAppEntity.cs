@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Apps;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//[Table(TgEfConstants.TableApps)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(ApiHash), IsUnique = true)]
 [Index(nameof(ApiId))]
@@ -78,14 +77,13 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 	    Default();
     }
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public string ToDebugString() =>
-        $"{TgEfConstants.TableApps} | {Uid} | {ApiHash} | {ApiId} | {PhoneNumber} | {ProxyUid}";
+	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-    public void Default()
+	public void Default()
     {
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		ApiHash = this.GetDefaultPropertyGuid(nameof(ApiHash));

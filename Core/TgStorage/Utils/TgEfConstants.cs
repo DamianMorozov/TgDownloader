@@ -9,11 +9,13 @@ public static class TgEfConstants
 	#region Public and private fields, properties, constructor - Tables
 
 	public const string TableApps = "APPS";
+	public const string TableContacts = "CONTACTS";
 	public const string TableDocuments = "DOCUMENTS";
 	public const string TableFilters = "FILTERS";
 	public const string TableMessages = "MESSAGES";
 	public const string TableProxies = "PROXIES";
 	public const string TableSources = "SOURCES";
+	public const string TableStories = "STORIES";
 	public const string TableVersions = "VERSIONS";
 
     #endregion
@@ -24,6 +26,9 @@ public static class TgEfConstants
 	public const string ColumnAccessHash = "ACCESS_HASH";
 	public const string ColumnApiHash = "API_HASH";
 	public const string ColumnApiId = "API_ID";
+	public const string ColumnBotActiveUsers = "BOT_ACTIVE_USERS";
+	public const string ColumnBotInfoVersion = "BOT_INFO_VERSION";
+	public const string ColumnBotInlinePlaceholder = "BOT_INLINE_PLACEHOLDER";
 	public const string ColumnCount = "COUNT";
 	public const string ColumnCountThreads = "COUNT_THREADS";
 	public const string ColumnDescription = "DESCRIPTION";
@@ -37,8 +42,11 @@ public static class TgEfConstants
 	public const string ColumnFirstName = "FIRST_NAME";
 	public const string ColumnHostName = "HOST_NAME";
 	public const string ColumnId = "ID";
+	public const string ColumnIsActive = "IS_ACTIVE";
 	public const string ColumnIsAutoUpdate = "IS_AUTO_UPDATE";
+	public const string ColumnIsBot = "IS_BOT";
 	public const string ColumnIsEnabled = "IS_ENABLED";
+	public const string ColumnLangCode = "LANG_CODE";
 	public const string ColumnLastName = "LAST_NAME";
 	public const string ColumnMask = "MASK";
 	public const string ColumnMessage = "MESSAGE";
@@ -48,15 +56,19 @@ public static class TgEfConstants
 	public const string ColumnPhoneNumber = "PHONE_NUMBER";
 	public const string ColumnPort = "PORT";
 	public const string ColumnProxyUid = "PROXY_UID";
+	public const string ColumnRestrictionReason = "RESTRICTION_REASON";
 	public const string ColumnRowVersion = "RowVersion";
 	public const string ColumnSecret = "SECRET";
 	public const string ColumnSize = "SIZE";
 	public const string ColumnSizeType = "SIZE_TYPE";
 	public const string ColumnSourceId = "SOURCE_ID";
+	public const string ColumnStatus = "STATUS";
+	public const string ColumnStoriesMaxId = "STORIES_MAX_ID";
 	public const string ColumnTitle = "TITLE";
 	public const string ColumnType = "TYPE";
 	public const string ColumnUid = "UID";
 	public const string ColumnUserName = "USER_NAME";
+	public const string ColumnUserNames = "USER_NAMES";
 	public const string ColumnVersion = "VERSION";
 
 	#endregion

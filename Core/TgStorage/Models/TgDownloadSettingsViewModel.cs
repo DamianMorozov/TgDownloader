@@ -10,6 +10,7 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 	#region Public and private fields, properties, constructor
 
 	public TgEfSourceViewModel SourceVm { get; set; }
+	public TgEfContactViewModel ContactVm { get; set; }
 	public TgEfVersionViewModel VersionVm { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
@@ -23,6 +24,7 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 	public TgDownloadSettingsViewModel()
 	{
 		SourceVm = new();
+		ContactVm = new();
 		VersionVm = new();
 		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
 		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
@@ -42,6 +44,14 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
         var storageResult = await SourceVm.SourceRepository.SaveAsync(SourceVm.Item);
         if (storageResult.IsExists) 
 	        SourceVm.Item = storageResult.Item;
+    }
+
+    public async Task UpdateContactWithSettingsAsync()
+    {
+        if (!ContactVm.IsReadySourceId) return;
+        var storageResult = await ContactVm.ContactRepository.SaveAsync(ContactVm.Item);
+        if (storageResult.IsExists)
+			ContactVm.Item = storageResult.Item;
     }
 
     #endregion

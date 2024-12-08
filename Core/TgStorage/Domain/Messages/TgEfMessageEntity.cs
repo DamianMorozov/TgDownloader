@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Messages;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//able(TgEfConstants.TableMessages)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]
 [Index(nameof(Id))]
@@ -61,14 +60,13 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
         Default();
 	}
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public string ToDebugString() =>
-        $"{TgEfConstants.TableMessages} | {Uid} | {SourceId} | {Id} | {Type} | {Size} | {Message}";
+	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-    public void Default()
+	public void Default()
     {
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		//SourceId = this.GetDefaultPropertyLong(nameof(SourceId));

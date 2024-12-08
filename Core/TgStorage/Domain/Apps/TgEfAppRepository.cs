@@ -82,13 +82,13 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		{
 			items = isNoTracking
 				? EfContext.Apps.AsNoTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking().Include(x => x.Proxy).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Apps.AsTracking().Include(x => x.Proxy).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Apps.AsNoTracking().Include(x => x.Proxy).ToList()
-				: EfContext.Apps.AsTracking().Include(x => x.Proxy).ToList();
+				: [.. EfContext.Apps.AsTracking().Include(x => x.Proxy)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -118,13 +118,13 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 		{
 			items = isNoTracking
 				? EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToList()
-				: EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Apps.AsNoTracking().Where(where).Include(x => x.Proxy).ToList()
-				: EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy).ToList();
+				: [.. EfContext.Apps.AsTracking().Where(where).Include(x => x.Proxy)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

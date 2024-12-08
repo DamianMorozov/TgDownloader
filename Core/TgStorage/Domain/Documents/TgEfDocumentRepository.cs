@@ -82,13 +82,13 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		{
 			items = isNoTracking
 				? EfContext.Documents.AsNoTracking().Include(x => x.Source).Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking().Include(x => x.Source).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Documents.AsTracking().Include(x => x.Source).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Documents.AsNoTracking().Include(x => x.Source).ToList()
-				: EfContext.Documents.AsTracking().Include(x => x.Source).ToList();
+				: [.. EfContext.Documents.AsTracking().Include(x => x.Source)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -118,13 +118,13 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 		{
 			items = isNoTracking
 				? EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList()
-				: EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Documents.AsNoTracking().Where(where).Include(x => x.Source).ToList()
-				: EfContext.Documents.AsTracking().Where(where).Include(x => x.Source).ToList();
+				: [.. EfContext.Documents.AsTracking().Where(where).Include(x => x.Source)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

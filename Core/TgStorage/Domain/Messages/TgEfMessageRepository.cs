@@ -82,13 +82,13 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			items = isNoTracking
 				? EfContext.Messages.AsNoTracking().Include(x => x.Source).Skip(skip).Take(take).ToList()
-				: EfContext.Messages.Include(x => x.Source).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Messages.Include(x => x.Source).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Messages.AsNoTracking().Include(x => x.Source).ToList()
-				: EfContext.Messages.Include(x => x.Source).ToList();
+				: [.. EfContext.Messages.Include(x => x.Source)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -118,13 +118,13 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			items = isNoTracking
 				? EfContext.Messages.AsNoTracking().Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList()
-				: EfContext.Messages.Where(where).Include(x => x.Source).Skip(skip).Take(take).ToList();
+				: [.. EfContext.Messages.Where(where).Include(x => x.Source).Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Messages.AsNoTracking().Where(where).Include(x => x.Source).ToList()
-				: EfContext.Messages.Where(where).Include(x => x.Source).ToList();
+				: [.. EfContext.Messages.Where(where).Include(x => x.Source)];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

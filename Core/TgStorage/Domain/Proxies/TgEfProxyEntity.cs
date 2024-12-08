@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Proxies;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//[Table(TgEfConstants.TableProxies)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Type))]
 [Index(nameof(HostName))]

@@ -70,13 +70,13 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			items = isNoTracking
 				? EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToList()
-				: EfContext.Versions.AsTracking().Skip(skip).Take(take).ToList();
+				: [.. EfContext.Versions.AsTracking().Skip(skip).Take(take)];
 		}
 		else
 		{
 			items = isNoTracking
 				? EfContext.Versions.AsNoTracking().ToList()
-				: EfContext.Versions.AsTracking().ToList();
+				: [.. EfContext.Versions.AsTracking()];
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
@@ -108,9 +108,9 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				? EfContext.Versions.AsNoTracking()
 					.Where(where)
 					.Skip(skip).Take(take).ToList()
-				: EfContext.Versions.AsTracking()
+				: [.. EfContext.Versions.AsTracking()
 					.Where(where)
-					.Skip(skip).Take(take).ToList();
+					.Skip(skip).Take(take)];
 		}
 		else
 		{
@@ -118,9 +118,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 				? EfContext.Versions.AsNoTracking()
 					.Where(where)
 					.ToList()
-				: EfContext.Versions.AsTracking()
-					.Where(where)
-					.ToList();
+				: [.. EfContext.Versions.AsTracking().Where(where)];
 		}
 
 		return new(
@@ -201,7 +199,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	#region Public and private methods - ITgEfVersionRepository
 
-	public short LastVersion => 26;
+	public short LastVersion => 27;
 
 	public async Task<TgEfVersionEntity> GetLastVersionAsync()
 	{
@@ -229,55 +227,55 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			switch (versionLast.Version)
 			{
 				case 0:
-					await SaveAsync(new() { Version = 1, Description = "Added the versions table" });
+					await SaveAsync(new() { Version = 1, Description = "Added versions table" });
 					break;
 				case 1:
-					await SaveAsync(new() { Version = 2, Description = "Added the apps table" });
+					await SaveAsync(new() { Version = 2, Description = "Added apps table" });
 					break;
 				case 2:
-					await SaveAsync(new() { Version = 3, Description = "Added the documents table" });
+					await SaveAsync(new() { Version = 3, Description = "Added documents table" });
 					break;
 				case 3:
-					await SaveAsync(new() { Version = 4, Description = "Added the filters table" });
+					await SaveAsync(new() { Version = 4, Description = "Added filters table" });
 					break;
 				case 4:
-					await SaveAsync(new() { Version = 5, Description = "Added the messages table" });
+					await SaveAsync(new() { Version = 5, Description = "Added messages table" });
 					break;
 				case 5:
-					await SaveAsync(new() { Version = 6, Description = "Added the proxies table" });
+					await SaveAsync(new() { Version = 6, Description = "Added proxies table" });
 					break;
 				case 6:
-					await SaveAsync(new() { Version = 7, Description = "Added the sources table" });
+					await SaveAsync(new() { Version = 7, Description = "Added sources table" });
 					break;
 				case 7:
-					await SaveAsync(new() { Version = 8, Description = "Updated the sources table" });
+					await SaveAsync(new() { Version = 8, Description = "Updated sources table" });
 					break;
 				case 8:
-					await SaveAsync(new() { Version = 9, Description = "Updated the versions table" });
+					await SaveAsync(new() { Version = 9, Description = "Updated versions table" });
 					break;
 				case 9:
-					await SaveAsync(new() { Version = 10, Description = "Updated the apps table" });
+					await SaveAsync(new() { Version = 10, Description = "Updated apps table" });
 					break;
 				case 10:
 					await SaveAsync(new() { Version = 11, Description = "Upgraded storage to XPO framework" });
 					break;
 				case 11:
-					await SaveAsync(new() { Version = 12, Description = "Updated the apps table" });
+					await SaveAsync(new() { Version = 12, Description = "Updated apps table" });
 					break;
 				case 12:
-					await SaveAsync(new() { Version = 13, Description = "Updated the documents table" });
+					await SaveAsync(new() { Version = 13, Description = "Updated documents table" });
 					break;
 				case 13:
-					await SaveAsync(new() { Version = 14, Description = "Updated the filters table" });
+					await SaveAsync(new() { Version = 14, Description = "Updated filters table" });
 					break;
 				case 14:
-					await SaveAsync(new() { Version = 15, Description = "Updated the messages table" });
+					await SaveAsync(new() { Version = 15, Description = "Updated messages table" });
 					break;
 				case 15:
-					await SaveAsync(new() { Version = 16, Description = "Updated the proxies table" });
+					await SaveAsync(new() { Version = 16, Description = "Updated proxies table" });
 					break;
 				case 16:
-					await SaveAsync(new() { Version = 17, Description = "Updated the sources table" });
+					await SaveAsync(new() { Version = 17, Description = "Updated sources table" });
 					break;
 				case 17:
 					await SaveAsync(new() { Version = 18, Description = "Updated the UID field in the apps table" });
@@ -304,7 +302,10 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 					await SaveAsync(new() { Version = 25, Description = "Migrated storage to EF Core" });
 					break;
 				case 25:
-					await SaveAsync(new() { Version = 26, Description = "Updated the apps table" });
+					await SaveAsync(new() { Version = 26, Description = "Updated apps table" });
+					break;
+				case 26:
+					await SaveAsync(new() { Version = 27, Description = "Added contacts table" });
 					break;
 			}
 			if (versionLast.Version >= LastVersion)

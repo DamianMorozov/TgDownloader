@@ -4,7 +4,6 @@
 namespace TgStorage.Domain.Versions;
 
 [DebuggerDisplay("{ToDebugString()}")]
-//[Table(TgEfConstants.TableVersions)]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Version), IsUnique = true)]
 [Index(nameof(Description))]
@@ -37,14 +36,13 @@ public sealed class TgEfVersionEntity : ITgDbEntity, ITgDbFillEntity<TgEfVersion
         Default();
     }
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public string ToDebugString() =>
-        $"{TgEfConstants.TableVersions} | {Uid} | {Version} | {Description}";
+	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-    public void Default()
+	public void Default()
     {
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		Version = this.GetDefaultPropertyShort(nameof(Version));

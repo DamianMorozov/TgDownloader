@@ -5,14 +5,16 @@
 namespace TgStorage.Domain;
 
 /// <summary> DB context </summary>
-public sealed class TgEfContext : DbContext
+public class TgEfContext : DbContext
 {
     #region Public and private fields, properties, constructor
 
     /// <summary> App queries </summary>
     public DbSet<TgEfAppEntity> Apps { get; set; } = default!;
-    /// <summary> Document queries </summary>
-    public DbSet<TgEfDocumentEntity> Documents { get; set; } = default!;
+	/// <summary> Contact queries </summary>
+	public DbSet<TgEfContactEntity> Contacts { get; set; } = default!;
+	/// <summary> Document queries </summary>
+	public DbSet<TgEfDocumentEntity> Documents { get; set; } = default!;
     /// <summary> Filter queries </summary>
     public DbSet<TgEfFilterEntity> Filters { get; set; } = default!;
     /// <summary> Message queries </summary>
@@ -28,15 +30,24 @@ public sealed class TgEfContext : DbContext
 	public bool IsReady =>
         TgAppSettings.AppXml.IsExistsEfStorage &&
         IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
-        IsTableExists(TgEfConstants.TableFilters) && IsTableExists(TgEfConstants.TableMessages) &&
-        IsTableExists(TgEfConstants.TableProxies) && IsTableExists(TgEfConstants.TableSources) &&
-        IsTableExists(TgEfConstants.TableVersions);
+		IsTableExists(TgEfConstants.TableContacts) && IsTableExists(TgEfConstants.TableFilters) && 
+		IsTableExists(TgEfConstants.TableMessages) && IsTableExists(TgEfConstants.TableProxies) && 
+		IsTableExists(TgEfConstants.TableSources) && IsTableExists(TgEfConstants.TableVersions);
 
     #endregion
 
     #region Public and private methods
 
     public TgEfContext()
+    {
+#if DEBUG
+        Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}", TgConstants.LogTypeStorage);
+#endif
+    }
+
+    /// <summary> Inject options </summary>
+    // For using: services.AddDbContextFactory<TgEfContext>
+    public TgEfContext(DbContextOptions options) : base(options)
     {
 #if DEBUG
         Debug.WriteLine($"Created TgEfContext with {nameof(ContextId)} {ContextId}", TgConstants.LogTypeStorage);
@@ -159,6 +170,12 @@ public sealed class TgEfContext : DbContext
 		modelBuilder.Entity<TgEfProxyEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableProxies);
+		});
+        
+		// CONTACTS
+		modelBuilder.Entity<TgEfContactEntity>(entity =>
+		{
+			entity.ToTable(TgEfConstants.TableContacts);
 		});
         
 		// SOURCES
