@@ -135,6 +135,7 @@
     <None Include="..\..\Docs\SCREENSHOTS.md" Link="Docs\SCREENSHOTS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\Docs\TgDownloaderDesktop-Installing.ps1" Link="Docs\TgDownloaderDesktop-Installing.ps1" />
     <None Include="..\..\LICENSE.md" Link="Docs\LICENSE.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
