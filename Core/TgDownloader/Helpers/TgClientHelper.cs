@@ -21,7 +21,9 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
+	private TgEfContactRepository ContactsRepository { get; } = new(TgEfUtils.CreateEfContext());
 	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.CreateEfContext());
+	private TgEfStoryRepository StoriesRepository { get; } = new(TgEfUtils.CreateEfContext());
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
 	public Client? Client { get; set; }
 	public TgExceptionViewModel ClientException { get; private set; }
@@ -31,18 +33,24 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public bool IsProxyUsage { get; private set; }
 	public User? Me { get; set; }
 	public Dictionary<long, TlChatBase> DicChatsAll { get; private set; }
+	public Dictionary<long, TL.User> DicContactsAll { get; private set; }
+	public Dictionary<long, TL.StoryItem> DicStoriesAll { get; private set; }
 	public Dictionary<long, TlChatBase> DicChatsUpdated { get; }
-	public Dictionary<long, User> DicUsersUpdated { get; }
+	public Dictionary<long, User> DicContactsUpdated { get; }
 	public IEnumerable<TlChannel> EnumerableChannels { get; set; }
 	public IEnumerable<TlChannel> EnumerableGroups { get; set; }
 	public IEnumerable<TlChatBase> EnumerableChats { get; set; }
 	public IEnumerable<TlChatBase> EnumerableSmallGroups { get; set; }
+	public IEnumerable<TL.User> EnumerableContacts { get; set; }
+	public IEnumerable<TL.StoryItem> EnumerableStories { get; set; }
 	public bool IsUpdateStatus { get; set; }
 	private IEnumerable<TgEfFilterEntity> Filters { get; set; }
 	public Func<string, Task> UpdateTitleAsync { get; private set; }
 	public Func<string, Task> UpdateStateConnectAsync { get; private set; }
 	public Func<string, Task> UpdateStateProxyAsync { get; private set; }
 	public Func<long, int, string, Task> UpdateStateSourceAsync { get; private set; }
+	public Func<long, string, string, string, Task> UpdateStateContactAsync { get; private set; }
+	public Func<long, string, Task> UpdateStateStoryAsync { get; private set; }
 	public Func<string, int, string, string, Task> UpdateStateExceptionAsync { get; private set; }
 	public Func<Exception, Task> UpdateExceptionAsync { get; private set; }
 	public Func<string, Task> UpdateStateExceptionShortAsync { get; private set; }
@@ -59,16 +67,20 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	public TgClientHelper()
 	{
-		DicChatsAll = new();
-		DicChatsUpdated = new();
-		DicUsersUpdated = new();
-		EnumerableChannels = Enumerable.Empty<TlChannel>();
-		EnumerableChats = Enumerable.Empty<TlChatBase>();
-		EnumerableGroups = Enumerable.Empty<TlChannel>();
-		EnumerableSmallGroups = Enumerable.Empty<TlChatBase>();
+		DicChatsAll = [];
+		DicContactsAll = [];
+		DicStoriesAll = [];
+		DicChatsUpdated = [];
+		DicContactsUpdated = [];
+		EnumerableChannels = [];
+		EnumerableChats = [];
+		EnumerableGroups = [];
+		EnumerableSmallGroups = [];
+		EnumerableContacts = [];
+		EnumerableStories = [];
 		ClientException = new();
 		ProxyException = new();
-		Filters = Enumerable.Empty<TgEfFilterEntity>();
+		Filters = [];
 
 		UpdateTitleAsync = _ => Task.CompletedTask;
 		UpdateStateConnectAsync = _ => Task.CompletedTask;
@@ -77,6 +89,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		UpdateExceptionAsync = _ => Task.CompletedTask;
 		UpdateStateExceptionShortAsync = _ => Task.CompletedTask;
 		UpdateStateSourceAsync = (_, _, _) => Task.CompletedTask;
+		UpdateStateContactAsync = (_, _, _, _) => Task.CompletedTask;
+		UpdateStateStoryAsync = (_, _) => Task.CompletedTask;
 		AfterClientConnectAsync = () => Task.CompletedTask;
 		ConfigClientDesktop = _ => string.Empty;
 		UpdateStateItemSourceAsync = _ => Task.CompletedTask;
@@ -106,6 +120,12 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	public void SetupUpdateStateSource(Func<long, int, string, Task> updateStateSourceAsync) =>
 		UpdateStateSourceAsync = updateStateSourceAsync;
+
+	public void SetupUpdateStateContact(Func<long, string, string, string, Task> updateStateContactAsync) =>
+		UpdateStateContactAsync = updateStateContactAsync;
+
+	public void SetupUpdateStateStory(Func<long, string, Task> updateStateStoryAsync) =>
+		UpdateStateStoryAsync = updateStateStoryAsync;
 
 	public void SetupUpdateStateException(Func<string, int, string, string, Task> updateStateExceptionAsync) =>
 		UpdateStateExceptionAsync = updateStateExceptionAsync;
@@ -252,7 +272,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	public static long ReduceChatId(long chatId) => !$"{chatId}".StartsWith("-100") ? chatId : Convert.ToInt64($"{chatId}"[4..]);
 
-	public string GetUserUpdatedName(long id) => DicUsersUpdated.TryGetValue(ReduceChatId(id), out var user) ? user.username : string.Empty;
+	public string GetUserUpdatedName(long id) => DicContactsUpdated.TryGetValue(ReduceChatId(id), out var user) ? user.username : string.Empty;
 
 	public async Task<TlChannel?> GetChannelAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
@@ -393,10 +413,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				return messages.chats;
 			}
 		}
-		return new();
+		return [];
 	}
 
-	public async Task<Dictionary<long, TlChatBase>> CollectAllDialogsAsync()
+	public async Task CollectAllDialogsAsync()
 	{
 		switch (IsReady)
 		{
@@ -404,26 +424,50 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			{
 				var messages = await Client.Messages_GetAllDialogs();
 				FillEnumerableChats(messages.chats);
-				return messages.chats;
+				break;
 			}
 		}
-		return new();
+	}
+
+	public async Task CollectAllContactsAsync()
+	{
+		switch (IsReady)
+		{
+			case true when Client is not null:
+			{
+				var contacts = await Client.Contacts_GetContacts();
+				FillEnumerableContacts(contacts.users);
+				break;
+			}
+		}
+	}
+
+	public async Task CollectAllStoriesAsync()
+	{
+		switch (IsReady)
+		{
+			case true when Client is not null:
+			{
+				Stories_AllStoriesBase storiesBase = await Client.Stories_GetAllStories();
+				if (storiesBase is Stories_AllStories allStories)
+				{
+					FillEnumerableStories([.. allStories.peer_stories]);
+				}
+				break;
+			}
+		}
 	}
 
 	private void FillEnumerableChats(Dictionary<long, TlChatBase> chats)
 	{
 		DicChatsAll = chats;
-
-		List<TlChannel> listChannels = EnumerableChannels.OrderBy(i => i.username).ThenBy(i => i.id).ToList();
-		listChannels.Clear();
-		List<TlChatBase> listChats = EnumerableChats.OrderBy(i => i.MainUsername).ThenBy(i => i.ID).ToList();
-		listChats.Clear();
-		List<TlChannel> listGroups = EnumerableGroups.OrderBy(i => i.username).ThenBy(i => i.id).ToList();
-		listGroups.Clear();
-		List<TlChatBase> listSmallGroups = EnumerableSmallGroups.OrderBy(i => i.MainUsername).ThenBy(i => i.ID).ToList();
-		listSmallGroups.Clear();
-
-		foreach (KeyValuePair<long, TlChatBase> chat in chats)
+		var listChats = new List<TlChatBase>();
+		var listSmallGroups = new List<TlChatBase>();
+		var listChannels = new List<TlChannel>();
+		var listGroups = new List<TlChannel>();
+		// Sort
+		var chatsSorted = chats.OrderBy(i => i.Value.MainUsername).ThenBy(i => i.Value.ID).ToList();
+		foreach (var chat in chatsSorted)
 		{
 			listChats.Add(chat.Value);
 			switch (chat.Value)
@@ -432,20 +476,48 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 					listSmallGroups.Add(chat.Value);
 					break;
 				case TlChannel { IsGroup: true } group:
-					//case TlChannel group: // no broadcast flag => it's a big group, also called superGroup or megaGroup
 					listGroups.Add(group);
 					break;
 				case TlChannel channel:
-					//case TlChannel channel when (channel.flags & TlChannel.Flags.broadcast) is not 0:
 					listChannels.Add(channel);
 					break;
 			}
 		}
-
 		EnumerableChannels = listChannels;
 		EnumerableChats = listChats;
 		EnumerableGroups = listGroups;
+		EnumerableGroups = listGroups;
 		EnumerableSmallGroups = listSmallGroups;
+	}
+
+	private void FillEnumerableContacts(Dictionary<long, TL.User> users)
+	{
+		DicContactsAll = users;
+		var listContacts = new List<TL.User>();
+		// Sort
+		var usersSorted = users.OrderBy(i => i.Value.username).ThenBy(i => i.Value.ID);
+		foreach (var user in usersSorted)
+		{
+			listContacts.Add(user.Value);
+		}
+		EnumerableContacts = listContacts;
+	}
+
+	private void FillEnumerableStories(List<PeerStories> peerStories)
+	{
+		DicStoriesAll = [];
+		var listStories = new List<StoryItem>();
+		// Sort
+		var peerStoriesSorted = peerStories.OrderBy(i => i.stories.Rank);
+		foreach (var peerStory in peerStories)
+		{
+			foreach (var storyBase in peerStory.stories)
+			{
+				if (storyBase is TL.StoryItem story)
+					listStories.Add(story);
+			}
+		}
+		EnumerableStories = listStories;
 	}
 
 	public async Task OnUpdatesClientAsync(IObject arg)
@@ -461,7 +533,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		try
 		{
-			updateShort.CollectUsersChats(DicUsersUpdated, DicChatsUpdated);
+			updateShort.CollectUsersChats(DicContactsUpdated, DicChatsUpdated);
 			if (updateShort.UpdateList.Any())
 			{
 				foreach (var update in updateShort.UpdateList)
@@ -498,7 +570,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		try
 		{
-			updates.CollectUsersChats(DicUsersUpdated, DicChatsUpdated);
+			updates.CollectUsersChats(DicContactsUpdated, DicChatsUpdated);
 			if (updates.UpdateList.Any())
 			{
 				foreach (var update in updates.UpdateList)
@@ -730,8 +802,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		if (!chats.Any())
 			return chats;
-		List<TlChatBase> result = new();
-		List<TlChatBase> chatsOrders = chats.OrderBy(x => x.Title).ToList();
+		List<TlChatBase> result = [];
+		List<TlChatBase> chatsOrders = [.. chats.OrderBy(x => x.Title)];
 		foreach (var chatOrder in chatsOrders)
 		{
 			var chatNew = chats.First(x => Equals(x.Title, chatOrder.Title));
@@ -745,8 +817,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		if (!channels.Any())
 			return channels;
-		List<TlChannel> result = new();
-		List<TlChannel> channelsOrders = channels.OrderBy(x => x.username).ToList();
+		List<TlChannel> result = [];
+		List<TlChannel> channelsOrders = [.. channels.OrderBy(x => x.username)];
 		foreach (var chatOrder in channelsOrders)
 		{
 			var chatNew = channels.First(x => Equals(x.Title, chatOrder.Title));
@@ -1014,32 +1086,178 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		var storageResult = await SourceRepository.GetAsync(new() { Id = channel.id }, isNoTracking: true);
 		TgEfSourceEntity sourceNew;
-		if (storageResult.IsExists)
+		sourceNew = storageResult.IsExists ? storageResult.Item : new();
+		sourceNew.Id = channel.id;
+		sourceNew.UserName = channel.username;
+		sourceNew.Title = channel.title;
+		sourceNew.About = about;
+		sourceNew.Count = count;
+		// Save
+		await SourceRepository.SaveAsync(sourceNew);
+	}
+
+	private async Task UpdateContactTgAsync(TL.User user)
+	{
+		var storageResult = await ContactsRepository.GetAsync(new() { Id = user.id }, isNoTracking: true);
+		TgEfContactEntity contactNew;
+		contactNew = storageResult.IsExists ? storageResult.Item : new();
+		contactNew.DtChanged = DateTime.UtcNow;
+		contactNew.Id = user.id;
+		contactNew.AccessHash = user.access_hash;
+		contactNew.IsActive = user.IsActive;
+		contactNew.IsBot = user.IsBot;
+		contactNew.FirstName = user.first_name;
+		contactNew.LastName = user.last_name;
+		contactNew.UserName = user.username;
+		contactNew.UserNames = user.usernames is null ? string.Empty : string.Join("|", user.usernames.ToList());
+		contactNew.PhoneNumber = user.phone;
+		contactNew.Status = user.status is null ? string.Empty : user.status.ToString();
+		contactNew.RestrictionReason = user.restriction_reason is null ? string.Empty : string.Join("|", user.restriction_reason.ToList());
+		contactNew.LangCode = user.lang_code;
+		contactNew.StoriesMaxId = user.stories_max_id;
+		contactNew.BotInfoVersion = user.bot_info_version.ToString();
+		contactNew.BotInlinePlaceholder = user.bot_inline_placeholder is null ? string.Empty : user.bot_inline_placeholder.ToString();
+		contactNew.BotActiveUsers = user.bot_active_users;
+		// Save
+		await ContactsRepository.SaveAsync(contactNew);
+	}
+	
+	private async Task UpdateStoryTgAsync(TL.StoryItem story)
+	{
+		if (story.entities is not null)
 		{
-			sourceNew = storageResult.Item;
-			sourceNew.UserName = channel.username;
-			sourceNew.Title = channel.title;
-			sourceNew.About = about;
-			sourceNew.Count = count;
+			foreach (MessageEntity? message in story.entities)
+			{
+				await UpdateStoryItemTgAsync(story, message);
+			}
 		}
 		else
 		{
-			sourceNew = new()
-			{
-				Id = channel.id,
-				UserName = channel.username,
-				Title = channel.title,
-				About = about,
-				Count = count,
-			};
+			await UpdateStoryItemTgAsync(story, message: null);
 		}
-		await SourceRepository.SaveAsync(sourceNew);
+	}
+
+	private async Task UpdateStoryItemTgAsync(TL.StoryItem story, MessageEntity? message)
+	{
+		var storageResult = await StoriesRepository.GetAsync(new() { Id = story.id }, isNoTracking: true);
+		TgEfStoryEntity storyNew;
+		storyNew = storageResult.IsExists ? storageResult.Item : new();
+		storyNew.DtChanged = DateTime.UtcNow;
+		storyNew.Id = story.id;
+		storyNew.FromId = story.from_id?.ID;
+		storyNew.FromName = story.fwd_from?.from_name;
+		storyNew.Date = story.date;
+		storyNew.ExpireDate = story.expire_date;
+		storyNew.Caption = story.caption;
+		if (message is not null)
+		{
+			storyNew.Type = message.Type;
+			storyNew.Offset = message.Offset;
+			storyNew.Length = message.Length;
+			storyNew.Message = message.ToString();
+			// Swtch message type
+			TgEfStoryEntityByMessageType(storyNew, message);
+		}
+		// Switch media type
+		TgEfStoryEntityByMediaType(storyNew, story.media);
+		// Save
+		await StoriesRepository.SaveAsync(storyNew);
+	}
+
+	private void TgEfStoryEntityByMessageType(TgEfStoryEntity storyNew, MessageEntity message)
+	{
+		if (message is null) return;
+		switch (message.GetType())
+		{
+			case var cls when cls == typeof(MessageEntityUnknown):
+				break;
+			case var cls when cls == typeof(MessageEntityMention):
+				break;
+			case var cls when cls == typeof(MessageEntityHashtag):
+				break;
+			case var cls when cls == typeof(MessageEntityBotCommand):
+				break;
+			case var cls when cls == typeof(MessageEntityUrl):
+				break;
+			case var cls when cls == typeof(MessageEntityEmail):
+				break;
+			case var cls when cls == typeof(MessageEntityBold):
+				break;
+			case var cls when cls == typeof(MessageEntityItalic):
+				break;
+			case var cls when cls == typeof(MessageEntityCode):
+				break;
+			case var cls when cls == typeof(MessageEntityPre):
+				break;
+			case var cls when cls == typeof(MessageEntityTextUrl):
+				break;
+			case var cls when cls == typeof(MessageEntityMentionName):
+				break;
+			case var cls when cls == typeof(InputMessageEntityMentionName):
+				break;
+			case var cls when cls == typeof(MessageEntityPhone):
+				break;
+			case var cls when cls == typeof(MessageEntityCashtag):
+				break;
+			case var cls when cls == typeof(MessageEntityUnderline):
+				break;
+			case var cls when cls == typeof(MessageEntityStrike):
+				break;
+			case var cls when cls == typeof(MessageEntityBankCard):
+				break;
+			case var cls when cls == typeof(MessageEntitySpoiler):
+				break;
+			case var cls when cls == typeof(MessageEntityCustomEmoji):
+				break;
+			case var cls when cls == typeof(MessageEntityBlockquote):
+				break;
+		}
+	}
+
+	private void TgEfStoryEntityByMediaType(TgEfStoryEntity storyNew, MessageMedia media)
+	{
+		if (media is null) return;
+		switch (media.GetType())
+		{
+			case var cls when cls == typeof(MessageMediaContact):
+				break;
+			case var cls when cls == typeof(MessageMediaDice):
+				break;
+			case var cls when cls == typeof(MessageMediaDocument):
+				break;
+			case var cls when cls == typeof(MessageMediaGame):
+				break;
+			case var cls when cls == typeof(MessageMediaGeo):
+				break;
+			case var cls when cls == typeof(MessageMediaGeoLive):
+				break;
+			case var cls when cls == typeof(MessageMediaGiveaway):
+				break;
+			case var cls when cls == typeof(MessageMediaGiveawayResults):
+				break;
+			case var cls when cls == typeof(MessageMediaInvoice):
+				break;
+			case var cls when cls == typeof(MessageMediaPaidMedia):
+				break;
+			case var cls when cls == typeof(MessageMediaPhoto):
+				break;
+			case var cls when cls == typeof(MessageMediaPoll):
+				break;
+			case var cls when cls == typeof(MessageMediaStory):
+				break;
+			case var cls when cls == typeof(MessageMediaUnsupported):
+				break;
+			case var cls when cls == typeof(MessageMediaVenue):
+				break;
+			case var cls when cls == typeof(MessageMediaWebPage):
+				break;
+		}
 	}
 
 	private async Task UpdateSourceTgAsync(TlChannel channel, int count) =>
 		await UpdateSourceTgAsync(channel, string.Empty, count);
 
-	public async Task ScanSourcesTgConsoleAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
+	public async Task SearchSourcesTgConsoleAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		await TryCatchFuncAsync(async () =>
 		{
@@ -1054,54 +1272,126 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, TgLocale.CollectDialogs);
 					await CollectAllDialogsAsync();
 					break;
+				case TgEnumSourceType.Contact:
+					await UpdateStateSourceAsync(tgDownloadSettings.ContactVm.Id, 0, TgLocale.CollectContacts);
+					await CollectAllContactsAsync();
+					break;
+				case TgEnumSourceType.Story:
+					await UpdateStateSourceAsync(tgDownloadSettings.StoryVm.Id, 0, TgLocale.CollectStories);
+					await CollectAllStoriesAsync();
+					break;
 			}
+			tgDownloadSettings.ContactVm.SourceScanCount = DicContactsAll.Count;
+			tgDownloadSettings.ContactVm.SourceScanCurrent = 0;
 			tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
 			tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
-			// ListChannels
-			foreach (var channel in EnumerableChannels)
-			{
-				tgDownloadSettings.SourceVm.SourceScanCurrent++;
-				if (channel.IsActive)
-				{
-					await TryCatchFuncAsync(async () =>
-					{
-						var messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, channel);
-						if (channel.IsChannel)
-						{
-							var chatFull = await Client.Channels_GetFullChannel(channel);
-							if (chatFull?.full_chat is ChannelFull channelFull)
-							{
-								await UpdateSourceTgAsync(channel, channelFull.about, messagesCount);
-								await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent,
-									$"{channel} | {TgDataFormatUtils.TrimStringEnd(channelFull.about, 40)}");
-							}
-						}
-						else
-						{
-							await UpdateSourceTgAsync(channel, messagesCount);
-							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent, $"{channel}");
-						}
-					}, isLoginConsole: true);
-				}
-				await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceScanCount,
-					tgDownloadSettings.SourceVm.SourceScanCurrent):#00.00} %");
-			}
-			// ListGroups.
-			foreach (var group in EnumerableGroups)
-			{
-				tgDownloadSettings.SourceVm.SourceScanCurrent++;
-				if (group.IsActive)
-				{
-					await TryCatchFuncAsync(async () =>
-					{
-						var messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, group);
-						await UpdateSourceTgAsync(group, messagesCount);
-						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, $"{group} | {messagesCount}");
-					}, isLoginConsole: true);
-				}
-			}
+			tgDownloadSettings.StoryVm.SourceScanCount = DicStoriesAll.Count;
+			tgDownloadSettings.StoryVm.SourceScanCurrent = 0;
+			// List channels
+			await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
+			// List groups
+			await SearchSourcesTgConsoleForGroupsAsync(tgDownloadSettings);
+			// List contacts
+			await SearchSourcesTgConsoleForContactsAsync(tgDownloadSettings);
+			// List stories
+			await SearchSourcesTgConsoleForStoriesAsync(tgDownloadSettings);
+			
 		}, isLoginConsole: true);
 		await UpdateTitleAsync(string.Empty);
+	}
+
+	private async Task SearchSourcesTgConsoleForChannelsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		foreach (var channel in EnumerableChannels)
+		{
+			tgDownloadSettings.SourceVm.SourceScanCurrent++;
+			if (channel.IsActive)
+			{
+				await TryCatchFuncAsync(async () =>
+				{
+					var messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, channel);
+					if (channel.IsChannel)
+					{
+						var chatFull = await Client.Channels_GetFullChannel(channel);
+						if (chatFull?.full_chat is ChannelFull channelFull)
+						{
+							await UpdateSourceTgAsync(channel, channelFull.about, messagesCount);
+							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent,
+								$"{channel} | {TgDataFormatUtils.TrimStringEnd(channelFull.about, 40)}");
+						}
+					}
+					else
+					{
+						await UpdateSourceTgAsync(channel, messagesCount);
+						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent, $"{channel}");
+					}
+				}, isLoginConsole: true);
+			}
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceScanCount,
+				tgDownloadSettings.SourceVm.SourceScanCurrent):#00.00} %");
+		}
+	}
+
+	private async Task SearchSourcesTgConsoleForGroupsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		foreach (var group in EnumerableGroups)
+		{
+			tgDownloadSettings.SourceVm.SourceScanCurrent++;
+			if (group.IsActive)
+			{
+				await TryCatchFuncAsync(async () =>
+				{
+					var messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, group);
+					await UpdateSourceTgAsync(group, messagesCount);
+					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, $"{group} | {messagesCount}");
+				}, isLoginConsole: true);
+			}
+		}
+	}
+
+	private async Task SearchSourcesTgConsoleForContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		foreach (var contact in EnumerableContacts)
+		{
+			tgDownloadSettings.ContactVm.SourceScanCurrent++;
+			await TryCatchFuncAsync(async () =>
+			{
+				await UpdateContactTgAsync(contact);
+				await UpdateStateContactAsync(contact.id, contact.first_name, contact.last_name, contact.username);
+			}, isLoginConsole: true);
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.ContactVm.SourceScanCount,
+				tgDownloadSettings.ContactVm.SourceScanCurrent):#00.00} %");
+		}
+	}
+
+	private async Task SearchSourcesTgConsoleForStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		foreach (var story in EnumerableStories)
+		{
+			tgDownloadSettings.ContactVm.SourceScanCurrent++;
+			await TryCatchFuncAsync(async () =>
+			{
+				await UpdateStoryTgAsync(story);
+				await UpdateStateStoryAsync(story.id, story.caption);
+			}, isLoginConsole: true);
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.StoryVm.SourceScanCount,
+				tgDownloadSettings.StoryVm.SourceScanCurrent):#00.00} %");
+		}
+	}
+
+	private async Task SearchStoriesTgConsoleForContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		foreach (var story in EnumerableStories)
+		{
+			tgDownloadSettings.ContactVm.SourceScanCurrent++;
+			await TryCatchFuncAsync(async () =>
+			{
+				await UpdateStoryTgAsync(story);
+				await UpdateStateStoryAsync(story.id, story.caption);
+			}, isLoginConsole: true);
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.ContactVm.SourceScanCount,
+				tgDownloadSettings.ContactVm.SourceScanCurrent):#00.00} %");
+		}
 	}
 
 	public async Task ScanSourcesTgDesktopAsync(TgEnumSourceType sourceType, Func<TgEfSourceViewModel, Task> afterScanAsync)
@@ -1219,7 +1509,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			var counterForSave = 0;
 			if (isAccessToMessages)
 			{
-				List<Task> downloadTasks = new();
+				List<Task> downloadTasks = [];
 				var threadNumber = 0;
 				while (sourceFirstId <= sourceLastId)
 				{

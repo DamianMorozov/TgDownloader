@@ -43,8 +43,10 @@ public sealed class TgLocaleHelper : ObservableObject
 
 	#region Advanced
 
-	public string CollectChats => "Collect all chats...";
-	public string CollectDialogs => "Collect all dialogs ...";
+	public string CollectChats => "Collect chats...";
+	public string CollectContacts => "Collect contacts ...";
+	public string CollectDialogs => "Collect dialogs ...";
+	public string CollectStories => "Collect stories ...";
 
 	#endregion
 
@@ -88,10 +90,14 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuMarkAllMessagesAsRead => "Mark all messages as read";
 	public string MenuMarkAsRead => "Mark as read";
 	public string MenuSaveSettings => "Save settings";
-	public string MenuScanChats => "Scan my chats";
-	public string MenuScanDialogs => "Scan my dialogs";
+	public string MenuSearchChats => "Search chats";
+	public string MenuSearchContacts => "Search contacts";
+	public string MenuSearchDialogs => "Search dialogs";
+	public string MenuSearchStories => "Search stories";
 	public string MenuSetProxy => "Setup proxy";
+	public string MenuViewContacts => "View contacts";
 	public string MenuViewSources => "View sources";
+	public string MenuViewStories => "View stories";
 	public string MenuViewVersions => "View versions";
 
 	#endregion
@@ -184,19 +190,21 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string DirectoryCreateIsException(Exception ex) => $"Exception of create directory: {(ex.InnerException is null ? ex.Message : ex.Message + $" | {ex.InnerException.Message}")}";
 	public string DirectoryDestType => "Type destination directory";
 	public string DirectoryIsNotExists(string dir = "") => string.IsNullOrEmpty(dir) ? "The directory is not exists!" : $"The directory \"{dir}\" is not exists!";
+	public string EfStorage => "EF storage";
 	public string Empty => "Empty";
 	public string FileSession => "File session";
-	public string EfStorage => "EF storage";
 	public string Load=> "Load";
 	public string MoveUpDown => "(Move up and down to switch select)";
 	public string ObjectHasBeenDisposedOff => "object has been disposed off";
 	public string Save => "Save";
 	public string SettingCheck => "Check";
 	public string SettingName => "Setting";
+	public string SettingsContact => "Contact info";
 	public string SettingsDtChanged => "Changed";
 	public string SettingsIsNeedSetup => "Something is need setup";
 	public string SettingsIsOk => "Everything is ok";
 	public string SettingsSource => "Source info";
+	public string SettingsStory => "Story info";
 	public string SettingValue => "Value";
 	public string SortView => "Sort view";
 	public string StatusException => "Exception";
