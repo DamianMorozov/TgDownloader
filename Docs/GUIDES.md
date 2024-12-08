@@ -1,13 +1,16 @@
-## Guides
+﻿## Guides
 - [Guide to setup the desktop version](GUIDE-SETUP-DESKTOP.md)
 - [Guide to setup the docker version](GUIDE-SETUP-DOCKER.md)
 
-## Run under Windows OS
+## Запуск TgDownloaderDesktop под ОС Windows
+- Run the `TgDownloaderDesktop-Installing.ps1` file in PowerShell.
+
+## Run TgDownloaderConsole under Windows OS
 - Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
 - Change the current directory to `cd TgDownloader v1.2.333`
 - Run the `TgDownloaderConsole.exe` command or double click the file
 
-## Run under Linux OS
+## Run TgDownloaderConsole under Linux OS
 - Extract the `TgDownloader v1.2.333.zip` archive to `TgDownloader v1.2.333` directory
 - Change the current directory to `cd TgDownloader v1.2.333`
 - Run the `dotnet TgDownloaderConsole.dll` command
@@ -18,7 +21,7 @@
 - Set up the Telegram client
 - Set up a download
 
-## Default settings
+## Default settings for TgDownloaderConsole
 - Delete the file `TgDownloader.xml`
 
 # Guide for downloading groups

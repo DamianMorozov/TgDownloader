@@ -2,12 +2,15 @@
 - [Руководство по настройке десктоп версии](GUIDE-SETUP-DESKTOP-RUS.md)
 - [Руководство по настройке докер версии](GUIDE-SETUP-DOCKER-RUS.md)
 
-## Запуск под ОС Windows
+## Запуск TgDownloaderDesktop под ОС Windows
+- Запустите файл `TgDownloaderDesktop-Installing.ps1` в PowerShell.
+
+## Запуск TgDownloaderConsole под ОС Windows
 - Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`.
 - Измените текущий каталог `cd TgDownloader v1.2.333`.
 - Выполните команду `TgDownloaderConsole.exe`
 
-## Запуск под ОС Linux
+## Запуск TgDownloaderConsole под ОС Linux
 - Распакуйте архив `TgDownloader v1.2.333.zip` в `TgDownloader v1.2.333`.
 - Измените текущий каталог `cd TgDownloader v1.2.333`.
 - Выполните команду `dotnet TgDownloaderConsole.dll`
@@ -18,7 +21,7 @@
 - Настройте Telegram клиент
 - Настройте скачивание
 
-## Настройки по умолчанию
+## Настройки по умолчанию для TgDownloaderConsole
 - Удалите файл `TgDownloader.xml`.
 
 # Руководство для загрузки групп

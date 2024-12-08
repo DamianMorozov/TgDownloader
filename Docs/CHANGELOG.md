@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.240] - 2024-12-03
+## [0.5.250] - 2024-12-08
 ### Changed
 - Updated settings page for TgDownloaderDesktop
 ### Added
+- Added contact table to storage
+- Added stories table to storage
+- Added searching and viewing of contacts for TgDownloaderConsole
+- Added searching and viewing of stories for TgDownloaderConsole
 - Added sources page for TgDownloaderDesktop
+- Added PowerShell script for installing TgDownloaderDesktop
 
 ## [0.5.230] - 2024-12-01
 ### Fixed

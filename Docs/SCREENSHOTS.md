@@ -2,13 +2,25 @@
 
 ## Actual screenshots TgDownloaderConsole
 
-<p align="center"><img src="Assets/TgDownloaderConsole.png"></p>
+<p align="center"><img src="Assets/TgDownloaderConsoleHome.png"></p>
+<p align="center"><img src="Assets/TgDownloaderConsoleAdvanced.png"></p>
 
 ## Actual screenshots TgDownloaderDesktop
 
 <p align="center"><img src="Assets/TgDownloaderDesktopHome.png"></p>
 <p align="center"><img src="Assets/TgDownloaderDesktopSettings.png"></p>
 <p align="center"><img src="Assets/TgDownloaderDesktopConnection.png"></p>
+<p align="center"><img src="Assets/TgDownloaderDesktopSources.png"></p>
+
+## [0.5.250] - 2024-12-08
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderConsoleHome.png"></p>
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderConsoleAdvanced.png"></p>
+### TgDownloaderDesktop
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderDesktopConnection.png"></p>
+<p align="center"><img src="Assets/v0.5.250/TgDownloaderDesktopSources.png"></p>
 
 ## [0.5.230] - 2024-12-01
 ### TgDownloaderConsole
