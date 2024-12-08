@@ -9,8 +9,9 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	public TgEfSourceViewModel SourceVm { get; set; }
 	public TgEfContactViewModel ContactVm { get; set; }
+	public TgEfSourceViewModel SourceVm { get; set; }
+	public TgEfStoryViewModel StoryVm { get; set; }
 	public TgEfVersionViewModel VersionVm { get; set; }
 	[DefaultValue(false)]
 	public bool IsRewriteFiles { get; set; }
@@ -23,9 +24,11 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 
 	public TgDownloadSettingsViewModel()
 	{
-		SourceVm = new();
 		ContactVm = new();
+		SourceVm = new();
+		StoryVm = new();
 		VersionVm = new();
+		
 		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
 		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
 		IsRewriteMessages = this.GetDefaultPropertyBool(nameof(IsRewriteMessages));
@@ -48,10 +51,18 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 
     public async Task UpdateContactWithSettingsAsync()
     {
-        if (!ContactVm.IsReadySourceId) return;
+        if (!ContactVm.IsReady) return;
         var storageResult = await ContactVm.ContactRepository.SaveAsync(ContactVm.Item);
         if (storageResult.IsExists)
 			ContactVm.Item = storageResult.Item;
+    }
+
+    public async Task UpdateStoryWithSettingsAsync()
+    {
+        if (!StoryVm.IsReady) return;
+        var storageResult = await StoryVm.StoryRepository.SaveAsync(StoryVm.Item);
+        if (storageResult.IsExists)
+			StoryVm.Item = storageResult.Item;
     }
 
     #endregion

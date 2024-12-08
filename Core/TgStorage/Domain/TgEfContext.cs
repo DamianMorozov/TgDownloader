@@ -23,6 +23,8 @@ public class TgEfContext : DbContext
     public DbSet<TgEfProxyEntity> Proxies { get; set; } = default!;
     /// <summary> Source queries </summary>
     public DbSet<TgEfSourceEntity> Sources { get; set; } = default!;
+    /// <summary> Stories queries </summary>
+    public DbSet<TgEfStoryEntity> Stories { get; set; } = default!;
     /// <summary> Version queries </summary>
     public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
     public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
@@ -32,7 +34,8 @@ public class TgEfContext : DbContext
         IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
 		IsTableExists(TgEfConstants.TableContacts) && IsTableExists(TgEfConstants.TableFilters) && 
 		IsTableExists(TgEfConstants.TableMessages) && IsTableExists(TgEfConstants.TableProxies) && 
-		IsTableExists(TgEfConstants.TableSources) && IsTableExists(TgEfConstants.TableVersions);
+		IsTableExists(TgEfConstants.TableSources) && IsTableExists(TgEfConstants.TableStories) && 
+		IsTableExists(TgEfConstants.TableVersions);
 
     #endregion
 
@@ -127,7 +130,7 @@ public class TgEfContext : DbContext
 		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 
-		// APPS
+		// Apps
 		modelBuilder.Entity<TgEfAppEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableApps);
@@ -137,8 +140,14 @@ public class TgEfContext : DbContext
 			.WithMany(proxy => proxy.Apps)
 			.HasForeignKey(app => app.ProxyUid)
 			.HasPrincipalKey(proxy => proxy.Uid);
-        
-		// DOCUMENTS
+
+		// Contacts
+		modelBuilder.Entity<TgEfContactEntity>(entity =>
+		{
+			entity.ToTable(TgEfConstants.TableContacts);
+		});
+
+		// Documents
 		modelBuilder.Entity<TgEfDocumentEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableDocuments);
@@ -149,13 +158,13 @@ public class TgEfContext : DbContext
 			.HasForeignKey(document => document.SourceId)
 			.HasPrincipalKey(source => source.Id);
         
-		// FILTERS
+		// Filters
 		modelBuilder.Entity<TgEfFilterEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableFilters);
 		});
         
-		// MESSAGES
+		// Messages
 		modelBuilder.Entity<TgEfMessageEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableMessages);
@@ -166,25 +175,25 @@ public class TgEfContext : DbContext
 			.HasForeignKey(message => message.SourceId)
 			.HasPrincipalKey(source => source.Id);
         
-		// PROXIES
+		// Proxies
 		modelBuilder.Entity<TgEfProxyEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableProxies);
 		});
         
-		// CONTACTS
-		modelBuilder.Entity<TgEfContactEntity>(entity =>
-		{
-			entity.ToTable(TgEfConstants.TableContacts);
-		});
-        
-		// SOURCES
+		// Sources
 		modelBuilder.Entity<TgEfSourceEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableSources);
 		});
-        
-		// VERSIONS
+
+		// Stories
+		modelBuilder.Entity<TgEfStoryEntity>(entity =>
+		{
+			entity.ToTable(TgEfConstants.TableStories);
+		});
+
+		// Versions
 		modelBuilder.Entity<TgEfVersionEntity>(entity =>
 		{
 			entity.ToTable(TgEfConstants.TableVersions);

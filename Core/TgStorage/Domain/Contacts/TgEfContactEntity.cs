@@ -1,10 +1,11 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Sources;
+namespace TgStorage.Domain.Contacts;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
+[Index(nameof(DtChanged))]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(AccessHash))]
 [Index(nameof(IsActive))]
@@ -15,14 +16,12 @@ namespace TgStorage.Domain.Sources;
 [Index(nameof(PhoneNumber))]
 [Index(nameof(Status))]
 [Index(nameof(LangCode))]
-[Index(nameof(DtChanged))]
 public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContactEntity>
 {
 	#region Public and private fields, properties, constructor
 
 	[DefaultValue("00000000-0000-0000-0000-000000000000")]
 	[Key]
-	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Required]
 	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
 	[SQLite.Collation("NOCASE")]
@@ -37,10 +36,10 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 	[ConcurrencyCheck]
 	[Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
 	public long Id { get; set; }
-	
+
 	[DefaultValue(-1)]
-    [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnAccessHash, TypeName = "LONG(20)")]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnAccessHash, TypeName = "LONG(20)")]
 	public long AccessHash { get; set; }
 
 	[DefaultValue(false)]
@@ -54,28 +53,28 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 	public bool IsBot { get; set; }
 
 	[DefaultValue("")]
-    [ConcurrencyCheck]
-    [MaxLength(128)]
-    [Column(TgEfConstants.ColumnFirstName, TypeName = "NVARCHAR(128)")]
-    public string? FirstName { get; set; }
+	[ConcurrencyCheck]
+	[MaxLength(128)]
+	[Column(TgEfConstants.ColumnFirstName, TypeName = "NVARCHAR(128)")]
+	public string? FirstName { get; set; }
 
 	[DefaultValue("")]
-    [ConcurrencyCheck]
-    [MaxLength(128)]
-    [Column(TgEfConstants.ColumnLastName, TypeName = "NVARCHAR(128)")]
-    public string? LastName { get; set; }
+	[ConcurrencyCheck]
+	[MaxLength(128)]
+	[Column(TgEfConstants.ColumnLastName, TypeName = "NVARCHAR(128)")]
+	public string? LastName { get; set; }
 
 	[DefaultValue("")]
-    [ConcurrencyCheck]
-    [MaxLength(128)]
-    [Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
-    public string? UserName { get; set; }
+	[ConcurrencyCheck]
+	[MaxLength(128)]
+	[Column(TgEfConstants.ColumnUserName, TypeName = "NVARCHAR(128)")]
+	public string? UserName { get; set; }
 
 	[DefaultValue("")]
-    [ConcurrencyCheck]
-    [MaxLength(128)]
-    [Column(TgEfConstants.ColumnUserNames, TypeName = "NVARCHAR(128)")]
-    public string? UserNames { get; set; }
+	[ConcurrencyCheck]
+	[MaxLength(128)]
+	[Column(TgEfConstants.ColumnUserNames, TypeName = "NVARCHAR(128)")]
+	public string? UserNames { get; set; }
 
 	[DefaultValue("")]
 	[ConcurrencyCheck]
@@ -122,11 +121,11 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 	[ConcurrencyCheck]
 	[Column(TgEfConstants.ColumnBotActiveUsers, TypeName = "INT(20)")]
 	public int BotActiveUsers { get; set; }
-	
-    public TgEfContactEntity() : base()
-    {
-        Default();
-    }
+
+	public TgEfContactEntity() : base()
+	{
+		Default();
+	}
 
 	#endregion
 
@@ -134,18 +133,18 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 
 	public string ToDebugString() => TgObjectUtils.ToDebugString(this);
 
-    public void Default()
-    {
+	public void Default()
+	{
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		DtChanged = this.GetDefaultPropertyDateTime(nameof(DtChanged));
 		Id = this.GetDefaultPropertyLong(nameof(Id));
 		AccessHash = this.GetDefaultPropertyLong(nameof(AccessHash));
 		IsActive = this.GetDefaultPropertyBool(nameof(IsActive));
 		IsBot = this.GetDefaultPropertyBool(nameof(IsBot));
-	    FirstName = this.GetDefaultPropertyString(nameof(FirstName));
-	    LastName = this.GetDefaultPropertyString(nameof(LastName));
-	    UserName = this.GetDefaultPropertyString(nameof(UserName));
-	    UserNames = this.GetDefaultPropertyString(nameof(UserNames));
+		FirstName = this.GetDefaultPropertyString(nameof(FirstName));
+		LastName = this.GetDefaultPropertyString(nameof(LastName));
+		UserName = this.GetDefaultPropertyString(nameof(UserName));
+		UserNames = this.GetDefaultPropertyString(nameof(UserNames));
 		PhoneNumber = this.GetDefaultPropertyString(nameof(PhoneNumber));
 		Status = this.GetDefaultPropertyString(nameof(Status));
 		RestrictionReason = this.GetDefaultPropertyString(nameof(RestrictionReason));
@@ -154,10 +153,10 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 		BotInfoVersion = this.GetDefaultPropertyString(nameof(BotInfoVersion));
 		BotInlinePlaceholder = this.GetDefaultPropertyString(nameof(BotInlinePlaceholder));
 		BotActiveUsers = this.GetDefaultPropertyInt(nameof(BotActiveUsers));
-    }
+	}
 
-    public TgEfContactEntity Fill(TgEfContactEntity item, bool isUidCopy)
-    {
+	public TgEfContactEntity Fill(TgEfContactEntity item, bool isUidCopy)
+	{
 		if (isUidCopy)
 			Uid = item.Uid;
 		DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now;
@@ -177,7 +176,7 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 		BotInfoVersion = item.BotInfoVersion;
 		BotInlinePlaceholder = item.BotInlinePlaceholder;
 		BotActiveUsers = item.BotActiveUsers;
-        return this;
+		return this;
 	}
 
 	public string ToConsoleString() => $"{Id} " +

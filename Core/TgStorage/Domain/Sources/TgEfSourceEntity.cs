@@ -5,6 +5,7 @@ namespace TgStorage.Domain.Sources;
 
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
+[Index(nameof(DtChanged))]
 [Index(nameof(Id), IsUnique = true)]
 [Index(nameof(UserName))]
 [Index(nameof(Title))]
@@ -12,14 +13,12 @@ namespace TgStorage.Domain.Sources;
 [Index(nameof(Directory))]
 [Index(nameof(FirstId))]
 [Index(nameof(IsAutoUpdate))]
-[Index(nameof(DtChanged))]
 public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEntity>
 {
 	#region Public and private fields, properties, constructor
 
 	[DefaultValue("00000000-0000-0000-0000-000000000000")]
 	[Key]
-	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Required]
 	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
 	[SQLite.Collation("NOCASE")]

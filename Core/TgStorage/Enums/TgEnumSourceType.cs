@@ -11,4 +11,5 @@ public enum TgEnumSourceType
     ChatBase = 3,
     Channel = 4,
     Contact = 5,
+	Story = 6,
 }

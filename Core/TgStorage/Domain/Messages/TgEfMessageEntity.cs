@@ -17,7 +17,6 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
 
 	[DefaultValue("00000000-0000-0000-0000-000000000000")]
 	[Key]
-	//[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Required]
 	[Column(TgEfConstants.ColumnUid, TypeName = "CHAR(36)")]
 	[SQLite.Collation("NOCASE")]

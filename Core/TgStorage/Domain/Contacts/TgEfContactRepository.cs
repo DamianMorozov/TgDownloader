@@ -1,7 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Sources;
+namespace TgStorage.Domain.Contacts;
 
 public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfContactEntity>(efContext)
 {
@@ -139,10 +139,10 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<int> GetCountAsync() => await EfContext.Contacts.AsNoTracking().CountAsync();
 
-	public override int GetCount(Expression<Func<TgEfContactEntity, bool>> where) => 
+	public override int GetCount(Expression<Func<TgEfContactEntity, bool>> where) =>
 		EfContext.Contacts.AsNoTracking().Where(where).Count();
 
-	public override async Task<int> GetCountAsync(Expression<Func<TgEfContactEntity, bool>> where) => 
+	public override async Task<int> GetCountAsync(Expression<Func<TgEfContactEntity, bool>> where) =>
 		await EfContext.Contacts.AsNoTracking().Where(where).CountAsync();
 
 	#endregion

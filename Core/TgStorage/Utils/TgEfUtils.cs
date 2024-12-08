@@ -57,6 +57,7 @@ public static class TgEfUtils
 			TgEfFilterEntity filter => new TgEfFilterValidator().Validate(filter),
 			TgEfMessageEntity message => new TgEfMessageValidator().Validate(message),
 			TgEfSourceEntity source => new TgEfSourceValidator().Validate(source),
+			TgEfStoryEntity story => new TgEfStoryValidator().Validate(story),
 			TgEfProxyEntity proxy => new TgEfProxyValidator().Validate(proxy),
 			TgEfVersionEntity version => new TgEfVersionValidator().Validate(version),
 			_ => new() { Errors = [new ValidationFailure(nameof(item), "Type error!")] }

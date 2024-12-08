@@ -22,8 +22,10 @@ public enum TgEnumMenuDownload
     SearchChats,
 	SearchDialogs,
 	SearchContacts,
+	SearchStories,
     ViewSources,
 	ViewContacts,
+	ViewStories,
     ViewVersions,
     MarkHistoryRead,
 }
