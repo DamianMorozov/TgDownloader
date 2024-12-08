@@ -326,6 +326,9 @@
   <data name="ExpanderSettingInStorage.Header" xml:space="preserve">
     <value>Настройки в хранилище</value>
   </data>
+  <data name="ExpanderDataInStorage.Header" xml:space="preserve">
+    <value>Данные в хранилище</value>
+  </data>
   <data name="ExpanderSettingWithoutSaving.Header" xml:space="preserve">
     <value>Настройки без сохранения</value>
   </data>
@@ -481,5 +484,14 @@
   </data>
   <data name="ProductAssignment.Text" xml:space="preserve">
     <value>Упорядоченное скачивание файлов из ТГ каналов/групп/чатов (к которым есть доступ под своим аккаунтом). Файлы из каждого источника можно скачивать в отдельный каталог. Можно указать какие источники включить в авто-скачивание. Есть многопоточный режим скачивания. Консольная версия практически завершена (продакшн). Десктоп версии находится в активной стадии разработки (превью).</value>
+  </data>
+  <data name="TemplateColumnEdit.Header" xml:space="preserve">
+    <value>Править</value>
+  </data>
+  <data name="TemplateColumnUpdate.Header" xml:space="preserve">
+    <value>Обновить из ТГ</value>
+  </data>
+  <data name="TemplateColumnDownload.Header" xml:space="preserve">
+    <value>Скачать</value>
   </data>
 </root>

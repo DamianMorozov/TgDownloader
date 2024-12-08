@@ -1,7 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -9,8 +8,8 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
-	public ICommand SettingsDefaultCommand { get; }
-	public ICommand SettingsSaveCommand { get; }
+	public IRelayCommand SettingsDefaultCommand { get; }
+	public IRelayCommand SettingsSaveCommand { get; }
 
 	public TgSettingsViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{

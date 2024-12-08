@@ -55,12 +55,12 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	private string _newPhoneNumber = "";
 	private string _newVerificationCode = "";
 
-	public ICommand ClientConnectCommand { get; }
-    public ICommand ClientDisconnectCommand { get; }
-    public ICommand AppLoadCommand { get; }
-    public ICommand AppSaveCommand { get; }
-    public ICommand AppClearCommand { get; }
-    public ICommand AppDeleteCommand { get; }
+	public IRelayCommand ClientConnectCommand { get; }
+    public IRelayCommand ClientDisconnectCommand { get; }
+    public IRelayCommand AppLoadCommand { get; }
+    public IRelayCommand AppSaveCommand { get; }
+    public IRelayCommand AppClearCommand { get; }
+    public IRelayCommand AppDeleteCommand { get; }
 
 
     public TgClientViewModel(ITgSettingsService settingsService) : base(settingsService)

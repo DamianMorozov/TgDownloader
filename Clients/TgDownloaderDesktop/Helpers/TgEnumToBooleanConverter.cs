@@ -32,7 +32,6 @@ public sealed class TgEnumToBooleanConverter : IValueConverter
 		{
 			return Enum.Parse(typeof(ElementTheme), enumString);
 		}
-
 		throw new ArgumentException("ExceptionEnumToBooleanConverterParameterMustBeAnEnumName");
 	}
 }
