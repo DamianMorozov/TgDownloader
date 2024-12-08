@@ -35,7 +35,7 @@ internal partial class TgMenuHelper
 
     private const string DownloadingFile = "Downloading file";
 
-	public async Task RunActionProgressAsync(TgDownloadSettingsViewModel tgDownloadSettings, Action<TgDownloadSettingsViewModel> action,
+	public async Task RunTaskProgressAsync(TgDownloadSettingsViewModel tgDownloadSettings, Func<TgDownloadSettingsViewModel, Task> task,
         bool isSkipCheckTgSettings, bool isScanCount)
     {
         if (!isSkipCheckTgSettings && !await CheckTgSettingsWithWarningAsync(tgDownloadSettings))
@@ -131,8 +131,8 @@ internal partial class TgMenuHelper
 				TgClient.SetupUpdateTitle(UpdateConsoleTitleAsync);
                 TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
                 TgClient.SetupUpdateStateFile(UpdateStateFileAsync);
-				// Action
-				action(tgDownloadSettings);
+				// Task
+				task(tgDownloadSettings).GetAwaiter().GetResult();
 				sw.Stop();
 				if (progressTaskSource.IsStarted)
 					progressTaskSource.StopTask();
@@ -155,7 +155,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public async Task RunActionStatusAsync(TgDownloadSettingsViewModel tgDownloadSettings, Action<TgDownloadSettingsViewModel> action,
+	public async Task RunTaskStatusAsync(TgDownloadSettingsViewModel tgDownloadSettings, Func<TgDownloadSettingsViewModel, Task> task,
 		bool isSkipCheckTgSettings, bool isScanCount, bool isWaitComplete)
 	{
 		if (!isSkipCheckTgSettings && !await CheckTgSettingsWithWarningAsync(tgDownloadSettings))
@@ -164,7 +164,7 @@ internal partial class TgMenuHelper
 			.AutoRefresh(false)
 			.Spinner(Spinner.Known.Star)
 			.SpinnerStyle(Style.Parse("green"))
-			.Start("Thinking...", statusContext =>
+			.Start("Thinking...", (statusContext) =>
 			{
 				statusContext.Spinner(Spinner.Known.Star);
 				statusContext.SpinnerStyle(Style.Parse("green"));
@@ -186,9 +186,24 @@ internal partial class TgMenuHelper
 					if (string.IsNullOrEmpty(message))
 						return;
 					statusContext.Status(TgLog.GetMarkupString(isScanCount
-						//? $"{GetStatus(tgDownloadSettings.SourceVm.SourceScanCount, messageId)} | {message} | Progress {tgDownloadSettings.SourceVm.ProgressPercentString}"
 						? $"{GetStatus(tgDownloadSettings.SourceVm.SourceScanCount, messageId)} | {message}"
 						: GetFileStatus(message)));
+					statusContext.Refresh();
+					await Task.CompletedTask;
+				}
+				// Update contact
+				async Task UpdateStateContactAsync(long id, string firstName, string lastName, string userName)
+				{
+					statusContext.Status(TgLog.GetMarkupString(
+						$"{GetStatus(tgDownloadSettings.ContactVm.SourceScanCount, id)} | {firstName} | {lastName} | {userName}"));
+					statusContext.Refresh();
+					await Task.CompletedTask;
+				}
+				// Update story
+				async Task UpdateStateStoryAsync(long id, string caption)
+				{
+					statusContext.Status(TgLog.GetMarkupString(
+						$"{GetStatus(tgDownloadSettings.StoryVm.SourceScanCount, id)} | {caption}"));
 					statusContext.Refresh();
 					await Task.CompletedTask;
 				}
@@ -235,11 +250,13 @@ internal partial class TgMenuHelper
 				// Setup
 				TgClient.SetupUpdateTitle(UpdateConsoleTitleAsync);
 				TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
+				TgClient.SetupUpdateStateContact(UpdateStateContactAsync);
+				TgClient.SetupUpdateStateStory(UpdateStateStoryAsync);
 				TgClient.SetupUpdateStateFile(UpdateStateFileAsync);
 				TgClient.SetupUpdateStateMessage(UpdateStateMessageAsync);
-				// Action
+				// Task
 				var sw = Stopwatch.StartNew();
-				action(tgDownloadSettings);
+				task(tgDownloadSettings).GetAwaiter().GetResult();
 				sw.Stop();
 				// Update state source
 				UpdateStateSourceAsync(0, 0, isScanCount

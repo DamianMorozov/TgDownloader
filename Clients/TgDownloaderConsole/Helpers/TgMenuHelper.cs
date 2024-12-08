@@ -2,6 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using TgStorage.Domain.Contacts;
+using TgStorage.Domain.Stories;
+
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -17,11 +20,13 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal TgEnumMenuMain Value { get; set; }
 	private TgEfContext EfContext { get; } = TgEfUtils.CreateEfContext();
 	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfContactRepository ContactRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfDocumentRepository DocumentRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfMessageRepository MessageRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfStoryRepository StoryRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
 
 	#endregion
@@ -73,8 +78,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal void ShowTableAdvanced(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsAdvanced);
 
+	internal void ShowTableViewContacts(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedContacts);
+
 	internal void ShowTableViewSources(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSources);
+
+	internal void ShowTableViewStories(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedStories);
 
 	internal void ShowTableViewVersions(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedVersions);
@@ -252,7 +263,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			}
 		}
 
-		// Exceptions.
+		// Exceptions
 		if (TgClient.ProxyException.IsExist)
 		{
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxyException)),
@@ -267,9 +278,24 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 	}
 
+	/// <summary> Contact info </summary>
+	internal void FillTableRowsDownloadedContacts(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	{
+		if (!tgDownloadSettings.ContactVm.IsReady)
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsContact)),
+				new Markup(TgLocale.SettingsIsNeedSetup));
+		else
+		{
+			var contact = ContactRepository.GetAsync(new()
+			{ Id = tgDownloadSettings.ContactVm.Id }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsContact)),
+				new Markup(TgLog.GetMarkupString(contact.ToConsoleString())));
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
+				new Markup(TgDataFormatUtils.GetDtFormat(contact.DtChanged)));
+		}
+	}
+
 	/// <summary> Source info </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
 	internal void FillTableRowsDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
@@ -277,12 +303,29 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = SourceRepository.GetAsync(new() 
+			var source = SourceRepository.GetAsync(new() 
 				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
+		}
+	}
+
+	/// <summary> Story info </summary>
+	internal void FillTableRowsDownloadedStories(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	{
+		if (!tgDownloadSettings.StoryVm.IsReady)
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsStory)),
+				new Markup(TgLocale.SettingsIsNeedSetup));
+		else
+		{
+			var story = StoryRepository.GetAsync(new() 
+				{ Id = tgDownloadSettings.StoryVm.Id }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsStory)),
+				new Markup(TgLog.GetMarkupString(story.ToConsoleString())));
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
+				new Markup(TgDataFormatUtils.GetDtFormat(story.DtChanged)));
 		}
 	}
 
@@ -380,11 +423,23 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 	}
 
-    /// <summary> Source ID/username </summary>
+	/// <summary> User ID/username </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
+	internal void FillTableRowsViewDownloadedContacts(TgDownloadSettingsViewModel tgDownloadSettings, Table table) =>
+		FillTableRowsDownloadedContacts(tgDownloadSettings, table);
+
+	/// <summary> Source ID/username </summary>
+	/// <param name="tgDownloadSettings"></param>
+	/// <param name="table"></param>
+	internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        FillTableRowsDownloadedSources(tgDownloadSettings, table);
+
+    /// <summary> User ID/username </summary>
     /// <param name="tgDownloadSettings"></param>
     /// <param name="table"></param>
-    internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
-        FillTableRowsDownloadedSources(tgDownloadSettings, table);
+    internal void FillTableRowsViewDownloadedStories(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        FillTableRowsDownloadedStories(tgDownloadSettings, table);
 
     /// <summary> Version ID/username </summary>
     /// <param name="tgDownloadSettings"></param>
@@ -406,6 +461,28 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	public bool AskQuestionReturnNegative(string question, bool isTrueFirst = false) =>
 		!AskQuestionReturnPositive(question, isTrueFirst);
 
+	public TgEfContactEntity GetContactFromEnumerable(string title, IEnumerable<TgEfContactEntity> contacts)
+	{
+		contacts = contacts.OrderBy(x => x.UserName).ThenBy(x => x.PhoneNumber);
+		List<string> list = [TgLocale.MenuMainReturn];
+		list.AddRange(contacts.Select(contact => TgLog.GetMarkupString(contact.ToConsoleString())));
+		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
+			.Title(title)
+			.PageSize(Console.WindowHeight - 17)
+			.AddChoices(list));
+		if (!Equals(sourceString, TgLocale.MenuMainReturn))
+		{
+			string[] parts = sourceString.Split('|');
+			if (parts.Length > 3)
+			{
+				string sourceId = parts[2].TrimEnd(' ');
+				if (long.TryParse(sourceId, out long id))
+					return ContactRepository.Get(new() { Id = id }, isNoTracking: true).Item;
+			}
+		}
+		return ContactRepository.GetNew(isNoTracking: true).Item;
+	}
+
 	public TgEfSourceEntity GetSourceFromEnumerable(string title, IEnumerable<TgEfSourceEntity> sources)
 	{
 		sources = sources.OrderBy(x => x.UserName).ThenBy(x => x.Title);
@@ -426,6 +503,28 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			}
 		}
 		return SourceRepository.GetNew(isNoTracking: true).Item;
+	}
+
+	public TgEfStoryEntity GetStoryFromEnumerable(string title, IEnumerable<TgEfStoryEntity> stories)
+	{
+		stories = stories.OrderBy(x => x.FromName);
+		List<string> list = [TgLocale.MenuMainReturn];
+		list.AddRange(stories.Select(story => TgLog.GetMarkupString(story.ToConsoleString())));
+		string storyString = AnsiConsole.Prompt(new SelectionPrompt<string>()
+			.Title(title)
+			.PageSize(Console.WindowHeight - 17)
+			.AddChoices(list));
+		if (!Equals(storyString, TgLocale.MenuMainReturn))
+		{
+			string[] parts = storyString.Split('|');
+			if (parts.Length > 3)
+			{
+				string sourceId = parts[2].TrimEnd(' ');
+				if (long.TryParse(sourceId, out long id))
+					return StoryRepository.Get(new() { Id = id }, isNoTracking: true).Item;
+			}
+		}
+		return StoryRepository.GetNew(isNoTracking: true).Item;
 	}
 
 	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)

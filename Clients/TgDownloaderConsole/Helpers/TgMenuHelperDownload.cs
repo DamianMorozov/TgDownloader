@@ -67,8 +67,7 @@ internal partial class TgMenuHelper
 					tgDownloadSettings = await SetupDownloadSourceAsync();
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdAuto:
-					await RunActionStatusAsync(tgDownloadSettings, 
-						tgDownloadSettings2 => SetupDownloadSourceFirstIdAutoAsync(tgDownloadSettings2).GetAwaiter().GetResult(), isSkipCheckTgSettings: true, 
+					await RunTaskStatusAsync(tgDownloadSettings, SetupDownloadSourceFirstIdAutoAsync, isSkipCheckTgSettings: true, 
 						isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
@@ -95,12 +94,10 @@ internal partial class TgMenuHelper
 					SetTgDownloadCountThreads(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SettingsSave:
-					await RunActionStatusAsync(tgDownloadSettings, tgDownloadSettings2 => UpdateSourceWithSettingsAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
-						isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: false);
+					await RunTaskStatusAsync(tgDownloadSettings, UpdateSourceWithSettingsAsync, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: false);
 					break;
 				case TgEnumMenuDownload.ManualDownload:
-					await RunActionProgressAsync(tgDownloadSettings, tgDownloadSettings2 => ManualDownloadAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
-						isSkipCheckTgSettings: false, isScanCount: false);
+					await RunTaskProgressAsync(tgDownloadSettings, ManualDownloadAsync, isSkipCheckTgSettings: false, isScanCount: false);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);

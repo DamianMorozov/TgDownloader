@@ -19,26 +19,38 @@ internal partial class TgMenuHelper
 					TgLocale.MenuMainReturn,
 					TgLocale.MenuAutoDownload,
 					TgLocale.MenuAutoViewEvents,
-					TgLocale.MenuScanChats,
-					TgLocale.MenuScanDialogs,
+					TgLocale.MenuSearchContacts,
+					TgLocale.MenuSearchChats,
+					TgLocale.MenuSearchDialogs,
+					TgLocale.MenuSearchStories,
 					TgLocale.MenuMarkAllMessagesAsRead,
-					TgLocale.MenuViewVersions, 
-					TgLocale.MenuViewSources
+					TgLocale.MenuViewVersions,
+					TgLocale.MenuViewContacts,
+					TgLocale.MenuViewSources,
+					TgLocale.MenuViewStories
 				));
 		if (prompt.Equals(TgLocale.MenuAutoDownload))
 			return TgEnumMenuDownload.AutoDownload;
 		if (prompt.Equals(TgLocale.MenuAutoViewEvents))
 			return TgEnumMenuDownload.AutoViewEvents;
-		if (prompt.Equals(TgLocale.MenuScanChats))
-			return TgEnumMenuDownload.ScanChats;
-		if (prompt.Equals(TgLocale.MenuScanDialogs))
-			return TgEnumMenuDownload.ScanDialogs;
+		if (prompt.Equals(TgLocale.MenuSearchChats))
+			return TgEnumMenuDownload.SearchChats;
+		if (prompt.Equals(TgLocale.MenuSearchDialogs))
+			return TgEnumMenuDownload.SearchDialogs;
+		if (prompt.Equals(TgLocale.MenuSearchContacts))
+			return TgEnumMenuDownload.SearchContacts;
+		if (prompt.Equals(TgLocale.MenuSearchStories))
+			return TgEnumMenuDownload.SearchStories;
 		if (prompt.Equals(TgLocale.MenuMarkAllMessagesAsRead))
 			return TgEnumMenuDownload.MarkHistoryRead;
 		if (prompt.Equals(TgLocale.MenuViewVersions))
 			return TgEnumMenuDownload.ViewVersions;
+		if (prompt.Equals(TgLocale.MenuViewContacts))
+			return TgEnumMenuDownload.ViewContacts;
 		if (prompt.Equals(TgLocale.MenuViewSources))
 			return TgEnumMenuDownload.ViewSources;
+		if (prompt.Equals(TgLocale.MenuViewStories))
+			return TgEnumMenuDownload.ViewStories;
 		return TgEnumMenuDownload.Return;
 	}
 
@@ -52,24 +64,35 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuDownload.AutoDownload:
-					await RunActionStatusAsync(tgDownloadSettings,
-						tgDownloadSettings2 => AutoDownloadAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
+					await RunTaskStatusAsync(tgDownloadSettings, AutoDownloadAsync, 
 						isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.AutoViewEvents:
-					await RunActionStatusAsync(tgDownloadSettings, AutoViewEvents, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
+					await RunTaskStatusAsync(tgDownloadSettings, AutoViewEventsAsync, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 					break;
-				case TgEnumMenuDownload.ScanChats:
-					await ScanSourcesAsync(tgDownloadSettings, TgEnumSourceType.Chat);
+				case TgEnumMenuDownload.SearchChats:
+					await SearchSourcesAsync(tgDownloadSettings, TgEnumSourceType.Chat);
 					break;
-				case TgEnumMenuDownload.ScanDialogs:
-					await ScanSourcesAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
+				case TgEnumMenuDownload.SearchDialogs:
+					await SearchSourcesAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
+					break;
+				case TgEnumMenuDownload.SearchContacts:
+					await SearchSourcesAsync(tgDownloadSettings, TgEnumSourceType.Contact);
+					break;
+				case TgEnumMenuDownload.SearchStories:
+					await SearchSourcesAsync(tgDownloadSettings, TgEnumSourceType.Story);
 					break;
 				case TgEnumMenuDownload.MarkHistoryRead:
 					await MarkHistoryReadAsync(tgDownloadSettings);
 					break;
+				case TgEnumMenuDownload.ViewContacts:
+					await ViewContactsAsync(tgDownloadSettings);
+					break;
 				case TgEnumMenuDownload.ViewSources:
                     await ViewSourcesAsync(tgDownloadSettings);
+					break;
+				case TgEnumMenuDownload.ViewStories:
+                    await ViewStoriesAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.ViewVersions:
                     ViewVersions(tgDownloadSettings);
@@ -78,7 +101,7 @@ internal partial class TgMenuHelper
 		} while (menu is not TgEnumMenuDownload.Return);
 	}
 
-	private async Task ScanSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
+	private async Task SearchSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		ShowTableAdvanced(tgDownloadSettings);
 		if (!TgClient.IsReady)
@@ -91,29 +114,67 @@ internal partial class TgMenuHelper
 		switch (sourceType)
 		{
 			case TgEnumSourceType.Chat:
-				await RunActionStatusAsync(tgDownloadSettings, ScanSourcesChatsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesChatsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 			case TgEnumSourceType.Dialog:
-				await RunActionStatusAsync(tgDownloadSettings, ScanSourcesDialogsWithSave, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesDialogsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				break;
+			case TgEnumSourceType.Contact:
+				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesContactsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
+				break;
+			case TgEnumSourceType.Story:
+				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesStoriesWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 				break;
 		}
 	}
 
-	private void ScanSourcesChatsWithSave(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat).GetAwaiter().GetResult();
+	private async Task SearchSourcesChatsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat);
 
-	private void ScanSourcesDialogsWithSave(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        TgClient.ScanSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog).GetAwaiter().GetResult();
+	private async Task SearchSourcesDialogsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
+
+	private async Task SearchSourcesContactsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Contact);
+
+	private async Task SearchSourcesStoriesWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Story);
+
+	private async Task ViewContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		ShowTableViewContacts(tgDownloadSettings);
+		var storageResult = await ContactRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var contact = GetContactFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
+		if (contact.Uid != Guid.Empty)
+		{
+			Value = TgEnumMenuMain.Download;
+			tgDownloadSettings = await SetupDownloadSourceAsync(contact.Id);
+			await SetupDownloadAsync(tgDownloadSettings);
+		}
+	}
 
 	private async Task ViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		ShowTableViewSources(tgDownloadSettings);
-		TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
-		TgEfSourceEntity source= GetSourceFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
+		var storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var source = GetSourceFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;
             tgDownloadSettings = await SetupDownloadSourceAsync(source.Id);
+			await SetupDownloadAsync(tgDownloadSettings);
+		}
+	}
+
+	private async Task ViewStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	{
+		ShowTableViewStories(tgDownloadSettings);
+		var storageResult = await StoryRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var story = GetStoryFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
+		if (story.Uid != Guid.Empty)
+		{
+			Value = TgEnumMenuMain.Download;
+			tgDownloadSettings = await SetupDownloadSourceAsync(story.Id);
 			await SetupDownloadAsync(tgDownloadSettings);
 		}
 	}
@@ -126,8 +187,7 @@ internal partial class TgMenuHelper
 	}
 
 	private async Task MarkHistoryReadAsync(TgDownloadSettingsViewModel tgDownloadSettings) => 
-		await RunActionStatusAsync(tgDownloadSettings, tgDownloadSettings2 => MarkHistoryReadCoreAsync(tgDownloadSettings2).GetAwaiter().GetResult(), 
-			isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
+		await RunTaskStatusAsync(tgDownloadSettings, MarkHistoryReadCoreAsync, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: true);
 
 	private async Task AutoDownloadAsync(TgDownloadSettingsViewModel _)
 	{
@@ -148,7 +208,7 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void AutoViewEvents(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task AutoViewEventsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
 		TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, 
@@ -156,6 +216,7 @@ internal partial class TgMenuHelper
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();
 		TgClient.IsUpdateStatus = false;
+		await Task.CompletedTask;
 	}
 
 	#endregion

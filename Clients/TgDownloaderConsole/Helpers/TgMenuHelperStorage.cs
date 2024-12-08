@@ -20,7 +20,6 @@ internal partial class TgMenuHelper
 					TgLocale.MenuStorageDbCreateNew,
 					TgLocale.MenuStorageDbDeleteExists,
 					TgLocale.MenuStorageTablesVersionsView,
-					//TgLocale.MenuStorageTablesClear,
 					TgLocale.MenuStorageTablesCompact
 				));
 		if (prompt.Equals(TgLocale.MenuStorageDbBackup))
@@ -31,8 +30,6 @@ internal partial class TgMenuHelper
 			return TgEnumMenuStorage.DbDeleteExists;
 		if (prompt.Equals(TgLocale.MenuStorageTablesVersionsView))
 			return TgEnumMenuStorage.TablesVersionsView;
-		//if (prompt.Equals(TgLocale.MenuStorageTablesClear))
-		//	return TgEnumMenuStorage.TablesClear;
 		if (prompt.Equals(TgLocale.MenuStorageTablesCompact))
 			return TgEnumMenuStorage.TablesCompact;
 		return TgEnumMenuStorage.Return;
