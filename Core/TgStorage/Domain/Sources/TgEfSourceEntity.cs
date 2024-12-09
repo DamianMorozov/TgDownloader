@@ -7,6 +7,8 @@ namespace TgStorage.Domain.Sources;
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(DtChanged))]
 [Index(nameof(Id), IsUnique = true)]
+[Index(nameof(AccessHash))]
+[Index(nameof(IsActive))]
 [Index(nameof(UserName))]
 [Index(nameof(Title))]
 [Index(nameof(Count))]
@@ -33,6 +35,16 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnId, TypeName = "LONG(20)")]
 	public long Id { get; set; }
+
+	[DefaultValue(-1)]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnAccessHash, TypeName = "LONG(20)")]
+	public long AccessHash { get; set; }
+
+	[DefaultValue(false)]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnIsActive, TypeName = "BIT")]
+	public bool IsActive { get; set; }
 
 	[DefaultValue("UserName")]
     [ConcurrencyCheck]
@@ -95,7 +107,9 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 		Uid = this.GetDefaultPropertyGuid(nameof(Uid));
 		DtChanged = this.GetDefaultPropertyDateTime(nameof(DtChanged));
 		Id = this.GetDefaultPropertyLong(nameof(Id));
-	    UserName = this.GetDefaultPropertyString(nameof(UserName));
+		AccessHash = this.GetDefaultPropertyLong(nameof(AccessHash));
+		IsActive = this.GetDefaultPropertyBool(nameof(IsActive));
+		UserName = this.GetDefaultPropertyString(nameof(UserName));
 	    Title = this.GetDefaultPropertyString(nameof(Title));
 	    About = this.GetDefaultPropertyString(nameof(About));
 	    Count = this.GetDefaultPropertyInt(nameof(Count));
@@ -112,6 +126,8 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 			Uid = item.Uid;
 		DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now;
 		Id = item.Id;
+		AccessHash = item.AccessHash;
+		IsActive = item.IsActive;
 		FirstId = item.FirstId;
 		IsAutoUpdate = item.IsAutoUpdate;
 		UserName = item.UserName;
@@ -124,15 +140,13 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 
 	public string ToConsoleString()
 	{
-		var userName = string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30).TrimEnd();
-		return string.IsNullOrEmpty(userName)
-            ? $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} " +
-		       $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
-		       $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}"
-            : $"{GetPercentCountString()} | {(IsAutoUpdate ? "a | " : "")} | {Id} " +
-		       $"{userName} | " +
-		       $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
-		       $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
+		return $"{Id,11} | " +
+			$"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 25).TrimEnd()),-25} | " +
+			$"{(IsActive ? "active" : ""),-6} | " +
+			$"{GetPercentCountString()} | " +
+			$"{(IsAutoUpdate ? "auto" : ""),-4} | {Id} " +
+		    $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
+		    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 	}
 
 	public string GetPercentCountString()

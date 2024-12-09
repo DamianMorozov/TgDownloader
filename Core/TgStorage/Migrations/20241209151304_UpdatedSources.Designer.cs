@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TgStorage.Domain;
 
@@ -10,9 +11,11 @@ using TgStorage.Domain;
 namespace TgStorage.Migrations
 {
     [DbContext(typeof(TgEfContext))]
-    partial class TgEfContextModelSnapshot : ModelSnapshot
+    [Migration("20241209151304_UpdatedSources")]
+    partial class UpdatedSources
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
