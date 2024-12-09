@@ -82,7 +82,7 @@ public sealed class TgAppSettingsHelper : ITgHelper
 			pos++;
 		}
 		if (count is 3)
-			AppVersion = AppVersion.Substring(0, pos);
+			AppVersion = AppVersion[..pos];
 		AppVersion = $"v{AppVersion}";
 	}
 

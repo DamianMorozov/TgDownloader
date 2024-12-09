@@ -138,16 +138,12 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
         return this;
 	}
 
-	public string ToConsoleString()
-	{
-		return $"{Id,11} | " +
-			$"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 25).TrimEnd()),-25} | " +
-			$"{(IsActive ? "active" : ""),-6} | " +
-			$"{GetPercentCountString()} | " +
-			$"{(IsAutoUpdate ? "auto" : ""),-4} | {Id} " +
-		    $"{(string.IsNullOrEmpty(Title) ? "" : TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd())} | " +
-		    $"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
-	}
+	public string ToConsoleString() => $"{Id,11} | " +
+		$"{TgDataFormatUtils.GetFormatString(UserName, 25).TrimEnd(),-25} | " +
+		$"{(IsActive ? "active" : ""),-6} | " +
+		$"{GetPercentCountString()} | " +
+		$"{TgDataFormatUtils.GetFormatString(Title, 30).TrimEnd(),30} | " +
+		$"{FirstId} {TgLocaleHelper.Instance.From} {Count} {TgLocaleHelper.Instance.Messages}";
 
 	public string GetPercentCountString()
     {

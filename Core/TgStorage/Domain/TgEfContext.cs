@@ -200,8 +200,6 @@ public class TgEfContext : DbContext
 		});
     }
 
-    public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
-
     /// <summary> Check table exists </summary>
     public bool IsTableExists(string tableName)
     {

@@ -37,7 +37,7 @@ public static class TgCommonUtils
         string versionStr = version.ToString();
         int lastDotIndex = versionStr.LastIndexOf('.');
         if (lastDotIndex < 0) return version;
-        versionStr = versionStr.Substring(0, lastDotIndex);
+        versionStr = versionStr[..lastDotIndex];
         return Version.Parse(versionStr);
     }
 

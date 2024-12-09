@@ -18,7 +18,6 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	#endregion
 
 	#region Public and private fields, properties, constructor
-
 	private static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	private TgEfContactRepository ContactsRepository { get; } = new(TgEfUtils.CreateEfContext());
@@ -1156,8 +1155,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			storyNew.Type = message.Type;
 			storyNew.Offset = message.Offset;
 			storyNew.Length = message.Length;
-			storyNew.Message = message.ToString();
-			// Swtch message type
+			//storyNew.Message = message.ToString();
+			// Switch message type
 			TgEfStoryEntityByMessageType(storyNew, message);
 		}
 		// Switch media type
@@ -1180,6 +1179,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			case var cls when cls == typeof(MessageEntityBotCommand):
 				break;
 			case var cls when cls == typeof(MessageEntityUrl):
+				//storyNew.Message = ((MessageEntityUrl)message);
 				break;
 			case var cls when cls == typeof(MessageEntityEmail):
 				break;

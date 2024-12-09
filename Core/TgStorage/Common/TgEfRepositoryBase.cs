@@ -28,7 +28,6 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	private TgEfStorageResult<TEntity> Get(Guid uid)
 	{
-		//TEntity? item = EfContext.Find<TEntity>(uid);
 		TEntity? item = default;
 		switch (typeof(TEntity))
 		{
@@ -41,6 +40,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 				TgEfDocumentEntity? document = EfContext.Documents.Find(uid);
 				if (document is TEntity documentEntity)
 					item = documentEntity;
+				break;
+			case var cls when cls == typeof(TgEfContactEntity):
+				TgEfContactEntity? contact = EfContext.Contacts.Find(uid);
+				if (contact is TEntity contactEntity)
+					item = contactEntity;
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
 				TgEfFilterEntity? filter = EfContext.Filters.Find(uid);
@@ -62,6 +66,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 				if (source is TEntity sourceEntity)
 					item = sourceEntity;
 				break;
+			case var cls when cls == typeof(TgEfStoryEntity):
+				TgEfStoryEntity? story = EfContext.Stories.Find(uid);
+				if (story is TEntity storyEntity)
+					item = storyEntity;
+				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
 				TgEfVersionEntity? version = EfContext.Versions.Find(uid);
 				if (version is TEntity versionEntity)
@@ -75,7 +84,6 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	private async Task<TgEfStorageResult<TEntity>> GetAsync(Guid uid)
 	{
-		//TEntity? item = await EfContext.FindAsync<TEntity>(uid);
 		TEntity? item = default;
 		switch (typeof(TEntity))
 		{
@@ -88,6 +96,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 				TgEfDocumentEntity? document = await EfContext.Documents.FindAsync(uid);
 				if (document is TEntity documentEntity)
 					item = documentEntity;
+				break;
+			case var cls when cls == typeof(TgEfContactEntity):
+				TgEfContactEntity? contact = await EfContext.Contacts.FindAsync(uid);
+				if (contact is TEntity contactEntity)
+					item = contactEntity;
 				break;
 			case var cls when cls == typeof(TgEfFilterEntity):
 				TgEfFilterEntity? filter = await EfContext.Filters.FindAsync(uid);
@@ -108,6 +121,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 				TgEfSourceEntity? source = await EfContext.Sources.FindAsync(uid);
 				if (source is TEntity sourceEntity)
 					item = sourceEntity;
+				break;
+			case var cls when cls == typeof(TgEfStoryEntity):
+				TgEfStoryEntity? story = await EfContext.Stories.FindAsync(uid);
+				if (story is TEntity storyEntity)
+					item = storyEntity;
 				break;
 			case var cls when cls == typeof(TgEfVersionEntity):
 				TgEfVersionEntity? version = await EfContext.Versions.FindAsync(uid);

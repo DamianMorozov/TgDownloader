@@ -486,9 +486,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		if (!Equals(sourceString, TgLocale.MenuMainReturn))
 		{
 			string[] parts = sourceString.Split('|');
-			if (parts.Length > 3)
+			if (parts.Length != 0)
 			{
-				string sourceId = parts[2].TrimEnd(' ');
+				string sourceId = parts[0].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
 					return SourceRepository.Get(new() { Id = id }, isNoTracking: true).Item;
 			}
@@ -520,9 +520,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)
 	{
-		List<TgEfVersionEntity> versionsList = versions.OrderBy(x => x.Version).ToList();
+		List<TgEfVersionEntity> versionsList = [.. versions.OrderBy(x => x.Version)];
 		List<string> list = [TgLocale.MenuMainReturn];
-		list.AddRange(versionsList.Select(version => TgLog.GetMarkupString(EfContext.ToConsoleString(version))));
+		list.AddRange(versionsList.Select(version => TgLog.GetMarkupString(version.ToConsoleString())));
 		AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(Console.WindowHeight - 17)
