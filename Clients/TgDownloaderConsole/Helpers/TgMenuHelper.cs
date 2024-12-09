@@ -35,8 +35,8 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	public string ToDebugString() => TgLocale.UseOverrideMethod;
 
-	internal void ShowTableCore(TgDownloadSettingsViewModel tgDownloadSettings, string title, Action<Table> fillTableColumns,
-		Action<TgDownloadSettingsViewModel, Table> fillTableRows)
+	internal async Task ShowTableCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings, string title, Action<Table> fillTableColumns,
+		Func<TgDownloadSettingsViewModel, Table, Task> fillTableRowsAsync)
 	{
 		AnsiConsole.Clear();
 		AnsiConsole.Write(new FigletText(TgConstants.AppTitle).Centered().Color(Color.Yellow));
@@ -51,52 +51,50 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 		if (table.Rows.Count > 0)
 			table.Rows.Clear();
-		fillTableRows(tgDownloadSettings, table);
+		await fillTableRowsAsync(tgDownloadSettings, table);
 
 		table.Expand();
 		AnsiConsole.Write(table);
 	}
 
-	internal void ShowTableMain(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMain, FillTableColumns, FillTableRowsMain);
+	internal async Task ShowTableMainAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMain, FillTableColumns, FillTableRowsMainAsync);
 
-	internal void ShowTableStorageSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainStorage, FillTableColumns, FillTableRowsStorage);
+	internal async Task ShowTableStorageSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainStorage, FillTableColumns, FillTableRowsStorageAsync);
 
-	internal void ShowTableFiltersSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainFilters, FillTableColumns, FillTableRowsFilters);
+	internal async Task ShowTableFiltersSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainFilters, FillTableColumns, FillTableRowsFiltersAsync);
 
-	internal void ShowTableAppSettings(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainApp, FillTableColumns, FillTableRowsApp);
+	internal async Task ShowTableAppSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainApp, FillTableColumns, FillTableRowsAppAsync);
 
-	internal void ShowTableClient(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainClient, FillTableColumns, FillTableRowsClient);
+	internal async Task ShowTableClientAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainClient, FillTableColumns, FillTableRowsClientAsync);
 
-	internal void ShowTableDownload(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownload);
+	internal async Task ShowTableDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownloadAsync);
 
-	internal void ShowTableAdvanced(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsAdvanced);
+	internal async Task ShowTableAdvancedAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsAdvancedAsync);
 
-	internal void ShowTableViewContacts(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedContacts);
+	internal async Task ShowTableViewContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedContacts);
 
-	internal void ShowTableViewSources(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSources);
+	internal async Task ShowTableViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSourcesAsync);
 
-	internal void ShowTableViewStories(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedStories);
+	internal async Task ShowTableViewStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedStoriesAsync);
 
-	internal void ShowTableViewVersions(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedVersions);
+	internal async Task ShowTableViewVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedVersionsAsync);
 
-	internal void ShowTableMarkHistoryReadProgress(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
-			FillTableRowsMarkHistoryReadProgress);
+	internal async Task ShowTableMarkHistoryReadProgressAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsMarkHistoryReadProgressAsync);
 
-	internal void ShowTableMarkHistoryReadComplete(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		ShowTableCore(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns,
-			FillTableRowsMarkHistoryReadComplete);
+	internal async Task ShowTableMarkHistoryReadCompleteAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsMarkHistoryReadCompleteAsync);
 
 	internal void FillTableColumns(Table table)
 	{
@@ -105,9 +103,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		table.AddColumn(new TableColumn(new Markup(TgLocale.AppValue, StyleMain)) { Width = 80 }.LeftAligned());
 	}
 
-	internal void FillTableRowsMain(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsMainAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		// App version.
+		// App version
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
 		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
@@ -115,36 +113,37 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
-		// App settings.
+		// App settings
 		table.AddRow(new Markup(TgAppSettings.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainApp) : TgLocale.WarningMessage(TgLocale.MenuMainApp)),
 			new Markup(TgAppSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-		// Storage settings.
+		// Storage settings
 		table.AddRow(new Markup(EfContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
 			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-		// TG client settings.
+		// TG client settings
 		table.AddRow(new Markup(TgClient.IsReady ?
 			TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
 			new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-		// Download settings.
+		// Download settings
 		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
 			? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
 			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+
+		await Task.CompletedTask;
 	}
 
-	internal void FillTableRowsApp(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsAppAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		// App xml settings.
+		// App xml settings
 		table.AddRow(new Markup(TgAppSettings.IsReady ?
 				TgLocale.InfoMessage(TgLocale.MenuMainApp) : TgLocale.WarningMessage(TgLocale.MenuMainApp)),
 			new Markup(TgAppSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
-
-		// File session is exists.
+		// File session is exists
 		if (TgAppSettings.AppXml.IsExistsFileSession)
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.FileSession)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlFileSession)));
@@ -160,13 +159,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.EfStorage)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.AppXml.XmlEfStorage)));
 
-		// Usage proxy.
+		// Usage proxy
 		if (TgAppSettings.IsUseProxy)
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuAppUseProxy)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.IsUseProxy.ToString())));
 		else
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuAppUseProxy, true)),
 				new Markup(TgLog.GetMarkupString(TgAppSettings.IsUseProxy.ToString())));
+
+		await Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -174,11 +175,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsStorage(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsStorageAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(EfContext.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
 			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+		await Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -186,19 +188,18 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// </summary>
 	/// <param name="tgDownloadSettings"></param>
 	/// <param name="table"></param>
-	internal void FillTableRowsFilters(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsFiltersAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
-			.GetAwaiter().GetResult().Items;
+		IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
 	}
 
-	internal void FillTableRowsClient(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsClientAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		// TG client settings.
+		// TG client settings
 		table.AddRow(new Markup(TgClient.IsReady ?
-				TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
+			TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
 			new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		if (TgClient.Me is null)
@@ -276,18 +277,20 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientFix)),
 				new Markup(TgLog.GetMarkupString(TgLocale.TgClientFixTryToDeleteSession)));
 		}
+
+		await Task.CompletedTask;
 	}
 
 	/// <summary> Contact info </summary>
-	internal void FillTableRowsDownloadedContacts(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsDownloadedContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.ContactVm.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsContact)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var contact = ContactRepository.GetAsync(new()
-			{ Id = tgDownloadSettings.ContactVm.Id }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			var contact = (await ContactRepository.GetAsync(new()
+				{ Id = tgDownloadSettings.ContactVm.Id }, isNoTracking: true)).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsContact)),
 				new Markup(TgLog.GetMarkupString(contact.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -296,15 +299,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	}
 
 	/// <summary> Source info </summary>
-	internal void FillTableRowsDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var source = SourceRepository.GetAsync(new() 
-				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			var source = (await SourceRepository.GetAsync(new() 
+				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -313,15 +316,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	}
 
 	/// <summary> Story info </summary>
-	internal void FillTableRowsDownloadedStories(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsDownloadedStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.StoryVm.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsStory)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var story = StoryRepository.GetAsync(new() 
-				{ Id = tgDownloadSettings.StoryVm.Id }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			var story = (await StoryRepository.GetAsync(new() 
+				{ Id = tgDownloadSettings.StoryVm.Id }, isNoTracking: true)).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsStory)),
 				new Markup(TgLog.GetMarkupString(story.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -330,16 +333,15 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	}
 
 	/// <summary> Version info </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
-	internal void FillTableRowsDownloadedVersions(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsDownloadedVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true).GetAwaiter().GetResult().Item;
+			TgEfSourceEntity source = (await SourceRepository.GetAsync(new() 
+				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -347,29 +349,23 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 	}
 
-	/// <summary>
-	/// Mark history read.
-	/// </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
-	internal void FillTableRowsMarkHistoryReadProgress(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	/// <summary> Mark history read </summary>
+	internal async Task FillTableRowsMarkHistoryReadProgressAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
 			new Markup($"{TgLocale.MenuClientProgress} ..."));
+		await Task.CompletedTask;
 	}
 
-	/// <summary>
-	/// Mark history read.
-	/// </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
-	internal void FillTableRowsMarkHistoryReadComplete(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	/// <summary> Mark history read </summary>
+	internal async Task FillTableRowsMarkHistoryReadCompleteAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuMarkAllMessagesAsRead)),
 			new Markup($"{TgLocale.MenuClientComplete} ..."));
+		await Task.CompletedTask;
 	}
 
-	internal void FillTableRowsDownload(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// Download
 		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
@@ -377,7 +373,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Source info
-		FillTableRowsDownloadedSources(tgDownloadSettings, table);
+		await FillTableRowsDownloadedSourcesAsync(tgDownloadSettings, table);
 
 		// Destination dir
 		if (string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceDirectory))
@@ -414,38 +410,33 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
         // Count of threads
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetCountThreads)), new Markup($"{tgDownloadSettings.CountThreads}"));
+
+		await Task.CompletedTask;
 	}
 
-	internal void FillTableRowsAdvanced(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	internal async Task FillTableRowsAdvancedAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// Is auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
+		await Task.CompletedTask;
 	}
 
 	/// <summary> User ID/username </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
-	internal void FillTableRowsViewDownloadedContacts(TgDownloadSettingsViewModel tgDownloadSettings, Table table) =>
-		FillTableRowsDownloadedContacts(tgDownloadSettings, table);
+	internal async Task FillTableRowsViewDownloadedContacts(TgDownloadSettingsViewModel tgDownloadSettings, Table table) =>
+		await FillTableRowsDownloadedContactsAsync(tgDownloadSettings, table);
 
 	/// <summary> Source ID/username </summary>
-	/// <param name="tgDownloadSettings"></param>
-	/// <param name="table"></param>
-	internal void FillTableRowsViewDownloadedSources(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
-        FillTableRowsDownloadedSources(tgDownloadSettings, table);
+	internal async Task FillTableRowsViewDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        await FillTableRowsDownloadedSourcesAsync(tgDownloadSettings, table);
 
     /// <summary> User ID/username </summary>
-    /// <param name="tgDownloadSettings"></param>
-    /// <param name="table"></param>
-    internal void FillTableRowsViewDownloadedStories(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
-        FillTableRowsDownloadedStories(tgDownloadSettings, table);
+    internal async Task FillTableRowsViewDownloadedStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        await FillTableRowsDownloadedStoriesAsync(tgDownloadSettings, table);
 
     /// <summary> Version ID/username </summary>
-    /// <param name="tgDownloadSettings"></param>
-    /// <param name="table"></param>
-    internal void FillTableRowsViewDownloadedVersions(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
-        FillTableRowsDownloadedVersions(tgDownloadSettings, table);
+    internal async Task FillTableRowsViewDownloadedVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        await FillTableRowsDownloadedVersionsAsync(tgDownloadSettings, table);
 
     public bool AskQuestionReturnPositive(string title, bool isTrueFirst = false)
 	{
@@ -463,7 +454,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	public TgEfContactEntity GetContactFromEnumerable(string title, IEnumerable<TgEfContactEntity> contacts)
 	{
-		contacts = contacts.OrderBy(x => x.UserName).ThenBy(x => x.PhoneNumber);
+		contacts = contacts.OrderBy(x => x.Id);
 		List<string> list = [TgLocale.MenuMainReturn];
 		list.AddRange(contacts.Select(contact => TgLog.GetMarkupString(contact.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
@@ -507,7 +498,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 	public TgEfStoryEntity GetStoryFromEnumerable(string title, IEnumerable<TgEfStoryEntity> stories)
 	{
-		stories = stories.OrderBy(x => x.FromName);
+		stories = stories.OrderBy(x => x.Id);
 		List<string> list = [TgLocale.MenuMainReturn];
 		list.AddRange(stories.Select(story => TgLog.GetMarkupString(story.ToConsoleString())));
 		string storyString = AnsiConsole.Prompt(new SelectionPrompt<string>()

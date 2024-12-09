@@ -59,7 +59,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuDownload menu;
 		do
 		{
-			ShowTableDownload(tgDownloadSettings);
+			ShowTableDownloadAsync(tgDownloadSettings);
 			menu = SetMenuDownload();
 			switch (menu)
 			{
@@ -227,7 +227,7 @@ internal partial class TgMenuHelper
 
 	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableDownload(tgDownloadSettings);
+		await ShowTableDownloadAsync(tgDownloadSettings);
 		await UpdateSourceWithSettingsAsync(tgDownloadSettings);
 		await TgClient.DownloadAllDataAsync(tgDownloadSettings);
 		await UpdateSourceWithSettingsAsync(tgDownloadSettings);
@@ -235,9 +235,9 @@ internal partial class TgMenuHelper
 
 	private async Task MarkHistoryReadCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableMarkHistoryReadProgress(tgDownloadSettings);
+		await ShowTableMarkHistoryReadProgressAsync(tgDownloadSettings);
 		await TgClient.MarkHistoryReadAsync();
-		ShowTableMarkHistoryReadComplete(tgDownloadSettings);
+		await ShowTableMarkHistoryReadCompleteAsync(tgDownloadSettings);
 	}
 
 	#endregion

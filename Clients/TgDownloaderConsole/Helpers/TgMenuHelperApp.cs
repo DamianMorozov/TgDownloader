@@ -38,7 +38,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuAppSettings menu;
 		do
 		{
-			ShowTableAppSettings(tgDownloadSettings);
+			ShowTableAppSettingsAsync(tgDownloadSettings);
 			menu = SetMenuApp();
 			switch (menu)
 			{

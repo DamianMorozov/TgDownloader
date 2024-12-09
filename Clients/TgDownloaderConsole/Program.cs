@@ -25,7 +25,7 @@ do
 {
 	try
 	{
-		menu.ShowTableMain(tgDownloadSettings);
+		menu.ShowTableMainAsync(tgDownloadSettings);
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")

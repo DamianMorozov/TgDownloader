@@ -179,11 +179,16 @@ public sealed class TgEfContactEntity : ITgDbEntity, ITgDbFillEntity<TgEfContact
 		return this;
 	}
 
-	public string ToConsoleString() => $"{Id} " +
-		$"{(string.IsNullOrEmpty(FirstName) ? "" : TgDataFormatUtils.GetFormatString(FirstName, 30).TrimEnd())} | " +
-		$"{(string.IsNullOrEmpty(LastName) ? "" : TgDataFormatUtils.GetFormatString(LastName, 30).TrimEnd())} | " +
-		$"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 30).TrimEnd())} | " +
-		$"{(string.IsNullOrEmpty(PhoneNumber) ? "" : TgDataFormatUtils.GetFormatString(PhoneNumber, 30).TrimEnd())}";
+	public string ToConsoleString()
+	{
+		var name = string.IsNullOrEmpty(FirstName) ? "" : TgDataFormatUtils.GetFormatString(FirstName, 30).TrimEnd();
+		name += string.IsNullOrEmpty(LastName) ? "" : " " + TgDataFormatUtils.GetFormatString(LastName, 30).TrimEnd();
+		return $"{Id,11} | " +
+			$"{(string.IsNullOrEmpty(UserName) ? "" : TgDataFormatUtils.GetFormatString(UserName, 25).TrimEnd()),-25} | " +
+			$"{(IsActive ? "active" : ""),-6} | " +
+			$"{(string.IsNullOrEmpty(PhoneNumber) ? "" : TgDataFormatUtils.GetFormatString(PhoneNumber, 11).TrimEnd()),-11} | " +
+			$"{name,-40}";
+	}
 
 	#endregion
 }

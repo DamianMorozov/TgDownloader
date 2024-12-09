@@ -26,8 +26,8 @@ internal partial class TgMenuHelper
 					TgLocale.MenuMarkAllMessagesAsRead,
 					TgLocale.MenuViewVersions,
 					TgLocale.MenuViewContacts,
-					TgLocale.MenuViewSources,
-					TgLocale.MenuViewStories
+					TgLocale.MenuViewStories,
+					TgLocale.MenuViewSources
 				));
 		if (prompt.Equals(TgLocale.MenuAutoDownload))
 			return TgEnumMenuDownload.AutoDownload;
@@ -47,10 +47,10 @@ internal partial class TgMenuHelper
 			return TgEnumMenuDownload.ViewVersions;
 		if (prompt.Equals(TgLocale.MenuViewContacts))
 			return TgEnumMenuDownload.ViewContacts;
-		if (prompt.Equals(TgLocale.MenuViewSources))
-			return TgEnumMenuDownload.ViewSources;
 		if (prompt.Equals(TgLocale.MenuViewStories))
 			return TgEnumMenuDownload.ViewStories;
+		if (prompt.Equals(TgLocale.MenuViewSources))
+			return TgEnumMenuDownload.ViewSources;
 		return TgEnumMenuDownload.Return;
 	}
 
@@ -59,7 +59,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuDownload menu;
 		do
 		{
-			ShowTableAdvanced(tgDownloadSettings);
+			await ShowTableAdvancedAsync(tgDownloadSettings);
 			menu = SetMenuAdvanced();
 			switch (menu)
 			{
@@ -85,17 +85,17 @@ internal partial class TgMenuHelper
 				case TgEnumMenuDownload.MarkHistoryRead:
 					await MarkHistoryReadAsync(tgDownloadSettings);
 					break;
+				case TgEnumMenuDownload.ViewVersions:
+					ViewVersions(tgDownloadSettings);
+					break;
 				case TgEnumMenuDownload.ViewContacts:
 					await ViewContactsAsync(tgDownloadSettings);
-					break;
-				case TgEnumMenuDownload.ViewSources:
-                    await ViewSourcesAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.ViewStories:
                     await ViewStoriesAsync(tgDownloadSettings);
 					break;
-				case TgEnumMenuDownload.ViewVersions:
-                    ViewVersions(tgDownloadSettings);
+				case TgEnumMenuDownload.ViewSources:
+					await ViewSourcesAsync(tgDownloadSettings);
 					break;
 			}
 		} while (menu is not TgEnumMenuDownload.Return);
@@ -103,7 +103,7 @@ internal partial class TgMenuHelper
 
 	private async Task SearchSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
-		ShowTableAdvanced(tgDownloadSettings);
+		await ShowTableAdvancedAsync(tgDownloadSettings);
 		if (!TgClient.IsReady)
 		{
 			TgLog.MarkupWarning(TgLocale.TgMustClientConnect);
@@ -142,7 +142,7 @@ internal partial class TgMenuHelper
 
 	private async Task ViewContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableViewContacts(tgDownloadSettings);
+		await ShowTableViewContactsAsync(tgDownloadSettings);
 		var storageResult = await ContactRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		var contact = GetContactFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (contact.Uid != Guid.Empty)
@@ -155,7 +155,7 @@ internal partial class TgMenuHelper
 
 	private async Task ViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableViewSources(tgDownloadSettings);
+		await ShowTableViewSourcesAsync(tgDownloadSettings);
 		var storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		var source = GetSourceFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (source.Uid != Guid.Empty)
@@ -168,7 +168,7 @@ internal partial class TgMenuHelper
 
 	private async Task ViewStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableViewStories(tgDownloadSettings);
+		await ShowTableViewStoriesAsync(tgDownloadSettings);
 		var storageResult = await StoryRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
 		var story = GetStoryFromEnumerable(TgLocale.MenuViewSources, storageResult.Items);
 		if (story.Uid != Guid.Empty)
@@ -179,9 +179,9 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	private void ViewVersions(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async void ViewVersions(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableViewVersions(tgDownloadSettings);
+		await ShowTableViewVersionsAsync(tgDownloadSettings);
 		GetVersionFromEnumerable(TgLocale.MenuViewSources, 
 			VersionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).Items);
 	}

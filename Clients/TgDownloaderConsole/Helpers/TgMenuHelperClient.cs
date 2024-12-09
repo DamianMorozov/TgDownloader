@@ -34,7 +34,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuClient menu;
 		do
 		{
-			ShowTableClient(tgDownloadSettings);
+			await ShowTableClientAsync(tgDownloadSettings);
 			menu = SetMenuClient();
 			switch (menu)
 			{
@@ -46,7 +46,7 @@ internal partial class TgMenuHelper
 					await ClientConnectAsync(tgDownloadSettings, false);
 					break;
 				case TgEnumMenuClient.Disconnect:
-					ClientDisconnect(tgDownloadSettings);
+					await ClientDisconnectAsync(tgDownloadSettings);
 					break;
 			}
 		} while (menu is not TgEnumMenuClient.Return);
@@ -203,7 +203,7 @@ internal partial class TgMenuHelper
 
 	public async Task ClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
-		ShowTableClient(tgDownloadSettings);
+		await ShowTableClientAsync(tgDownloadSettings);
 		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (
 			await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
@@ -214,9 +214,9 @@ internal partial class TgMenuHelper
 		    Console.ReadKey();
 	}
 
-	public void ClientDisconnect(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task ClientDisconnectAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		ShowTableClient(tgDownloadSettings);
+		await ShowTableClientAsync(tgDownloadSettings);
 		//TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
 		//ContextManager.AppRepository.Delete(app);
 		TgClient.Disconnect();

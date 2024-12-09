@@ -1267,35 +1267,40 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				case TgEnumSourceType.Chat:
 					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, TgLocale.CollectChats);
 					await CollectAllChatsAsync();
+					tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
+					// List channels
+					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
+					// List groups
+					await SearchSourcesTgConsoleForGroupsAsync(tgDownloadSettings);
 					break;
 				case TgEnumSourceType.Dialog:
 					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, TgLocale.CollectDialogs);
 					await CollectAllDialogsAsync();
+					tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
+					// List channels
+					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
+					// List groups
+					await SearchSourcesTgConsoleForGroupsAsync(tgDownloadSettings);
 					break;
 				case TgEnumSourceType.Contact:
 					await UpdateStateSourceAsync(tgDownloadSettings.ContactVm.Id, 0, TgLocale.CollectContacts);
 					await CollectAllContactsAsync();
+					tgDownloadSettings.ContactVm.SourceScanCount = DicContactsAll.Count;
+					tgDownloadSettings.ContactVm.SourceScanCurrent = 0;
+					// List contacts
+					await SearchSourcesTgConsoleForContactsAsync(tgDownloadSettings);
 					break;
 				case TgEnumSourceType.Story:
-					await UpdateStateSourceAsync(tgDownloadSettings.StoryVm.Id, 0, TgLocale.CollectStories);
+					await UpdateStateStoryAsync(tgDownloadSettings.StoryVm.Id, TgLocale.CollectStories);
 					await CollectAllStoriesAsync();
+					tgDownloadSettings.StoryVm.SourceScanCount = DicStoriesAll.Count;
+					tgDownloadSettings.StoryVm.SourceScanCurrent = 0;
+					// List stories
+					await SearchSourcesTgConsoleForStoriesAsync(tgDownloadSettings);
 					break;
 			}
-			tgDownloadSettings.ContactVm.SourceScanCount = DicContactsAll.Count;
-			tgDownloadSettings.ContactVm.SourceScanCurrent = 0;
-			tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
-			tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
-			tgDownloadSettings.StoryVm.SourceScanCount = DicStoriesAll.Count;
-			tgDownloadSettings.StoryVm.SourceScanCurrent = 0;
-			// List channels
-			await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
-			// List groups
-			await SearchSourcesTgConsoleForGroupsAsync(tgDownloadSettings);
-			// List contacts
-			await SearchSourcesTgConsoleForContactsAsync(tgDownloadSettings);
-			// List stories
-			await SearchSourcesTgConsoleForStoriesAsync(tgDownloadSettings);
-			
 		}, isLoginConsole: true);
 		await UpdateTitleAsync(string.Empty);
 	}

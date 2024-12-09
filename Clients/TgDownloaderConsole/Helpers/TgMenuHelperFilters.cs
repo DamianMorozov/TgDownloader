@@ -40,7 +40,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuFilter menu;
 		do
 		{
-			ShowTableFiltersSettings(tgDownloadSettings);
+			ShowTableFiltersSettingsAsync(tgDownloadSettings);
 			menu = SetMenuFilters();
 			switch (menu)
 			{
