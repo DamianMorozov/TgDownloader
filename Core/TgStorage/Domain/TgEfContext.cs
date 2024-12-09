@@ -200,12 +200,6 @@ public class TgEfContext : DbContext
 		});
     }
 
-    public string ToConsoleString(TgEfSourceEntity source) =>
-        $"{TgEfUtils.GetPercentCountString(source)} | {(source.IsAutoUpdate ? "a" : " ")} | {source.Id} | " +
-        $"{(!string.IsNullOrEmpty(source.UserName) ? TgDataFormatUtils.GetFormatString(source.UserName, 30) : string.Empty)} | " +
-        $"{(!string.IsNullOrEmpty(source.Title) ? TgDataFormatUtils.GetFormatString(source.Title, 30) : string.Empty)} | " +
-        $"{source.FirstId} {TgLocaleHelper.Instance.From} {source.Count} {TgLocaleHelper.Instance.Messages}";
-
     public string ToConsoleString(TgEfVersionEntity version) => $"{version.Version}	{version.Description}";
 
     /// <summary> Check table exists </summary>

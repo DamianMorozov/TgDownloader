@@ -1088,6 +1088,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		TgEfSourceEntity sourceNew;
 		sourceNew = storageResult.IsExists ? storageResult.Item : new();
 		sourceNew.Id = channel.id;
+		sourceNew.AccessHash = channel.access_hash;
+		sourceNew.IsActive = channel.IsActive;
 		sourceNew.UserName = channel.username;
 		sourceNew.Title = channel.title;
 		sourceNew.About = about;

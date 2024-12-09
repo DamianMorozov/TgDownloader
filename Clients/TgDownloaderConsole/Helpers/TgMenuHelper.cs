@@ -478,7 +478,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	{
 		sources = sources.OrderBy(x => x.UserName).ThenBy(x => x.Title);
 		List<string> list = [TgLocale.MenuMainReturn];
-		list.AddRange(sources.Select(source => TgLog.GetMarkupString(EfContext.ToConsoleString(source))));
+		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(Console.WindowHeight - 17)

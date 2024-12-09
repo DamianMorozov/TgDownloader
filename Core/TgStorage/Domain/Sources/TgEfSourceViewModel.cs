@@ -45,12 +45,16 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 		}
 	}
 
+	[DefaultValue("")]
+	public DateTime SourceDtChanged { get => Item.DtChanged; set => Item.DtChanged = value; }
+	[DefaultValue("")]
+	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-mm-dd HH:mm:ss}";
 	[DefaultValue(0)]
     public long SourceId { get => Item.Id; set => Item.Id = value; }
-    [DefaultValue("")]
-    public DateTime SourceDtChanged { get => Item.DtChanged; set => Item.DtChanged = value; }
-    [DefaultValue("")]
-	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-mm-dd HH:mm:ss}";
+	[DefaultValue(-1)]
+	public long AccessHash { get => Item.AccessHash; set => Item.AccessHash = value; }
+	[DefaultValue(false)]
+	public bool IsContactActive { get => Item.IsActive; set => Item.IsActive = value; }
 	[DefaultValue("")]
     public string SourceUserName { get => Item.UserName ?? string.Empty; set => Item.UserName = value; }
     [DefaultValue("")]
@@ -97,8 +101,10 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
     {
 	    Item = item;
 	    SourceUid = item.Uid;
+		SourceDtChanged = item.DtChanged;
 		SourceId = item.Id;
-	    SourceDtChanged = item.DtChanged;
+		AccessHash = item.AccessHash;
+		IsActive = item.IsActive;
 	    SourceUserName = item.UserName ?? string.Empty;
 	    SourceAbout = item.About ?? string.Empty;
 	    SourceTitle = item.Title ?? string.Empty;
