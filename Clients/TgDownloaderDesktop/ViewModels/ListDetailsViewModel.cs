@@ -10,7 +10,8 @@ public partial class ListDetailsViewModel : ObservableRecipient, INavigationAwar
 	[ObservableProperty]
 	private SampleOrder? selected;
 
-	public ObservableCollection<SampleOrder> SampleItems { get; private set; } = [];
+	[ObservableProperty]
+	private ObservableCollection<SampleOrder> _sampleItems = [];
 
 	public ListDetailsViewModel(ISampleDataService sampleDataService)
 	{

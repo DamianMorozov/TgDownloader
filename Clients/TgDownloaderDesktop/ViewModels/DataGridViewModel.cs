@@ -7,7 +7,8 @@ public partial class DataGridViewModel : ObservableRecipient, INavigationAware
 {
 	private readonly ISampleDataService _sampleDataService;
 
-	public ObservableCollection<SampleOrder> Source { get; } = [];
+	[ObservableProperty]
+	private ObservableCollection<SampleOrder> _source = [];
 
 	public DataGridViewModel(ISampleDataService sampleDataService)
 	{

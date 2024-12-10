@@ -9,7 +9,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     #region Public and private fields, properties, constructor
 
     private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
-	public ObservableCollection<TgEfSourceViewModel> SourcesVms { get; set; } = [];
+	[ObservableProperty]
+	private ObservableCollection<TgEfSourceViewModel> _sourcesVms = [];
 	[ObservableProperty]
 	private bool _isReady;
 	public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
@@ -34,7 +35,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		ClearViewCommand = new AsyncRelayCommand(ClearViewAsync);
 		SortViewCommand = new AsyncRelayCommand(SortViewAsync);
 		SaveSourcesCommand = new AsyncRelayCommand(SaveSourcesAsync);
-		LoadSourcesFromStorageCommand = new AsyncRelayCommand(LoadSourcesFromStorageAsync);
+		LoadSourcesFromStorageCommand = new AsyncRelayCommand(async () => await LoadDataAsync(LoadSourcesFromStorageAsync));
 		GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
 		UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
 		DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
@@ -62,11 +63,13 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
     public async Task AppLoadCoreAsync()
     {
-		TgEfUtils.AppStorage = SettingsService.AppStorage;
-		TgEfUtils.RecreateEfContext();
-
-		await LoadSourcesFromStorageAsync();
-		await ReloadUiAsync();
+		await LoadDataAsync(async () =>
+		{
+			TgEfUtils.AppStorage = SettingsService.AppStorage;
+			TgEfUtils.RecreateEfContext();
+			await LoadSourcesFromStorageAsync();
+			await ReloadUiAsync();
+		});
 	}
 
 	private async Task ReloadUiAsync()
@@ -79,22 +82,23 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
 	public async Task LoadSourcesFromStorageAsync()
 	{
-		var storageResult = await SourceRepository.GetListAsync(take: 0, skip: 0, isNoTracking: false);
-		List<TgEfSourceEntity> sources = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderSources(sources);
+		if (!SettingsService.IsExistsAppStorage) return;
+		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
+		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
+		SetOrderSources(sourcesDtos);
 	}
 
 	/// <summary> Sort sources </summary>
-	private void SetOrderSources(IEnumerable<TgEfSourceEntity> sources)
+	private void SetOrderSources(IEnumerable<TgEfSourceDto> sourcesDtos)
 	{
-		List<TgEfSourceEntity> list = sources.ToList();
+		List<TgEfSourceDto> list = sourcesDtos.ToList();
 		if (!list.Any())
 			return;
 		SourcesVms = [];
-		sources = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
-		if (sources.Any())
-			foreach (TgEfSourceEntity source in sources)
-				SourcesVms.Add(new(source));
+		sourcesDtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
+		if (sourcesDtos.Any())
+			foreach (var sourceDto in sourcesDtos)
+				SourcesVms.Add(new(sourceDto.ConvertToEntity()));
 	}
 
 	public async Task UpdateSourcesFromTelegramAsync()
@@ -136,7 +140,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
 	public async Task SortViewAsync()
 	{
-		SetOrderSources(SourcesVms.Select(x => x.Item).ToList());
+		SetOrderSources(SourcesVms.Select(x => x.Item.ConvertToDto()).ToList());
 		await Task.CompletedTask;
 	}
 

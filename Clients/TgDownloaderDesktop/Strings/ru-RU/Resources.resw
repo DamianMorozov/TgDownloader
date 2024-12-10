@@ -494,4 +494,34 @@
   <data name="TemplateColumnDownload.Header" xml:space="preserve">
     <value>Скачать</value>
   </data>
+  <data name="TemplateColumnId.Header" xml:space="preserve">
+    <value>ИД</value>
+  </data>
+  <data name="TemplateColumnChanged.Header" xml:space="preserve">
+    <value>Изменено</value>
+  </data>
+  <data name="TemplateColumnUpdated.Header" xml:space="preserve">
+    <value>Обновлено</value>
+  </data>
+  <data name="TemplateColumnUserName.Header" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="TemplateColumnTitle.Header" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
+  <data name="TemplateColumnFirstId.Header" xml:space="preserve">
+    <value>Первый ИД</value>
+  </data>
+  <data name="TemplateColumnCount.Header" xml:space="preserve">
+    <value>Кол-во</value>
+  </data>
+  <data name="TemplateColumnProgress.Header" xml:space="preserve">
+    <value>Прогресс</value>
+  </data>
+  <data name="TemplateColumnIsActive.Header" xml:space="preserve">
+    <value>Активно</value>
+  </data>
+  <data name="TemplateColumnIsAuto.Header" xml:space="preserve">
+    <value>Авто</value>
+  </data>
 </root>

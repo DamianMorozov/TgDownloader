@@ -16,7 +16,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	private TgExceptionViewModel _exception = new();
 	[ObservableProperty]
-	private bool _isLoad;
+	private bool _isPageLoad;
 	[ObservableProperty]
 	private string _connectionDt = string.Empty;
 	[ObservableProperty]
@@ -47,7 +47,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 
 	public virtual void OnLoaded(object parameter)
 	{
-		IsLoad = true;
 		if (parameter is XamlRoot xamlRoot)
 			XamlRootVm = xamlRoot;
 	}
@@ -136,6 +135,20 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			PrimaryButtonCommand = new RelayCommand(action)
 		};
 		_ = await dialog.ShowAsync();
+	}
+
+	protected async Task LoadDataAsync(Func<Task> task)
+	{
+		try
+		{
+			IsPageLoad = true;
+			await Task.Delay(100);
+			await task();
+		}
+		finally
+		{
+			IsPageLoad = false;
+		}
 	}
 
 	#endregion
