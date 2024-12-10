@@ -30,7 +30,7 @@ public sealed class TgEfContactViewModel : TgViewModelBase
 	[DefaultValue(-1)]
 	public long Id { get => Item.Id; set => Item.Id = value; }
 	[DefaultValue("")]
-	public string DtChangedString => $"{DtChanged:yyyy-mm-dd HH:mm:ss}";
+	public string DtChangedString => $"{DtChanged:yyyy-MM-dd HH:mm:ss}";
 	[DefaultValue(-1)]
 	public long AccessHash { get => Item.AccessHash; set => Item.AccessHash = value; }
 	[DefaultValue(false)]

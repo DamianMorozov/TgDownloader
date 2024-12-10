@@ -30,7 +30,7 @@ public sealed class TgEfStoryViewModel : TgViewModelBase
 	[DefaultValue("")]
 	public DateTime DtChanged { get => Item.DtChanged; set => Item.DtChanged = value; }
 	[DefaultValue("")]
-	public string DtChangedString => $"{DtChanged:yyyy-mm-dd HH:mm:ss}";
+	public string DtChangedString => $"{DtChanged:yyyy-MM-dd HH:mm:ss}";
 	[DefaultValue(-1)]
 	public long FromId { get => Item.FromId ?? -1; set => Item.FromId = value; }
 	[DefaultValue("")]

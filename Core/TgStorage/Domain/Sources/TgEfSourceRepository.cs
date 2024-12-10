@@ -84,17 +84,54 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfSourceEntity> items;
+		var query = isNoTracking ? EfContext.Sources.AsNoTracking() : EfContext.Sources.AsTracking();
+		items = take > 0 
+			? await query.Skip(skip).Take(take).ToListAsync() 
+			: await query.ToListAsync();
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	public async Task<TgEfStorageResult<TgEfSourceDto>> GetListDtoAsync(int take, int skip, bool isNoTracking)
+	{
+		IList<TgEfSourceDto> items;
+		var query = isNoTracking ? EfContext.Sources.AsNoTracking() : EfContext.Sources.AsTracking();
 		if (take > 0)
 		{
-			items = isNoTracking
-				? await EfContext.Sources.AsNoTracking().Skip(skip).Take(take).ToListAsync()
-				: await EfContext.Sources.AsTracking().Skip(skip).Take(take).ToListAsync();
+			items = await query
+				.Skip(skip)
+				.Take(take)
+				.Select(source => new TgEfSourceDto
+				{
+					Uid = source.Uid,
+					DtChanged = source.DtChanged,
+					Id = source.Id,
+					IsActive = source.IsActive,
+					UserName = source.UserName,
+					Title = source.Title,
+					Count = source.Count,
+					Directory = source.Directory,
+					FirstId = source.FirstId,
+					IsAutoUpdate = source.IsAutoUpdate
+				})
+				.ToListAsync();
 		}
 		else
 		{
-			items = isNoTracking
-				? await EfContext.Sources.AsNoTracking().ToListAsync()
-				: await EfContext.Sources.AsTracking().ToListAsync();
+			items = await query
+				.Select(source => new TgEfSourceDto
+				{
+					Uid = source.Uid,
+					DtChanged = source.DtChanged,
+					Id = source.Id,
+					IsActive = source.IsActive,
+					UserName = source.UserName,
+					Title = source.Title,
+					Count = source.Count,
+					Directory = source.Directory,
+					FirstId = source.FirstId,
+					IsAutoUpdate = source.IsAutoUpdate
+				})
+				.ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}

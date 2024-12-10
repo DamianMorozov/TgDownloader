@@ -48,7 +48,9 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 	[DefaultValue("")]
 	public DateTime SourceDtChanged { get => Item.DtChanged; set => Item.DtChanged = value; }
 	[DefaultValue("")]
-	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-mm-dd HH:mm:ss}";
+	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-MM-dd HH:mm:ss}";
+	[DefaultValue("")]
+	public string SourceDtChangedShortString => $"{SourceDtChanged:yyyy-MM-dd}";
 	[DefaultValue(0)]
     public long SourceId { get => Item.Id; set => Item.Id = value; }
 	[DefaultValue(-1)]
