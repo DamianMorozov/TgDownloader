@@ -7,6 +7,8 @@
 	xmlns:helpers="using:TgDownloaderDesktop.Helpers"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:viewmodels="using:TgDownloaderDesktop.ViewModels"
+	xmlns:views="using:TgDownloaderDesktop.Views"
+	d:DataContext="{d:DesignInstance Type=viewmodels:TgSourcesViewModel}"
 	mc:Ignorable="d">
 	<Page.Resources>
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
@@ -19,26 +21,14 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<!--  Check access to storage  -->
-			<ContentControl
-				Grid.Row="0"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Left"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-				<TextBlock
-					x:Uid="AppStorageNeedToCreate"
-					Margin="2"
-					HorizontalAlignment="Left"
-					FontWeight="Bold"
-					HorizontalTextAlignment="Left"
-					TextAlignment="Center"
-					TextWrapping="WrapWholeWords" />
-			</ContentControl>
+			<!--  Load data  -->
+			<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
 			<!--  Actions  -->
 			<ContentControl
 				Grid.Row="1"
 				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Stretch">
+				HorizontalContentAlignment="Stretch"
+				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<Expander
 					x:Uid="SettingAppActions"
 					Grid.Row="2"
@@ -47,78 +37,124 @@
 					IsExpanded="True">
 					<Grid Margin="0,-10,0,-10">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="0.5*" />
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="0.75*" />
-							<ColumnDefinition Width="0.75*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<!--  Get from Storage  -->
-						<!--<Button
-							Grid.Column="1"
-							Margin="2"
+						<Button
+							Grid.Column="0"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.LoadSourcesFromStorageCommand, Mode=OneWay}" />-->
+							VerticalAlignment="Stretch"
+							Command="{x:Bind ViewModel.LoadSourcesFromStorageCommand, Mode=OneWay}">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+								<TextBlock
+									x:Uid="TextBlockLoad"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
 						<!--  Update from Telegram  -->
-						<!--<Button
-							Grid.Column="2"
-							Margin="3"
+						<Button
+							Grid.Column="1"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
+							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.UpdateSourcesFromTelegramCommand, Mode=OneWay}"
-							IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}" />-->
+							IsEnabled="False">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+								<TextBlock
+									x:Uid="TextBlockUpdate"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
 						<!--  Get from Telegram  -->
-						<!--<Button
-							Grid.Column="3"
-							Margin="3,0,3,0"
+						<Button
+							Grid.Column="2"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.GetSourcesFromTelegramCommand, Mode=OneWay}"
-							IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}" />-->
+							IsEnabled="False">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+								<TextBlock
+									x:Uid="TextBlockGet"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
 						<!--  Mark as read  -->
-						<!--<Button
-							Grid.Column="4"
-							Margin="3,0,3,0"
+						<Button
+							Grid.Column="3"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.MarkAllMessagesAsReadCommand, Mode=OneWay}"
-							IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}" />-->
+							IsEnabled="False">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe73e;" />
+								<TextBlock
+									x:Uid="TextBlockMark"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
 						<!--  Clear view  -->
-						<!--<Button
+						<Button
+							Grid.Column="4"
+							Margin="0,0,5,0"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Command="{x:Bind ViewModel.ClearViewCommand, Mode=OneWay}">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe894;" />
+								<TextBlock
+									x:Uid="TextBlockClear"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
+						<!--  Default sort  -->
+						<Button
 							Grid.Column="5"
-							Margin="2"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.ClearViewCommand, Mode=OneWay}" />-->
-						<!--  Sort view  -->
-						<!--<Button
+							VerticalAlignment="Stretch"
+							Command="{x:Bind ViewModel.DefaultSortCommand, Mode=OneWay}">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe8cb;" />
+								<TextBlock
+									x:Uid="TextBlockDefaultSort"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
+						<!--  Count  -->
+						<TextBlock
+							x:Uid="TextBlockCount"
 							Grid.Column="6"
-							Margin="2"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.SortViewCommand, Mode=OneWay}" />-->
-						<!--  Save  -->
-						<!--<Button
+							TextAlignment="Right" />
+						<TextBlock
 							Grid.Column="7"
-							Margin="2"
+							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
-							Command="{x:Bind ViewModel.SaveSourcesCommand, Mode=OneWay}" />
-						<TextBlock
-							Grid.Column="8"
-							Margin="2"
-							HorizontalAlignment="Right"
-							VerticalAlignment="Center" />
-						<TextBlock
-							Grid.Column="9"
-							Margin="2"
-							HorizontalAlignment="Left"
-							VerticalAlignment="Center"
-							Text="{x:Bind ViewModel.SourcesVms.Count, Mode=OneWay}" />-->
+							Text="{x:Bind ViewModel.SourcesVms.Count, Mode=OneWay}"
+							TextAlignment="Center" />
+
 					</Grid>
 				</Expander>
 			</ContentControl>
@@ -127,7 +163,7 @@
 				Grid.Row="2"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
+				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<Expander
 					x:Uid="ExpanderDataInStorage"
 					Grid.Row="0"
@@ -135,123 +171,86 @@
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True">
 					<Grid Margin="0,-10,0,-10">
-						<!--  Load indicator  -->
-						<ProgressRing
-							Width="30"
-							Height="30"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							IsActive="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}"
-							Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
 						<controls:DataGrid
 							VerticalAlignment="Top"
 							AutoGenerateColumns="False"
 							Background="Transparent"
-							ItemsSource="{x:Bind ViewModel.SourcesVms, Mode=OneWay}"
-							Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+							ItemsSource="{x:Bind ViewModel.SourcesVms, Mode=OneWay}">
 							<controls:DataGrid.Columns>
 								<!--  Get from storage  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="viewmodels:TgSourcesViewModel">
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
+											<!--
+												Command="{x:Bind GetSourceFromStorageCommand, Mode=OneWay}"
+												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
-								<!--
-									Command="{x:Bind GetSourceFromStorageCommand, Mode=OneWay}"
-									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								-->
-								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
+								</controls:DataGridTemplateColumn>
 								<!--  Update from TG  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="0.5*">
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
+											<!--
+												Command="{x:Bind ViewModel.UpdateSourceFromTelegramCommand, Mode=OneWay}"
+												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
-								<!--
-									Command="{x:Bind ViewModel.UpdateSourceFromTelegramCommand, Mode=OneWay}"
-									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								-->
-								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
+								</controls:DataGridTemplateColumn>
 								<!--  Edit  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
+											<!--
+												Command="{x:Bind ViewModel.EditSourceCommand, Mode=OneWay}"
+												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
-								<!--
-									Command="{x:Bind ViewModel.EditSourceCommand, Mode=OneWay}"
-									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
-								-->
-								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
+								</controls:DataGridTemplateColumn>
 								<!--  Download from TG  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnDownload" Width="0.5*">
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnDownload" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
+											<!--
+												IsEnabled="{x:Bind Path=IsReady, Mode=OneWay}"
+												Command="{x:Bind DownloadCommand, Mode=OneWay}"
+												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
 											-->
-								<!--
-									IsEnabled="{x:Bind Path=IsReady, Mode=OneWay}"
-									Command="{x:Bind DownloadCommand, Mode=OneWay}"
-									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
-								-->
-								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
+								</controls:DataGridTemplateColumn>
 								<!--  Complete all  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnComplete" Width="0.5*">
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnComplete" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<CheckBox
 												Margin="2"
-												HorizontalAlignment="Center"
-												VerticalAlignment="Center"
-												IsEnabled="False" />
-											-->
-								<!--  IsChecked="{x:Bind IsComplete, Mode=OneWay}"  -->
-								<!--
+												HorizontalAlignment="center"
+												VerticalAlignment="center"
+												IsEnabled="false" />
+											<!--  ischecked="{x:bind iscomplete, mode=oneway}"  -->
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
-								<!--  Auto-update  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpd" Width=".5*">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<ToggleSwitch
-												Margin="2"
-												HorizontalAlignment="Center"
-												VerticalAlignment="Center"
-												HorizontalContentAlignment="Center"
-												Background="DimGray"
-												IsEnabled="False"
-												IsOn="{Binding Item.IsAutoUpdate}" />
-											-->
-								<!--  IsChecked="{x:Bind IsAutoUpdate, Mode=OneWay}"  -->
-								<!--
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>-->
+								</controls:DataGridTemplateColumn>
 								<!--  Source ID  -->
 								<controls:DataGridTemplateColumn x:Uid="TemplateColumnId" Width="Auto">
 									<controls:DataGridTemplateColumn.CellTemplate>
@@ -304,16 +303,18 @@
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
-								<!--  Is auto  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnIsAuto" Width="Auto">
+								<!--  Auto-update  -->
+								<controls:DataGridTemplateColumn x:Uid="TemplateColumnAutoUpd" Width=".5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
-											<ToggleButton
+											<ToggleSwitch
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center"
-												IsChecked="{Binding Item.IsAutoUpdate, Mode=OneWay}"
-												IsEnabled="False" />
+												HorizontalContentAlignment="Center"
+												Background="DimGray"
+												IsEnabled="False"
+												IsOn="{Binding Item.IsAutoUpdate, Mode=OneWay}" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>

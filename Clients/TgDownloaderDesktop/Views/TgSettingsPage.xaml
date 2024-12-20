@@ -5,6 +5,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:helpers="using:TgDownloaderDesktop.Helpers"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:viewmodels="using:TgDownloaderDesktop.ViewModels"
+	d:DataContext="{d:DesignInstance Type=viewmodels:TgSettingsViewModel}"
 	mc:Ignorable="d">
 	<ScrollView VerticalScrollMode="Auto">
 		<Grid>

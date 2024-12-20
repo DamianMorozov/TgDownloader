@@ -13,7 +13,6 @@ public partial class TgSourcesPage
 	{
 		ViewModel = App.GetService<TgSourcesViewModel>();
 		InitializeComponent();
-		Loaded += OnLoaded;
 	}
 
 	#endregion
@@ -24,10 +23,6 @@ public partial class TgSourcesPage
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-	}
-
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
 		ViewModel.OnLoaded(XamlRoot);
 	}
 

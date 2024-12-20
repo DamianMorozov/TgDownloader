@@ -429,8 +429,17 @@
   <data name="TemplateColumnUpdate.Header" xml:space="preserve">
     <value>Update from TG</value>
   </data>
+  <data name="TemplateColumnUpd.Header" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="TemplateColumnAutoUpd.Header" xml:space="preserve">
+    <value>Auto-update</value>
+  </data>
   <data name="TemplateColumnDownload.Header" xml:space="preserve">
     <value>Download</value>
+  </data>
+  <data name="TemplateColumnComplete.Header" xml:space="preserve">
+    <value>Complete</value>
   </data>
   <data name="TemplateColumnId.Header" xml:space="preserve">
     <value>ID</value>
@@ -459,7 +468,34 @@
   <data name="TemplateColumnIsActive.Header" xml:space="preserve">
     <value>Active</value>
   </data>
-  <data name="TemplateColumnIsAuto.Header" xml:space="preserve">
-    <value>Auto</value>
+  <data name="DataLoadWait.Text" xml:space="preserve">
+    <value>Wait until the data download is complete</value>
+  </data>
+  <data name="TextBlockCount.Text" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="TextBlockLoad.Text" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="TextBlockClear.Text" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="TextBlockSort.Text" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="TextBlockDefaultSort.Text" xml:space="preserve">
+    <value>Default sort</value>
+  </data>
+  <data name="TextBlockSave.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TextBlockUpdate.Text" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="TextBlockGet.Text" xml:space="preserve">
+    <value>Get</value>
+  </data>
+  <data name="TextBlockMark.Text" xml:space="preserve">
+    <value>Mark</value>
   </data>
 </root>

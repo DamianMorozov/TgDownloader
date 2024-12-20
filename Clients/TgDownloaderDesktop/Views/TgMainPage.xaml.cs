@@ -13,14 +13,18 @@ public sealed partial class TgMainPage : Page
 	{
 		ViewModel = App.GetService<TgMainViewModel>();
 		InitializeComponent();
-		Loaded += OnLoaded;
 	}
 
 	#endregion
 
 	#region Public and private methods
 
-	private void OnLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
+	protected override async void OnNavigatedTo(NavigationEventArgs e)
+	{
+		base.OnNavigatedTo(e);
+		await ViewModel.OnNavigatedToAsync(e);
+		ViewModel.OnLoaded(XamlRoot);
+	}
 
 	#endregion
 }

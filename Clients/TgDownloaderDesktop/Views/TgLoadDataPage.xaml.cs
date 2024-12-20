@@ -3,15 +3,15 @@
 
 namespace TgDownloaderDesktop.Views;
 
-public partial class TgClientPage
+public partial class TgLoadDataPage
 {
 	#region Public and private fields, properties, constructor
 
-	public TgClientViewModel ViewModel { get; }
+	public TgLoadDataViewModel ViewModel { get; }
 
-	public TgClientPage()
+	public TgLoadDataPage()
 	{
-		ViewModel = App.GetService<TgClientViewModel>();
+		ViewModel = App.GetService<TgLoadDataViewModel>();
 		InitializeComponent();
 	}
 
@@ -24,6 +24,13 @@ public partial class TgClientPage
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
 		ViewModel.OnLoaded(XamlRoot);
+		ViewModel.IsPageLoad = true;
+	}
+
+	protected override void OnNavigatedFrom(NavigationEventArgs e)
+	{
+		base.OnNavigatedFrom(e);
+		ViewModel.IsPageLoad = false;
 	}
 
 	#endregion

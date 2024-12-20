@@ -17,8 +17,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	public IRelayCommand GetSourcesFromTelegramCommand { get; }
 	public IRelayCommand MarkAllMessagesAsReadCommand { get; }
 	public IRelayCommand ClearViewCommand { get; }
-	public IRelayCommand SortViewCommand { get; }
-	public IRelayCommand SaveSourcesCommand { get; }
+	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand LoadSourcesFromStorageCommand { get; }
 	public IRelayCommand<TgEfSourceViewModel> GetSourceFromStorageCommand { get; }
 	public IRelayCommand<TgEfSourceViewModel> UpdateSourceFromTelegramCommand { get; }
@@ -33,8 +32,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
 		MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
 		ClearViewCommand = new AsyncRelayCommand(ClearViewAsync);
-		SortViewCommand = new AsyncRelayCommand(SortViewAsync);
-		SaveSourcesCommand = new AsyncRelayCommand(SaveSourcesAsync);
+		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		LoadSourcesFromStorageCommand = new AsyncRelayCommand(async () => await LoadDataAsync(LoadSourcesFromStorageAsync));
 		GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
 		UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
@@ -55,22 +53,13 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
 	#region Public and private methods
 
-	public async Task OnNavigatedToAsync(object parameter)
-    {
-        OnLoaded(parameter);
-		await AppLoadCoreAsync();
-	}
-
-    public async Task AppLoadCoreAsync()
-    {
-		await LoadDataAsync(async () =>
+	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
 		{
 			TgEfUtils.AppStorage = SettingsService.AppStorage;
 			TgEfUtils.RecreateEfContext();
 			await LoadSourcesFromStorageAsync();
 			await ReloadUiAsync();
 		});
-	}
 
 	private async Task ReloadUiAsync()
     {
@@ -80,7 +69,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await Task.CompletedTask;
     }
 
-	public async Task LoadSourcesFromStorageAsync()
+	private async Task LoadSourcesFromStorageAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
 		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
@@ -101,14 +90,14 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 				SourcesVms.Add(new(sourceDto.ConvertToEntity()));
 	}
 
-	public async Task UpdateSourcesFromTelegramAsync()
+	private async Task UpdateSourcesFromTelegramAsync()
 	{
 		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
 		foreach (TgEfSourceViewModel sourceVm in SourcesVms)
 			await UpdateSourceFromTelegramAsync(sourceVm);
 	}
 
-	public async Task GetSourcesFromTelegramAsync()
+	private async Task GetSourcesFromTelegramAsync()
 	{
 		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
 		await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Chat, LoadFromTelegramAsync);
@@ -116,7 +105,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	}
 
 	/// <summary> Load sources from Telegram /// </summary>
-	public async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
+	private async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
 	{
 		var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
 		if (storageResult.IsExists)
@@ -126,39 +115,25 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await SaveSourceAsync(sourceVm);
 	}
 
-	public async Task MarkAllMessagesAsReadAsync()
+	private async Task MarkAllMessagesAsReadAsync()
 	{
 		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
 		await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
 	}
 
-	public async Task ClearViewAsync()
+	private async Task ClearViewAsync()
 	{
-		SourcesVms = [];
+		SourcesVms.Clear();
 		await Task.CompletedTask;
 	}
 
-	public async Task SortViewAsync()
+	private async Task DefaultSortAsync()
 	{
 		SetOrderSources(SourcesVms.Select(x => x.Item.ConvertToDto()).ToList());
 		await Task.CompletedTask;
 	}
 
-	/// <summary> Save sources into the Storage </summary>
-	public async Task SaveSourcesAsync()
-	{
-		if (!SourcesVms.Any())
-		{
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, "Empty sources list!");
-			return;
-		}
-		foreach (TgEfSourceViewModel sourceVm in SourcesVms)
-		{
-			await SaveSourceAsync(sourceVm);
-		}
-	}
-
-	public async Task SaveSourceAsync(TgEfSourceViewModel sourceVm)
+	private async Task SaveSourceAsync(TgEfSourceViewModel sourceVm)
 	{
 		if (sourceVm is null) return;
 		var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
@@ -169,7 +144,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		}
 	}
 
-	public async Task GetSourceFromStorageAsync(TgEfSourceViewModel? sourceVm)
+	private async Task GetSourceFromStorageAsync(TgEfSourceViewModel? sourceVm)
 	{
 		if (sourceVm is null) return;
 		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
@@ -186,7 +161,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await Task.CompletedTask;
 	}
 
-	public async Task UpdateSourceFromTelegramAsync(TgEfSourceViewModel? sourceVm)
+	private async Task UpdateSourceFromTelegramAsync(TgEfSourceViewModel? sourceVm)
 	{
 		if (sourceVm is null) return;
 		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
@@ -194,7 +169,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await GetSourceFromStorageAsync(sourceVm);
 	}
 
-	public async Task DownloadAsync(TgEfSourceViewModel? sourceVm)
+	private async Task DownloadAsync(TgEfSourceViewModel? sourceVm)
 	{
 		if (sourceVm is null) return;
 		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
@@ -204,7 +179,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await Task.CompletedTask;
 	}
 
-	public async Task EditSourceAsync(TgEfSourceViewModel? sourceVm)
+	private async Task EditSourceAsync(TgEfSourceViewModel? sourceVm)
 	{
 		if (sourceVm is null) return;
 		//if (Application.Current.MainWindow is MainWindow navigationWindow)

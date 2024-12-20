@@ -13,7 +13,8 @@ public sealed partial class TgSettingsPage : Page
 	{
 		ViewModel = App.GetService<TgSettingsViewModel>();
 		InitializeComponent();
-		Loaded += OnLoaded;
+		ComboBoxAppThemes.SelectionChanged += ComboBoxAppThemes_OnSelectionChanged;
+		ComboBoxAppLanguages.SelectionChanged += ComboBoxAppLanguages_OnSelectionChanged;
 	}
 
 	#endregion
@@ -24,13 +25,7 @@ public sealed partial class TgSettingsPage : Page
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-	}
-
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
 		ViewModel.OnLoaded(XamlRoot);
-		ComboBoxAppThemes.SelectionChanged += ComboBoxAppThemes_OnSelectionChanged;
-		ComboBoxAppLanguages.SelectionChanged += ComboBoxAppLanguages_OnSelectionChanged;
 	}
 
 	private async void ComboBoxAppThemes_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SettingsService.SetAppThemeAsync();

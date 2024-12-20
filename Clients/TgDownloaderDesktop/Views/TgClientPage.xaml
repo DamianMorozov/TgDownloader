@@ -6,6 +6,9 @@
 	xmlns:helpers="using:TgDownloaderDesktop.Helpers"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:proxies="using:TgStorage.Domain.Proxies"
+	xmlns:viewmodels="using:TgDownloaderDesktop.ViewModels"
+	xmlns:views="using:TgDownloaderDesktop.Views"
+	d:DataContext="{d:DesignInstance Type=viewmodels:TgClientViewModel}"
 	mc:Ignorable="d">
 	<Page.Resources>
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
@@ -19,26 +22,14 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<!--  Check access to storage  -->
-			<ContentControl
-				Grid.Row="0"
-				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Left"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-				<TextBlock
-					x:Uid="AppStorageNeedToCreate"
-					Margin="2"
-					HorizontalAlignment="Left"
-					FontWeight="Bold"
-					HorizontalTextAlignment="Left"
-					TextAlignment="Center"
-					TextWrapping="WrapWholeWords" />
-			</ContentControl>
+			<!--  Load data  -->
+			<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
 			<!--  Actions  -->
 			<ContentControl
 				Grid.Row="1"
 				HorizontalAlignment="Stretch"
-				HorizontalContentAlignment="Stretch">
+				HorizontalContentAlignment="Stretch"
+				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<Expander
 					x:Uid="SettingAppActions"
 					Grid.Row="2"
@@ -180,7 +171,7 @@
 				Grid.Row="2"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
+				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<Expander
 					x:Uid="ExpanderSettingInStorage"
 					Grid.Row="0"
@@ -302,7 +293,7 @@
 				Grid.Row="3"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.SettingsService.IsExistsAppStorage, Mode=OneWay}">
+				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 				<Expander
 					x:Uid="ExpanderSettingWithoutSaving"
 					Grid.Row="0"

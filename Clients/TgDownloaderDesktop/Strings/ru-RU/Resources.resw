@@ -491,8 +491,17 @@
   <data name="TemplateColumnUpdate.Header" xml:space="preserve">
     <value>Обновить из ТГ</value>
   </data>
+  <data name="TemplateColumnUpd.Header" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="TemplateColumnAutoUpd.Header" xml:space="preserve">
+    <value>Авто-обновление</value>
+  </data>
   <data name="TemplateColumnDownload.Header" xml:space="preserve">
     <value>Скачать</value>
+  </data>
+  <data name="TemplateColumnComplete.Header" xml:space="preserve">
+    <value>Завершить</value>
   </data>
   <data name="TemplateColumnId.Header" xml:space="preserve">
     <value>ИД</value>
@@ -521,7 +530,34 @@
   <data name="TemplateColumnIsActive.Header" xml:space="preserve">
     <value>Активно</value>
   </data>
-  <data name="TemplateColumnIsAuto.Header" xml:space="preserve">
-    <value>Авто</value>
+  <data name="DataLoadWait.Text" xml:space="preserve">
+    <value>Дождитесь окончания загрузки данных</value>
+  </data>
+  <data name="TextBlockCount.Text" xml:space="preserve">
+    <value>Кол-во</value>
+  </data>
+  <data name="TextBlockLoad.Text" xml:space="preserve">
+    <value>Загрузить</value>
+  </data>
+  <data name="TextBlockClear.Text" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="TextBlockSort.Text" xml:space="preserve">
+    <value>Сортировать</value>
+  </data>
+  <data name="TextBlockDefaultSort.Text" xml:space="preserve">
+    <value>Сортировать по-умолчанию</value>
+  </data>
+  <data name="TextBlockSave.Text" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="TextBlockUpdate.Text" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="TextBlockGet.Text" xml:space="preserve">
+    <value>Получить</value>
+  </data>
+  <data name="TextBlockMark.Text" xml:space="preserve">
+    <value>Пометить</value>
   </data>
 </root>

@@ -21,7 +21,7 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 
 	#region Public and private methods
 
-	public async Task OnNavigatedToAsync(NavigationEventArgs navigationEventArgs) => await SettingsService.LoadAsync();
+	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await SettingsService.LoadAsync();
 
 	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsDefaultCoreAsync, TgResourceExtensions.AskSettingsDefault());
 

@@ -51,6 +51,11 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			XamlRootVm = xamlRoot;
 	}
 
+	public virtual async Task OnNavigatedToAsync(NavigationEventArgs e)
+	{
+		await Task.CompletedTask;
+	}
+
 	/// <summary> Update state client message </summary>
 	public virtual void UpdateStateProxy(string message)
 	{
@@ -147,7 +152,8 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		}
 		finally
 		{
-			IsPageLoad = false;
+			if (SettingsService.IsExistsAppStorage)
+				IsPageLoad = false;
 		}
 	}
 
