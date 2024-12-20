@@ -95,17 +95,12 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 	{
 		IList<TgEfSourceDto> items;
 		var query = isNoTracking ? EfContext.Sources.AsNoTracking() : EfContext.Sources.AsTracking();
-		if (take > 0)
-		{
-			items = await query
+		items = take > 0
+			? await query
 				.Skip(skip).Take(take)
+				.Select(SelectSourceDto()).ToListAsync()
+			: (IList<TgEfSourceDto>)await query
 				.Select(SelectSourceDto()).ToListAsync();
-		}
-		else
-		{
-			items = await query
-				.Select(SelectSourceDto()).ToListAsync();
-		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -114,8 +109,8 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		Uid = source.Uid,
 		Id = source.Id,
 		UserName = source.UserName ?? string.Empty,
-		DtChanged = source.DtChanged,
-		IsActive = source.IsActive,
+		DtChanged = $"{source.DtChanged:yyyy-MM-dd}",
+		IsSourceActive = source.IsActive,
 		IsAutoUpdate = source.IsAutoUpdate,
 		Title = source.Title ?? string.Empty,
 		FirstId = source.FirstId,

@@ -63,6 +63,33 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	public async Task<TgEfStorageResult<TgEfContactDto>> GetListDtoAsync(int take, int skip, bool isNoTracking)
+	{
+		IList<TgEfContactDto> items;
+		var query = isNoTracking ? EfContext.Contacts.AsNoTracking() : EfContext.Contacts.AsTracking();
+		items = take > 0
+			? await query
+				.Skip(skip).Take(take)
+				.Select(SelectContactDto()).ToListAsync()
+			: (IList<TgEfContactDto>)await query
+				.Select(SelectContactDto()).ToListAsync();
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectContactDto() => source => new TgEfContactDto
+	{
+		Uid = source.Uid,
+		Id = source.Id,
+		UserName = source.UserName ?? string.Empty,
+		DtChanged = $"{source.DtChanged:yyyy-MM-dd}",
+		IsContactActive = source.IsActive,
+		IsBot = source.IsBot,
+		FirstName = source.FirstName ?? string.Empty,
+		LastName = source.LastName ?? string.Empty,
+		Phone = source.PhoneNumber ?? string.Empty,
+		Status = source.Status ?? string.Empty,
+	}; 
+
 	public override TgEfStorageResult<TgEfContactEntity> GetList(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfContactEntity> items;

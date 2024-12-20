@@ -1,9 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Sources;
+namespace TgStorage.Domain.Contacts;
 
-public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbFillEntity<TgEfSourceDto>
+public sealed partial class TgEfContactDto : TgViewModelBase, ITgDbEntity, ITgDbFillEntity<TgEfContactDto>
 {
 	[ObservableProperty]
 	private Guid _uid;
@@ -14,22 +14,24 @@ public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbF
 	[ObservableProperty]
 	private string _dtChanged = string.Empty;
 	[ObservableProperty]
-	private bool _isSourceActive;
+	private bool _isContactActive;
 	[ObservableProperty]
-	private bool _isAutoUpdate;
+	private bool _isBot;
 	[ObservableProperty]
-	private string _title = string.Empty;
+	private string _firstName = string.Empty;
 	[ObservableProperty]
-	private int _firstId;
+	private string _lastName = string.Empty;
 	[ObservableProperty]
-	private int _count;
+	private string _phone = string.Empty;
+	[ObservableProperty]
+	private string _status = string.Empty;
 
 	public void Default()
 	{
 		throw new NotImplementedException();
 	}
 
-	public TgEfSourceDto Fill(TgEfSourceDto item, bool isUidCopy)
+	public TgEfContactDto Fill(TgEfContactDto item, bool isUidCopy)
 	{
 		throw new NotImplementedException();
 	}
