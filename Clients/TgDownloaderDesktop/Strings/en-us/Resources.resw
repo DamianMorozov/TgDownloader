@@ -76,6 +76,9 @@
   <data name="Shell_Connect.Content" xml:space="preserve">
     <value>Connection</value>
   </data>
+  <data name="Shell_Contacts.Content" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Sources</value>
   </data>
@@ -473,6 +476,21 @@
   </data>
   <data name="TemplateColumnIsActive.Header" xml:space="preserve">
     <value>Active</value>
+  </data>
+  <data name="TemplateColumnIsBot.Header" xml:space="preserve">
+    <value>Bot</value>
+  </data>
+  <data name="TemplateColumnFirstName.Header" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="TemplateColumnLastName.Header" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="TemplateColumnPhone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="TemplateColumnLastStatus.Header" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Wait until the data download is complete</value>

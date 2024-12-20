@@ -135,6 +135,9 @@
   <data name="Shell_Connect.Content" xml:space="preserve">
     <value>Подключение</value>
   </data>
+  <data name="Shell_Contacts.Content" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Источники</value>
   </data>
@@ -535,6 +538,21 @@
   </data>
   <data name="TemplateColumnIsActive.Header" xml:space="preserve">
     <value>Активно</value>
+  </data>
+  <data name="TemplateColumnIsBot.Header" xml:space="preserve">
+    <value>Бот</value>
+  </data>
+  <data name="TemplateColumnFirstName.Header" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="TemplateColumnLastName.Header" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="TemplateColumnPhone.Header" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="TemplateColumnLastStatus.Header" xml:space="preserve">
+    <value>Статус</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Дождитесь окончания загрузки данных</value>

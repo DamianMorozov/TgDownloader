@@ -10,34 +10,34 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
     private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfSourceViewModel> _sourcesVms = [];
+	private ObservableCollection<TgEfSourceDto> _sourcesVms = [];
 	[ObservableProperty]
 	private bool _isReady;
-	public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
-	public IRelayCommand GetSourcesFromTelegramCommand { get; }
-	public IRelayCommand MarkAllMessagesAsReadCommand { get; }
+	//public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
+	//public IRelayCommand GetSourcesFromTelegramCommand { get; }
+	//public IRelayCommand MarkAllMessagesAsReadCommand { get; }
+	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
-	public IRelayCommand LoadDataStorageCommand { get; }
-	public IRelayCommand<TgEfSourceViewModel> GetSourceFromStorageCommand { get; }
-	public IRelayCommand<TgEfSourceViewModel> UpdateSourceFromTelegramCommand { get; }
-	public IRelayCommand<TgEfSourceViewModel> DownloadCommand { get; }
-	public IRelayCommand<TgEfSourceViewModel> EditSourceCommand { get; }
+	//public IRelayCommand<TgEfSourceViewModel> GetSourceFromStorageCommand { get; }
+	//public IRelayCommand<TgEfSourceViewModel> UpdateSourceFromTelegramCommand { get; }
+	//public IRelayCommand<TgEfSourceViewModel> DownloadCommand { get; }
+	//public IRelayCommand<TgEfSourceViewModel> EditSourceCommand { get; }
 
 	public TgSourcesViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
 		//AppClearCoreAsync().GetAwaiter().GetResult();
 		// Commands
-		UpdateSourcesFromTelegramCommand = new AsyncRelayCommand(UpdateSourcesFromTelegramAsync);
-		GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
-		MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
+		//UpdateSourcesFromTelegramCommand = new AsyncRelayCommand(UpdateSourcesFromTelegramAsync);
+		//GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
+		//MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
+		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
-		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
-		GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
-		UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
-		DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
-		EditSourceCommand = new AsyncRelayCommand<TgEfSourceViewModel>(EditSourceAsync);
+		//GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
+		//UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
+		//DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
+		//EditSourceCommand = new AsyncRelayCommand<TgEfSourceViewModel>(EditSourceAsync);
 		// Delegates
 		//TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
 		//TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
@@ -69,48 +69,59 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await Task.CompletedTask;
     }
 
-	/// <summary> Sort sources </summary>
-	private void SetOrderSources(IEnumerable<TgEfSourceDto> sourcesDtos)
+	/// <summary> Sort data </summary>
+	private void SetOrderData(IEnumerable<TgEfSourceDto> dtos)
 	{
-		List<TgEfSourceDto> list = sourcesDtos.ToList();
+		List<TgEfSourceDto> list = dtos.ToList();
 		if (!list.Any())
 			return;
 		SourcesVms = [];
-		sourcesDtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
-		if (sourcesDtos.Any())
-			foreach (var sourceDto in sourcesDtos)
-				SourcesVms.Add(new(sourceDto.ConvertToEntity()));
+		dtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
+		if (dtos.Any())
+			foreach (var dto in dtos)
+				SourcesVms.Add(dto);
 	}
 
-	private async Task UpdateSourcesFromTelegramAsync()
-	{
-		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
-		foreach (TgEfSourceViewModel sourceVm in SourcesVms)
-			await UpdateSourceFromTelegramAsync(sourceVm);
-	}
+	//private async Task UpdateSourcesFromTelegramAsync()
+	//{
+	//	if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
+	//	foreach (TgEfSourceViewModel sourceVm in SourcesVms)
+	//		await UpdateSourceFromTelegramAsync(sourceVm);
+	//}
 
-	private async Task GetSourcesFromTelegramAsync()
-	{
-		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
-		await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Chat, LoadFromTelegramAsync);
-		await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Dialog, LoadFromTelegramAsync);
-	}
+	//private async Task GetSourcesFromTelegramAsync()
+	//{
+	//	if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
+	//	await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Chat, LoadFromTelegramAsync);
+	//	await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Dialog, LoadFromTelegramAsync);
+	//}
 
-	/// <summary> Load sources from Telegram </summary>
-	private async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
-	{
-		var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
-		if (storageResult.IsExists)
-			sourceVm = new(storageResult.Item);
-		if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
-			SourcesVms.Add(sourceVm);
-		await SaveSourceAsync(sourceVm);
-	}
+	///// <summary> Load sources from Telegram </summary>
+	//private async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
+	//{
+	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+	//	if (storageResult.IsExists)
+	//		sourceVm = new(storageResult.Item);
+	//	if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
+	//		SourcesVms.Add(sourceVm);
+	//	await SaveSourceAsync(sourceVm);
+	//}
 
-	private async Task MarkAllMessagesAsReadAsync()
+	//private async Task MarkAllMessagesAsReadAsync()
+	//{
+	//	if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
+	//	await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
+	//}
+
+	private async Task LoadDataStorageAsync() => await ContentDialogAsync(LoadDataStorageCoreAsync, TgResourceExtensions.AskDataLoad(), useLoadData: true);
+
+	private async Task LoadDataStorageCoreAsync()
 	{
-		if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
-		await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
+		if (!SettingsService.IsExistsAppStorage)
+			return;
+		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
+		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
+		SetOrderData(sourcesDtos);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -121,80 +132,69 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await Task.CompletedTask;
 	}
 
-	private async Task LoadDataStorageAsync() => await ContentDialogAsync(LoadDataStorageCoreAsync, TgResourceExtensions.AskDataLoad(), useLoadData: true);
-
-	private async Task LoadDataStorageCoreAsync()
-	{
-		if (!SettingsService.IsExistsAppStorage)
-			return;
-		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
-		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderSources(sourcesDtos);
-	}
-
 	private async Task DefaultSortAsync()
 	{
-		SetOrderSources(SourcesVms.Select(x => x.Item.ConvertToDto()).ToList());
+		SetOrderData(SourcesVms);
 		await Task.CompletedTask;
 	}
 
-	private async Task SaveSourceAsync(TgEfSourceViewModel sourceVm)
-	{
-		if (sourceVm is null) return;
-		var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
-		if (!storageResult.IsExists)
-		{
-			await SourceRepository.SaveAsync(sourceVm.Item);
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Item.Id, 0, $"Saved source | {sourceVm.Item}");
-		}
-	}
+	//private async Task SaveSourceAsync(TgEfSourceViewModel sourceVm)
+	//{
+	//	if (sourceVm is null) return;
+	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+	//	if (!storageResult.IsExists)
+	//	{
+	//		await SourceRepository.SaveAsync(sourceVm.Item);
+	//		await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Item.Id, 0, $"Saved source | {sourceVm.Item}");
+	//	}
+	//}
 
-	private async Task GetSourceFromStorageAsync(TgEfSourceViewModel? sourceVm)
-	{
-		if (sourceVm is null) return;
-		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
+	//private async Task GetSourceFromStorageAsync(TgEfSourceViewModel? sourceVm)
+	//{
+	//	if (sourceVm is null) return;
+	//	//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+	//	//await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
 
-		//for (int i = 0; i < SourcesVms.Count; i++)
-		//{
-		//	if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
-		//	{
-		//		SourcesVms[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
-		//		break;
-		//	}
-		//}
-		await Task.CompletedTask;
-	}
+	//	//for (int i = 0; i < SourcesVms.Count; i++)
+	//	//{
+	//	//	if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
+	//	//	{
+	//	//		SourcesVms[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
+	//	//		break;
+	//	//	}
+	//	//}
+	//	await Task.CompletedTask;
+	//}
 
-	private async Task UpdateSourceFromTelegramAsync(TgEfSourceViewModel? sourceVm)
-	{
-		if (sourceVm is null) return;
-		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
-		await GetSourceFromStorageAsync(sourceVm);
-	}
+	//private async Task UpdateSourceFromTelegramAsync(TgEfSourceViewModel? sourceVm)
+	//{
+	//	if (sourceVm is null) return;
+	//	//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+	//	//await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
+	//	await GetSourceFromStorageAsync(sourceVm);
+	//}
 
-	private async Task DownloadAsync(TgEfSourceViewModel? sourceVm)
-	{
-		if (sourceVm is null) return;
-		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//TgDesktopUtils.TgItemSourceVm.ViewModel = this;
-		//if (await TgDesktopUtils.TgItemSourceVm.OnDownloadSourceAsync())
-		//	await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
-		await Task.CompletedTask;
-	}
+	//private async Task DownloadAsync(TgEfSourceViewModel? sourceVm)
+	//{
+	//	if (sourceVm is null) return;
+	//	//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+	//	//TgDesktopUtils.TgItemSourceVm.ViewModel = this;
+	//	//if (await TgDesktopUtils.TgItemSourceVm.OnDownloadSourceAsync())
+	//	//	await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
+	//	await Task.CompletedTask;
+	//}
 
-	private async Task EditSourceAsync(TgEfSourceViewModel? sourceVm)
-	{
-		if (sourceVm is null) return;
-		//if (Application.Current.MainWindow is MainWindow navigationWindow)
-		//{
-		//	TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//	navigationWindow.ShowWindow();
-		//	navigationWindow.Navigate(typeof(TgItemSourcePage));
-		//}
-		await Task.CompletedTask;
-	}
+	//private async Task EditSourceAsync(TgEfSourceViewModel? sourceVm)
+	//{
+	//	if (sourceVm is null) return;
+	//	//if (Application.Current.MainWindow is MainWindow navigationWindow)
+	//	//{
+	//	//	TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+	//	//	navigationWindow.ShowWindow();
+	//	//	navigationWindow.Navigate(typeof(TgItemSourcePage));
+	//	//}
+	//	await Task.CompletedTask;
+	//}
 
 	#endregion
 }

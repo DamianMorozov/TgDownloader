@@ -45,6 +45,7 @@ global using TgDownloaderDesktop.Views;
 global using TgInfrastructure.Common;
 global using TgInfrastructure.Helpers;
 global using TgStorage.Domain.Apps;
+global using TgStorage.Domain.Contacts;
 global using TgStorage.Domain.Proxies;
 global using TgStorage.Domain.Sources;
 global using TgStorage.Enums;
