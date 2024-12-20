@@ -374,6 +374,12 @@
   <data name="AskClientDisconnect" xml:space="preserve">
     <value>Отключить клиент?</value>
   </data>
+  <data name="AskDataClear" xml:space="preserve">
+    <value>Очистить данные?</value>
+  </data>
+  <data name="AskDataLoad" xml:space="preserve">
+    <value>Загрузить данные?</value>
+  </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Перезапустить приложение?</value>
   </data>

@@ -5,37 +5,29 @@ namespace TgStorage.Helpers;
 
 public static class TgEfHelper
 {
-	public static TgEfSourceEntity ConvertToEntity(this TgEfSourceDto sourceDto)
+	public static TgEfSourceEntity ConvertToEntity(this TgEfSourceDto sourceDto) => new TgEfSourceEntity()
 	{
-		return new TgEfSourceEntity()
-		{
-			Uid = sourceDto.Uid,
-			DtChanged = sourceDto.DtChanged,
-			Id = sourceDto.Id,
-			IsActive = sourceDto.IsActive,
-			UserName = sourceDto.UserName,
-			Title = sourceDto.Title,
-			Count = sourceDto.Count,
-			Directory = sourceDto.Directory,
-			FirstId = sourceDto.FirstId,
-			IsAutoUpdate = sourceDto.IsAutoUpdate,
-		};
-	}
+		Uid = sourceDto.Uid,
+		DtChanged = sourceDto.DtChanged,
+		Id = sourceDto.Id,
+		IsActive = sourceDto.IsActive,
+		UserName = sourceDto.UserName,
+		Title = sourceDto.Title,
+		Count = sourceDto.Count,
+		FirstId = sourceDto.FirstId,
+		IsAutoUpdate = sourceDto.IsAutoUpdate,
+	};
 
-	public static TgEfSourceDto ConvertToDto(this TgEfSourceEntity sourceEntity)
+	public static TgEfSourceDto ConvertToDto(this TgEfSourceEntity sourceEntity) => new TgEfSourceDto()
 	{
-		return new TgEfSourceDto()
-		{
-			Uid = sourceEntity.Uid,
-			DtChanged = sourceEntity.DtChanged,
-			Id = sourceEntity.Id,
-			IsActive = sourceEntity.IsActive,
-			UserName = sourceEntity.UserName,
-			Title = sourceEntity.Title,
-			Count = sourceEntity.Count,
-			Directory = sourceEntity.Directory,
-			FirstId = sourceEntity.FirstId,
-			IsAutoUpdate = sourceEntity.IsAutoUpdate,
-		};
-	}
+		Uid = sourceEntity.Uid,
+		Id = sourceEntity.Id,
+		UserName = sourceEntity.UserName ?? string.Empty,
+		DtChanged = sourceEntity.DtChanged,
+		IsActive = sourceEntity.IsActive,
+		IsAutoUpdate = sourceEntity.IsAutoUpdate,
+		Title = sourceEntity.Title ?? string.Empty,
+		FirstId = sourceEntity.FirstId,
+		Count = sourceEntity.Count,
+	};
 }

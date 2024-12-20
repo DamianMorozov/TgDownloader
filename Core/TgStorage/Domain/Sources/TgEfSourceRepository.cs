@@ -98,43 +98,29 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		if (take > 0)
 		{
 			items = await query
-				.Skip(skip)
-				.Take(take)
-				.Select(source => new TgEfSourceDto
-				{
-					Uid = source.Uid,
-					DtChanged = source.DtChanged,
-					Id = source.Id,
-					IsActive = source.IsActive,
-					UserName = source.UserName,
-					Title = source.Title,
-					Count = source.Count,
-					Directory = source.Directory,
-					FirstId = source.FirstId,
-					IsAutoUpdate = source.IsAutoUpdate
-				})
-				.ToListAsync();
+				.Skip(skip).Take(take)
+				.Select(SelectSourceDto()).ToListAsync();
 		}
 		else
 		{
 			items = await query
-				.Select(source => new TgEfSourceDto
-				{
-					Uid = source.Uid,
-					DtChanged = source.DtChanged,
-					Id = source.Id,
-					IsActive = source.IsActive,
-					UserName = source.UserName,
-					Title = source.Title,
-					Count = source.Count,
-					Directory = source.Directory,
-					FirstId = source.FirstId,
-					IsAutoUpdate = source.IsAutoUpdate
-				})
-				.ToListAsync();
+				.Select(SelectSourceDto()).ToListAsync();
 		}
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
+
+	private static Expression<Func<TgEfSourceEntity, TgEfSourceDto>> SelectSourceDto() => source => new TgEfSourceDto
+	{
+		Uid = source.Uid,
+		Id = source.Id,
+		UserName = source.UserName ?? string.Empty,
+		DtChanged = source.DtChanged,
+		IsActive = source.IsActive,
+		IsAutoUpdate = source.IsAutoUpdate,
+		Title = source.Title ?? string.Empty,
+		FirstId = source.FirstId,
+		Count = source.Count,
+	};
 
 	public override TgEfStorageResult<TgEfSourceEntity> GetList(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isNoTracking)
 	{

@@ -112,7 +112,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		_ = await dialog.ShowAsync();
 	}
 
-	protected async Task ContentDialogAsync(Func<Task> task, string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
+	protected async Task ContentDialogAsync(Func<Task> task, string title, ContentDialogButton defaultButton = ContentDialogButton.Close, bool useLoadData = false)
 	{
 		if (XamlRootVm is null) return;
 		ContentDialog dialog = new()
@@ -122,7 +122,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			PrimaryButtonText = TgResourceExtensions.GetYesButton(),
 			CloseButtonText = TgResourceExtensions.GetCancelButton(),
 			DefaultButton = defaultButton,
-			PrimaryButtonCommand = new AsyncRelayCommand(task)
+			PrimaryButtonCommand = new AsyncRelayCommand(useLoadData ? async () => await LoadDataAsync(task) : task)
 		};
 		_ = await dialog.ShowAsync();
 	}

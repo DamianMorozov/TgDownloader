@@ -17,6 +17,8 @@ public static class TgResourceExtensions
 
 	public static string AskClientConnect() => "AskClientConnect".GetLocalized();
 	public static string AskClientDisconnect() => "AskClientDisconnect".GetLocalized();
+	public static string AskDataClear() => "AskDataClear".GetLocalized();
+	public static string AskDataLoad() => "AskDataLoad".GetLocalized();
 	public static string AskRestartApp() => "AskRestartApp".GetLocalized();
 	public static string AskSettingsClear() => "AskSettingsClear".GetLocalized();
 	public static string AskSettingsDefault() => "AskSettingsDefault".GetLocalized();

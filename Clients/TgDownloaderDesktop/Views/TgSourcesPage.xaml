@@ -39,20 +39,16 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<!--  Get from Storage  -->
+						<!--  Load storage  -->
 						<Button
 							Grid.Column="0"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.LoadSourcesFromStorageCommand, Mode=OneWay}">
+							Command="{x:Bind ViewModel.LoadDataStorageCommand, Mode=OneWay}">
 							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
 								<TextBlock
@@ -62,7 +58,7 @@
 							</StackPanel>
 						</Button>
 						<!--  Update from Telegram  -->
-						<Button
+						<!--<Button
 							Grid.Column="1"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -76,9 +72,9 @@
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</StackPanel>
-						</Button>
+						</Button>-->
 						<!--  Get from Telegram  -->
-						<Button
+						<!--<Button
 							Grid.Column="2"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -92,9 +88,9 @@
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</StackPanel>
-						</Button>
+						</Button>-->
 						<!--  Mark as read  -->
-						<Button
+						<!--<Button
 							Grid.Column="3"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -108,14 +104,14 @@
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</StackPanel>
-						</Button>
+						</Button>-->
 						<!--  Clear view  -->
 						<Button
-							Grid.Column="4"
+							Grid.Column="1"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.ClearViewCommand, Mode=OneWay}">
+							Command="{x:Bind ViewModel.ClearDataStorageCommand, Mode=OneWay}">
 							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 								<FontIcon Margin="0,0,10,0" Glyph="&#xe894;" />
 								<TextBlock
@@ -125,7 +121,7 @@
 							</StackPanel>
 						</Button>
 						<!--  Default sort  -->
-						<Button
+						<!--<Button
 							Grid.Column="5"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -138,17 +134,17 @@
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center" />
 							</StackPanel>
-						</Button>
+						</Button>-->
 						<!--  Count  -->
 						<TextBlock
 							x:Uid="TextBlockCount"
-							Grid.Column="6"
+							Grid.Column="2"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
 							TextAlignment="Right" />
 						<TextBlock
-							Grid.Column="7"
+							Grid.Column="3"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
@@ -175,71 +171,81 @@
 							VerticalAlignment="Top"
 							AutoGenerateColumns="False"
 							Background="Transparent"
+							CanUserSortColumns="True"
+							HeadersVisibility="Column"
 							ItemsSource="{x:Bind ViewModel.SourcesVms, Mode=OneWay}">
 							<controls:DataGrid.Columns>
 								<!--  Get from storage  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate x:DataType="viewmodels:TgSourcesViewModel">
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
-											<!--
-												Command="{x:Bind GetSourceFromStorageCommand, Mode=OneWay}"
-												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
+								<!--
+									Command="{x:Bind GetSourceFromStorageCommand, Mode=OneWay}"
+									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+								-->
+								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
+								</controls:DataGridTemplateColumn>-->
 								<!--  Update from TG  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
-											<!--
-												Command="{x:Bind ViewModel.UpdateSourceFromTelegramCommand, Mode=OneWay}"
-												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
+								<!--
+									Command="{x:Bind ViewModel.UpdateSourceFromTelegramCommand, Mode=OneWay}"
+									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+								-->
+								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
+								</controls:DataGridTemplateColumn>-->
 								<!--  Edit  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
-											<!--
-												Command="{x:Bind ViewModel.EditSourceCommand, Mode=OneWay}"
-												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
 											-->
+								<!--
+									Command="{x:Bind ViewModel.EditSourceCommand, Mode=OneWay}"
+									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}"
+								-->
+								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
+								</controls:DataGridTemplateColumn>-->
 								<!--  Download from TG  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnDownload" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnDownload" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center" />
-											<!--
-												IsEnabled="{x:Bind Path=IsReady, Mode=OneWay}"
-												Command="{x:Bind DownloadCommand, Mode=OneWay}"
-												CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
 											-->
+								<!--
+									IsEnabled="{x:Bind Path=IsReady, Mode=OneWay}"
+									Command="{x:Bind DownloadCommand, Mode=OneWay}"
+									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
+								-->
+								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
+								</controls:DataGridTemplateColumn>-->
 								<!--  Complete all  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnComplete" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnComplete" Width="0.5*">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<CheckBox
@@ -247,12 +253,18 @@
 												HorizontalAlignment="center"
 												VerticalAlignment="center"
 												IsEnabled="false" />
-											<!--  ischecked="{x:bind iscomplete, mode=oneway}"  -->
+											-->
+								<!--  ischecked="{x:bind iscomplete, mode=oneway}"  -->
+								<!--
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
+								</controls:DataGridTemplateColumn>-->
 								<!--  Source ID  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnId" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnId"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -265,7 +277,11 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  User name  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnUserName" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnUserName"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -277,8 +293,12 @@
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
-								<!--  Changed  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdated" Width="Auto">
+								<!--  Updated  -->
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnUpdated"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -291,7 +311,11 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  Is active  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnIsActive" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnIsActive"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<ToggleButton
@@ -304,22 +328,28 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  Auto-update  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnAutoUpd" Width=".5*">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnAutoUpd"
+									Width=".5*"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
-											<ToggleSwitch
+											<ToggleButton
 												Margin="2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center"
-												HorizontalContentAlignment="Center"
-												Background="DimGray"
-												IsEnabled="False"
-												IsOn="{Binding Item.IsAutoUpdate, Mode=OneWay}" />
+												IsChecked="{Binding Item.IsAutoUpdate, Mode=OneWay}"
+												IsEnabled="False" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  Title  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnTitle" Width="3.0*">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnTitle"
+									Width="3.0*"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -332,7 +362,11 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  First ID  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnFirstId" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnFirstId"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -345,7 +379,11 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  Count  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnCount" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnCount"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<TextBlock
@@ -358,7 +396,11 @@
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
 								<!--  Progress  -->
-								<controls:DataGridTemplateColumn x:Uid="TemplateColumnProgress" Width="Auto">
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnProgress"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<ProgressBar

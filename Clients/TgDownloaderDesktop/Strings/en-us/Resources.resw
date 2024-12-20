@@ -315,6 +315,12 @@
   <data name="AskClientDisconnect" xml:space="preserve">
     <value>Disconnect the client?</value>
   </data>
+  <data name="AskDataClear" xml:space="preserve">
+    <value>Clear the data?</value>
+  </data>
+  <data name="AskDataLoad" xml:space="preserve">
+    <value>Load the data?</value>
+  </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Restart the application?</value>
   </data>

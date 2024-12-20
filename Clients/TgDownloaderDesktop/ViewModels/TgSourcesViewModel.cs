@@ -16,9 +16,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
 	public IRelayCommand GetSourcesFromTelegramCommand { get; }
 	public IRelayCommand MarkAllMessagesAsReadCommand { get; }
-	public IRelayCommand ClearViewCommand { get; }
+	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
-	public IRelayCommand LoadSourcesFromStorageCommand { get; }
+	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand<TgEfSourceViewModel> GetSourceFromStorageCommand { get; }
 	public IRelayCommand<TgEfSourceViewModel> UpdateSourceFromTelegramCommand { get; }
 	public IRelayCommand<TgEfSourceViewModel> DownloadCommand { get; }
@@ -31,9 +31,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		UpdateSourcesFromTelegramCommand = new AsyncRelayCommand(UpdateSourcesFromTelegramAsync);
 		GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
 		MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
-		ClearViewCommand = new AsyncRelayCommand(ClearViewAsync);
+		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
-		LoadSourcesFromStorageCommand = new AsyncRelayCommand(async () => await LoadDataAsync(LoadSourcesFromStorageAsync));
+		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
 		UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
 		DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
@@ -57,7 +57,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		{
 			TgEfUtils.AppStorage = SettingsService.AppStorage;
 			TgEfUtils.RecreateEfContext();
-			await LoadSourcesFromStorageAsync();
+			await LoadDataStorageCoreAsync();
 			await ReloadUiAsync();
 		});
 
@@ -68,14 +68,6 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		Exception.Default();
 		await Task.CompletedTask;
     }
-
-	private async Task LoadSourcesFromStorageAsync()
-	{
-		if (!SettingsService.IsExistsAppStorage) return;
-		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
-		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderSources(sourcesDtos);
-	}
 
 	/// <summary> Sort sources </summary>
 	private void SetOrderSources(IEnumerable<TgEfSourceDto> sourcesDtos)
@@ -104,7 +96,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await TgDesktopUtils.TgClient.ScanSourcesTgDesktopAsync(TgEnumSourceType.Dialog, LoadFromTelegramAsync);
 	}
 
-	/// <summary> Load sources from Telegram /// </summary>
+	/// <summary> Load sources from Telegram </summary>
 	private async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
 	{
 		var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
@@ -121,10 +113,23 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		await TgDesktopUtils.TgClient.MarkHistoryReadAsync();
 	}
 
-	private async Task ClearViewAsync()
+	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
+
+	private async Task ClearDataStorageCoreAsync()
 	{
 		SourcesVms.Clear();
 		await Task.CompletedTask;
+	}
+
+	private async Task LoadDataStorageAsync() => await ContentDialogAsync(LoadDataStorageCoreAsync, TgResourceExtensions.AskDataLoad(), useLoadData: true);
+
+	private async Task LoadDataStorageCoreAsync()
+	{
+		if (!SettingsService.IsExistsAppStorage)
+			return;
+		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
+		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
+		SetOrderSources(sourcesDtos);
 	}
 
 	private async Task DefaultSortAsync()

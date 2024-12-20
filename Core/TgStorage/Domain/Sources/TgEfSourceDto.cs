@@ -6,15 +6,14 @@ namespace TgStorage.Domain.Sources;
 public sealed class TgEfSourceDto : ITgDbEntity, ITgDbFillEntity<TgEfSourceDto>
 {
 	public Guid Uid { get; set; }
-	public DateTime DtChanged { get; set; }
 	public long Id { get; set; }
+	public string UserName { get; set; } = string.Empty;
+	public DateTime DtChanged { get; set; }
 	public bool IsActive { get; set; }
-	public string? UserName { get; set; }
-	public string? Title { get; set; }
-	public int Count { get; set; }
-	public string? Directory { get; set; }
-	public int FirstId { get; set; }
 	public bool IsAutoUpdate { get; set; }
+	public string Title { get; set; } = string.Empty;
+	public int FirstId { get; set; }
+	public int Count { get; set; }
 
 	public void Default()
 	{
