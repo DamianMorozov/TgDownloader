@@ -5,6 +5,17 @@ namespace TgStorage.Helpers;
 
 public static class TgEfHelper
 {
+	public static string GetStringForFilterType(this TgEfFilterEntity entity) => entity.FilterType switch
+	{
+		TgEnumFilterType.SingleName => TgLocaleHelper.Instance.MenuFiltersSetSingleName,
+		TgEnumFilterType.SingleExtension => TgLocaleHelper.Instance.MenuFiltersSetSingleExtension,
+		TgEnumFilterType.MultiName => TgLocaleHelper.Instance.MenuFiltersSetMultiName,
+		TgEnumFilterType.MultiExtension => TgLocaleHelper.Instance.MenuFiltersSetMultiExtension,
+		TgEnumFilterType.MinSize => TgLocaleHelper.Instance.MenuFiltersSetMinSize,
+		TgEnumFilterType.MaxSize => TgLocaleHelper.Instance.MenuFiltersSetMaxSize,
+		_ => $"<{TgLocaleHelper.Instance.MenuFiltersError}>",
+	};
+
 	//public static TgEfSourceEntity ConvertToEntity(this TgEfSourceDto sourceDto) => new TgEfSourceEntity()
 	//{
 	//	Uid = sourceDto.Uid,

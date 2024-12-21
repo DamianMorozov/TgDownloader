@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using System.Runtime.CompilerServices;
+
 namespace TgStorage.Domain.Filters;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -76,8 +78,8 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
     public string ToDebugString() => FilterType switch
     {
         TgEnumFilterType.MinSize or TgEnumFilterType.MaxSize =>
-			$"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
-        _ => $"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
+			$"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {this.GetStringForFilterType()} | {Name} | {Size} | {SizeType}",
+        _ => $"{TgEfConstants.TableFilters} | {Uid} | {TgCommonUtils.GetIsEnabled(IsEnabled)} | {this.GetStringForFilterType()} | {Name} | {(string.IsNullOrEmpty(Mask) ? $"<{nameof(string.Empty)}>" : Mask)}",
     };
 
     public void Default()
@@ -106,17 +108,6 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
 		SizeType = item.SizeType;
         return this;
 	}
-
-	private string GetStringForFilterType() => FilterType switch
-    {
-        TgEnumFilterType.SingleName => TgLocaleHelper.Instance.MenuFiltersSetSingleName,
-        TgEnumFilterType.SingleExtension => TgLocaleHelper.Instance.MenuFiltersSetSingleExtension,
-        TgEnumFilterType.MultiName => TgLocaleHelper.Instance.MenuFiltersSetMultiName,
-        TgEnumFilterType.MultiExtension => TgLocaleHelper.Instance.MenuFiltersSetMultiExtension,
-        TgEnumFilterType.MinSize => TgLocaleHelper.Instance.MenuFiltersSetMinSize,
-        TgEnumFilterType.MaxSize => TgLocaleHelper.Instance.MenuFiltersSetMaxSize,
-        _ => $"<{TgLocaleHelper.Instance.MenuFiltersError}>",
-    };
 
     #endregion
 }

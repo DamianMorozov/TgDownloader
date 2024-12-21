@@ -98,23 +98,23 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 		items = take > 0
 			? await query
 				.Skip(skip).Take(take)
-				.Select(SelectSourceDto()).ToListAsync()
+				.Select(SelectDto()).ToListAsync()
 			: (IList<TgEfSourceDto>)await query
-				.Select(SelectSourceDto()).ToListAsync();
+				.Select(SelectDto()).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	private static Expression<Func<TgEfSourceEntity, TgEfSourceDto>> SelectSourceDto() => source => new TgEfSourceDto
+	private static Expression<Func<TgEfSourceEntity, TgEfSourceDto>> SelectDto() => item => new TgEfSourceDto
 	{
-		Uid = source.Uid,
-		Id = source.Id,
-		UserName = source.UserName ?? string.Empty,
-		DtChanged = $"{source.DtChanged:yyyy-MM-dd}",
-		IsSourceActive = source.IsActive,
-		IsAutoUpdate = source.IsAutoUpdate,
-		Title = source.Title ?? string.Empty,
-		FirstId = source.FirstId,
-		Count = source.Count,
+		Uid = item.Uid,
+		Id = item.Id,
+		UserName = item.UserName ?? string.Empty,
+		DtChanged = $"{item.DtChanged:yyyy-MM-dd}",
+		IsSourceActive = item.IsActive,
+		IsAutoUpdate = item.IsAutoUpdate,
+		Title = item.Title ?? string.Empty,
+		FirstId = item.FirstId,
+		Count = item.Count,
 	};
 
 	public override TgEfStorageResult<TgEfSourceEntity> GetList(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isNoTracking)

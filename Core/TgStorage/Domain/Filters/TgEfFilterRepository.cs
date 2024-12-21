@@ -88,6 +88,29 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
+	public async Task<TgEfStorageResult<TgEfFilterDto>> GetListDtoAsync(int take, int skip, bool isNoTracking)
+	{
+		IList<TgEfFilterDto> items;
+		var query = isNoTracking ? EfContext.Filters.AsNoTracking() : EfContext.Filters.AsTracking();
+		items = take > 0
+			? await query
+				.Skip(skip).Take(take)
+				.Select(SelectDto()).ToListAsync()
+			: (IList<TgEfFilterDto>)await query
+				.Select(SelectDto()).ToListAsync();
+		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+	}
+
+	private static Expression<Func<TgEfFilterEntity, TgEfFilterDto>> SelectDto() => item => new TgEfFilterDto
+	{
+		Uid = item.Uid,
+		IsEnabled = item.IsEnabled,
+		FilterType = item.GetStringForFilterType(),
+		Name = item.Name,
+		Mask = item.Mask,
+		Size = $"{item.Size} {item.SizeType}",
+	};
+
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
 		IList<TgEfFilterEntity> items;

@@ -70,24 +70,24 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 		items = take > 0
 			? await query
 				.Skip(skip).Take(take)
-				.Select(SelectContactDto()).ToListAsync()
+				.Select(SelectDto()).ToListAsync()
 			: (IList<TgEfContactDto>)await query
-				.Select(SelectContactDto()).ToListAsync();
+				.Select(SelectDto()).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectContactDto() => source => new TgEfContactDto
+	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectDto() => item => new TgEfContactDto
 	{
-		Uid = source.Uid,
-		Id = source.Id,
-		UserName = source.UserName ?? string.Empty,
-		DtChanged = $"{source.DtChanged:yyyy-MM-dd}",
-		IsContactActive = source.IsActive,
-		IsBot = source.IsBot,
-		FirstName = source.FirstName ?? string.Empty,
-		LastName = source.LastName ?? string.Empty,
-		Phone = source.PhoneNumber ?? string.Empty,
-		Status = source.Status ?? string.Empty,
+		Uid = item.Uid,
+		Id = item.Id,
+		UserName = item.UserName ?? string.Empty,
+		DtChanged = $"{item.DtChanged:yyyy-MM-dd}",
+		IsContactActive = item.IsActive,
+		IsBot = item.IsBot,
+		FirstName = item.FirstName ?? string.Empty,
+		LastName = item.LastName ?? string.Empty,
+		Phone = item.PhoneNumber ?? string.Empty,
+		Status = item.Status ?? string.Empty,
 	}; 
 
 	public override TgEfStorageResult<TgEfContactEntity> GetList(int take, int skip, bool isNoTracking)
