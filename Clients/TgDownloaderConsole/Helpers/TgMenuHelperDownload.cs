@@ -59,7 +59,7 @@ internal partial class TgMenuHelper
 		TgEnumMenuDownload menu;
 		do
 		{
-			ShowTableDownloadAsync(tgDownloadSettings);
+			await ShowTableDownloadAsync(tgDownloadSettings);
 			menu = SetMenuDownload();
 			switch (menu)
 			{

@@ -369,7 +369,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		}
 		else
 		{
-			var chatBase = DicChatsAll.FirstOrDefault(x => x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
+			var chatBase = DicChatsAll.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value.MainUsername) && 
+				x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
+			//if (chatBase is null)
+			//{
+			//	await AddChatAsync(tgDownloadSettings.SourceVm.SourceUserName);
+			//	chatBase = DicChatsAll.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value.MainUsername) &&
+			//		x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
+			//}
 			if (chatBase is not null)
 				smartSource.ChatBase = chatBase;
 		}
@@ -427,6 +434,34 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			}
 		}
 	}
+
+	//public async Task AddChatAsync(string userName)
+	//{
+	//	switch (IsReady)
+	//	{
+	//		case true when Client is not null:
+	//		{
+	//			Contacts_ResolvedPeer peer = await Client.Contacts_ResolveUsername(userName);
+	//			if (peer?.peer is PeerChannel peerChannel)
+	//			{
+	//				//var messages = await Client.Messages_GetChats(peerChannel.channel_id);
+	//				//var messages = await Client.Channels_GetChannels(new InputChannel[] { new InputChannel(id, 0) } );
+	//				long accessHash = peerChannel.access_hash;
+	//				//var channels = await Client.Channels_GetChannels(new[] { new InputChannel(, 0) });
+	//				var channels = await Client.Channels_GetChannels(new[] { new InputChannel(peerChannel.channel_id, 0) });
+	//				//var channel = channels.chats[0];
+	//				//if (channel.IsChannel)
+	//				//{
+	//				//	var chatFull = await Client.Channels_GetFullChannel(channel);
+	//				//}
+	//				//	var channelId = channel.id;
+	//				//var accessHash = channel.access_hash;
+	//				//AddEnumerableChats(messages.chats);
+	//			}
+	//			break;
+	//		}
+	//	}
+	//}
 
 	public async Task CollectAllContactsAsync()
 	{
@@ -488,6 +523,34 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		EnumerableGroups = listGroups;
 		EnumerableSmallGroups = listSmallGroups;
 	}
+
+	//private void AddEnumerableChats(Dictionary<long, TlChatBase> chats)
+	//{
+	//	var listChats = new List<TlChatBase>();
+	//	var listSmallGroups = new List<TlChatBase>();
+	//	var listChannels = new List<TlChannel>();
+	//	var listGroups = new List<TlChannel>();
+	//	foreach (var chat in chats)
+	//	{
+	//		switch (chat.Value)
+	//		{
+	//			case Chat smallGroup when (smallGroup.flags & Chat.Flags.deactivated) is 0:
+	//				listSmallGroups.Add(chat.Value);
+	//				break;
+	//			case TlChannel { IsGroup: true } group:
+	//				listGroups.Add(group);
+	//				break;
+	//			case TlChannel channel:
+	//				listChannels.Add(channel);
+	//				break;
+	//		}
+	//	}
+	//	EnumerableChannels = [.. EnumerableChannels, .. listChannels];
+	//	EnumerableChats = [.. EnumerableChats, .. listChats];
+	//	EnumerableGroups = [.. EnumerableGroups, .. listGroups];
+	//	EnumerableGroups = [.. EnumerableGroups, .. listGroups];
+	//	EnumerableSmallGroups = [.. EnumerableSmallGroups, .. listSmallGroups];
+	//}
 
 	private void FillEnumerableContacts(Dictionary<long, TL.User> users)
 	{
@@ -1957,6 +2020,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	//}
 
 	private async Task<long> GetPeerIdAsync(string userName) => (await Client.Contacts_ResolveUsername(userName)).peer.ID;
+
+	//private async Task<long> GetChannelIdAsync(string userName) => (await Client.Channels_(userName)).peer.ID;
 
 	// AUTH_KEY_DUPLICATED  | rpcException.Code, 406
 	// "Could not read payload length : Connection shut down"
