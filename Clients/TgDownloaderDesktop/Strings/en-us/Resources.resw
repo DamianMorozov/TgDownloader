@@ -163,44 +163,98 @@
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
     <value>TgDownloader repository</value>
   </data>
-  <data name="SettingsPage_GitHub_TgDownloader.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_TgDownloader.Tag" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/</value>
+  </data>
+  <data name="SettingsPage_GitHub_IssueTemplate.Content" xml:space="preserve">
+    <value>Issue template</value>
+  </data>
+  <data name="SettingsPage_GitHub_IssueTemplate.Tag" xml:space="preserve">
+    <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
   </data>
   <data name="SettingsPage_GitHub_ReportBug.Content" xml:space="preserve">
     <value>Report a bug</value>
   </data>
-  <data name="SettingsPage_GitHub_ReportBug.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_ReportBug.Tag" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
   </data>
   <data name="SettingsPage_GitHub_Discussions.Content" xml:space="preserve">
     <value>Discussions</value>
   </data>
-  <data name="SettingsPage_GitHub_Discussions.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_Discussions.Tag" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/discussions</value>
   </data>
   <data name="SettingsPage_GitHub_Ideas.Content" xml:space="preserve">
     <value>Ideas</value>
   </data>
-  <data name="SettingsPage_GitHub_Ideas.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_Ideas.Tag" xml:space="preserve">
     <value>https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloaderNews.Content" xml:space="preserve">
     <value>TgDownloader News</value>
   </data>
-  <data name="SettingsPage_GitHub_TgDownloaderNews.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_TgDownloaderNews.Tag" xml:space="preserve">
     <value>https://t.me/TgDownloader</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.Content" xml:space="preserve">
     <value>TgDownloader Global Chat</value>
   </data>
-  <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.NavigateUri" xml:space="preserve">
+  <data name="SettingsPage_GitHub_TgDownloaderGlobalChat.Tag" xml:space="preserve">
     <value>https://t.me/TgDownloaderChat</value>
   </data>
   <data name="ClientPage_MyTelegram.Content" xml:space="preserve">
     <value>my.telegram.org</value>
   </data>
-  <data name="ClientPage_MyTelegram.NavigateUri" xml:space="preserve">
+  <data name="ClientPage_MyTelegram.Tag" xml:space="preserve">
     <value>"https://my.telegram.org/auth?to=apps"</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_Tgdownloader.Content" xml:space="preserve">
+    <value>tgdownloader.online</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_Tgdownloader.Tag" xml:space="preserve">
+    <value>"http://tgdownloader.online"</value>
+  </data>
+  <data name="SettingsPage_Releases_Latest.Content" xml:space="preserve">
+    <value>Releases</value>
+  </data>
+  <data name="SettingsPage_Releases_Latest.Tag" xml:space="preserve">
+    <value>"https://github.com/DamianMorozov/TgDownloader/releases"</value>
+  </data>
+  <data name="SettingsPage_GitHub_DockerConsole.Content" xml:space="preserve">
+    <value>TgDownloader-Console Docker image</value>
+  </data>
+  <data name="SettingsPage_GitHub_DockerConsole.Tag" xml:space="preserve">
+    <value>"https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console"</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsNet8.Content" xml:space="preserve">
+    <value>Download .NET 8.0</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsNet8.Tag" xml:space="preserve">
+    <value>"https://dotnet.microsoft.com/en-us/download/dotnet/8.0"</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsNet9.Content" xml:space="preserve">
+    <value>Download .NET 9.0</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsNet9.Tag" xml:space="preserve">
+    <value>"https://dotnet.microsoft.com/en-us/download/dotnet/9.0"</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsRegisterTelegram.Content" xml:space="preserve">
+    <value>Register Telegram app</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsRegisterTelegram.Tag" xml:space="preserve">
+    <value>"https://my.telegram.org/apps"</value>
+  </data>
+  <data name="SettingsPage_GitHub_ProjectSupportGitHubStar.Content" xml:space="preserve">
+    <value>GitHub star</value>
+  </data>
+  <data name="SettingsPage_GitHub_ProjectSupportGitHubStar.Tag" xml:space="preserve">
+    <value>"https://github.com/DamianMorozov/TgDownloader"</value>
+  </data>
+  <data name="SettingsPage_GitHub_ProjectSupportDonateBoosty.Content" xml:space="preserve">
+    <value>Donate through Boosty</value>
+  </data>
+  <data name="SettingsPage_GitHub_ProjectSupportDonateBoosty.Tag" xml:space="preserve">
+    <value>"https://boosty.to/tgdownloader"</value>
   </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
@@ -232,10 +286,28 @@
     <value>Delete</value>
   </data>
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
-    <value>Github</value>
+    <value>GitHub community</value>
   </data>
-  <data name="SettingsPage_GitHub_Support.Text" xml:space="preserve">
-    <value>Support</value>
+  <data name="SettingsPage_OfficialWebsite.Text" xml:space="preserve">
+    <value>Official website</value>
+  </data>
+  <data name="SettingsPage_Download.Text" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="SettingsPage_GitHub_UserSupport.Text" xml:space="preserve">
+    <value>User support</value>
+  </data>
+  <data name="SettingsPage_GitHub_ProjectSupport.Text" xml:space="preserve">
+    <value>Project support</value>
+  </data>
+  <data name="SettingsPage_GitHub_Docker.Text" xml:space="preserve">
+    <value>Docker images</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirements.Text" xml:space="preserve">
+    <value>Install Requirements</value>
+  </data>
+  <data name="SettingsPage_GitHub_InstallRequirementsSaveValues.Text" xml:space="preserve">
+    <value>Save the values of the "App api_id" and "App api_hash" fields</value>
   </data>
   <data name="SettingName.Text" xml:space="preserve">
     <value>Setting</value>
@@ -430,6 +502,9 @@
     <value>You need to create a storage (check the settings)!</value>
   </data>
   <data name="ProductAssignment.Text" xml:space="preserve">
+    <value>Product assignment</value>
+  </data>
+  <data name="ProductAssignmentDescription.Text" xml:space="preserve">
     <value>Organized downloading of files from TG channels/groups/chats (accessed under your account). Files from each source can be downloaded to a separate directory. You can specify which sources to include in auto-downloading. There is a multithreaded download mode. Console version is almost completed (production). The desktop version is in active development stage (preview).</value>
   </data>
   <data name="TemplateColumnEdit.Header" xml:space="preserve">
@@ -489,8 +564,23 @@
   <data name="TemplateColumnPhone.Header" xml:space="preserve">
     <value>Phone</value>
   </data>
-  <data name="TemplateColumnLastStatus.Header" xml:space="preserve">
+  <data name="TemplateColumnStatus.Header" xml:space="preserve">
     <value>Status</value>
+  </data>
+  <data name="TemplateColumnIsEnabled.Header" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="TemplateColumnType.Header" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="TemplateColumnName.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TemplateColumnMask.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TemplateColumnSize.Header" xml:space="preserve">
+    <value>Size</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Wait until the data download is complete</value>

@@ -360,5 +360,16 @@ public static class TgDesktopUtils
 		return false;
 	}
 
+	public static string ExtractUrl(string rawUrl)
+	{
+		if (rawUrl.StartsWith("ms-resource:///Files/"))
+		{
+			var encodedUrl = rawUrl.Substring("ms-resource:///Files/".Length);
+			var decodedUrl = Uri.UnescapeDataString(encodedUrl);
+			return decodedUrl.Replace("\"", "");
+		}
+		return rawUrl;
+	}
+
 	#endregion
 }

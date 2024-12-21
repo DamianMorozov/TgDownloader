@@ -55,7 +55,18 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	{
 		await Task.CompletedTask;
 	}
-
+	
+	/// <summary> Open url </summary>
+	public void OpenHyperlink(object sender, RoutedEventArgs e)
+	{
+		if (sender is not HyperlinkButton hyperlinkButton)
+			return;
+		if (hyperlinkButton.Tag is not string tag)
+			return;
+		var url = TgDesktopUtils.ExtractUrl(tag);
+		Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+	}
+	
 	/// <summary> Update state client message </summary>
 	public virtual void UpdateStateProxy(string message)
 	{

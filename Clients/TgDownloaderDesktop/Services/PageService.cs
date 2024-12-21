@@ -13,6 +13,7 @@ public sealed class PageService : IPageService
 		Configure<TgLoadDataViewModel, TgLoadDataPage>();
 		Configure<TgClientViewModel, TgClientPage>();
 		Configure<TgContactsViewModel, TgContactsPage>();
+		Configure<TgFiltersViewModel, TgFiltersPage>();
 		Configure<TgSourcesViewModel, TgSourcesPage>();
 		Configure<WebViewViewModel, WebViewPage>();
 		Configure<ListDetailsViewModel, ListDetailsPage>();
