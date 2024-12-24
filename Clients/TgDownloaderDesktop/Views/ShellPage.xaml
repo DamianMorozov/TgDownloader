@@ -43,21 +43,31 @@
                 TODO: Update item icons by updating FontIcon.Glyph properties.
                 https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
 				-->
+				<!--  Home  -->
 				<NavigationViewItem x:Uid="Shell_Home" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgMainViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--  Connections  -->
 				<NavigationViewItem x:Uid="Shell_Connect" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgClientViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--  Filters  -->
+				<NavigationViewItem x:Uid="Shell_Filters" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgFiltersViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
+				<!--  Contacts  -->
 				<NavigationViewItem x:Uid="Shell_Contacts" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgContactsViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--  Sources  -->
 				<NavigationViewItem x:Uid="Shell_Sources" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />

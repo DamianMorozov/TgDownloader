@@ -138,6 +138,9 @@
   <data name="Shell_Contacts.Content" xml:space="preserve">
     <value>Контакты</value>
   </data>
+  <data name="Shell_Filters.Content" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Источники</value>
   </data>

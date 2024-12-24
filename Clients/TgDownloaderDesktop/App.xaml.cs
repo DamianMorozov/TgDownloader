@@ -74,6 +74,8 @@ public partial class App : Application
 				services.AddTransient<TgContactsPage>();
 				services.AddTransient<TgSourcesViewModel>();
 				services.AddTransient<TgSourcesPage>();
+				services.AddTransient<TgFiltersViewModel>();
+				services.AddTransient<TgFiltersPage>();
 				// Configuration
 				services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 			})

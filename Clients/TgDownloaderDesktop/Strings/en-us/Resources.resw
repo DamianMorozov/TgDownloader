@@ -79,6 +79,9 @@
   <data name="Shell_Contacts.Content" xml:space="preserve">
     <value>Contacts</value>
   </data>
+  <data name="Shell_Filters.Content" xml:space="preserve">
+    <value>Filters</value>
+  </data>
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Sources</value>
   </data>
