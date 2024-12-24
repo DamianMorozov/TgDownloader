@@ -17,11 +17,11 @@ public sealed class TgEfContactViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfStorageResult<TgEfContactEntity> storageResult = ContactRepository.Get(
-				new() { Uid = value }, isNoTracking: false);
+			TgEfStorageResult<TgEfContactEntity> storageResult = ContactRepository.GetAsync(
+				new() { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 			Item = storageResult.IsExists
 				? storageResult.Item
-				: ContactRepository.GetNew(isNoTracking: false).Item;
+				: ContactRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 		}
 	}
 
@@ -75,7 +75,7 @@ public sealed class TgEfContactViewModel : TgViewModelBase
 
 	public TgEfContactViewModel() : base()
 	{
-		TgEfContactEntity item = ContactRepository.GetNew(false).Item;
+		TgEfContactEntity item = ContactRepository.GetNewAsync(false).GetAwaiter().GetResult().Item;
 		Default(item);
 	}
 

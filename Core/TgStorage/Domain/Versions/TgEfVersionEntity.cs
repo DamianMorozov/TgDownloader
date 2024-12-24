@@ -55,7 +55,8 @@ public sealed class TgEfVersionEntity : ITgDbEntity, ITgDbFillEntity<TgEfVersion
 	{
 		if (isUidCopy)
 			Uid = item.Uid;
-		Version = item.Version;
+		if (Version == this.GetDefaultPropertyShort(nameof(Version)))
+			Version = item.Version;
 		Description = item.Description;
         return this;
 	}

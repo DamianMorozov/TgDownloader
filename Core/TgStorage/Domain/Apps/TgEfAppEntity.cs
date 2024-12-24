@@ -99,7 +99,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 		if (isUidCopy)
 			Uid = item.Uid;
 		//Uid = item is { } entity ? entity.Uid : Guid.Empty;
-		ApiHash = item.ApiHash;
+		if (ApiHash == this.GetDefaultPropertyGuid(nameof(ApiHash)))
+			ApiHash = item.ApiHash;
 	    ApiId = item.ApiId;
 	    PhoneNumber = item.PhoneNumber;
 	    ProxyUid = item.ProxyUid;

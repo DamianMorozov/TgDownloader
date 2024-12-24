@@ -25,7 +25,7 @@ public sealed class TgEfVersionViewModel : TgViewModelBase
 
 	public TgEfVersionViewModel() : base()
 	{
-		TgEfVersionEntity item = VersionRepository.GetNew(false).Item;
+		TgEfVersionEntity item = VersionRepository.GetNewAsync(false).GetAwaiter().GetResult().Item;
 		Default(item);
 	}
 

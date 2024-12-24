@@ -115,7 +115,8 @@ public sealed class TgEfStoryEntity : ITgDbEntity, ITgDbFillEntity<TgEfStoryEnti
 		if (isUidCopy)
 			Uid = item.Uid;
 		DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now;
-		Id = item.Id;
+		if (Id == this.GetDefaultPropertyLong(nameof(Id)))
+			Id = item.Id;
 		FromId = item.FromId;
 		FromName = item.FromName;
 		Date = item.Date;

@@ -71,6 +71,8 @@ public static class TgEfUtils
 				if (app.ProxyUid == Guid.Empty)
 					app.ProxyUid = null;
 				break;
+			case TgEfContactEntity contact:
+				break;
 			case TgEfDocumentEntity document:
 				if (document.SourceId == 0)
 					document.SourceId = null;
@@ -82,6 +84,8 @@ public static class TgEfUtils
 					message.SourceId = null;
 				break;
 			case TgEfSourceEntity source:
+				break;
+			case TgEfStoryEntity story:
 				break;
 			case TgEfProxyEntity proxy:
 				break;
@@ -99,7 +103,8 @@ public static class TgEfUtils
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfStorageResult<TgEfVersionEntity> storageResult = versionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		TgEfStorageResult<TgEfVersionEntity> storageResult = versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
+			.GetAwaiter().GetResult();
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfVersionEntity version in storageResult.Items)
@@ -112,12 +117,13 @@ public static class TgEfUtils
 	public static void FiltersView()
 	{
 		TgEfFilterRepository filterRepository = new(EfContext);
-		TgEfStorageResult<TgEfFilterEntity> storageResult = filterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		TgEfStorageResult<TgEfFilterEntity> storageResult = filterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
+			.GetAwaiter().GetResult();
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfFilterEntity filter in storageResult.Items)
 			{
-				TgLog.WriteLine($"{filter}");
+				TgLog.WriteLine(filter.ToConsoleString());
 			}
 		}
 	}
@@ -218,185 +224,6 @@ public static class TgEfUtils
 	public static Expression<Func<TEntity, List<TEntity>, bool>> WhereUidNotEquals<TEntity>() where TEntity : ITgDbFillEntity<TEntity>, new() =>
 		(itemFrom, itemsTo) => itemsTo.All(itemTo => itemTo.Uid.ToString().ToUpper() != itemFrom.Uid.ToString().ToUpper());
 
-	//private static void UpdateDbTableUidUpperCase()
-	//{
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfAppEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfDocumentEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfFilterEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfMessageEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfProxyEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfSourceEntity>();
-	//	EfContext.UpdateTableUidUpperCaseAll<TgEfVersionEntity>();
-	//}
-
-	//private static async Task UpdateDbTableUidUpperCaseAsync()
-	//{
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfAppEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfDocumentEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfFilterEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfMessageEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfProxyEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfSourceEntity>();
-	//	await EfContext.UpdateTableUidUpperCaseAllAsync<TgEfVersionEntity>();
-	//}
-
-	//private static void UpgradeDb()
-	//{
-	//	TgEfStorageResult<TgEfAppEntity> storageResultApps = EfContext.AlterTableNoCaseUid<TgEfAppEntity>();
-	//	if (storageResultApps.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = EfContext.AlterTableNoCaseUid<TgEfDocumentEntity>();
-	//	if (storageResultDocuments.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfFilterEntity> storageResultFilters = EfContext.AlterTableNoCaseUid<TgEfFilterEntity>();
-	//	if (storageResultFilters.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfMessageEntity> storageResultMessages = EfContext.AlterTableNoCaseUid<TgEfMessageEntity>();
-	//	if (storageResultMessages.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfProxyEntity> storageResultProxies = EfContext.AlterTableNoCaseUid<TgEfProxyEntity>();
-	//	if (storageResultProxies.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfSourceEntity> storageResultSources = EfContext.AlterTableNoCaseUid<TgEfSourceEntity>();
-	//	if (storageResultSources.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfVersionEntity> storageResultVersions = EfContext.AlterTableNoCaseUid<TgEfVersionEntity>();
-	//	if (storageResultVersions.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//}
-
-	//private static async Task UpgradeDbAsync()
-	//{
-	//	TgEfStorageResult<TgEfAppEntity> storageResultApps = await EfContext.AlterTableNoCaseUidAsync<TgEfAppEntity>();
-	//	if (storageResultApps.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = await EfContext.AlterTableNoCaseUidAsync<TgEfDocumentEntity>();
-	//	if (storageResultDocuments.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfFilterEntity> storageResultFilters = await EfContext.AlterTableNoCaseUidAsync<TgEfFilterEntity>();
-	//	if (storageResultFilters.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfMessageEntity> storageResultMessages = await EfContext.AlterTableNoCaseUidAsync<TgEfMessageEntity>();
-	//	if (storageResultMessages.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfProxyEntity> storageResultProxies = await EfContext.AlterTableNoCaseUidAsync<TgEfProxyEntity>();
-	//	if (storageResultProxies.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfSourceEntity> storageResultSources = await EfContext.AlterTableNoCaseUidAsync<TgEfSourceEntity>();
-	//	if (storageResultSources.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//	TgEfStorageResult<TgEfVersionEntity> storageResultVersions = await EfContext.AlterTableNoCaseUidAsync<TgEfVersionEntity>();
-	//	if (storageResultVersions.State == TgEnumEntityState.NotExecuted)
-	//		throw new(TgLocale.TablesAppsException);
-	//}
-
-	//private static void CheckDbTables(TgEfContext efContext)
-	//{
-	//	if (!CheckTableAppsCrud(efContext))
-	//		throw new(TgLocale.TablesAppsException);
-	//	if (!CheckTableDocumentsCrud(efContext))
-	//		throw new(TgLocale.TablesDocumentsException);
-	//	if (!CheckTableFiltersCrud(efContext))
-	//		throw new(TgLocale.TablesFiltersException);
-	//	if (!CheckTableMessagesCrud(efContext))
-	//		throw new(TgLocale.TablesMessagesException);
-
-	//	TgEfStorageResult<TgEfSourceEntity> storageResultSource = new TgEfSourceRepository(efContext).GetNew(isNoTracking: false);
-	//	if (storageResultSource.IsExists)
-	//	{
-	//		// Delete wrong messages
-	//		TgEfMessageRepository messageRepository = new(efContext);
-	//		TgEfStorageResult<TgEfMessageEntity> storageResultMessages = messageRepository.GetList(TgEnumTableTopRecords.All, 0, 
-	//			item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
-	//		if (storageResultMessages.IsExists)
-	//		{
-	//			foreach (TgEfMessageEntity message in storageResultMessages.Items)
-	//			{
-	//				messageRepository.Delete(message, isSkipFind: true);
-	//			}
-	//		}
-	//		// Delete wrong documents
-	//		TgEfDocumentRepository documentRepository = new(efContext);
-	//		TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = documentRepository.GetList(TgEnumTableTopRecords.All, 0,
-	//			item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
-	//		if (storageResultDocuments.IsExists)
-	//		{
-	//			foreach (TgEfDocumentEntity document in storageResultDocuments.Items)
-	//			{
-	//				documentRepository.Delete(document, isSkipFind: true);
-	//			}
-	//		}
-	//	}
-
-	//	if (!CheckTableSourcesCrud(efContext))
-	//		throw new(TgLocale.TablesSourcesException);
-	//	if (!CheckTableProxiesCrud(efContext))
-	//		throw new(TgLocale.TablesProxiesException);
-	//	if (!CheckTableVersionsCrud(efContext))
-	//		throw new(TgLocale.TablesVersionsException);
-	//}
-
-	//private static async Task CheckDbTablesAsync(TgEfContext efContext)
-	//{
-	//	if (!await CheckTableAppsCrudAsync(efContext))
-	//		throw new(TgLocale.TablesAppsException);
-	//	if (!await CheckTableDocumentsCrudAsync(efContext))
-	//		throw new(TgLocale.TablesDocumentsException);
-	//	if (!await CheckTableFiltersCrudAsync(efContext))
-	//		throw new(TgLocale.TablesFiltersException);
-	//	if (!await CheckTableMessagesCrudAsync(efContext))
-	//		throw new(TgLocale.TablesMessagesException);
-
-	//	TgEfStorageResult<TgEfSourceEntity> storageResultSource = await (new TgEfSourceRepository(efContext)).GetNewAsync(isNoTracking: false);
-	//	if (storageResultSource.IsExists)
-	//	{
-	//		// Delete wrong messages
-	//		TgEfMessageRepository messageRepository = new(efContext);
-	//		TgEfStorageResult<TgEfMessageEntity> storageResultMessages = await messageRepository.GetListAsync(TgEnumTableTopRecords.All, 0,
-	//			item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
-	//		if (storageResultMessages.IsExists)
-	//		{
-	//			foreach (TgEfMessageEntity message in storageResultMessages.Items)
-	//			{
-	//				await messageRepository.DeleteAsync(message, isSkipFind: true);
-	//			}
-	//		}
-	//		// Delete wrong documents
-	//		TgEfDocumentRepository documentRepository = new(efContext);
-	//		TgEfStorageResult<TgEfDocumentEntity> storageResultDocuments = await documentRepository.GetListAsync(TgEnumTableTopRecords.All, 0,
-	//			item => item.SourceId == storageResultSource.Item.Id, isNoTracking: false);
-	//		if (storageResultDocuments.IsExists)
-	//		{
-	//			foreach (TgEfDocumentEntity document in storageResultDocuments.Items)
-	//			{
-	//				await documentRepository.DeleteAsync(document, isSkipFind: true);
-	//			}
-	//		}
-	//	}
-
-	//	if (!await CheckTableSourcesCrudAsync(efContext))
-	//		throw new(TgLocale.TablesSourcesException);
-	//	if (!await CheckTableProxiesCrudAsync(efContext))
-	//		throw new(TgLocale.TablesProxiesException);
-	//	if (!await CheckTableVersionsCrudAsync(efContext))
-	//		throw new(TgLocale.TablesVersionsException);
-	//}
-
-	private static bool CheckTableCrud<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
-	{
-		var storageResult = repository.CreateNew();
-		if (!storageResult.IsExists)
-			return false;
-		storageResult = repository.GetNew(isNoTracking: false);
-		if (!storageResult.IsExists)
-			return false;
-		storageResult = repository.Save(storageResult.Item);
-		if (storageResult.State != TgEnumEntityState.IsSaved)
-			return false;
-		storageResult = repository.Delete(storageResult.Item, isSkipFind: false);
-		return storageResult.State == TgEnumEntityState.IsDeleted;
-	}
-
 	private static async Task<bool> CheckTableCrudAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		var storageResult = await repository.CreateNewAsync();
@@ -408,35 +235,25 @@ public static class TgEfUtils
 		storageResult = await repository.SaveAsync(storageResult.Item);
 		if (storageResult.State != TgEnumEntityState.IsSaved)
 			return false;
-		storageResult = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+		storageResult = await repository.DeleteAsync(storageResult.Item);
 		return storageResult.State == TgEnumEntityState.IsDeleted;
 	}
 
-	public static bool CheckTableAppsCrud(TgEfContext efContext) => CheckTableCrud(new TgEfAppRepository(efContext));
-
 	public static Task<bool> CheckTableAppsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfAppRepository(efContext));
 
-	public static bool CheckTableDocumentsCrud(TgEfContext efContext) => CheckTableCrud(new TgEfDocumentRepository(efContext));
+	public static Task<bool> CheckTableContactsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfContactRepository(efContext));
 
 	public static Task<bool> CheckTableDocumentsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfDocumentRepository(efContext));
 
-	public static bool CheckTableFiltersCrud(TgEfContext efContext) => CheckTableCrud(new TgEfFilterRepository(efContext));
-
 	public static Task<bool> CheckTableFiltersCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfFilterRepository(efContext));
-
-	public static bool CheckTableMessagesCrud(TgEfContext efContext) => CheckTableCrud(new TgEfMessageRepository(efContext));
 
 	public static Task<bool> CheckTableMessagesCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfMessageRepository(efContext));
 
-	public static bool CheckTableProxiesCrud(TgEfContext efContext) => CheckTableCrud(new TgEfProxyRepository(efContext));
-
 	public static Task<bool> CheckTableProxiesCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfProxyRepository(efContext));
-
-	public static bool CheckTableSourcesCrud(TgEfContext efContext) => CheckTableCrud(new TgEfSourceRepository(efContext));
 
 	public static Task<bool> CheckTableSourcesCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfSourceRepository(efContext));
 
-	public static bool CheckTableVersionsCrud(TgEfContext efContext) => CheckTableCrud(new TgEfVersionRepository(efContext));
+	public static Task<bool> CheckTableStoriesCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfStoryRepository(efContext));
 
 	public static Task<bool> CheckTableVersionsCrudAsync(TgEfContext efContext) => CheckTableCrudAsync(new TgEfVersionRepository(efContext));
 

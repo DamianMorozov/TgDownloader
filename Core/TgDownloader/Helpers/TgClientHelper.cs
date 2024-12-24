@@ -153,20 +153,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public void SetupUpdateStateMessage(Func<string, Task> updateStateMessageAsync) =>
 		UpdateStateMessageAsync = updateStateMessageAsync;
 
-	public bool CheckClientIsReady()
+	public async Task<bool> CheckClientIsReadyAsync()
 	{
 		var result = Client is { Disconnected: false };
 		if (!result)
 			return ClientResultDisconnected();
 		if (!TgAppSettings.AppXml.IsExistsFileSession)
 			return ClientResultDisconnected();
-		//if (!(!TgAppSettings.IsUseProxy ||
-		//      (TgAppSettings.IsUseProxy &&
-		//       (ContextManager.ProxyRepository.Get(AppRepository.GetFirstProxyUid) ??
-		//        ContextManager.ProxyRepository.GetNew()).IsExist)))
-		var storageResult = ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp());
-		//if (!(!TgAppSettings.AppXml.IsUseProxy || (TgAppSettings.AppXml.IsUseProxy && storageResult.IsExists)))
-		//    return ClientResultDisconnected();
+		var storageResult = await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync());
 		if (TgAppSettings.IsUseProxy && !storageResult.IsExists)
 			return ClientResultDisconnected();
 		if (ProxyException.IsExist || ClientException.IsExist)
@@ -198,7 +192,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		Client.OnUpdates += OnUpdatesClientAsync;
 		Client.OnOther += OnClientOtherAsync;
 
-		LoginUserConsole(true);
+		await LoginUserConsoleAsync(true);
 	}
 
 	public async Task ConnectSessionAsync(ITgDbProxy? proxy)
@@ -230,7 +224,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public async Task ConnectThroughProxyAsync(ITgDbProxy? proxy, bool isDesktop)
 	{
 		IsProxyUsage = false;
-		if (!CheckClientIsReady()) return;
+		if (!await CheckClientIsReadyAsync()) return;
 		if (Client is null) return;
 		if (proxy?.Uid == Guid.Empty) return;
 		if (!isDesktop && !TgAppSettings.IsUseProxy) return;
@@ -1140,7 +1134,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		var smartSource = await CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: false);
 		if (smartSource.ChatBase is not null)
 		{
-			sourceVm.Item.Fill(tgDownloadSettings.SourceVm.Item, isUidCopy: true);
+			sourceVm.Item.Fill(tgDownloadSettings.SourceVm.Item, isUidCopy: false);
 		}
 	}
 
@@ -1326,7 +1320,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		await TryCatchFuncAsync(async () =>
 		{
-			LoginUserConsole();
+			await LoginUserConsoleAsync();
 			switch (sourceType)
 			{
 				case TgEnumSourceType.Chat:
@@ -1560,7 +1554,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			switch (TgAsyncUtils.AppType)
 			{
 				case TgEnumAppType.Console:
-					LoginUserConsole();
+					await LoginUserConsoleAsync();
 					break;
 				case TgEnumAppType.Desktop:
 					await LoginUserDesktopAsync();
@@ -1635,7 +1629,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			switch (TgAsyncUtils.AppType)
 			{
 				case TgEnumAppType.Console:
-					LoginUserConsole();
+					await LoginUserConsoleAsync();
 					break;
 				case TgEnumAppType.Desktop:
 					await LoginUserDesktopAsync();
@@ -2035,7 +2029,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	//        _ => string.Empty
 	//    };
 
-	public void LoginUserConsole(bool isProxyUpdate = false)
+	public async Task LoginUserConsoleAsync(bool isProxyUpdate = false)
 	{
 		ClientException = new();
 		if (Client is null)
@@ -2045,7 +2039,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		{
 			if (Me is null || !Me.IsActive)
 				Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
-			UpdateStateSourceAsync(0, 0, string.Empty);
+			await UpdateStateSourceAsync(0, 0, string.Empty);
 		}
 		catch (Exception ex)
 		{
@@ -2054,14 +2048,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		}
 		finally
 		{
-			CheckClientIsReady();
+			await CheckClientIsReadyAsync();
 			if (isProxyUpdate && IsReady)
 			{
-				var app = AppRepository.GetFirst(isNoTracking: false).Item;
-				if (ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp()) != app.ProxyUid)
+				var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+				if (await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync()) != app.ProxyUid)
 				{
-					app.ProxyUid = ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp());
-					AppRepository.Save(app);
+					app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync());
+					await AppRepository.SaveAsync(app);
 				}
 			}
 		}
@@ -2085,10 +2079,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		}
 		finally
 		{
-			CheckClientIsReady();
+			await CheckClientIsReadyAsync();
 			if (isProxyUpdate && IsReady)
 			{
-				var app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+				var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
 				app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync());
 				await AppRepository.SaveAsync(app);
 			}
@@ -2096,25 +2090,21 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		}
 	}
 
-	public void Disconnect()
+	public async Task DisconnectAsync()
 	{
 		IsProxyUsage = false;
-		UpdateStateSourceAsync(0, 0, string.Empty);
-		UpdateStateProxyAsync(TgLocale.ProxyIsDisconnect);
-		UpdateStateConnectAsync(TgLocale.MenuClientIsDisconnected);
-		if (Client is null) return;
+		await UpdateStateSourceAsync(0, 0, string.Empty);
+		await UpdateStateProxyAsync(TgLocale.ProxyIsDisconnect);
+		await UpdateStateConnectAsync(TgLocale.MenuClientIsDisconnected);
+		if (Client is null)
+			return;
 		Client.OnUpdates -= OnUpdatesClientAsync;
 		Client.OnOther -= OnClientOtherAsync;
 		Client.Dispose();
 		Client = null;
 		ClientException = new();
 		Me = null;
-		CheckClientIsReady();
-	}
-
-	public async Task DisconnectAsync()
-	{
-		Disconnect();
+		await CheckClientIsReadyAsync();
 		await AfterClientConnectAsync();
 	}
 
@@ -2177,7 +2167,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 					await SetClientExceptionShortAsync(ex);
 					await UpdateStateMessageAsync("Reconnect client ...");
 					if (isLoginConsole)
-						LoginUserConsole(isProxyUpdate: false);
+						await LoginUserConsoleAsync(isProxyUpdate: false);
 					else
 						await LoginUserDesktopAsync(isProxyUpdate: false);
 				}

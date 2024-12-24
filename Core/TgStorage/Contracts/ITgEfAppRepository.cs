@@ -5,8 +5,6 @@ namespace TgStorage.Contracts;
 
 public interface ITgEfAppRepository
 {
-	TgEfStorageResult<TgEfAppEntity> GetCurrentApp();
 	Task<TgEfStorageResult<TgEfAppEntity>> GetCurrentAppAsync();
-	Guid GetCurrentAppUid();
 	Task<Guid> GetCurrentAppUidAsync();
 }

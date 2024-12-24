@@ -125,7 +125,8 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 		if (isUidCopy)
 			Uid = item.Uid;
 		DtChanged = item.DtChanged > DateTime.MinValue ? item.DtChanged : DateTime.Now;
-		Id = item.Id;
+		if (Id == this.GetDefaultPropertyLong(nameof(Id)))
+			Id = item.Id;
 		AccessHash = item.AccessHash;
 		IsActive = item.IsActive;
 		FirstId = item.FirstId;

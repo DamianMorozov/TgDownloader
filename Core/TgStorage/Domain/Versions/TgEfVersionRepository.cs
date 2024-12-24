@@ -9,175 +9,53 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override string ToDebugString() => $"{nameof(TgEfVersionRepository)}";
 
-	public override TgEfStorageResult<TgEfVersionEntity> Get(TgEfVersionEntity item, bool isNoTracking)
-	{
-		var storageResult = base.Get(item, isNoTracking);
-		if (storageResult.IsExists)
-			return storageResult;
-		var itemFind = isNoTracking
-			? EfContext.Versions
-				.AsNoTracking()
-				.SingleOrDefault(x => x.Version == item.Version)
-			: EfContext.Versions
-				.AsTracking()
-				.SingleOrDefault(x => x.Version == item.Version);
-		return itemFind is not null
-			? new(TgEnumEntityState.IsExists, itemFind)
-			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
-	}
+	public override IQueryable<TgEfVersionEntity> GetQuery(bool isNoTracking) =>
+		isNoTracking ? EfContext.Versions.AsNoTracking() : EfContext.Versions.AsTracking();
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetAsync(TgEfVersionEntity item, bool isNoTracking)
 	{
 		var storageResult = await base.GetAsync(item, isNoTracking);
 		if (storageResult.IsExists)
 			return storageResult;
-		var itemFind = isNoTracking
-			? await EfContext.Versions.AsNoTracking()
-				.Where(x => x.Version == item.Version)
-				.SingleOrDefaultAsync()
-			: await EfContext.Versions.AsTracking()
-				.Where(x => x.Version == item.Version)
-				.SingleOrDefaultAsync();
+		var itemFind = await GetQuery(isNoTracking).SingleOrDefaultAsync(x => x.Version == item.Version);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override TgEfStorageResult<TgEfVersionEntity> GetFirst(bool isNoTracking)
-	{
-		var item = isNoTracking
-			? EfContext.Versions.AsNoTracking().FirstOrDefault()
-			: EfContext.Versions.AsTracking().FirstOrDefault();
-		return item is null
-			? new(TgEnumEntityState.NotExists)
-			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
-	}
-
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetFirstAsync(bool isNoTracking)
 	{
-		var item = isNoTracking
-			? await EfContext.Versions.AsNoTracking().FirstOrDefaultAsync()
-			: await EfContext.Versions.AsTracking().FirstOrDefaultAsync();
+		var item = await GetQuery(isNoTracking).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
-	}
-
-	public override TgEfStorageResult<TgEfVersionEntity> GetList(int take, int skip, bool isNoTracking)
-	{
-		IList<TgEfVersionEntity> items;
-		if (take > 0)
-		{
-			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToList()
-				: [.. EfContext.Versions.AsTracking().Skip(skip).Take(take)];
-		}
-		else
-		{
-			items = isNoTracking
-				? EfContext.Versions.AsNoTracking().ToList()
-				: [.. EfContext.Versions.AsTracking()];
-		}
-		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetListAsync(int take, int skip, bool isNoTracking)
 	{
-		IList<TgEfVersionEntity> items;
-		if (take > 0)
-		{
-			items = isNoTracking
-				? await EfContext.Versions.AsNoTracking().Skip(skip).Take(take).ToListAsync()
-				: await EfContext.Versions.Skip(skip).Take(take).ToListAsync();
-		}
-		else
-		{
-			items = isNoTracking
-				? await EfContext.Versions.AsNoTracking().ToListAsync()
-				: await EfContext.Versions.AsTracking().ToListAsync();
-		}
+		IList<TgEfVersionEntity> items = take > 0 
+			? await GetQuery(isNoTracking).Skip(skip).Take(take).ToListAsync() 
+			: await GetQuery(isNoTracking).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
-	}
-
-	public override TgEfStorageResult<TgEfVersionEntity> GetList(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
-	{
-		IList<TgEfVersionEntity> items;
-		if (take > 0)
-		{
-			items = isNoTracking
-				? EfContext.Versions.AsNoTracking()
-					.Where(where)
-					.Skip(skip).Take(take).ToList()
-				: [.. EfContext.Versions.AsTracking()
-					.Where(where)
-					.Skip(skip).Take(take)];
-		}
-		else
-		{
-			items = isNoTracking
-				? EfContext.Versions.AsNoTracking()
-					.Where(where)
-					.ToList()
-				: [.. EfContext.Versions.AsTracking().Where(where)];
-		}
-
-		return new(
-			items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfVersionEntity, bool>> where, bool isNoTracking)
 	{
-		IList<TgEfVersionEntity> items;
-		if (take > 0)
-		{
-			items = isNoTracking
-				? await EfContext.Versions.AsNoTracking().Where(where).Skip(skip).Take(take).ToListAsync()
-				: await EfContext.Versions.Take(take).Where(where).ToListAsync();
-		}
-		else
-		{
-			items = isNoTracking
-				? await EfContext.Versions.AsNoTracking().Where(where).ToListAsync()
-				: await EfContext.Versions.AsTracking().Where(where).ToListAsync();
-		}
+		IList<TgEfVersionEntity> items = take > 0
+			? await GetQuery(isNoTracking).Where(where).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isNoTracking).Where(where).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override int GetCount() => EfContext.Versions.AsNoTracking().Count();
-
 	public override async Task<int> GetCountAsync() =>
 		await EfContext.Versions.AsNoTracking().CountAsync();
-
-	public override int GetCount(Expression<Func<TgEfVersionEntity, bool>> where) => 
-		EfContext.Versions.AsNoTracking().Where(where).Count();
 
 	public override async Task<int> GetCountAsync(Expression<Func<TgEfVersionEntity, bool>> where) =>
 		await EfContext.Versions.AsNoTracking().Where(where).CountAsync();
 
 	#endregion
 
-	#region Public and private methods - Write
-
-	//
-
-	#endregion
-
 	#region Public and private methods - Delete
-
-	public override TgEfStorageResult<TgEfVersionEntity> DeleteAll()
-	{
-		var storageResult = GetList(0, 0, isNoTracking: false);
-		if (storageResult.IsExists)
-		{
-			foreach (var item in storageResult.Items)
-			{
-				Delete(item, isSkipFind: true);
-			}
-		}
-		return new(storageResult.IsExists
-			? TgEnumEntityState.IsDeleted
-			: TgEnumEntityState.NotDeleted);
-	}
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> DeleteAllAsync()
 	{
@@ -187,7 +65,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 		{
 			foreach (var item in storageResult.Items)
 			{
-				await DeleteAsync(item, isSkipFind: true);
+				await DeleteAsync(item);
 			}
 		}
 		return new(storageResult.IsExists

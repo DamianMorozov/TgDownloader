@@ -16,11 +16,11 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
 	    get => Item.Uid;
 	    set
 	    {
-		    TgEfStorageResult<TgEfProxyEntity> storageResult = ProxyRepository.Get(
-			    new() { Uid = value }, isNoTracking: false);
+		    TgEfStorageResult<TgEfProxyEntity> storageResult = ProxyRepository.GetAsync(
+			    new() { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 		    Item = storageResult.IsExists
 			    ? storageResult.Item
-			    : ProxyRepository.GetNew(isNoTracking: false).Item;
+			    : ProxyRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 	    }
     }
 
@@ -46,7 +46,7 @@ public sealed partial class TgEfProxyViewModel : TgViewModelBase
     
     public TgEfProxyViewModel() : base()
     {
-	    TgEfProxyEntity item = ProxyRepository.GetNew(false).Item;
+	    TgEfProxyEntity item = ProxyRepository.GetNewAsync(false).GetAwaiter().GetResult().Item;
 	    Default(item);
     }
 

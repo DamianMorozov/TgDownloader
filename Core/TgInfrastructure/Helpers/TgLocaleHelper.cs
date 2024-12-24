@@ -96,6 +96,7 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuSearchStories => "Search stories";
 	public string MenuSetProxy => "Setup proxy";
 	public string MenuViewContacts => "View contacts";
+	public string MenuViewFilters => "View filters";
 	public string MenuViewSources => "View sources";
 	public string MenuViewStories => "View stories";
 	public string MenuViewVersions => "View versions";

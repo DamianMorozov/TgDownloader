@@ -37,11 +37,11 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.Get(
-				new() { Uid = value }, isNoTracking: false);
+			TgEfStorageResult<TgEfSourceEntity> storageResult = SourceRepository.GetAsync(
+				new() { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
 			Item = storageResult.IsExists
 				? storageResult.Item
-				: SourceRepository.GetNew(isNoTracking: false).Item;
+				: SourceRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
 		}
 	}
 
@@ -91,7 +91,7 @@ public sealed class TgEfSourceViewModel : TgViewModelBase
 
     public TgEfSourceViewModel() : base()
     {
-	    TgEfSourceEntity item = SourceRepository.GetNew(false).Item;
+	    TgEfSourceEntity item = SourceRepository.GetNewAsync(false).GetAwaiter().GetResult().Item;
 		Default(item);
 	}
 

@@ -13,57 +13,42 @@ public interface ITgEfRepository<TEntity> where TEntity : ITgDbFillEntity<TEntit
 
 	#region Public and private methods
 
-	Task<IDbContextTransaction> BeginTransactionAsync();
-	Task CommitTransactionAsync();
-	Task RollbackTransactionAsync();
+	public Task<IDbContextTransaction> BeginTransactionAsync();
+	public Task CommitTransactionAsync();
+	public Task RollbackTransactionAsync();
+	public IQueryable<TEntity> GetQuery(bool isNoTracking);
 
 	#endregion
 
 	#region Public and private methods - Read
 
-	public TgEfStorageResult<TEntity> Get(TEntity item, bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetNew(bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetFirst(bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, bool isNoTracking);
+	public Task<TEntity> GetFirstItemAsync(bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetList(int take, int skip, bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
-	public TgEfStorageResult<TEntity> GetList(int take, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
 	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
-	public int GetCount();
 	public Task<int> GetCountAsync();
-	public int GetCount(Expression<Func<TEntity, bool>> where);
 	public Task<int> GetCountAsync(Expression<Func<TEntity, bool>> where);
 
 	#endregion
 
 	#region Public and private methods - Write
 
-	public TgEfStorageResult<TEntity> Save(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity item);
-	public TgEfStorageResult<TEntity> SaveList(List<TEntity> items);
 	public Task<TgEfStorageResult<TEntity>> SaveListAsync(List<TEntity> items);
-	public TgEfStorageResult<TEntity> SaveWithoutTransaction(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> SaveWithoutTransactionAsync(TEntity item);
-	public TgEfStorageResult<TEntity> SaveOrRecreate(TEntity item, string tableName);
 	public Task<TgEfStorageResult<TEntity>> SaveOrRecreateAsync(TEntity item, string tableName);
-	public TgEfStorageResult<TEntity> CreateNew();
 	public Task<TgEfStorageResult<TEntity>> CreateNewAsync();
 
 	#endregion
 
 	#region Public and private methods - Remove
 
-	public TgEfStorageResult<TEntity> Delete(TEntity item, bool isSkipFind);
-	public Task<TgEfStorageResult<TEntity>> DeleteAsync(TEntity item, bool isSkipFind);
-	public TgEfStorageResult<TEntity> DeleteNew();
+	public Task<TgEfStorageResult<TEntity>> DeleteAsync(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> DeleteNewAsync();
-	public TgEfStorageResult<TEntity> DeleteAll();
 	public Task<TgEfStorageResult<TEntity>> DeleteAllAsync();
 
 	#endregion
