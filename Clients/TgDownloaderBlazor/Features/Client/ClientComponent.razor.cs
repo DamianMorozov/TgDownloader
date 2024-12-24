@@ -200,7 +200,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		await TgBlazorUtils.RunFuncAsync(async () =>
 		{
 			await Task.Delay(1).ConfigureAwait(false);
-			TgClient.Disconnect();
+			await TgClient.DisconnectAsync();
 		}, message =>
 		{
 			NotificationService.Notify(new()
@@ -226,7 +226,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			Item = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+			Item = await AppRepository.GetFirstItemAsync(isNoTracking: false);
 		}, message =>
 		{
 			NotificationService.Notify(new()
