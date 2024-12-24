@@ -136,7 +136,7 @@ public partial class TgPageViewModelBase : TgViewModelBase
         }, false);
     }
 
-    public bool CheckClientReady() => TgDesktopUtils.TgClient.CheckClientIsReady();
+    public async Task<bool> CheckClientReadyAsync() => await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
 
     #endregion
 }

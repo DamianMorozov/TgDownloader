@@ -67,7 +67,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public TgClientViewModel()
     {
-        AppVm = new(AppRepository.GetFirstAsync(isNoTracking: false).GetAwaiter().GetResult().Item);
+        AppVm = new(AppRepository.GetFirstItemAsync(isNoTracking: false).GetAwaiter().GetResult());
         ProxyVm = new(new());
         ProxiesVms = new();
 
@@ -220,8 +220,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-            await Task.Delay(1);
-            TgDesktopUtils.TgClient.Disconnect();
+			await TgDesktopUtils.TgClient.DisconnectAsync();
         }, false).ConfigureAwait(false);
     }
 
@@ -232,7 +231,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
 		    await Task.Delay(1);
-		    AppVm.App = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		    AppVm.App = await AppRepository.GetFirstItemAsync(isNoTracking: false);
 	    }, false).ConfigureAwait(false);
     }
 

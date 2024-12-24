@@ -143,7 +143,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	[RelayCommand]
     public async Task OnUpdateSourceFromTelegramAsync()
     {
-        if (!CheckClientReady())
+        if (!await CheckClientReadyAsync())
             return;
 
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
@@ -170,7 +170,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     [RelayCommand]
     public async Task<bool> OnDownloadSourceAsync()
     {
-        if (!CheckClientReady())
+        if (!await CheckClientReadyAsync())
             return false;
 
         await OnUpdateSourceFromTelegramAsync();
@@ -204,7 +204,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	[RelayCommand]
 	public async Task<bool> OnStopSourceAsync()
 	{
-        if (!CheckClientReady()) return false;
+        if (!await CheckClientReadyAsync()) return false;
 
         bool result = true;
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>

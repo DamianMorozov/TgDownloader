@@ -112,7 +112,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
     public async Task OnUpdateSourcesFromTelegramAsync()
     {
-        if (!CheckClientReady())
+        if (!await CheckClientReadyAsync())
             return;
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
@@ -127,7 +127,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     [RelayCommand]
     public async Task OnGetSourcesFromTelegramAsync()
     {
-        if (!CheckClientReady())
+        if (!await CheckClientReadyAsync())
             return;
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
@@ -142,7 +142,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 	[RelayCommand]
     public async Task OnMarkAllMessagesAsReadAsync()
     {
-        if (!CheckClientReady())
+        if (!await CheckClientReadyAsync())
             return;
 
         await TgDesktopUtils.RunFuncAsync(this, async () =>
