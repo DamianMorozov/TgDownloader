@@ -17,11 +17,11 @@ public sealed class TgEfStoryViewModel : TgViewModelBase
 		get => Item.Uid;
 		set
 		{
-			TgEfStorageResult<TgEfStoryEntity> storageResult = StoryRepository.GetAsync(
-				new() { Uid = value }, isNoTracking: false).GetAwaiter().GetResult();
+			TgEfStorageResult<TgEfStoryEntity> storageResult = StoryRepository.Get(
+				new() { Uid = value }, isReadOnly: false);
 			Item = storageResult.IsExists
 				? storageResult.Item
-				: StoryRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+				: StoryRepository.GetNew(isReadOnly: false).Item;
 		}
 	}
 
@@ -63,7 +63,7 @@ public sealed class TgEfStoryViewModel : TgViewModelBase
 
 	public TgEfStoryViewModel() : base()
 	{
-		TgEfStoryEntity item = StoryRepository.GetNewAsync(false).GetAwaiter().GetResult().Item;
+		TgEfStoryEntity item = StoryRepository.GetNew(false).Item;
 		Default(item);
 	}
 

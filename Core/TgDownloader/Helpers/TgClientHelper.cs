@@ -3,9 +3,7 @@
 
 namespace TgDownloader.Helpers;
 
-/// <summary>
-/// Client helper.
-/// </summary>
+/// <summary> Client helper </summary>
 public sealed class TgClientHelper : ObservableObject, ITgHelper
 {
 	#region Design pattern "Lazy Singleton"
@@ -20,9 +18,16 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	#region Public and private fields, properties, constructor
 	private static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
-	private TgEfContactRepository ContactsRepository { get; } = new(TgEfUtils.CreateEfContext());
+	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfContactRepository ContactRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfDocumentRepository DocumentRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfMessageRepository MessageRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 	private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.CreateEfContext());
-	private TgEfStoryRepository StoriesRepository { get; } = new(TgEfUtils.CreateEfContext());
+	private TgEfStoryRepository StoryRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfVersionRepository VersionRepository { get; } = new(TgEfUtils.EfContext);
+
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
 	public Client? Client { get; set; }
 	public TgExceptionViewModel ClientException { get; private set; }
@@ -58,11 +63,6 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	public Func<long, Task> UpdateStateItemSourceAsync { get; private set; }
 	public Func<long, int, string, long, long, long, bool, int, Task> UpdateStateFileAsync { get; private set; }
 	public Func<string, Task> UpdateStateMessageAsync { get; private set; }
-	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
-	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
-	private TgEfDocumentRepository DocumentRepository { get; } = new(TgEfUtils.EfContext);
-	private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
-	private TgEfMessageRepository MessageRepository { get; } = new(TgEfUtils.EfContext);
 
 	public TgClientHelper()
 	{
@@ -1156,7 +1156,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private async Task UpdateContactTgAsync(TL.User user)
 	{
-		var storageResult = await ContactsRepository.GetAsync(new() { Id = user.id }, isNoTracking: true);
+		var storageResult = await ContactRepository.GetAsync(new() { Id = user.id }, isNoTracking: true);
 		TgEfContactEntity contactNew;
 		contactNew = storageResult.IsExists ? storageResult.Item : new();
 		contactNew.DtChanged = DateTime.UtcNow;
@@ -1177,7 +1177,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		contactNew.BotInlinePlaceholder = user.bot_inline_placeholder is null ? string.Empty : user.bot_inline_placeholder.ToString();
 		contactNew.BotActiveUsers = user.bot_active_users;
 		// Save
-		await ContactsRepository.SaveAsync(contactNew);
+		await ContactRepository.SaveAsync(contactNew);
 	}
 	
 	private async Task UpdateStoryTgAsync(TL.StoryItem story)
@@ -1197,7 +1197,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private async Task UpdateStoryItemTgAsync(TL.StoryItem story, MessageEntity? message)
 	{
-		var storageResult = await StoriesRepository.GetAsync(new() { Id = story.id }, isNoTracking: true);
+		var storageResult = await StoryRepository.GetAsync(new() { Id = story.id }, isNoTracking: true);
 		TgEfStoryEntity storyNew;
 		storyNew = storageResult.IsExists ? storageResult.Item : new();
 		storyNew.DtChanged = DateTime.UtcNow;
@@ -1219,7 +1219,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		// Switch media type
 		TgEfStoryEntityByMediaType(storyNew, story.media);
 		// Save
-		await StoriesRepository.SaveAsync(storyNew);
+		await StoryRepository.SaveAsync(storyNew);
 	}
 
 	private void TgEfStoryEntityByMessageType(TgEfStoryEntity storyNew, MessageEntity message)
@@ -1612,7 +1612,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 					if (counterForSave > 99)
 					{
 						counterForSave = 0;
-						await tgDownloadSettings.SourceVm.SourceRepository.SaveAsync(tgDownloadSettings.SourceVm.Item);
+						await SourceRepository.SaveAsync(tgDownloadSettings.SourceVm.Item);
 					}
 				}
 			}
@@ -1997,8 +1997,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			else
 			{
 				var fileSpeed = transmitted <= 0 || sw.Elapsed.Seconds <= 0 ? 0 : transmitted / sw.Elapsed.Seconds;
-				UpdateStateFileAsync(sourceId, messageId, Path.GetFileName(fileName), size, transmitted, fileSpeed, isFileNewDownload, threadNumber)
-					.GetAwaiter().GetResult();
+				UpdateStateFileAsync(sourceId, messageId, 
+					Path.GetFileName(fileName), size, transmitted, fileSpeed, isFileNewDownload, threadNumber).GetAwaiter().GetResult();
 				isFileNewDownload = false;
 			}
 		};
@@ -2038,12 +2038,12 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		try
 		{
 			if (Me is null || !Me.IsActive)
-				Me = Client.LoginUserIfNeeded().GetAwaiter().GetResult();
+				Me = await Client.LoginUserIfNeeded();
 			await UpdateStateSourceAsync(0, 0, string.Empty);
 		}
 		catch (Exception ex)
 		{
-			SetClientExceptionAsync(ex).GetAwaiter().GetResult();
+			await SetClientExceptionAsync(ex);
 			Me = null;
 		}
 		finally

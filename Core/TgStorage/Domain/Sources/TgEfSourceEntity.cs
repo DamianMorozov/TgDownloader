@@ -64,7 +64,12 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 	[Column(TgEfConstants.ColumnAbout, TypeName = "NVARCHAR(1024)")]
     public string? About { get; set; }
 
-    [DefaultValue(1)]
+	[DefaultValue(1)]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnFirstId, TypeName = "INT")]
+	public int FirstId { get; set; }
+
+	[DefaultValue(1)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnCount, TypeName = "INT")]
     public int Count { get; set; }
@@ -74,11 +79,6 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
     [MaxLength(256)]
     [Column(TgEfConstants.ColumnDirectory, TypeName = "NVARCHAR(256)")]
     public string? Directory { get; set; }
-
-    [DefaultValue(1)]
-    [ConcurrencyCheck]
-    [Column(TgEfConstants.ColumnFirstId, TypeName = "INT")]
-    public int FirstId { get; set; }
 
     [DefaultValue(false)]
     [ConcurrencyCheck]

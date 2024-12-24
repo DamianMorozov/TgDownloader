@@ -9,42 +9,42 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override string ToDebugString() => $"{nameof(TgEfProxyRepository)}";
 
-	public override IQueryable<TgEfProxyEntity> GetQuery(bool isNoTracking) =>
-		isNoTracking ? EfContext.Proxies.AsNoTracking() : EfContext.Proxies.AsTracking();
+	public override IQueryable<TgEfProxyEntity> GetQuery(bool isReadOnly = true) =>
+		isReadOnly ? EfContext.Proxies.AsNoTracking() : EfContext.Proxies.AsTracking();
 
-	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetAsync(TgEfProxyEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetAsync(TgEfProxyEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		TgEfStorageResult<TgEfProxyEntity> storageResult = await base.GetAsync(item, isReadOnly);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfProxyEntity? itemFind = await GetQuery(isNoTracking)
+		TgEfProxyEntity? itemFind = await GetQuery(isReadOnly)
 			.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetFirstAsync(bool isReadOnly = true)
 	{
-		TgEfProxyEntity? item = await GetQuery(isNoTracking).FirstOrDefaultAsync();
+		TgEfProxyEntity? item = await GetQuery(isReadOnly).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfProxyEntity> items = take > 0 
-			? await GetQuery(isNoTracking).Skip(skip).Take(take).ToListAsync() 
-			: await GetQuery(isNoTracking).ToListAsync();
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).ToListAsync() 
+			: await GetQuery(isReadOnly).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfProxyEntity, bool>> where, bool isReadOnly = true)
 	{
 		IList<TgEfProxyEntity> items = take > 0
-			? await GetQuery(isNoTracking).Where(where).Skip(skip).Take(take).ToListAsync()
-			: (IList<TgEfProxyEntity>)await GetQuery(isNoTracking).Where(where).ToListAsync();
+			? await GetQuery(isReadOnly).Where(where).Skip(skip).Take(take).ToListAsync()
+			: (IList<TgEfProxyEntity>)await GetQuery(isReadOnly).Where(where).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -59,7 +59,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TgEfProxyEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfProxyEntity item in storageResult.Items)
@@ -80,7 +80,7 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			return new(TgEnumEntityState.NotExists);
 
 		TgEfStorageResult<TgEfProxyEntity> storageResultProxy = await GetAsync(
-			new() { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isNoTracking: false);
+			new() { Uid = storageResult.Item.ProxyUid ?? Guid.Empty }, isReadOnly: false);
 		return storageResultProxy.IsExists ? storageResultProxy : new(TgEnumEntityState.NotExists);
 	}
 

@@ -9,34 +9,34 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override string ToDebugString() => $"{nameof(TgEfContactRepository)}";
 
-	public override IQueryable<TgEfContactEntity> GetQuery(bool isNoTracking) =>
-		isNoTracking ? EfContext.Contacts.AsNoTracking() : EfContext.Contacts.AsTracking();
+	public override IQueryable<TgEfContactEntity> GetQuery(bool isReadOnly = true) =>
+		isReadOnly ? EfContext.Contacts.AsNoTracking() : EfContext.Contacts.AsTracking();
 
-	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetAsync(TgEfContactEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetAsync(TgEfContactEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfContactEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		TgEfStorageResult<TgEfContactEntity> storageResult = await base.GetAsync(item, isReadOnly);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfContactEntity? itemFind = await GetQuery(isNoTracking).SingleOrDefaultAsync(x => x.Id == item.Id);
+		TgEfContactEntity? itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Id == item.Id);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetFirstAsync(bool isReadOnly = true)
 	{
-		TgEfContactEntity? item = await GetQuery(isNoTracking).FirstOrDefaultAsync();
+		TgEfContactEntity? item = await GetQuery(isReadOnly).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public async Task<TgEfStorageResult<TgEfContactDto>> GetListDtoAsync(int take, int skip, bool isNoTracking)
+	public async Task<TgEfStorageResult<TgEfContactDto>> GetListDtoAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfContactDto> items;
 		items = take > 0
-			? await GetQuery(isNoTracking).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
-			: await GetQuery(isNoTracking).Select(SelectDto()).ToListAsync();
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -54,19 +54,19 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 		Status = item.Status ?? string.Empty,
 	}; 
 
-	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfContactEntity> items = take > 0 
-			? await GetQuery(isNoTracking).Skip(skip).Take(take).ToListAsync() 
-			: await GetQuery(isNoTracking).ToListAsync();
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).ToListAsync() 
+			: await GetQuery(isReadOnly).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfContactEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfContactEntity, bool>> where, bool isReadOnly = true)
 	{
 		IList<TgEfContactEntity> items = take > 0
-			? await GetQuery(isNoTracking).Where(where).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Where(where).ToListAsync();
+			? await GetQuery(isReadOnly).Where(where).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Where(where).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -81,7 +81,7 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfContactEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfContactEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TgEfContactEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfContactEntity item in storageResult.Items)

@@ -9,15 +9,15 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override string ToDebugString() => $"{nameof(TgEfDocumentRepository)}";
 
-	public override IQueryable<TgEfDocumentEntity> GetQuery(bool isNoTracking) =>
-		isNoTracking ? EfContext.Documents.AsNoTracking() : EfContext.Documents.AsTracking();
+	public override IQueryable<TgEfDocumentEntity> GetQuery(bool isReadOnly = true) =>
+		isReadOnly ? EfContext.Documents.AsNoTracking() : EfContext.Documents.AsTracking();
 
-	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetAsync(TgEfDocumentEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetAsync(TgEfDocumentEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfDocumentEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		TgEfStorageResult<TgEfDocumentEntity> storageResult = await base.GetAsync(item, isReadOnly);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfDocumentEntity? itemFind = await GetQuery(isNoTracking)
+		TgEfDocumentEntity? itemFind = await GetQuery(isReadOnly)
 				.Where(x => x != null && x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
 				.Include(x => x.Source).SingleOrDefaultAsync();
 		return itemFind is not null
@@ -25,27 +25,27 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetFirstAsync(bool isReadOnly = true)
 	{
-		TgEfDocumentEntity? item = await GetQuery(isNoTracking).Include(x => x.Source).FirstOrDefaultAsync();
+		TgEfDocumentEntity? item = await GetQuery(isReadOnly).Include(x => x.Source).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfDocumentEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfDocumentEntity> items = take > 0
-			? await GetQuery(isNoTracking).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Include(x => x.Source).ToListAsync();
+			? await GetQuery(isReadOnly).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Include(x => x.Source).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfDocumentEntity, bool>> where, bool isReadOnly = true)
 	{
 		IList<TgEfDocumentEntity> items = take > 0
-			? await GetQuery(isNoTracking).Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Where(where).Include(x => x.Source).ToListAsync();
+			? await GetQuery(isReadOnly).Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Where(where).Include(x => x.Source).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -60,7 +60,7 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfDocumentEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TgEfDocumentEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfDocumentEntity item in storageResult.Items)

@@ -16,32 +16,47 @@ public interface ITgEfRepository<TEntity> where TEntity : ITgDbFillEntity<TEntit
 	public Task<IDbContextTransaction> BeginTransactionAsync();
 	public Task CommitTransactionAsync();
 	public Task RollbackTransactionAsync();
-	public IQueryable<TEntity> GetQuery(bool isNoTracking);
+	public IQueryable<TEntity> GetQuery(bool isReadOnly = true);
 
 	#endregion
 
 	#region Public and private methods - Read
 
-	public Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isNoTracking);
-	public Task<TEntity> GetFirstItemAsync(bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
-	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking);
+	public Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> Get(TEntity item, bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetNew(bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetFirst(bool isReadOnly = true);
+	public Task<TEntity> GetFirstItemAsync(bool isReadOnly = true);
+	public TEntity GetFirstItem(bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetList(int take, int skip, bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true);
+	public Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true);
+	public TgEfStorageResult<TEntity> GetList(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true);
 	public Task<int> GetCountAsync();
+	public int GetCount();
 	public Task<int> GetCountAsync(Expression<Func<TEntity, bool>> where);
+	public int GetCount(Expression<Func<TEntity, bool>> where);
 
 	#endregion
 
 	#region Public and private methods - Write
 
 	public Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity item);
+	public TgEfStorageResult<TEntity> Save(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> SaveListAsync(List<TEntity> items);
+	public TgEfStorageResult<TEntity> SaveList(List<TEntity> items);
 	public Task<TgEfStorageResult<TEntity>> SaveWithoutTransactionAsync(TEntity item);
+	public TgEfStorageResult<TEntity> SaveWithoutTransaction(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> SaveOrRecreateAsync(TEntity item, string tableName);
+	public TgEfStorageResult<TEntity> SaveOrRecreate(TEntity item, string tableName);
 	public Task<TgEfStorageResult<TEntity>> CreateNewAsync();
+	public TgEfStorageResult<TEntity> CreateNew();
 
 	#endregion
 

@@ -9,15 +9,15 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override string ToDebugString() => $"{nameof(TgEfMessageRepository)}";
 
-	public override IQueryable<TgEfMessageEntity> GetQuery(bool isNoTracking) =>
-		isNoTracking ? EfContext.Messages.AsNoTracking() : EfContext.Messages.AsTracking();
+	public override IQueryable<TgEfMessageEntity> GetQuery(bool isReadOnly = true) =>
+		isReadOnly ? EfContext.Messages.AsNoTracking() : EfContext.Messages.AsTracking();
 
-	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetAsync(TgEfMessageEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetAsync(TgEfMessageEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfMessageEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await base.GetAsync(item, isReadOnly);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfMessageEntity? itemFind = await GetQuery(isNoTracking)
+		TgEfMessageEntity? itemFind = await GetQuery(isReadOnly)
 			.Where(x => x.SourceId == item.SourceId && x.Id == item.Id)
 			.Include(x => x.Source)
 			.SingleOrDefaultAsync();
@@ -26,27 +26,27 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetFirstAsync(bool isReadOnly = true)
 	{
-		TgEfMessageEntity? item = await GetQuery(isNoTracking).Include(x => x.Source).FirstOrDefaultAsync();
+		TgEfMessageEntity? item = await GetQuery(isReadOnly).Include(x => x.Source).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfMessageEntity> items = take > 0
-			? await GetQuery(isNoTracking).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Include(x => x.Source).ToListAsync();
+			? await GetQuery(isReadOnly).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Include(x => x.Source).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfMessageEntity, bool>> where, bool isReadOnly = true)
 	{
 		IList<TgEfMessageEntity> items = take > 0
-			? await GetQuery(isNoTracking).Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Where(where).Include(x => x.Source).ToListAsync();
+			? await GetQuery(isReadOnly).Where(where).Include(x => x.Source).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Where(where).Include(x => x.Source).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -61,7 +61,7 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfMessageEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TgEfMessageEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfMessageEntity item in storageResult.Items)

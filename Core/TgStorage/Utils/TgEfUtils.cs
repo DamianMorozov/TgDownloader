@@ -103,8 +103,7 @@ public static class TgEfUtils
 	public static void VersionsView()
 	{
 		TgEfVersionRepository versionRepository = new(EfContext);
-		TgEfStorageResult<TgEfVersionEntity> storageResult = versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
-			.GetAwaiter().GetResult();
+		var storageResult = versionRepository.GetList(TgEnumTableTopRecords.All, 0);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfVersionEntity version in storageResult.Items)
@@ -117,8 +116,7 @@ public static class TgEfUtils
 	public static void FiltersView()
 	{
 		TgEfFilterRepository filterRepository = new(EfContext);
-		TgEfStorageResult<TgEfFilterEntity> storageResult = filterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)
-			.GetAwaiter().GetResult();
+		TgEfStorageResult<TgEfFilterEntity> storageResult = filterRepository.GetList(TgEnumTableTopRecords.All, 0);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfFilterEntity filter in storageResult.Items)
@@ -168,7 +166,7 @@ public static class TgEfUtils
 			try
 			{
 				TgEfStorageResult<TEntity> storageResultFrom = await repoFrom.GetListAsync(
-					batchSizeFrom, i, WhereUidNotEmpty<TEntity>(), isNoTracking: false);
+					batchSizeFrom, i, WhereUidNotEmpty<TEntity>(), isReadOnly: false);
 				if (storageResultFrom.IsExists)
 				{
 					//List<TEntity> itemsTo = storageResultTo.Items.ToList();
@@ -229,7 +227,7 @@ public static class TgEfUtils
 		var storageResult = await repository.CreateNewAsync();
 		if (!storageResult.IsExists)
 			return false;
-		storageResult = await repository.GetNewAsync(isNoTracking: false);
+		storageResult = await repository.GetNewAsync(isReadOnly: false);
 		if (!storageResult.IsExists)
 			return false;
 		storageResult = await repository.SaveAsync(storageResult.Item);

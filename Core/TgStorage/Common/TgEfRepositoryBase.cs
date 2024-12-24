@@ -20,7 +20,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public override string ToDebugString() => $"{nameof(TgEfRepositoryBase<TEntity>)}";
 
-	public virtual IQueryable<TEntity> GetQuery(bool isNoTracking) => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
+	public virtual IQueryable<TEntity> GetQuery(bool isReadOnly = true) => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 
 	private static TgEfStorageResult<TEntity> UseOverrideMethod() => throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 
@@ -40,7 +40,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	#region Public and private methods - Read
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isNoTracking)
+	public virtual async Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isReadOnly = true)
 	{
 		var uid = item?.Uid ?? Guid.Empty;
 		TEntity? result = default;
@@ -97,46 +97,72 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			: new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExists);
 	}
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isNoTracking) => await GetAsync(new(), isNoTracking);
+	public TgEfStorageResult<TEntity> Get(TEntity item, bool isReadOnly = true) => GetAsync(item, isReadOnly).GetAwaiter().GetResult();
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isNoTracking) => await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
-	
-	public virtual async Task<TEntity> GetFirstItemAsync(bool isNoTracking) => (await GetFirstAsync(isNoTracking)).Item;
+	public virtual async Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isReadOnly = true) => await GetAsync(new(), isReadOnly);
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, bool isNoTracking) =>
+	public TgEfStorageResult<TEntity> GetNew(bool isReadOnly = true) => GetNewAsync(isReadOnly).GetAwaiter().GetResult();
+
+	public virtual async Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isReadOnly = true) => await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
+
+	public TgEfStorageResult<TEntity> GetFirst(bool isReadOnly = true) => GetFirstAsync(isReadOnly).GetAwaiter().GetResult();
+
+	public virtual async Task<TEntity> GetFirstItemAsync(bool isReadOnly = true) => (await GetFirstAsync(isReadOnly)).Item;
+
+	public TEntity GetFirstItem(bool isReadOnly = true) => GetFirst(isReadOnly).Item;
+
+	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true) =>
 		topRecords switch
 		{
-			TgEnumTableTopRecords.Top1 => await GetListAsync(1, skip, isNoTracking),
-			TgEnumTableTopRecords.Top20 => await GetListAsync(20, skip, isNoTracking),
-			TgEnumTableTopRecords.Top100 => await GetListAsync(200, skip, isNoTracking),
-			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, skip, isNoTracking),
-			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, skip, isNoTracking),
-			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, skip, isNoTracking),
-			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, skip, isNoTracking),
-			_ => await GetListAsync(0, skip, isNoTracking),
+			TgEnumTableTopRecords.Top1 => await GetListAsync(1, skip, isReadOnly),
+			TgEnumTableTopRecords.Top20 => await GetListAsync(20, skip, isReadOnly),
+			TgEnumTableTopRecords.Top100 => await GetListAsync(200, skip, isReadOnly),
+			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, skip, isReadOnly),
+			_ => await GetListAsync(0, skip, isReadOnly),
 		};
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isNoTracking) => await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
+	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true) => 
+		GetListAsync(topRecords, skip, isReadOnly).GetAwaiter().GetResult();
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking) =>
-		topRecords switch
-		{
-			TgEnumTableTopRecords.Top1 => await GetListAsync(1, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top20 => await GetListAsync(20, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top100 => await GetListAsync(200, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, skip, where, isNoTracking),
-			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, skip, where, isNoTracking),
-			_ => await GetListAsync(0, skip, where, isNoTracking),
-		};
-
-	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isNoTracking) =>
+	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isReadOnly = true) => 
 		await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
+
+	public TgEfStorageResult<TEntity> GetList(int take, int skip, bool isReadOnly = true) =>
+		GetListAsync(take, skip, isReadOnly).GetAwaiter().GetResult();
+
+	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, 
+		bool isReadOnly = true) =>
+		topRecords switch
+		{
+			TgEnumTableTopRecords.Top1 => await GetListAsync(1, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top20 => await GetListAsync(20, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top100 => await GetListAsync(200, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top1000 => await GetListAsync(1_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top10000 => await GetListAsync(10_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top100000 => await GetListAsync(100_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top1000000 => await GetListAsync(1_000_000, skip, where, isReadOnly),
+			_ => await GetListAsync(0, skip, where, isReadOnly),
+		};
+
+	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		GetList(topRecords, skip, where, isReadOnly);
+
+	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
+
+	public TgEfStorageResult<TEntity> GetList(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		GetList(take, skip, where, isReadOnly);
 
 	public virtual async Task<int> GetCountAsync() => await Task.FromResult(0);
 
+	public int GetCount() => GetCountAsync().GetAwaiter().GetResult();
+
 	public virtual async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> where) => await Task.FromResult(0);
+
+	public int GetCount(Expression<Func<TEntity, bool>> where) => GetCountAsync(where).GetAwaiter().GetResult();
 
 	#endregion
 
@@ -152,7 +178,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			if (item is null) return new(TgEnumEntityState.Unknown, item);
 			try
 			{
-				storageResult = await GetAsync(item, isNoTracking: false);
+				storageResult = await GetAsync(item, isReadOnly: false);
 				// Create
 				if (!storageResult.IsExists)
 				{
@@ -188,6 +214,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 	}
 
+	public TgEfStorageResult<TEntity> Save(TEntity? item) => SaveAsync(item).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveListAsync(List<TEntity> items)
 	{
@@ -224,13 +251,15 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 	}
 
+	public TgEfStorageResult<TEntity> SaveList(List<TEntity> items) => SaveListAsync(items).GetAwaiter().GetResult();
+
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveWithoutTransactionAsync(TEntity item)
 	{
 		await TransactionSemaphore.WaitAsync();
 		TgEfStorageResult<TEntity> storageResult;
 		try
 		{
-			storageResult = await GetAsync(item, isNoTracking: false);
+			storageResult = await GetAsync(item, isReadOnly: false);
 			// Create.
 			if (!storageResult.IsExists)
 			{
@@ -262,6 +291,8 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		return storageResult;
 	}
 
+	public TgEfStorageResult<TEntity> SaveWithoutTransaction(TEntity item) => SaveWithoutTransactionAsync(item).GetAwaiter().GetResult();
+
 	public virtual async Task<TgEfStorageResult<TEntity>> SaveOrRecreateAsync(TEntity item, string tableName)
 	{
 		await TransactionSemaphore.WaitAsync();
@@ -291,7 +322,11 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		}
 	}
 
+	public TgEfStorageResult<TEntity> SaveOrRecreate(TEntity item, string tableName) => SaveOrRecreateAsync(item, tableName).GetAwaiter().GetResult();
+
 	public virtual async Task<TgEfStorageResult<TEntity>> CreateNewAsync() => await SaveAsync(new());
+
+	public TgEfStorageResult<TEntity> CreateNew() => CreateNewAsync().GetAwaiter().GetResult();
 
 	#endregion
 
@@ -306,7 +341,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			try
 			{
 				TgEfStorageResult<TEntity> storageResult;
-				storageResult = await GetAsync(item, isNoTracking: false);
+				storageResult = await GetAsync(item, isReadOnly: false);
 				if (!storageResult.IsExists)
 					return storageResult;
 				EfContext.Remove(storageResult.Item);
@@ -331,7 +366,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public virtual async Task<TgEfStorageResult<TEntity>> DeleteNewAsync()
 	{
-		TgEfStorageResult<TEntity> storageResult = await GetNewAsync(isNoTracking: false);
+		TgEfStorageResult<TEntity> storageResult = await GetNewAsync(isReadOnly: false);
 		return storageResult.IsExists
 			? await DeleteAsync(storageResult.Item)
 			: new(TgEnumEntityState.NotDeleted);
@@ -339,7 +374,7 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 
 	public virtual async Task<TgEfStorageResult<TEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TEntity item in storageResult.Items)

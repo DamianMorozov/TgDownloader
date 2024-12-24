@@ -43,10 +43,13 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 
     public async Task UpdateSourceWithSettingsAsync()
     {
-        if (!SourceVm.IsReadySourceId) return;
-        var storageResult = await SourceVm.SourceRepository.SaveAsync(SourceVm.Item);
-        if (storageResult.IsExists) 
-	        SourceVm.Item = storageResult.Item;
+        if (!SourceVm.Dto.IsReadySourceId) return;
+		var entity = TgEfHelper.ConvertToEntity(SourceVm.Dto);
+        var storageResult = await SourceVm.SourceRepository.SaveAsync(entity);
+		if (storageResult.IsExists)
+		{
+			SourceVm.Dto = TgEfHelper.ConvertToDto(storageResult.Item);
+		}
     }
 
     public async Task UpdateContactWithSettingsAsync()

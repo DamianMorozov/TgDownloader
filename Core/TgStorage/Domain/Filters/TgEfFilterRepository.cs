@@ -9,34 +9,34 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	public override string ToDebugString() => $"{nameof(TgEfFilterRepository)}";
 
-	public override IQueryable<TgEfFilterEntity> GetQuery(bool isNoTracking) =>
-		isNoTracking ? EfContext.Filters.AsNoTracking() : EfContext.Filters.AsTracking();
+	public override IQueryable<TgEfFilterEntity> GetQuery(bool isReadOnly = true) =>
+		isReadOnly ? EfContext.Filters.AsNoTracking() : EfContext.Filters.AsTracking();
 
-	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetAsync(TgEfFilterEntity item, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetAsync(TgEfFilterEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfFilterEntity> storageResult = await base.GetAsync(item, isNoTracking);
+		TgEfStorageResult<TgEfFilterEntity> storageResult = await base.GetAsync(item, isReadOnly);
 		if (storageResult.IsExists)
 			return storageResult;
-		TgEfFilterEntity? itemFind = await GetQuery(isNoTracking).SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name);
+		TgEfFilterEntity? itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetFirstAsync(bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetFirstAsync(bool isReadOnly = true)
 	{
-		TgEfFilterEntity? item = await GetQuery(isNoTracking).FirstOrDefaultAsync();
+		TgEfFilterEntity? item = await GetQuery(isReadOnly).FirstOrDefaultAsync();
 		return item is null
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public async Task<TgEfStorageResult<TgEfFilterDto>> GetListDtoAsync(int take, int skip, bool isNoTracking)
+	public async Task<TgEfStorageResult<TgEfFilterDto>> GetListDtoAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfFilterDto> items;
 		items = take > 0
-			? await GetQuery(isNoTracking).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
-			: await GetQuery(isNoTracking).Select(SelectDto()).ToListAsync();
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -50,19 +50,19 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 		Size = $"{item.Size} {item.SizeType}",
 	};
 
-	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfFilterEntity> items = take > 0 
-			? await GetQuery(isNoTracking).Skip(skip).Take(take).ToListAsync() 
-			: await GetQuery(isNoTracking).ToListAsync();
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).ToListAsync() 
+			: await GetQuery(isReadOnly).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
-	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isNoTracking)
+	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfFilterEntity, bool>> where, bool isReadOnly = true)
 	{
 		IList<TgEfFilterEntity> items = take > 0
-			? await GetQuery(isNoTracking).Where(where).Skip(skip).Take(take).ToListAsync()
-			: await GetQuery(isNoTracking).Where(where).ToListAsync();
+			? await GetQuery(isReadOnly).Where(where).Skip(skip).Take(take).ToListAsync()
+			: await GetQuery(isReadOnly).Where(where).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
 
@@ -77,7 +77,7 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> DeleteAllAsync()
 	{
-		TgEfStorageResult<TgEfFilterEntity> storageResult = await GetListAsync(0, 0, isNoTracking: false);
+		TgEfStorageResult<TgEfFilterEntity> storageResult = await GetListAsync(0, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfFilterEntity item in storageResult.Items)

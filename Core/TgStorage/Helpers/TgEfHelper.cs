@@ -16,25 +16,30 @@ public static class TgEfHelper
 		_ => $"<{TgLocaleHelper.Instance.MenuFiltersError}>",
 	};
 
-	//public static TgEfSourceEntity ConvertToEntity(this TgEfSourceDto sourceDto) => new TgEfSourceEntity()
-	//{
-	//	Uid = sourceDto.Uid,
-	//	DtChanged = sourceDto.DtChanged,
-	//	Id = sourceDto.Id,
-	//	IsActive = sourceDto.IsSourceActive,
-	//	UserName = sourceDto.UserName,
-	//	Title = sourceDto.Title,
-	//	Count = sourceDto.Count,
-	//	FirstId = sourceDto.FirstId,
-	//	IsAutoUpdate = sourceDto.IsAutoUpdate,
-	//};
+	public static string GetDtAsDateString(DateTime dt) => $"{dt:yyyy-MM-dd}";
+
+	public static TgEfSourceEntity ConvertToEntity(this TgEfSourceDto sourceDto) => new TgEfSourceEntity()
+	{
+		Uid = sourceDto.Uid,
+		DtChanged = sourceDto.SourceDtChanged,
+		Id = sourceDto.Id,
+		AccessHash = sourceDto.AccessHash,
+		IsActive = sourceDto.IsSourceActive,
+		UserName = sourceDto.UserName,
+		Title = sourceDto.Title,
+		About = sourceDto.About,
+		FirstId = sourceDto.FirstId,
+		Count = sourceDto.Count,
+		Directory = sourceDto.Directory,
+		IsAutoUpdate = sourceDto.IsAutoUpdate,
+	};
 
 	public static TgEfSourceDto ConvertToDto(this TgEfSourceEntity sourceEntity) => new()
 	{
 		Uid = sourceEntity.Uid,
 		Id = sourceEntity.Id,
 		UserName = sourceEntity.UserName ?? string.Empty,
-		DtChanged = $"{sourceEntity.DtChanged:yyyy-MM-dd}",
+		DtChanged = GetDtAsDateString(sourceEntity.DtChanged),
 		IsSourceActive = sourceEntity.IsActive,
 		IsAutoUpdate = sourceEntity.IsAutoUpdate,
 		Title = sourceEntity.Title ?? string.Empty,
