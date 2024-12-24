@@ -2,9 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using TgStorage.Domain.Contacts;
-using TgStorage.Domain.Stories;
-
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -109,7 +106,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
 		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
-			: VersionRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true).
+			: (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
@@ -222,7 +219,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 
 		// Proxy setup.
-		if (Equals(ProxyRepository.GetCurrentProxyUid(AppRepository.GetCurrentApp()), Guid.Empty))
+		if (Equals(await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync()), Guid.Empty))
 		{
 			if (TgAppSettings.IsUseProxy)
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
@@ -234,7 +231,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		else
 		{
 			// Proxy is not found.
-			if (!ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).IsExists || TgClient.Me is null)
+			if (!(await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).IsExists || TgClient.Me is null)
 			{
 				table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsNeedSetup)));
@@ -253,14 +250,14 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySetup)),
 					new Markup(TgLog.GetMarkupString(TgLocale.SettingsIsOk)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyType)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Type.ToString())));
+					new Markup(TgLog.GetMarkupString((await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item.Type.ToString())));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyHostName)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.HostName)));
+					new Markup(TgLog.GetMarkupString((await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item.HostName)));
 				table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxyPort)),
-					new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Port.ToString())));
-				if (Equals(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Type, TgEnumProxyType.MtProto))
+					new Markup(TgLog.GetMarkupString((await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item.Port.ToString())));
+				if (Equals((await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item.Type, TgEnumProxyType.MtProto))
 					table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgClientProxySecret)),
-						new Markup(TgLog.GetMarkupString(ProxyRepository.GetCurrentProxy(AppRepository.GetCurrentApp()).Item.Secret)));
+						new Markup(TgLog.GetMarkupString((await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item.Secret)));
 			}
 		}
 
@@ -404,7 +401,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
 
         // Enabled filters
-        IEnumerable<TgEfFilterEntity> filters = FilterRepository.GetList(TgEnumTableTopRecords.All, 0, isNoTracking: true)
+        IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 
@@ -452,11 +449,11 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	public bool AskQuestionReturnNegative(string question, bool isTrueFirst = false) =>
 		!AskQuestionReturnPositive(question, isTrueFirst);
 
-	public TgEfContactEntity GetContactFromEnumerable(string title, IEnumerable<TgEfContactEntity> contacts)
+	public async Task<TgEfContactEntity> GetContactFromEnumerableAsync(string title, IEnumerable<TgEfContactEntity> items)
 	{
-		contacts = contacts.OrderBy(x => x.Id);
+		items = items.OrderBy(x => x.Id);
 		List<string> list = [TgLocale.MenuMainReturn];
-		list.AddRange(contacts.Select(contact => TgLog.GetMarkupString(contact.ToConsoleString())));
+		list.AddRange(items.Select(item => TgLog.GetMarkupString(item.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(Console.WindowHeight - 17)
@@ -468,17 +465,38 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return ContactRepository.Get(new() { Id = id }, isNoTracking: true).Item;
+					return (await ContactRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
 			}
 		}
-		return ContactRepository.GetNew(isNoTracking: true).Item;
+		return (await ContactRepository.GetNewAsync(isNoTracking: true)).Item;
 	}
 
-	public TgEfSourceEntity GetSourceFromEnumerable(string title, IEnumerable<TgEfSourceEntity> sources)
+	public async Task<TgEfFilterEntity> GetFilterFromEnumerableAsync(string title, IEnumerable<TgEfFilterEntity> items)
 	{
-		sources = sources.OrderBy(x => x.UserName).ThenBy(x => x.Title);
+		items = items.OrderBy(x => x.Name);
 		List<string> list = [TgLocale.MenuMainReturn];
-		list.AddRange(sources.Select(source => TgLog.GetMarkupString(source.ToConsoleString())));
+		list.AddRange(items.Select(item => TgLog.GetMarkupString(item.ToConsoleString())));
+		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
+			.Title(title)
+			.PageSize(Console.WindowHeight - 17)
+			.AddChoices(list));
+		if (!Equals(sourceString, TgLocale.MenuMainReturn))
+		{
+			string[] parts = sourceString.Split('|');
+			if (parts.Length > 3)
+			{
+				string name = parts[0].TrimEnd(' ');
+				return (await FilterRepository.GetAsync(new() { Name = name }, isNoTracking: true)).Item;
+			}
+		}
+		return (await FilterRepository.GetNewAsync(isNoTracking: true)).Item;
+	}
+
+	public async Task<TgEfSourceEntity> GetSourceFromEnumerableAsync(string title, IEnumerable<TgEfSourceEntity> items)
+	{
+		items = items.OrderBy(x => x.UserName).ThenBy(x => x.Title);
+		List<string> list = [TgLocale.MenuMainReturn];
+		list.AddRange(items.Select(item => TgLog.GetMarkupString(item.ToConsoleString())));
 		string sourceString = AnsiConsole.Prompt(new SelectionPrompt<string>()
 			.Title(title)
 			.PageSize(Console.WindowHeight - 17)
@@ -490,13 +508,13 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[0].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return SourceRepository.Get(new() { Id = id }, isNoTracking: true).Item;
+					return (await SourceRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
 			}
 		}
-		return SourceRepository.GetNew(isNoTracking: true).Item;
+		return (await SourceRepository.GetNewAsync(isNoTracking: true)).Item;
 	}
 
-	public TgEfStoryEntity GetStoryFromEnumerable(string title, IEnumerable<TgEfStoryEntity> stories)
+	public async Task<TgEfStoryEntity> GetStoryFromEnumerableAsync(string title, IEnumerable<TgEfStoryEntity> stories)
 	{
 		stories = stories.OrderBy(x => x.Id);
 		List<string> list = [TgLocale.MenuMainReturn];
@@ -512,10 +530,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return StoryRepository.Get(new() { Id = id }, isNoTracking: true).Item;
+					return (await StoryRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
 			}
 		}
-		return StoryRepository.GetNew(isNoTracking: true).Item;
+		return (await StoryRepository.GetNewAsync(isNoTracking: true)).Item;
 	}
 
 	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)

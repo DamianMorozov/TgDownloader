@@ -91,7 +91,7 @@ internal partial class TgMenuHelper
 					SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SetCountThreads:
-					SetTgDownloadCountThreads(tgDownloadSettings);
+					await SetTgDownloadCountThreadsAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SettingsSave:
 					await RunTaskStatusAsync(tgDownloadSettings, UpdateSourceWithSettingsAsync, isSkipCheckTgSettings: true, isScanCount: false, isWaitComplete: false);
@@ -107,7 +107,7 @@ internal partial class TgMenuHelper
 	{
 		TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSourceCore(id);
 		_ = await TgClient.CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: true);
-		LoadTgClientSettings(tgDownloadSettings, false, false);
+		await LoadTgClientSettingsAsync(tgDownloadSettings, false, false);
 		return tgDownloadSettings;
 	}
 
@@ -145,7 +145,7 @@ internal partial class TgMenuHelper
 		if (smartSource.ChatBase is not null)
 		{
 			await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase);
-			LoadTgClientSettings(tgDownloadSettings, true, false);
+			LoadTgClientSettingsAsync(tgDownloadSettings, true, false);
 		}
 	}
 
@@ -155,7 +155,7 @@ internal partial class TgMenuHelper
 		{
 			tgDownloadSettings.SourceVm.SourceFirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgSourceFirstId}:"));
 		} while (!tgDownloadSettings.SourceVm.IsReadySourceFirstId);
-		LoadTgClientSettings(tgDownloadSettings, true, true);
+		LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
 	}
 
 	private void SetupDownloadDestDirectory(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -193,7 +193,7 @@ internal partial class TgMenuHelper
 	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
-	private void SetTgDownloadCountThreads(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task SetTgDownloadCountThreadsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		do
 		{
@@ -203,7 +203,7 @@ internal partial class TgMenuHelper
 			else if (tgDownloadSettings.CountThreads > 20)
 				tgDownloadSettings.CountThreads = 20;
 		} while (!tgDownloadSettings.SourceVm.IsReadySourceFirstId);
-		LoadTgClientSettings(tgDownloadSettings, true, true);
+		await LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
 	}
 
 	private async Task UpdateSourceWithSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -213,11 +213,11 @@ internal partial class TgMenuHelper
 		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource);
 	}
 
-	private void LoadTgClientSettings(TgDownloadSettingsViewModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
+	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
 	{
 		int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
 		string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-		TgEfSourceEntity source = SourceRepository.Get(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false).Item;
+		TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false)).Item;
 		tgDownloadSettings.SourceVm.Item = source;
 		if (isSkipLoadFirstId)
 			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;

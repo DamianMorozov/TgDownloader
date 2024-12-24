@@ -39,7 +39,7 @@ internal partial class TgMenuHelper
 			switch (menu)
 			{
 				case TgEnumMenuClient.SetProxy:
-					SetupClientProxyAsync().GetAwaiter().GetResult();
+					await SetupClientProxyAsync();
 					await AskClientConnectAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuClient.Connect:
@@ -86,7 +86,7 @@ internal partial class TgMenuHelper
 		proxy = (await ProxyRepository.GetAsync(
 			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
 
-		var app = (await AppRepository.GetFirstAsync(isNoTracking: false)).Item;
+		var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
 		app.ProxyUid = proxy.Uid;
 		await AppRepository.SaveAsync(app);
 
@@ -119,8 +119,8 @@ internal partial class TgMenuHelper
 
 	private string? ConfigConsole(string what)
 	{
-		var appNew = AppRepository.GetNew(isNoTracking: false).Item;
-		var app = AppRepository.GetFirst(isNoTracking: false).Item;
+		var appNew = AppRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
+		var app = AppRepository.GetFirstItemAsync(isNoTracking: false).GetAwaiter().GetResult();
 		switch (what)
 		{
 			case "api_hash":
@@ -131,7 +131,7 @@ internal partial class TgMenuHelper
 				if (app.ApiHash != TgDataFormatUtils.ParseStringToGuid(apiHash))
 				{
 					app.ApiHash = TgDataFormatUtils.ParseStringToGuid(apiHash);
-					AppRepository.Save(app);
+					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				}
 				return apiHash;
 			case "api_id":
@@ -142,7 +142,7 @@ internal partial class TgMenuHelper
 				if (app.ApiId != int.Parse(apiId))
 				{
 					app.ApiId = int.Parse(apiId);
-					AppRepository.Save(app);
+					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				}
 				return apiId;
 			case "phone_number":
@@ -152,7 +152,7 @@ internal partial class TgMenuHelper
 				if (app.PhoneNumber != phoneNumber)
 				{
 					app.PhoneNumber = phoneNumber;
-					AppRepository.Save(app);
+					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
 				}
 				return phoneNumber;
 			case "verification_code":
@@ -219,7 +219,7 @@ internal partial class TgMenuHelper
 		await ShowTableClientAsync(tgDownloadSettings);
 		//TgSqlTableAppModel app = ContextManager.AppRepository.GetFirst();
 		//ContextManager.AppRepository.Delete(app);
-		TgClient.Disconnect();
+		await TgClient.DisconnectAsync();
 	}
 
 	#endregion

@@ -25,7 +25,7 @@ do
 {
 	try
 	{
-		menu.ShowTableMainAsync(tgDownloadSettings);
+		await menu.ShowTableMainAsync(tgDownloadSettings);
 		string prompt = AnsiConsole.Prompt(
 			new SelectionPrompt<string>()
 			.Title($"  {tgLocale.MenuSwitchNumber}")
@@ -44,7 +44,7 @@ do
 		if (prompt.Equals(tgLocale.MenuMainStorage))
 		{
 			menu.Value = TgEnumMenuMain.Storage;
-			menu.SetupStorage(tgDownloadSettings);
+			await menu.SetupStorageAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainClient))
 		{
@@ -54,7 +54,7 @@ do
 		if (prompt.Equals(tgLocale.MenuMainFilters))
 		{
 			menu.Value = TgEnumMenuMain.Filters;
-			menu.SetupFilters(tgDownloadSettings);
+			await menu.SetupFiltersAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainDownload))
 		{
