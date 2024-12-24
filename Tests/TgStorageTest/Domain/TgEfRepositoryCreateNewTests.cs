@@ -35,6 +35,9 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
                     case var cls when cls == typeof(TgEfAppEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 						break;
+                    case var cls when cls == typeof(TgEfContactEntity):
+	                    await CreateNewItemAndDeleteAsync(new TgEfContactRepository(TgEfUtils.EfContext));
+						break;
                     case var cls when cls == typeof(TgEfDocumentEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
 						break;
@@ -50,6 +53,9 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
                     case var cls when cls == typeof(TgEfSourceEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
 						break;
+                    case var cls when cls == typeof(TgEfStoryEntity):
+	                    await CreateNewItemAndDeleteAsync(new TgEfStoryRepository(TgEfUtils.EfContext));
+						break;
                     case var cls when cls == typeof(TgEfVersionEntity):
 	                    await CreateNewItemAndDeleteAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
 						break;
@@ -64,7 +70,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 		TgEfStorageResult<TEntity> storageResult = await repository.CreateNewAsync();
 		Assert.That(storageResult.IsExists);
 		TestContext.WriteLine(storageResult.Item.ToDebugString());
-		storageResult = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+		storageResult = await repository.DeleteAsync(storageResult.Item);
 		Assert.That(!storageResult.IsExists);
     }
 
@@ -81,6 +87,9 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 					case var cls when cls == typeof(TgEfAppEntity):
 						await GetNewItemsAndDeleteAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 						break;
+					case var cls when cls == typeof(TgEfContactEntity):
+						await GetNewItemsAndDeleteAsync(new TgEfContactRepository(TgEfUtils.EfContext));
+						break;
 					case var cls when cls == typeof(TgEfDocumentEntity):
 						await GetNewItemsAndDeleteAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
 						break;
@@ -95,6 +104,9 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 						break;
 					case var cls when cls == typeof(TgEfSourceEntity):
 						await GetNewItemsAndDeleteAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
+						break;
+					case var cls when cls == typeof(TgEfStoryEntity):
+						await GetNewItemsAndDeleteAsync(new TgEfStoryRepository(TgEfUtils.EfContext));
 						break;
 					case var cls when cls == typeof(TgEfVersionEntity):
 						await GetNewItemsAndDeleteAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
@@ -114,7 +126,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 			if (storageResult.IsExists)
 			{
 				TestContext.WriteLine(storageResult.Item.ToDebugString());
-				TgEfStorageResult<TEntity> storageResultDelete = await repository.DeleteAsync(storageResult.Item, isSkipFind: false);
+				TgEfStorageResult<TEntity> storageResultDelete = await repository.DeleteAsync(storageResult.Item);
 				Assert.That(!storageResultDelete.IsExists);
 			}
 		} while (storageResult.IsExists);

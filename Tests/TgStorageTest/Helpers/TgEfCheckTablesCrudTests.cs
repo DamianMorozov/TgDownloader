@@ -9,16 +9,6 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	#region Public and private methods
 
 	[Test]
-	public void Check_table_apps_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableProxiesCrud(CreateEfContext()));
-			Assert.That(TgEfUtils.CheckTableAppsCrud(CreateEfContext()));
-		});
-	}
-
-	[Test]
 	public void Check_table_apps_crud_async()
 	{
 		Assert.DoesNotThrowAsync(async () =>
@@ -29,11 +19,11 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	}
 
     [Test]
-	public void Check_table_documents_crud()
+	public void Check_table_contacts_crud_async()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			Assert.That(TgEfUtils.CheckTableDocumentsCrud(CreateEfContext()));
+			Assert.That(await TgEfUtils.CheckTableContactsCrudAsync(CreateEfContext()));
 		});
 	}
 
@@ -47,29 +37,11 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void Check_table_filters_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableFiltersCrud(CreateEfContext()));
-		});
-	}
-
-	[Test]
 	public void Check_table_filters_crud_async()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
 			Assert.That(await TgEfUtils.CheckTableFiltersCrudAsync(CreateEfContext()));
-		});
-	}
-
-	[Test]
-	public void Check_table_messages_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableMessagesCrud(CreateEfContext()));
 		});
 	}
 
@@ -83,29 +55,11 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void Check_table_proxies_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableProxiesCrud(CreateEfContext()));
-		});
-	}
-
-	[Test]
 	public void Check_table_proxies_crud_async()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
 			Assert.That(await TgEfUtils.CheckTableProxiesCrudAsync(CreateEfContext()));
-		});
-	}
-
-	[Test]
-	public void Check_table_sources_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableSourcesCrud(CreateEfContext()));
 		});
 	}
 
@@ -119,20 +73,20 @@ internal class TgEfCheckTablesCrudTests : TgDbContextTestsBase
 	}
 
 	[Test]
+	public void Check_table_stories_crud_async()
+	{
+		Assert.DoesNotThrowAsync(async () =>
+		{
+			Assert.That(await TgEfUtils.CheckTableStoriesCrudAsync(CreateEfContext()));
+		});
+	}
+
+	[Test]
 	public void Check_table_versions_crud_async()
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
 			Assert.That(await TgEfUtils.CheckTableVersionsCrudAsync(CreateEfContext()));
-		});
-	}
-
-	[Test]
-	public void Check_table_versions_crud()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			Assert.That(TgEfUtils.CheckTableVersionsCrud(CreateEfContext()));
 		});
 	}
 

@@ -9,15 +9,6 @@ internal sealed class TgEfRepositoryGetCountWhereTests : TgDbContextTestsBase
 {
 	#region Public and private methods
 
-	private void GetCountWhere<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			int count = repo.GetCount(TgEfUtils.WhereUidNotEmpty<TEntity>());
-			TestContext.WriteLine($"Found {count} items.");
-		});
-	}
-
 	private void GetCountWhereAsync<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		Assert.DoesNotThrowAsync(async () =>
@@ -28,46 +19,31 @@ internal sealed class TgEfRepositoryGetCountWhereTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void TgEf_get_count_app() => GetCountWhere(new TgEfAppRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_apps_async() => GetCountWhereAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_app_async() => GetCountWhereAsync(new TgEfAppRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_contacts_async() => GetCountWhereAsync(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_document() => GetCountWhere(new TgEfDocumentRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_documents_async() => GetCountWhereAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_document_async() => GetCountWhereAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_filters_async() => GetCountWhereAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_filter() => GetCountWhere(new TgEfFilterRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_messages_async() => GetCountWhereAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_filter_async() => GetCountWhereAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_proxies_async() => GetCountWhereAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_message() => GetCountWhere(new TgEfMessageRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_sources_async() => GetCountWhereAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_message_async() => GetCountWhereAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_stories_async() => GetCountWhereAsync(new TgEfStoryRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_proxy() => GetCountWhere(new TgEfProxyRepository(TgEfUtils.EfContext));
-
-	[Test]
-	public void TgEf_get_count_proxy_async() => GetCountWhereAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
-
-	[Test]
-	public void TgEf_get_count_source() => GetCountWhere(new TgEfSourceRepository(TgEfUtils.EfContext));
-
-	[Test]
-	public void TgEf_get_count_source_async() => GetCountWhereAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
-
-	[Test]
-	public void TgEf_get_count_version() => GetCountWhere(new TgEfVersionRepository(TgEfUtils.EfContext));
-
-	[Test]
-	public void TgEf_get_count_version_async() => GetCountWhereAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_versions_async() => GetCountWhereAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
 
 	#endregion
 }

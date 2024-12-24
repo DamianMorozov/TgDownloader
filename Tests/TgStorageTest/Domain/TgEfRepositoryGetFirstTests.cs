@@ -11,15 +11,18 @@ internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 
 	private void GetFirst<TEntity>(ITgEfRepository<TEntity> repo) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
-		Assert.DoesNotThrow(() =>
+		Assert.DoesNotThrowAsync(async () =>
 		{
-			TEntity item = repo.GetFirst(isNoTracking: true).Item;
+			TEntity item = await repo.GetFirstItemAsync(isNoTracking: true);
 			TestContext.WriteLine($"Found {item.ToDebugString()}");
 		});
 	}
 
 	[Test]
 	public void TgEf_get_first_app() => GetFirst(new TgEfAppRepository(TgEfUtils.EfContext));
+
+	[Test]
+	public void TgEf_get_first_contact() => GetFirst(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]
 	public void TgEf_get_first_document() => GetFirst(new TgEfDocumentRepository(TgEfUtils.EfContext));
@@ -35,6 +38,9 @@ internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 
 	[Test]
 	public void TgEf_get_first_source() => GetFirst(new TgEfSourceRepository(TgEfUtils.EfContext));
+
+	[Test]
+	public void TgEf_get_first_story() => GetFirst(new TgEfStoryRepository(TgEfUtils.EfContext));
 
 	[Test]
 	public void TgEf_get_first_version() => GetFirst(new TgEfVersionRepository(TgEfUtils.EfContext));
