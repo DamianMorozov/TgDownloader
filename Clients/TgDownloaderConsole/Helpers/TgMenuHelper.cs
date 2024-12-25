@@ -106,7 +106,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
 		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
             ? new() 
-			: (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).
+			: (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
@@ -126,9 +126,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Download settings
-		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
+		table.AddRow(new Markup(tgDownloadSettings.SourceVm.Dto.IsReady
 			? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
-			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(tgDownloadSettings.SourceVm.Dto.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		await Task.CompletedTask;
 	}
@@ -187,7 +187,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <param name="table"></param>
 	internal async Task FillTableRowsFiltersAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items;
+		IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).Items;
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersAllCount)), 
 			new Markup($"{filters.Count()}"));
 	}
@@ -286,8 +286,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var contact = (await ContactRepository.GetAsync(new()
-				{ Id = tgDownloadSettings.ContactVm.Id }, isNoTracking: true)).Item;
+			var contact = (await ContactRepository.GetAsync(new() { Id = tgDownloadSettings.ContactVm.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsContact)),
 				new Markup(TgLog.GetMarkupString(contact.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -298,13 +297,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Source info </summary>
 	internal async Task FillTableRowsDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var source = (await SourceRepository.GetAsync(new() 
-				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
+			var source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -320,8 +318,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var story = (await StoryRepository.GetAsync(new() 
-				{ Id = tgDownloadSettings.StoryVm.Id }, isNoTracking: true)).Item;
+			var story = (await StoryRepository.GetAsync(new() { Id = tgDownloadSettings.StoryVm.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsStory)),
 				new Markup(TgLog.GetMarkupString(story.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -332,13 +329,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Version info </summary>
 	internal async Task FillTableRowsDownloadedVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = (await SourceRepository.GetAsync(new() 
-				{ Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: true)).Item;
+			TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -365,24 +361,24 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal async Task FillTableRowsDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		// Download
-		table.AddRow(new Markup(tgDownloadSettings.SourceVm.IsReady
+		table.AddRow(new Markup(tgDownloadSettings.SourceVm.Dto.IsReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainDownload) : TgLocale.WarningMessage(TgLocale.MenuMainDownload)),
-			new Markup(tgDownloadSettings.SourceVm.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(tgDownloadSettings.SourceVm.Dto.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Source info
 		await FillTableRowsDownloadedSourcesAsync(tgDownloadSettings, table);
 
 		// Destination dir
-		if (string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceDirectory))
+		if (string.IsNullOrEmpty(tgDownloadSettings.SourceVm.Dto.Directory))
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.TgSettingsDestDirectory)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsDestDirectory)),
-				new Markup(TgLogHelper.Instance.GetMarkupString(tgDownloadSettings.SourceVm.SourceDirectory, isReplaceSpec: true)));
+				new Markup(TgLogHelper.Instance.GetMarkupString(tgDownloadSettings.SourceVm.Dto.Directory, isReplaceSpec: true)));
 
 		// First/last ID
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsSourceFirstLastId)),
-			new Markup($"{tgDownloadSettings.SourceVm.SourceFirstId} / {tgDownloadSettings.SourceVm.SourceLastId}"));
+			new Markup($"{tgDownloadSettings.SourceVm.Dto.FirstId} / {tgDownloadSettings.SourceVm.Dto.Count}"));
 
 		// Rewrite files
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.TgSettingsIsRewriteFiles)),
@@ -398,10 +394,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 		// Enable auto update
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
-			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
+			new Markup(tgDownloadSettings.SourceVm.Dto.IsAutoUpdate.ToString()));
 
         // Enabled filters
-        IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+        IEnumerable<TgEfFilterEntity> filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0))
 	        .Items.Where(f => f.IsEnabled);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuFiltersEnabledCount)), new Markup($"{filters.Count()}"));
 
@@ -415,7 +411,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	{
 		// Is auto update.
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.MenuDownloadSetIsAutoUpdate)),
-			new Markup(tgDownloadSettings.SourceVm.IsAutoUpdate.ToString()));
+			new Markup(tgDownloadSettings.SourceVm.Dto.IsAutoUpdate.ToString()));
 		await Task.CompletedTask;
 	}
 
@@ -465,10 +461,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return (await ContactRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
+					return (await ContactRepository.GetAsync(new() { Id = id })).Item;
 			}
 		}
-		return (await ContactRepository.GetNewAsync(isNoTracking: true)).Item;
+		return (await ContactRepository.GetNewAsync()).Item;
 	}
 
 	public async Task<TgEfFilterEntity> GetFilterFromEnumerableAsync(string title, IEnumerable<TgEfFilterEntity> items)
@@ -486,10 +482,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			if (parts.Length > 3)
 			{
 				string name = parts[0].TrimEnd(' ');
-				return (await FilterRepository.GetAsync(new() { Name = name }, isNoTracking: true)).Item;
+				return (await FilterRepository.GetAsync(new() { Name = name })).Item;
 			}
 		}
-		return (await FilterRepository.GetNewAsync(isNoTracking: true)).Item;
+		return (await FilterRepository.GetNewAsync()).Item;
 	}
 
 	public async Task<TgEfSourceEntity> GetSourceFromEnumerableAsync(string title, IEnumerable<TgEfSourceEntity> items)
@@ -508,10 +504,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[0].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return (await SourceRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
+					return (await SourceRepository.GetAsync(new() { Id = id })).Item;
 			}
 		}
-		return (await SourceRepository.GetNewAsync(isNoTracking: true)).Item;
+		return new();
 	}
 
 	public async Task<TgEfStoryEntity> GetStoryFromEnumerableAsync(string title, IEnumerable<TgEfStoryEntity> stories)
@@ -530,10 +526,10 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[2].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return (await StoryRepository.GetAsync(new() { Id = id }, isNoTracking: true)).Item;
+					return (await StoryRepository.GetAsync(new() { Id = id })).Item;
 			}
 		}
-		return (await StoryRepository.GetNewAsync(isNoTracking: true)).Item;
+		return (await StoryRepository.GetNewAsync()).Item;
 	}
 
 	public void GetVersionFromEnumerable(string title, IEnumerable<TgEfVersionEntity> versions)

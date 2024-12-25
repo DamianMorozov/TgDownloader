@@ -72,7 +72,7 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var storageResult = await FilterRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
+		var storageResult = await FilterRepository.GetListDtoAsync(take: 0, skip: 0, isReadOnly: false);
 		List<TgEfFilterDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
 		SetOrderData(sourcesDtos);
 	}

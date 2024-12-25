@@ -4,6 +4,17 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.270] - 2024-12-21
+### Изменено
+- Обновлена таблица источников в хранилище
+- Обновлена страница контактов для TgDownloaderConsole
+- Обновлена домашняя страница для TgDownloaderDesktop
+- Обновлена страница источников для TgDownloaderConsole
+- Обновлена страница сторис для TgDownloaderConsole
+### Добавлено
+- Добавлена страница контактов для TgDownloaderDesktop
+- Добавлена страница фильтров для TgDownloaderDesktop
+
 ## [0.5.250] - 2024-12-08
 ### Изменено
 - Обновлена страница настроек для TgDownloaderDesktop

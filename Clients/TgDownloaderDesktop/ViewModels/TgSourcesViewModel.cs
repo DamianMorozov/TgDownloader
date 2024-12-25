@@ -99,7 +99,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	///// <summary> Load sources from Telegram </summary>
 	//private async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
 	//{
-	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isReadOnly: false);
 	//	if (storageResult.IsExists)
 	//		sourceVm = new(storageResult.Item);
 	//	if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
@@ -119,7 +119,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isNoTracking: false);
+		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isReadOnly: false);
 		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
 		SetOrderData(sourcesDtos);
 	}
@@ -141,7 +141,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	//private async Task SaveSourceAsync(TgEfSourceViewModel sourceVm)
 	//{
 	//	if (sourceVm is null) return;
-	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isReadOnly: false);
 	//	if (!storageResult.IsExists)
 	//	{
 	//		await SourceRepository.SaveAsync(sourceVm.Item);

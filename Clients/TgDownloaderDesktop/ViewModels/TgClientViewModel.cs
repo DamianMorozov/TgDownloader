@@ -185,7 +185,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		TgEfUtils.AppStorage = SettingsService.AppStorage;
 		TgEfUtils.RecreateEfContext();
 
-		var storageResult = await AppRepository.GetFirstAsync(isNoTracking: false);
+		var storageResult = await AppRepository.GetFirstAsync(isReadOnly: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 
 		await ReloadUiAsync(isClearPassw: false);
@@ -222,7 +222,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
     private async Task ReloadProxyAsync()
     {
 	    ProxiesVms.Clear();
-	    var storageResult = await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false);
+	    var storageResult = await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false);
 		if (storageResult.IsExists)
 		{
 			foreach (TgEfProxyEntity proxy in storageResult.Items)
@@ -274,7 +274,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 
 	private async Task AppClearCoreAsync()
 	{
-		var storageResult = await AppRepository.GetNewAsync(isNoTracking: false);
+		var storageResult = await AppRepository.GetNewAsync(isReadOnly: false);
         App = storageResult.IsExists ? storageResult.Item : new();
 		ProxiesVms.Clear();
 		ProxyVm?.Default();

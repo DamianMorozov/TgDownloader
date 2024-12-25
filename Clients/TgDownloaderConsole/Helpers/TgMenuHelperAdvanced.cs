@@ -143,7 +143,7 @@ internal partial class TgMenuHelper
 	private async Task ViewContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await ShowTableViewContactsAsync(tgDownloadSettings);
-		var storageResult = await ContactRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var storageResult = await ContactRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
 		var contact = await GetContactFromEnumerableAsync(TgLocale.MenuViewContacts, storageResult.Items);
 		if (contact.Uid != Guid.Empty)
 		{
@@ -156,7 +156,7 @@ internal partial class TgMenuHelper
 	private async Task ViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await ShowTableViewSourcesAsync(tgDownloadSettings);
-		var storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
 		var source = await GetSourceFromEnumerableAsync(TgLocale.MenuViewSources, storageResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
@@ -169,7 +169,7 @@ internal partial class TgMenuHelper
 	private async Task ViewStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await ShowTableViewStoriesAsync(tgDownloadSettings);
-		var storageResult = await StoryRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
+		var storageResult = await StoryRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
 		var story = await GetStoryFromEnumerableAsync(TgLocale.MenuViewSources, storageResult.Items);
 		if (story.Uid != Guid.Empty)
 		{
@@ -183,7 +183,7 @@ internal partial class TgMenuHelper
 	{
 		await ShowTableViewVersionsAsync(tgDownloadSettings);
 		GetVersionFromEnumerable(TgLocale.MenuViewSources,
-			(await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items);
+			(await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).Items);
 	}
 
 	private async Task MarkHistoryReadAsync(TgDownloadSettingsViewModel tgDownloadSettings) => 
@@ -191,7 +191,7 @@ internal partial class TgMenuHelper
 
 	private async Task AutoDownloadAsync(TgDownloadSettingsViewModel _)
 	{
-		IEnumerable<TgEfSourceEntity> sources = (await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true)).Items;
+		IEnumerable<TgEfSourceEntity> sources = (await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).Items;
 		foreach (TgEfSourceEntity source in sources.Where(sourceSetting => sourceSetting.IsAutoUpdate))
 		{
             TgDownloadSettingsViewModel tgDownloadSettings = await SetupDownloadSourceAsync(source.Id);
@@ -210,7 +210,7 @@ internal partial class TgMenuHelper
 	private async Task AutoViewEventsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		TgClient.IsUpdateStatus = true;
-		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, 
+		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.FirstId, 
 			"Auto view updates is started");
 		TgLog.MarkupLine(TgLocale.TypeAnyKeyForReturn);
 		Console.ReadKey();

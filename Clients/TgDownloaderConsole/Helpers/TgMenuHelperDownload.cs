@@ -71,11 +71,11 @@ internal partial class TgMenuHelper
 						isScanCount: false, isWaitComplete: true);
 					break;
 				case TgEnumMenuDownload.SetSourceFirstIdManual:
-					SetupDownloadSourceFirstIdManual(tgDownloadSettings);
+					await SetupDownloadSourceFirstIdManualAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SetDestDirectory:
 					SetupDownloadDestDirectory(tgDownloadSettings);
-					if (!tgDownloadSettings.SourceVm.IsAutoUpdate)
+					if (!tgDownloadSettings.SourceVm.Dto.IsAutoUpdate)
 						SetTgDownloadIsAutoUpdate(tgDownloadSettings);
 					break;
 				case TgEnumMenuDownload.SetIsRewriteFiles:
@@ -106,8 +106,8 @@ internal partial class TgMenuHelper
 	private async Task<TgDownloadSettingsViewModel> SetupDownloadSourceAsync(long? id = null)
 	{
 		TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSourceCore(id);
-		_ = await TgClient.CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: true);
-		await LoadTgClientSettingsAsync(tgDownloadSettings, false, false);
+		_ = await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
+		await LoadTgClientSettingsAsync(tgDownloadSettings, isSkipLoadFirstId: false, isSkipLoadDirectory: true);
 		return tgDownloadSettings;
 	}
 
@@ -124,15 +124,15 @@ internal partial class TgMenuHelper
 			{
 				if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
 				{
-					tgDownloadSettings.SourceVm.SourceId = sourceId;
-					isCheck = tgDownloadSettings.SourceVm.IsReadySourceId;
+					tgDownloadSettings.SourceVm.Dto.Id = sourceId;
+					isCheck = tgDownloadSettings.SourceVm.Dto.IsReadySourceId;
 				}
 				else
 				{
-					tgDownloadSettings.SourceVm.SourceUserName = source.StartsWith("https://t.me/")
+					tgDownloadSettings.SourceVm.Dto.UserName = source.StartsWith("https://t.me/")
 						? source.Replace("https://t.me/", string.Empty)
 						: source;
-					isCheck = !string.IsNullOrEmpty(tgDownloadSettings.SourceVm.SourceUserName);
+					isCheck = !string.IsNullOrEmpty(tgDownloadSettings.SourceVm.Dto.UserName);
 				}
 			}
 		} while (!isCheck);
@@ -141,36 +141,36 @@ internal partial class TgMenuHelper
 
 	private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		TgDownloadSmartSource smartSource = await TgClient.CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: false);
-		if (smartSource.ChatBase is not null)
+		TgDownloadChat chat = await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
+		if (chat.Base is not null)
 		{
-			await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, smartSource.ChatBase);
-			LoadTgClientSettingsAsync(tgDownloadSettings, true, false);
+			await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, chat.Base);
+			await LoadTgClientSettingsAsync(tgDownloadSettings, true, false);
 		}
 	}
 
-	private void SetupDownloadSourceFirstIdManual(TgDownloadSettingsViewModel tgDownloadSettings)
+	private async Task SetupDownloadSourceFirstIdManualAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		do
 		{
-			tgDownloadSettings.SourceVm.SourceFirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgSourceFirstId}:"));
-		} while (!tgDownloadSettings.SourceVm.IsReadySourceFirstId);
-		LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
+			tgDownloadSettings.SourceVm.Dto.FirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgSourceFirstId}:"));
+		} while (!tgDownloadSettings.SourceVm.Dto.IsReadySourceFirstId);
+		await LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
 	}
 
 	private void SetupDownloadDestDirectory(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		do
 		{
-			tgDownloadSettings.SourceVm.SourceDirectory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.DirectoryDestType}:"));
-			if (!Directory.Exists(tgDownloadSettings.SourceVm.SourceDirectory))
+			tgDownloadSettings.SourceVm.Dto.Directory = AnsiConsole.Ask<string>(TgLog.GetLineStampInfo($"{TgLocale.DirectoryDestType}:"));
+			if (!Directory.Exists(tgDownloadSettings.SourceVm.Dto.Directory))
 			{
-				TgLog.MarkupInfo(TgLocale.DirectoryIsNotExists(tgDownloadSettings.SourceVm.SourceDirectory));
+				TgLog.MarkupInfo(TgLocale.DirectoryIsNotExists(tgDownloadSettings.SourceVm.Dto.Directory));
 				if (AskQuestionReturnPositive(TgLocale.DirectoryCreate, true))
 				{
 					try
 					{
-						Directory.CreateDirectory(tgDownloadSettings.SourceVm.SourceDirectory);
+						Directory.CreateDirectory(tgDownloadSettings.SourceVm.Dto.Directory);
 					}
 					catch (Exception ex)
 					{
@@ -178,7 +178,7 @@ internal partial class TgMenuHelper
 					}
 				}
 			}
-		} while (!Directory.Exists(tgDownloadSettings.SourceVm.SourceDirectory));
+		} while (!Directory.Exists(tgDownloadSettings.SourceVm.Dto.Directory));
 	}
 
 	private void SetTgDownloadIsRewriteFiles(TgDownloadSettingsViewModel tgDownloadSettings) =>
@@ -191,7 +191,7 @@ internal partial class TgMenuHelper
 		tgDownloadSettings.IsJoinFileNameWithMessageId = AskQuestionReturnPositive(TgLocale.TgSettingsIsJoinFileNameWithMessageId, true);
 
 	private void SetTgDownloadIsAutoUpdate(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		tgDownloadSettings.SourceVm.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
+		tgDownloadSettings.SourceVm.Dto.IsAutoUpdate = AskQuestionReturnPositive(TgLocale.MenuDownloadSetIsAutoUpdate, true);
 
 	private async Task SetTgDownloadCountThreadsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
@@ -202,7 +202,7 @@ internal partial class TgMenuHelper
 				tgDownloadSettings.CountThreads = 1;
 			else if (tgDownloadSettings.CountThreads > 20)
 				tgDownloadSettings.CountThreads = 20;
-		} while (!tgDownloadSettings.SourceVm.IsReadySourceFirstId);
+		} while (!tgDownloadSettings.SourceVm.Dto.IsReadySourceFirstId);
 		await LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
 	}
 
@@ -210,19 +210,19 @@ internal partial class TgMenuHelper
 	{
 		await tgDownloadSettings.UpdateSourceWithSettingsAsync();
 		// Refresh
-		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceFirstId, TgLocale.SettingsSource);
+		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.FirstId, TgLocale.SettingsSource);
 	}
 
 	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
 	{
-		int sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
-		string sourceDirectory = tgDownloadSettings.SourceVm.SourceDirectory;
-		TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false)).Item;
-		tgDownloadSettings.SourceVm.Item = source;
+		int sourceFirstId = tgDownloadSettings.SourceVm.Dto.FirstId;
+		string sourceDirectory = tgDownloadSettings.SourceVm.Dto.Directory;
+		TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
+		tgDownloadSettings.SourceVm.Dto = TgEfHelper.ConvertToDto(source);
 		if (isSkipLoadFirstId)
-			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId;
+			tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId;
 		if (isSkipLoadDirectory)
-			tgDownloadSettings.SourceVm.SourceDirectory = sourceDirectory;
+			tgDownloadSettings.SourceVm.Dto.Directory = sourceDirectory;
 	}
 
 	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)

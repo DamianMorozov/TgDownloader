@@ -80,13 +80,13 @@ internal partial class TgMenuHelper
 			proxy.Port = AnsiConsole.Ask<ushort>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgProxyPort}:"));
 		}
 		var storageResult = await ProxyRepository.GetAsync(
-			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false);
+			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isReadOnly: false);
 		if (!storageResult.IsExists)
 			await ProxyRepository.SaveAsync(proxy);
 		proxy = (await ProxyRepository.GetAsync(
-			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isNoTracking: false)).Item;
+			new TgEfProxyEntity { Type = proxy.Type, HostName = proxy.HostName, Port = proxy.Port}, isReadOnly: false)).Item;
 
-		var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+		var app = await AppRepository.GetFirstItemAsync(isReadOnly: false);
 		app.ProxyUid = proxy.Uid;
 		await AppRepository.SaveAsync(app);
 
@@ -119,8 +119,8 @@ internal partial class TgMenuHelper
 
 	private string? ConfigConsole(string what)
 	{
-		var appNew = AppRepository.GetNewAsync(isNoTracking: false).GetAwaiter().GetResult().Item;
-		var app = AppRepository.GetFirstItemAsync(isNoTracking: false).GetAwaiter().GetResult();
+		var appNew = AppRepository.GetNew().Item;
+		var app = AppRepository.GetFirstItem(isReadOnly: false);
 		switch (what)
 		{
 			case "api_hash":
@@ -131,7 +131,7 @@ internal partial class TgMenuHelper
 				if (app.ApiHash != TgDataFormatUtils.ParseStringToGuid(apiHash))
 				{
 					app.ApiHash = TgDataFormatUtils.ParseStringToGuid(apiHash);
-					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
+					AppRepository.Save(app);
 				}
 				return apiHash;
 			case "api_id":
@@ -142,7 +142,7 @@ internal partial class TgMenuHelper
 				if (app.ApiId != int.Parse(apiId))
 				{
 					app.ApiId = int.Parse(apiId);
-					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
+					AppRepository.Save(app);
 				}
 				return apiId;
 			case "phone_number":
@@ -152,7 +152,7 @@ internal partial class TgMenuHelper
 				if (app.PhoneNumber != phoneNumber)
 				{
 					app.PhoneNumber = phoneNumber;
-					AppRepository.SaveAsync(app).GetAwaiter().GetResult();
+					AppRepository.Save(app);
 				}
 				return phoneNumber;
 			case "verification_code":

@@ -10,27 +10,33 @@
 ## Product assignment
 Organized downloading of files from TG channels/groups/chats (accessed under your account). Files from each source can be downloaded to a separate directory. You can specify which sources to include in auto-downloading. There is a multithreaded download mode. Console version is almost completed (production). The desktop version is in active development stage (preview).
 
-## Install Requirements
-- [Download .NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- [Download .NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-- [Register Telegram app](https://my.telegram.org/apps/)
-- Save the values of the "App api_id" and "App api_hash" fields
+## Official website
+- [tgdownloader.online](http://tgdownloader.online)
 
-## Product support
-Please click the `star` button if this tool was helpful to you.
+## Download
+- [Releases](https://github.com/DamianMorozov/TgDownloader/releases)
 
-## GitHub
-- [Issue template](Docs/ISSUE.md)
+## GitHub community
+- [TgDownloader repository](https://github.com/DamianMorozov/TgDownloader)
+- [Issue template](https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/ISSUE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
 
-## Support
-- [TgDownloader News](https://t.me/TgDownloader)
-- [TgDownloader Global Chat](https://t.me/TgDownloaderChat)
+## User support
+- [News](https://t.me/TgDownloader)
+- [Global Chat](https://t.me/TgDownloaderChat)
+
+## Project support
+- [GitHub star](https://github.com/DamianMorozov/TgDownloader)
+- [Donate through Boosty](https://boosty.to/tgdownloader)
+- Donate through Bitcoin: 1FJayytWUK6vkxK2nUcD2TJskk3g9ZnmfW
+- Donate through Toncoin: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 
 ## Docker images
-- [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console/)
+- [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
 
-## Status
-![Alt](https://repobeats.axiom.co/api/embed/c14de41002f34b22bb5ad579995904aa375930d2.svg "Repobeats analytics image")
+## Install Requirements
+- [Download .NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [Register Telegram app](https://my.telegram.org/apps)
+- Save the values of the "App api_id" and "App api_hash" fields
