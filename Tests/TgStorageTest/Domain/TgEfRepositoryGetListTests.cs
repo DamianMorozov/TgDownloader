@@ -14,11 +14,11 @@ internal sealed class TgEfRepositoryGetListTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TgEfStorageResult<TEntity> storageResult = await repo.GetListAsync(count, 0, isNoTracking: true);
+			TgEfStorageResult<TEntity> storageResult = await repo.GetListAsync(count, 0);
 			TestContext.WriteLine($"Found {storageResult.Items.Count()} items.");
 			foreach (TEntity item in storageResult.Items)
 			{
-				TEntity itemFind = (await repo.GetAsync(item, isNoTracking: true)).Item;
+				TEntity itemFind = (await repo.GetAsync(item)).Item;
 				Assert.That(itemFind, Is.Not.Null);
                 TestContext.WriteLine(itemFind.ToDebugString());
 			}

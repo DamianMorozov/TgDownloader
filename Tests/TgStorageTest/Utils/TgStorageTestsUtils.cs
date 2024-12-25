@@ -22,7 +22,7 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count()} items");
 		});
@@ -42,7 +42,7 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 
 			Assert.That(versionLast.Version == versionRepository.LastVersion);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 		});
@@ -63,7 +63,7 @@ internal sealed class TgStorageTestsUtils : TgDbContextTestsBase
 
 			Assert.That(versionLast.Version == new TgEfVersionEntity().Version);
 			TestContext.WriteLine($"{nameof(versionLast)}.{nameof(versionLast.Version)}: {versionLast.Version}");
-			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true))
+			var versions = (await versionRepository.GetListAsync(TgEnumTableTopRecords.All, 0))
 				.Items.ToList();
 			TestContext.WriteLine($"Found {versions.Count} items");
 			await versionRepository.DeleteNewAsync();

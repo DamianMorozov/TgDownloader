@@ -14,7 +14,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfAppEntity> storageResultGet = new TgEfAppRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfAppEntity> storageResultGet = new TgEfAppRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfAppEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfAppEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -26,7 +26,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfDocumentEntity> storageResultGet = new TgEfDocumentRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfDocumentEntity> storageResultGet = new TgEfDocumentRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfDocumentEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfDocumentEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -38,7 +38,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfFilterEntity> storageResultGet = new TgEfFilterRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfFilterEntity> storageResultGet = new TgEfFilterRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfFilterEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfFilterEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -50,7 +50,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfMessageEntity> storageResultGet = new TgEfMessageRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfMessageEntity> storageResultGet = new TgEfMessageRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfMessageEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfMessageEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -62,7 +62,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfProxyEntity> storageResultGet = new TgEfProxyRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfProxyEntity> storageResultGet = new TgEfProxyRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfProxyEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfProxyEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -74,7 +74,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfSourceEntity> storageResultGet = new TgEfSourceRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfSourceEntity> storageResultGet = new TgEfSourceRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfSourceEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfSourceEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});
@@ -86,7 +86,7 @@
 //		Assert.DoesNotThrow(() =>
 //		{
 //			TgEfContext efContext = CreateEfContext();
-//			TgEfStorageResult<TgEfVersionEntity> storageResultGet = new TgEfVersionRepository(efContext).GetList(TgEnumTableTopRecords.All, isNoTracking: true);
+//			TgEfStorageResult<TgEfVersionEntity> storageResultGet = new TgEfVersionRepository(efContext).GetList(TgEnumTableTopRecords.All, );
 //			TgEfStorageResult<TgEfVersionEntity> storageResult = efContext.AlterTableNoCaseUid<TgEfVersionEntity>();
 //			Assert.That(storageResultGet.IsExists ? storageResult.State == TgEnumEntityState.IsExecuted : storageResult.State == TgEnumEntityState.NotExecuted);
 //		});

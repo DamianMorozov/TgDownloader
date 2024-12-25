@@ -122,7 +122,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
 		TgEfStorageResult<TEntity> storageResult;
 		do
 		{
-			storageResult = await repository.GetNewAsync(isNoTracking: false);
+			storageResult = await repository.GetNewAsync(isReadOnly: false);
 			if (storageResult.IsExists)
 			{
 				TestContext.WriteLine(storageResult.Item.ToDebugString());

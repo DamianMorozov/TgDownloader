@@ -13,7 +13,7 @@ internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 	{
 		Assert.DoesNotThrowAsync(async () =>
 		{
-			TEntity item = await repo.GetFirstItemAsync(isNoTracking: true);
+			TEntity item = await repo.GetFirstItemAsync();
 			TestContext.WriteLine($"Found {item.ToDebugString()}");
 		});
 	}
