@@ -273,12 +273,12 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
 
-		if (tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 		{
-			tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
+			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
 			foreach (KeyValuePair<long, TlChatBase> chat in DicChatsAll)
 			{
-				if (chat.Value is TlChannel channel && Equals(channel.id, tgDownloadSettings.SourceVm.SourceId) &&
+				if (chat.Value is TlChannel channel && Equals(channel.id, tgDownloadSettings.SourceVm.Dto.Id) &&
 					await IsChatBaseAccessAsync(channel)) return channel;
 			}
 		}
@@ -286,22 +286,22 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		{
 			foreach (KeyValuePair<long, TlChatBase> chat in DicChatsAll)
 			{
-				if (chat.Value is TlChannel channel && Equals(channel.username, tgDownloadSettings.SourceVm.SourceUserName) &&
+				if (chat.Value is TlChannel channel && Equals(channel.username, tgDownloadSettings.SourceVm.Dto.UserName) &&
 					await IsChatBaseAccessAsync(channel)) return channel;
 			}
 		}
 
-		if (tgDownloadSettings.SourceVm.SourceId is 0 or 1)
-			tgDownloadSettings.SourceVm.SourceId = await GetPeerIdAsync(tgDownloadSettings.SourceVm.SourceUserName);
+		if (tgDownloadSettings.SourceVm.Dto.Id is 0 or 1)
+			tgDownloadSettings.SourceVm.Dto.Id = await GetPeerIdAsync(tgDownloadSettings.SourceVm.Dto.UserName);
 
 		Messages_Chats? messagesChats = null;
 		if (Me is not null)
-			messagesChats = await Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceVm.SourceId, Me.access_hash));
+			messagesChats = await Client.Channels_GetChannels(new InputChannel(tgDownloadSettings.SourceVm.Dto.Id, Me.access_hash));
 		if (messagesChats is not null)
 		{
 			foreach (KeyValuePair<long, TlChatBase> chat in messagesChats.chats)
 			{
-				if (chat.Value is TlChannel channel && Equals(channel.ID, tgDownloadSettings.SourceVm.SourceId))
+				if (chat.Value is TlChannel channel && Equals(channel.ID, tgDownloadSettings.SourceVm.Dto.Id))
 					return channel;
 			}
 		}
@@ -314,12 +314,12 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
 
-		if (tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 		{
-			tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
+			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
 			foreach (KeyValuePair<long, TlChatBase> chat in DicChatsAll)
 			{
-				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceVm.SourceId))
+				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceVm.Dto.Id))
 					return chatBase;
 			}
 		}
@@ -332,8 +332,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			}
 		}
 
-		if (tgDownloadSettings.SourceVm.SourceId is 0)
-			tgDownloadSettings.SourceVm.SourceId = await GetPeerIdAsync(tgDownloadSettings.SourceVm.SourceUserName);
+		if (tgDownloadSettings.SourceVm.Dto.Id is 0)
+			tgDownloadSettings.SourceVm.Dto.Id = await GetPeerIdAsync(tgDownloadSettings.SourceVm.Dto.UserName);
 
 		Messages_Chats? messagesChats = null;
 		if (Me is not null)
@@ -342,52 +342,52 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		if (messagesChats is not null)
 			foreach (KeyValuePair<long, TlChatBase> chat in messagesChats.chats)
 			{
-				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceVm.SourceId))
+				if (chat.Value is { } chatBase && Equals(chatBase.ID, tgDownloadSettings.SourceVm.Dto.Id))
 					return chatBase;
 			}
 
 		return null;
 	}
 
-	public async Task<TgDownloadSmartSource> CreateSmartSourceCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings)
+	public async Task<TgDownloadChat> CreateChatBaseCoreAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		TgDownloadSmartSource smartSource = new();
+		TgDownloadChat chat = new();
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
-		if (tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 		{
-			tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
-			var chatBase = DicChatsAll.FirstOrDefault(x => x.Key.Equals(tgDownloadSettings.SourceVm.SourceId)).Value;
+			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
+			var chatBase = DicChatsAll.FirstOrDefault(x => x.Key.Equals(tgDownloadSettings.SourceVm.Dto.Id)).Value;
 			if (chatBase is not null)
-				smartSource.ChatBase = chatBase;
+				chat.Base = chatBase;
 		}
 		else
 		{
 			var chatBase = DicChatsAll.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value.MainUsername) && 
-				x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
+				x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.Dto.UserName)).Value;
 			//if (chatBase is null)
 			//{
-			//	await AddChatAsync(tgDownloadSettings.SourceVm.SourceUserName);
+			//	await AddChatAsync(tgDownloadSettings.SourceVm.Dto.UserName);
 			//	chatBase = DicChatsAll.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value.MainUsername) &&
-			//		x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.SourceUserName)).Value;
+			//		x.Value.MainUsername.Equals(tgDownloadSettings.SourceVm.Dto.UserName)).Value;
 			//}
 			if (chatBase is not null)
-				smartSource.ChatBase = chatBase;
+				chat.Base = chatBase;
 		}
-		return smartSource;
+		return chat;
 	}
 
 	public async Task<Bots_BotInfo?> GetBotInfoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		if (tgDownloadSettings.SourceVm.SourceId is 0)
-			tgDownloadSettings.SourceVm.SourceId = await GetPeerIdAsync(tgDownloadSettings.SourceVm.SourceUserName);
-		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
-			tgDownloadSettings.SourceVm.SourceId = ReduceChatId(tgDownloadSettings.SourceVm.SourceId);
-		if (!tgDownloadSettings.SourceVm.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.Id is 0)
+			tgDownloadSettings.SourceVm.Dto.Id = await GetPeerIdAsync(tgDownloadSettings.SourceVm.Dto.UserName);
+		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
+		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
 			return null;
 		Bots_BotInfo? botInfo = null;
 		if (Me is not null)
-			botInfo = await Client.Bots_GetBotInfo("en", new InputUser(tgDownloadSettings.SourceVm.SourceId, 0));
+			botInfo = await Client.Bots_GetBotInfo("en", new InputUser(tgDownloadSettings.SourceVm.Dto.Id, 0));
 		return botInfo;
 	}
 
@@ -1064,7 +1064,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			{
 				inputMessages[i] = offset + i + 1;
 			}
-			tgDownloadSettings.SourceVm.SourceFirstId = offset;
+			tgDownloadSettings.SourceVm.Dto.FirstId = offset;
 			await UpdateStateSourceAsync(chatBase.ID, 0, $"Read from {offset} to {offset + partition} messages");
 			var messages = await Client.Channels_GetMessages(chatBase as TlChannel, inputMessages);
 			for (var i = messages.Offset; i < messages.Count; i++)
@@ -1093,54 +1093,57 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		// Finally.
 		if (result >= max)
 			result = 1;
-		tgDownloadSettings.SourceVm.SourceFirstId = result;
+		tgDownloadSettings.SourceVm.Dto.FirstId = result;
 		await UpdateStateSourceAsync(chatBase.ID, 0, $"Get the first ID message '{result}' is complete.");
 		return result;
 	}
 
-	public async Task<TgDownloadSmartSource> CreateSmartSourceAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent, bool isReplaceItem)
+	public async Task<TgDownloadChat> CreateChatAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
-		var storageResult = await SourceRepository
-			.GetAsync(new() { Id = tgDownloadSettings.SourceVm.SourceId }, isNoTracking: false);
+		var source = (await SourceRepository
+			.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id }, isReadOnly: false)).Item;
 
-		var smartSource = await CreateSmartSourceCoreAsync(tgDownloadSettings);
-		if (smartSource.ChatBase is not null && await IsChatBaseAccessAsync(smartSource.ChatBase))
+		var chat = await CreateChatBaseCoreAsync(tgDownloadSettings);
+		if (chat.Base is not null && await IsChatBaseAccessAsync(chat.Base))
 		{
-			tgDownloadSettings.SourceVm.SourceUserName = !string.IsNullOrEmpty(smartSource.ChatBase.MainUsername)
-				? smartSource.ChatBase.MainUsername
-				: string.Empty;
-			tgDownloadSettings.SourceVm.SourceLastId =
-				await GetChannelMessageIdLastAsync(tgDownloadSettings, smartSource.ChatBase);
-			var chatFull =
-				await PrintChatsInfoChatBaseAsync(smartSource.ChatBase, isFull: true, isSilent);
+			tgDownloadSettings.SourceVm.Dto.UserName = !string.IsNullOrEmpty(chat.Base.MainUsername)
+				? chat.Base.MainUsername : string.Empty;
+			tgDownloadSettings.SourceVm.Dto.Count = await GetChannelMessageIdLastAsync(tgDownloadSettings, chat.Base);
+			var chatFull = await PrintChatsInfoChatBaseAsync(chat.Base, isFull: true, isSilent);
 			if (chatFull?.full_chat is ChannelFull chatBaseFull)
-				tgDownloadSettings.SourceVm.SetSource(chatBaseFull.ID, smartSource.ChatBase.Title, chatBaseFull.About);
+				tgDownloadSettings.SourceVm.Dto.SetSource(chatBaseFull.ID, chat.Base.Title, chatBaseFull.About);
 		}
 
-		storageResult.Item.UserName = tgDownloadSettings.SourceVm.SourceUserName;
-		storageResult.Item.Count = tgDownloadSettings.SourceVm.SourceLastId;
-		storageResult.Item.Id = tgDownloadSettings.SourceVm.SourceId;
-		storageResult.Item.Title = tgDownloadSettings.SourceVm.SourceTitle;
-		storageResult.Item.About = tgDownloadSettings.SourceVm.SourceAbout;
-		if (isReplaceItem)
-			tgDownloadSettings.SourceVm.Item = storageResult.Item;
-		await SourceRepository.SaveAsync(storageResult.Item);
-		return smartSource;
+		//if (isReplaceItem)
+		{
+			tgDownloadSettings.SourceVm.Default(source, isResetDto: true);
+			await SourceRepository.SaveAsync(source);
+		}
+		//else
+		//{
+		//	source.UserName = tgDownloadSettings.SourceVm.Dto.UserName;
+		//	source.Count = tgDownloadSettings.SourceVm.Dto.Count;
+		//	source.Id = tgDownloadSettings.SourceVm.Dto.Id;
+		//	source.Title = tgDownloadSettings.SourceVm.Dto.Title;
+		//	source.About = tgDownloadSettings.SourceVm.Dto.About;
+		//	source.Directory = tgDownloadSettings.SourceVm.Dto.Directory;
+		//}
+		return chat;
 	}
 
 	/// <summary> Update source from Telegram </summary>
 	public async Task UpdateSourceDbAsync(TgEfSourceViewModel sourceVm, TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		var smartSource = await CreateSmartSourceAsync(tgDownloadSettings, isSilent: true, isReplaceItem: false);
-		if (smartSource.ChatBase is not null)
+		var chat = await CreateChatAsync(tgDownloadSettings, isSilent: true);
+		if (chat.Base is not null)
 		{
-			sourceVm.Item.Fill(tgDownloadSettings.SourceVm.Item, isUidCopy: false);
+			sourceVm.Dto.Fill(tgDownloadSettings.SourceVm.Dto, isUidCopy: false);
 		}
 	}
 
 	private async Task UpdateSourceTgAsync(TlChannel channel, string about, int count)
 	{
-		var storageResult = await SourceRepository.GetAsync(new() { Id = channel.id }, isNoTracking: true);
+		var storageResult = await SourceRepository.GetAsync(new() { Id = channel.id });
 		TgEfSourceEntity sourceNew;
 		sourceNew = storageResult.IsExists ? storageResult.Item : new();
 		sourceNew.Id = channel.id;
@@ -1156,7 +1159,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private async Task UpdateContactTgAsync(TL.User user)
 	{
-		var storageResult = await ContactRepository.GetAsync(new() { Id = user.id }, isNoTracking: true);
+		var storageResult = await ContactRepository.GetAsync(new() { Id = user.id });
 		TgEfContactEntity contactNew;
 		contactNew = storageResult.IsExists ? storageResult.Item : new();
 		contactNew.DtChanged = DateTime.UtcNow;
@@ -1197,7 +1200,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	private async Task UpdateStoryItemTgAsync(TL.StoryItem story, MessageEntity? message)
 	{
-		var storageResult = await StoryRepository.GetAsync(new() { Id = story.id }, isNoTracking: true);
+		var storageResult = await StoryRepository.GetAsync(new() { Id = story.id });
 		TgEfStoryEntity storyNew;
 		storyNew = storageResult.IsExists ? storageResult.Item : new();
 		storyNew.DtChanged = DateTime.UtcNow;
@@ -1324,20 +1327,20 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			switch (sourceType)
 			{
 				case TgEnumSourceType.Chat:
-					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, TgLocale.CollectChats);
+					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, 0, TgLocale.CollectChats);
 					await CollectAllChatsAsync();
-					tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
-					tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceVm.Dto.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceVm.Dto.SourceScanCurrent = 0;
 					// List channels
 					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
 					// List groups
 					await SearchSourcesTgConsoleForGroupsAsync(tgDownloadSettings);
 					break;
 				case TgEnumSourceType.Dialog:
-					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, TgLocale.CollectDialogs);
+					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, 0, TgLocale.CollectDialogs);
 					await CollectAllDialogsAsync();
-					tgDownloadSettings.SourceVm.SourceScanCount = DicChatsAll.Count;
-					tgDownloadSettings.SourceVm.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceVm.Dto.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceVm.Dto.SourceScanCurrent = 0;
 					// List channels
 					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
 					// List groups
@@ -1368,7 +1371,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		foreach (var channel in EnumerableChannels)
 		{
-			tgDownloadSettings.SourceVm.SourceScanCurrent++;
+			tgDownloadSettings.SourceVm.Dto.SourceScanCurrent++;
 			if (channel.IsActive)
 			{
 				await TryCatchFuncAsync(async () =>
@@ -1380,19 +1383,19 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 						if (chatFull?.full_chat is ChannelFull channelFull)
 						{
 							await UpdateSourceTgAsync(channel, channelFull.about, messagesCount);
-							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent,
+							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent,
 								$"{channel} | {TgDataFormatUtils.TrimStringEnd(channelFull.about, 40)}");
 						}
 					}
 					else
 					{
 						await UpdateSourceTgAsync(channel, messagesCount);
-						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, tgDownloadSettings.SourceVm.SourceScanCurrent, $"{channel}");
+						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent, $"{channel}");
 					}
 				}, isLoginConsole: true);
 			}
-			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.SourceScanCount,
-				tgDownloadSettings.SourceVm.SourceScanCurrent):#00.00} %");
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.Dto.SourceScanCount,
+				tgDownloadSettings.SourceVm.Dto.SourceScanCurrent):#00.00} %");
 		}
 	}
 
@@ -1400,14 +1403,14 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		foreach (var group in EnumerableGroups)
 		{
-			tgDownloadSettings.SourceVm.SourceScanCurrent++;
+			tgDownloadSettings.SourceVm.Dto.SourceScanCurrent++;
 			if (group.IsActive)
 			{
 				await TryCatchFuncAsync(async () =>
 				{
 					var messagesCount = await GetChannelMessageIdLastAsync(tgDownloadSettings, group);
 					await UpdateSourceTgAsync(group, messagesCount);
-					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, 0, $"{group} | {messagesCount}");
+					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, 0, $"{group} | {messagesCount}");
 				}, isLoginConsole: true);
 			}
 		}
@@ -1544,11 +1547,11 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 
 	public async Task DownloadAllDataAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		var smartSource = await CreateSmartSourceAsync(tgDownloadSettings, isSilent: false, isReplaceItem: false);
+		var smartSource = await CreateChatAsync(tgDownloadSettings, isSilent: false);
 		await TryCatchFuncAsync(async () =>
 		{
 			// Set filters
-			Filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false))
+			Filters = (await FilterRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false))
 				.Items.Where(x => x.IsEnabled);
 
 			switch (TgAsyncUtils.AppType)
@@ -1566,10 +1569,10 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			var dirExists = await CreateDestDirectoryIfNotExistsAsync(tgDownloadSettings);
 			if (!dirExists) return;
 
-			tgDownloadSettings.SourceVm.SetIsDownload(true);
-			var isAccessToMessages = await Client.Channels_ReadMessageContents(smartSource.ChatBase as TlChannel);
-			var sourceFirstId = tgDownloadSettings.SourceVm.SourceFirstId;
-			var sourceLastId = tgDownloadSettings.SourceVm.SourceLastId;
+			tgDownloadSettings.SourceVm.Dto.SetIsDownload(true);
+			var isAccessToMessages = await Client.Channels_ReadMessageContents(smartSource.Base as TlChannel);
+			var sourceFirstId = tgDownloadSettings.SourceVm.Dto.FirstId;
+			var sourceLastId = tgDownloadSettings.SourceVm.Dto.Count;
 			var counterForSave = 0;
 			if (isAccessToMessages)
 			{
@@ -1579,23 +1582,23 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				{
 					if (Client is null)
 						break;
-					if ((Client is not null && Client.Disconnected) || !tgDownloadSettings.SourceVm.IsDownload)
+					if ((Client is not null && Client.Disconnected) || !tgDownloadSettings.SourceVm.Dto.IsDownload)
 						break;
 					await TryCatchFuncAsync(async () =>
 					{
 						if (Client is null)
 							return;
-						var messages = smartSource.ChatBase is not null
-							? await Client.Channels_GetMessages(smartSource.ChatBase as TlChannel, sourceFirstId)
-							: await Client.GetMessages(smartSource.ChatBase, sourceFirstId);
+						var messages = smartSource.Base is not null
+							? await Client.Channels_GetMessages(smartSource.Base as TlChannel, sourceFirstId)
+							: await Client.GetMessages(smartSource.Base, sourceFirstId);
 						await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(sourceLastId, sourceFirstId):#00.00} %");
 						foreach (var message in messages.Messages)
 						{
 							// Check message exists
 							downloadTasks.Add(message.Date > DateTime.MinValue
 								? DownloadDataAsync(tgDownloadSettings, message, threadNumber)
-								: UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, message.ID,
-									$"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.SourceId}!"));
+								: UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, message.ID,
+									$"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.Dto.Id}!"));
 							counterForSave++;
 						}
 					}, isLoginConsole: true);
@@ -1612,12 +1615,12 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 					if (counterForSave > 99)
 					{
 						counterForSave = 0;
-						await SourceRepository.SaveAsync(tgDownloadSettings.SourceVm.Item);
+						await SourceRepository.SaveAsync(TgEfHelper.ConvertToEntity(tgDownloadSettings.SourceVm.Dto));
 					}
 				}
 			}
-			tgDownloadSettings.SourceVm.SourceFirstId = sourceFirstId > sourceLastId ? sourceLastId : sourceFirstId;
-			tgDownloadSettings.SourceVm.SetIsDownload(false);
+			tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId > sourceLastId ? sourceLastId : sourceFirstId;
+			tgDownloadSettings.SourceVm.Dto.SetIsDownload(false);
 		}, isLoginConsole: true);
 		await UpdateTitleAsync(string.Empty);
 	}
@@ -1668,7 +1671,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		try
 		{
-			Directory.CreateDirectory(tgDownloadSettings.SourceVm.SourceDirectory);
+			Directory.CreateDirectory(tgDownloadSettings.SourceVm.Dto.Directory);
 		}
 		catch (Exception ex)
 		{
@@ -1683,7 +1686,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 	{
 		if (messageBase is not Message message)
 		{
-			await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, "Empty message");
+			await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, messageBase.ID, "Empty message");
 			return;
 		}
 
@@ -1696,8 +1699,8 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			{
 				await DownloadDataCoreAsync(tgDownloadSettings, messageBase, message.media, threadNumber);
 			}
-			await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.SourceId, message.ID, "Read the message");
-			await UpdateStateItemSourceAsync(tgDownloadSettings.SourceVm.SourceId);
+			await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, message.ID, "Read the message");
+			await UpdateStateItemSourceAsync(tgDownloadSettings.SourceVm.Dto.Id);
 		}, isLoginConsole: true, maxRetries, delayBetweenRetries);
 	}
 
@@ -1762,7 +1765,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		mediaInfo ??= new();
 		// Join ID
 		if (!string.IsNullOrEmpty(mediaInfo.LocalNameOnly))
-			mediaInfo.Number = tgDownloadSettings.SourceVm.SourceLastId switch
+			mediaInfo.Number = tgDownloadSettings.SourceVm.Dto.Count switch
 			{
 				< 1000 => $"{messageBase.ID:000}",
 				< 10000 => $"{messageBase.ID:0000}",
@@ -1774,7 +1777,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 				_ => $"{messageBase.ID}"
 			};
 		// Join tgDownloadSettings.DestDirectory
-		mediaInfo.LocalPathOnly = tgDownloadSettings.SourceVm.SourceDirectory;
+		mediaInfo.LocalPathOnly = tgDownloadSettings.SourceVm.Dto.Directory;
 		mediaInfo.Normalize(tgDownloadSettings.IsJoinFileNameWithMessageId);
 		return mediaInfo;
 	}
@@ -1851,11 +1854,11 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 						if ((mediaDocument.flags & MessageMediaDocument.Flags.has_document) is not 0 && mediaDocument.document is TlDocument document)
 						{
 							await Client.DownloadFileAsync(document, localFileStream, null,
-								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
+								CreateClientProgressCallback(tgDownloadSettings.SourceVm.Dto.Id, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
 							TgEfDocumentEntity doc = new()
 							{
 								Id = document.ID,
-								SourceId = tgDownloadSettings.SourceVm.SourceId,
+								SourceId = tgDownloadSettings.SourceVm.Dto.Id,
 								MessageId = messageBase.ID,
 								FileName = mediaInfo.LocalPathWithNumber,
 								FileSize = mediaInfo.RemoteSize,
@@ -1868,7 +1871,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 						if (mediaPhoto is { photo: Photo photo })
 						{
 							await Client.DownloadFileAsync(photo, localFileStream, null,
-								CreateClientProgressCallback(tgDownloadSettings.SourceVm.SourceId, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
+								CreateClientProgressCallback(tgDownloadSettings.SourceVm.Dto.Id, messageBase.ID, mediaInfo.LocalNameWithNumber, threadNumber));
 						}
 						break;
 				}
@@ -1928,13 +1931,13 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 		TgEnumMessageType messageType, int threadNumber)
 	{
 		var storageResult = await MessageRepository.GetAsync(
-			new() { SourceId = tgDownloadSettings.SourceVm.SourceId, Id = tgDownloadSettings.SourceVm.SourceFirstId }, isNoTracking: false);
+			new() { SourceId = tgDownloadSettings.SourceVm.Dto.Id, Id = tgDownloadSettings.SourceVm.Dto.FirstId }, isReadOnly: false);
 		if (!storageResult.IsExists || (storageResult.IsExists && tgDownloadSettings.IsRewriteMessages))
 		{
 			await MessageRepository.SaveAsync(new()
 			{
 				Id = messageId,
-				SourceId = tgDownloadSettings.SourceVm.SourceId,
+				SourceId = tgDownloadSettings.SourceVm.Dto.Id,
 				DtCreated = dtCreated,
 				Type = messageType,
 				Size = size,
@@ -1942,7 +1945,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			});
 		}
 		if (messageType == TgEnumMessageType.Document)
-			await UpdateStateFileAsync(tgDownloadSettings.SourceVm.SourceId, messageId, string.Empty, 0, 0, 0, false, threadNumber);
+			await UpdateStateFileAsync(tgDownloadSettings.SourceVm.Dto.Id, messageId, string.Empty, 0, 0, 0, false, threadNumber);
 	}
 
 
@@ -2051,7 +2054,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			await CheckClientIsReadyAsync();
 			if (isProxyUpdate && IsReady)
 			{
-				var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+				var app = await AppRepository.GetFirstItemAsync(isReadOnly: false);
 				if (await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync()) != app.ProxyUid)
 				{
 					app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync());
@@ -2082,7 +2085,7 @@ public sealed class TgClientHelper : ObservableObject, ITgHelper
 			await CheckClientIsReadyAsync();
 			if (isProxyUpdate && IsReady)
 			{
-				var app = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+				var app = await AppRepository.GetFirstItemAsync(isReadOnly: false);
 				app.ProxyUid = await ProxyRepository.GetCurrentProxyUidAsync(await AppRepository.GetCurrentAppAsync());
 				await AppRepository.SaveAsync(app);
 			}

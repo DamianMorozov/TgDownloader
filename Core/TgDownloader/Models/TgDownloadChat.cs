@@ -4,22 +4,22 @@
 namespace TgDownloader.Models;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgDownloadSmartSource
+public class TgDownloadChat
 {
 	#region Public and private fields, properties, constructor
 
-	public TlChatBase? ChatBase { get; set; }
+	public TlChatBase? Base { get; set; }
 
 	#endregion
 
 	#region Public and private methods
 
-	public string ToDebugString() => $"{(ChatBase is not null ? ChatBase.ID : string.Empty)} | {GetUserName()}";
+	public string ToDebugString() => $"{(Base is not null ? Base.ID : string.Empty)} | {GetUserName()}";
 
 	public string GetUserName()
 	{
-		if (ChatBase is not null)
-			return !string.IsNullOrEmpty(ChatBase.MainUsername) ? ChatBase.MainUsername : ChatBase.Title;
+		if (Base is not null)
+			return !string.IsNullOrEmpty(Base.MainUsername) ? Base.MainUsername : Base.Title;
 		return string.Empty;
 	}
 
