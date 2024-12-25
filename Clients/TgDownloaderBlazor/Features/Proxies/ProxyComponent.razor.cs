@@ -28,7 +28,7 @@ public partial class ProxyComponent : TgPageComponentEnumerable<TgEfProxyEntity>
 		    return;
 	    }
 
-	    Items = (await ProxyRepository.GetListAsync(0, 0, isNoTracking: false)).Items;
+	    Items = (await ProxyRepository.GetListAsync(0, 0)).Items;
         ItemsCount = await ProxyRepository.GetCountAsync();
 
         IsBlazorLoading = false;

@@ -28,7 +28,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	        return;
 		}
 
-		Items = (await AppRepository.GetListAsync(0, 0, isNoTracking: false)).Items.ToList();
+		Items = (await AppRepository.GetListAsync(0, 0)).Items.ToList();
         ItemsCount = await AppRepository.GetCountAsync();
         
         await OnClientLoad();
@@ -226,7 +226,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			Item = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+			Item = await AppRepository.GetFirstItemAsync();
 		}, message =>
 		{
 			NotificationService.Notify(new()

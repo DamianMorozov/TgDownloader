@@ -28,7 +28,7 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 		    return;
 	    }
 
-		Items = (await FilterRepository.GetListAsync(0, 0, isNoTracking: false)).Items;
+		Items = (await FilterRepository.GetListAsync(0, 0)).Items;
         ItemsCount = await FilterRepository.GetCountAsync();
 
         IsBlazorLoading = false;

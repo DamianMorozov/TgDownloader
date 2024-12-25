@@ -28,7 +28,7 @@ public partial class VersionComponent : TgPageComponentEnumerable<TgEfVersionEnt
 		    return;
 	    }
 
-	    Items = (await VersionRepository.GetListAsync(0, 0, isNoTracking: false))
+	    Items = (await VersionRepository.GetListAsync(0, 0))
 			.Items.OrderByDescending(x => x.Version).ToList();
         ItemsCount = await VersionRepository.GetCountAsync();
 
