@@ -29,52 +29,43 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await OnLoadSourcesFromStorageAsync();
     }
 
-    /// <summary>
-    /// Sort sources.
-    /// </summary>
-    private void SetOrderSources(IEnumerable<TgEfSourceEntity> sources)
+    /// <summary> Sort sources </summary>
+    private void SetOrderSources(IEnumerable<TgEfSourceDto> dtos)
     {
-        List<TgEfSourceEntity> list = sources.ToList();
+        var list = dtos.ToList();
         if (!list.Any()) return;
         SourcesVms = new();
 
-        sources = list.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
-        if (sources.Any())
-            foreach (TgEfSourceEntity source in sources)
-                SourcesVms.Add(new(source));
+        dtos = list.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
+        if (dtos.Any())
+            foreach (var dto in dtos)
+                SourcesVms.Add(new() { Dto = dto });
     }
 
-    /// <summary>
-    /// Load sources from Telegram.
-    /// </summary>
-    /// <param name="sourceVm"></param>
+    /// <summary> Load sources from Telegram </summary>
     public async Task LoadFromTelegramAsync(TgEfSourceViewModel sourceVm)
     {
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
-			TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+			var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Dto.Id });
             if (storageResult.IsExists)
                 sourceVm = new(storageResult.Item);
-            if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
+            if (!SourcesVms.Select(x => x.Dto.Id).Contains(sourceVm.Dto.Id))
                 SourcesVms.Add(sourceVm);
             await SaveSourceAsync(sourceVm);
         }, false);
     }
 
-    /// <summary>
-    /// Update state.
-    /// </summary>
-    /// <param name="sourceId"></param>
-    /// <param name="messageId"></param>
-    /// <param name="message"></param>
+    /// <summary> Update state </summary>
     public override async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
     {
         await base.UpdateStateSourceAsync(sourceId, messageId, message);
         for (int i = 0; i < SourcesVms.Count; i++)
         {
-            if (SourcesVms[i].SourceId.Equals(sourceId))
+            if (SourcesVms[i].Dto.Id.Equals(sourceId))
             {
-	            SourcesVms[i].Item = (await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceId }, isNoTracking: false)).Item;
+                var entity = (await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceId })).Item;
+				SourcesVms[i].Dto = TgEfHelper.ConvertToDto(entity);
                 break;
             }
         }
@@ -91,8 +82,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: true);
-			List<TgEfSourceEntity> sources = storageResult.IsExists ? storageResult.Items.ToList() : [];
+            TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
+			var sources = storageResult.IsExists ? storageResult.Items.ToList() : [];
             //if (!sources.Any())
             //{
             //    TgSqlTableSourceModel sourceDefault = ContextManager.SourceRepository.CreateNew(true);
@@ -104,7 +95,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             //    await ContextManager.SourceRepository.SaveAsync(sourceDefault);
             //    sources.Add(sourceDefault);
             //}
-            SetOrderSources(sources);
+            SetOrderSources(sources.Select(x => TgEfHelper.ConvertToDto(x)));
         }, false);
     }
 
@@ -170,7 +161,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            SetOrderSources(SourcesVms.Select(x => x.Item).ToList());
+            SetOrderSources(SourcesVms.Select(x => x.Dto).ToList());
         }, false);
     }
 
@@ -202,11 +193,12 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-			TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isNoTracking: false);
+			TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Dto.Id }, isReadOnly: false);
             if (!storageResult.IsExists)
             {
-                await SourceRepository.SaveAsync(sourceVm.Item);
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Item.Id, 0, $"Saved source | {sourceVm.Item}");
+                var entity = TgEfHelper.ConvertToEntity(sourceVm.Dto);
+                await SourceRepository.SaveAsync(entity);
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Dto.Id, 0, $"Saved source | {sourceVm.Dto}");
             }
         }, false);
     }
@@ -227,9 +219,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             await Task.Delay(1);
             for (int i = 0; i < SourcesVms.Count; i++)
             {
-                if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
+                if (SourcesVms[i].Dto.Id.Equals(sourceVm.Dto.Id))
                 {
-                    SourcesVms[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
+                    SourcesVms[i].Dto.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Dto, isUidCopy: false);
                     break;
                 }
             }

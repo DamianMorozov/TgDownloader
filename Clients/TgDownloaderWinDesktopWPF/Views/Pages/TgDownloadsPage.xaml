@@ -118,7 +118,7 @@
 									HorizontalContentAlignment="Center"
 									IsEnabled="False"
 									IsManipulationEnabled="False"
-									Text="{Binding DownloadSetting.SourceVm.SourceId, Mode=OneWay, IsAsync=True}" />
+									Text="{Binding DownloadSetting.SourceVm.Dto.Id, Mode=OneWay, IsAsync=True}" />
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>

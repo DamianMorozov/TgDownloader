@@ -55,7 +55,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            TgEfStorageResult<TgEfProxyEntity> storageResult = await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false);
+            TgEfStorageResult<TgEfProxyEntity> storageResult = await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false);
 			SetOrderProxies(storageResult.Items);
         }, false).ConfigureAwait(false);
 	}

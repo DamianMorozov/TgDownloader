@@ -67,7 +67,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public TgClientViewModel()
     {
-        AppVm = new(AppRepository.GetFirstItemAsync(isNoTracking: false).GetAwaiter().GetResult());
+        AppVm = new(AppRepository.GetFirstItem(isReadOnly: false));
         ProxyVm = new(new());
         ProxiesVms = new();
 
@@ -110,9 +110,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         {
             await Task.Delay(1);
             TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
-	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty }, isNoTracking: false)).Item;
+	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty })).Item;
             ProxiesVms = new();
-            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isNoTracking: false)).Items)
+            foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }
@@ -231,7 +231,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
 		    await Task.Delay(1);
-		    AppVm.App = await AppRepository.GetFirstItemAsync(isNoTracking: false);
+		    AppVm.App = await AppRepository.GetFirstItemAsync(isReadOnly: false);
 	    }, false).ConfigureAwait(false);
     }
 
@@ -254,7 +254,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            AppVm.App = (await AppRepository.GetNewAsync(isNoTracking: false)).Item;
+            AppVm.App = (await AppRepository.GetNewAsync(isReadOnly: false)).Item;
         }, false).ConfigureAwait(true);
     }
 

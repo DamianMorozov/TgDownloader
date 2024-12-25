@@ -103,7 +103,7 @@
 						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainStop, Mode=OneWay, IsAsync=True}"
 						Cursor="Hand"
 						Icon="RecordStop48"
-						IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsDownload, Mode=OneWay, IsAsync=True}"
+						IsEnabled="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.IsDownload, Mode=OneWay, IsAsync=True}"
 						ToolTip="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainStop, Mode=OneWay, IsAsync=True}" />
 				</Grid>
 				<!--  Clear view  -->
@@ -454,7 +454,7 @@
 						VerticalContentAlignment="Center"
 						Background="DimGray"
 						IsEnabled="False"
-						Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsReadySourceDirectoryDescription, Mode=OneWay, IsAsync=True}" />
+						Text="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.IsReadySourceDirectoryDescription, Mode=OneWay, IsAsync=True}" />
 				</Grid>
 				<!--  Dt changed  -->
 				<Label
@@ -525,7 +525,7 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						HorizontalContentAlignment="Left"
-						IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.IsDownload, Mode=OneWay, IsAsync=True}"
+						IsChecked="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.IsDownload, Mode=OneWay, IsAsync=True}"
 						IsEnabled="False" />
 				</Grid>
 				<!--  Separator  -->
@@ -599,7 +599,7 @@
 						Grid.Row="0"
 						Grid.Column="0"
 						Margin="10,2"
-						Value="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.CurrentFileProgress, Mode=OneWay, IsAsync=True}" />
+						Value="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.CurrentFileProgress, Mode=OneWay, IsAsync=True}" />
 					<Label
 						Grid.Row="0"
 						Grid.Column="1"
@@ -614,14 +614,14 @@
 						Margin="10,2,10,2"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.CurrentFileProgressPercentString, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.CurrentFileProgressPercentString, Mode=OneWay, IsAsync=True}" />
 					<Label
 						Grid.Row="0"
 						Grid.Column="3"
 						Margin="10,2,10,2"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.CurrentFileProgressMBString, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.CurrentFileProgressMBString, Mode=OneWay, IsAsync=True}" />
 					<!--  Download speed  -->
 					<Label
 						Grid.Row="1"
@@ -637,14 +637,14 @@
 						Margin="10,2,10,2"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.CurrentFileSpeedKBString, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.CurrentFileSpeedKBString, Mode=OneWay, IsAsync=True}" />
 					<Label
 						Grid.Row="1"
 						Grid.Column="3"
 						Margin="10,2,10,2"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.CurrentFileSpeedMBString, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.CurrentFileSpeedMBString, Mode=OneWay, IsAsync=True}" />
 					<!--  Source progress  -->
 					<ProgressBar
 						Grid.Row="2"
@@ -672,7 +672,7 @@
 						Margin="10,2,10,2"
 						HorizontalContentAlignment="Center"
 						VerticalContentAlignment="Center"
-						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.ProgressItemString, Mode=OneWay, IsAsync=True}" />
+						Content="{Binding Source={x:Static utils:TgDesktopUtils.TgItemSourceVm}, Path=ItemSourceVm.Dto.ProgressItemString, Mode=OneWay, IsAsync=True}" />
 				</Grid>
 			</Grid>
 		</Border>

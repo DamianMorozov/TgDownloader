@@ -37,8 +37,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 	    if (!list.Any()) return;
 	    DownloadVms = new();
 
-	    downloadVms = list.OrderBy(x => x.DownloadSetting.SourceVm.SourceUserName)
-		    .ThenBy(x => x.DownloadSetting.SourceVm.SourceTitle).ToList();
+	    downloadVms = [.. list.OrderBy(x => x.DownloadSetting.SourceVm.Dto.UserName).ThenBy(x => x.DownloadSetting.SourceVm.Dto.Title)];
 	    if (downloadVms.Any())
 		    foreach (TgEfDownloadViewModel downloadVm in downloadVms)
 			    DownloadVms.Add(downloadVm);
@@ -51,15 +50,10 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 	/// <returns></returns>
 	public TgDownloadSettingsViewModel CreateDownloadSettings(TgEfSourceViewModel sourceVm)
 	{
-		TgDownloadSettingsViewModel downloadSettings = new()
-		{
-			SourceVm = new()
-			{
-				SourceId = sourceVm.Item.Id,
-				SourceFirstId = sourceVm.Item.FirstId,
-				SourceDirectory = sourceVm.Item.Directory ?? string.Empty,
-			}
-		};
+		TgDownloadSettingsViewModel downloadSettings = new() { SourceVm = new() };
+        downloadSettings.SourceVm.Dto.Id= sourceVm.Dto.Id;
+		downloadSettings.SourceVm.Dto.FirstId = sourceVm.Dto.FirstId;
+		downloadSettings.SourceVm.Dto.Directory = sourceVm.Dto.Directory ?? string.Empty;
         if (!DownloadVms.Any())
         {
             //DownloadVms.Add(downloadSettings);
@@ -90,7 +84,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
         {
             await Task.Delay(1);
             TgEfDownloadViewModel? findJobVm = DownloadVms
-				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
+				.Where(x => x.DownloadSetting.SourceVm.Dto.Id.Equals(jobVm.DownloadSetting.SourceVm.Dto.Id))
 				.SingleOrDefault();
 			if (findJobVm is not null)
             {
@@ -107,7 +101,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
         {
             await Task.Delay(1);
             TgEfDownloadViewModel? findJobVm = DownloadVms
-				.Where(x => x.DownloadSetting.SourceVm.SourceId.Equals(jobVm.DownloadSetting.SourceVm.SourceId))
+				.Where(x => x.DownloadSetting.SourceVm.Dto.Id.Equals(jobVm.DownloadSetting.SourceVm.Dto.Id))
 				.SingleOrDefault();
 			if (findJobVm is not null)
             {
