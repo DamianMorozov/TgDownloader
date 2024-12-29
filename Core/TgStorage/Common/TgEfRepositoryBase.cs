@@ -30,6 +30,12 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 	}
 
+	private static async Task<IEnumerable<TEntity>> UseOverrideMethodItemsAsync()
+	{
+		await Task.CompletedTask;
+		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
+	}
+
 	public async Task<IDbContextTransaction> BeginTransactionAsync() => await EfContext.Database.BeginTransactionAsync();
 
 	public async Task CommitTransactionAsync() => await EfContext.Database.CommitTransactionAsync();
@@ -97,7 +103,12 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			: new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExists);
 	}
 
+	public virtual async Task<TEntity> GetItemAsync(TEntity item, bool isReadOnly = true) =>
+		(await GetAsync(item, isReadOnly)).Item;
+
 	public TgEfStorageResult<TEntity> Get(TEntity item, bool isReadOnly = true) => GetAsync(item, isReadOnly).GetAwaiter().GetResult();
+
+	public TEntity GetItem(TEntity item, bool isReadOnly = true) => GetItemAsync(item, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isReadOnly = true) => await GetAsync(new(), isReadOnly);
 
@@ -124,14 +135,36 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			_ => await GetListAsync(0, skip, isReadOnly),
 		};
 
+	public virtual async Task<IEnumerable<TEntity>> GetListItemsAsync(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true) =>
+		topRecords switch
+		{
+			TgEnumTableTopRecords.Top1 => await GetListItemsAsync(1, skip, isReadOnly),
+			TgEnumTableTopRecords.Top20 => await GetListItemsAsync(20, skip, isReadOnly),
+			TgEnumTableTopRecords.Top100 => await GetListItemsAsync(200, skip, isReadOnly),
+			TgEnumTableTopRecords.Top1000 => await GetListItemsAsync(1_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top10000 => await GetListItemsAsync(10_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top100000 => await GetListItemsAsync(100_000, skip, isReadOnly),
+			TgEnumTableTopRecords.Top1000000 => await GetListItemsAsync(1_000_000, skip, isReadOnly),
+			_ => await GetListItemsAsync(0, skip, isReadOnly),
+		};
+
 	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true) => 
 		GetListAsync(topRecords, skip, isReadOnly).GetAwaiter().GetResult();
+
+	public IEnumerable<TEntity> GetListItems(TgEnumTableTopRecords topRecords, int skip, bool isReadOnly = true) => 
+		GetListItemsAsync(topRecords, skip, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, bool isReadOnly = true) => 
 		await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
 
+	public virtual async Task<IEnumerable<TEntity>> GetListItemsAsync(int take, int skip, bool isReadOnly = true) => 
+		await TgEfRepositoryBase<TEntity>.UseOverrideMethodItemsAsync();
+
 	public TgEfStorageResult<TEntity> GetList(int take, int skip, bool isReadOnly = true) =>
 		GetListAsync(take, skip, isReadOnly).GetAwaiter().GetResult();
+
+	public IEnumerable<TEntity> GetListItems(int take, int skip, bool isReadOnly = true) =>
+		GetListItemsAsync(take, skip, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, 
 		bool isReadOnly = true) =>
@@ -147,14 +180,37 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 			_ => await GetListAsync(0, skip, where, isReadOnly),
 		};
 
+	public virtual async Task<IEnumerable<TEntity>> GetListItemsAsync(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, 
+		bool isReadOnly = true) =>
+		topRecords switch
+		{
+			TgEnumTableTopRecords.Top1 => await GetListItemsAsync(1, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top20 => await GetListItemsAsync(20, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top100 => await GetListItemsAsync(200, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top1000 => await GetListItemsAsync(1_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top10000 => await GetListItemsAsync(10_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top100000 => await GetListItemsAsync(100_000, skip, where, isReadOnly),
+			TgEnumTableTopRecords.Top1000000 => await GetListItemsAsync(1_000_000, skip, where, isReadOnly),
+			_ => await GetListItemsAsync(0, skip, where, isReadOnly),
+		};
+
 	public TgEfStorageResult<TEntity> GetList(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
-		GetList(topRecords, skip, where, isReadOnly);
+		GetListAsync(topRecords, skip, where, isReadOnly).GetAwaiter().GetResult();
+
+	public IEnumerable<TEntity> GetListItems(TgEnumTableTopRecords topRecords, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		GetListItemsAsync(topRecords, skip, where, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetListAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
 		await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
 
+	public virtual async Task<IEnumerable<TEntity>> GetListItemsAsync(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		await TgEfRepositoryBase<TEntity>.UseOverrideMethodItemsAsync();
+
 	public TgEfStorageResult<TEntity> GetList(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
-		GetList(take, skip, where, isReadOnly);
+		GetListAsync(take, skip, where, isReadOnly).GetAwaiter().GetResult();
+
+	public IEnumerable<TEntity> GetListItems(int take, int skip, Expression<Func<TEntity, bool>> where, bool isReadOnly = true) =>
+		GetListItemsAsync(take, skip, where, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<int> GetCountAsync() => await Task.FromResult(0);
 

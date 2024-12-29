@@ -27,15 +27,9 @@ public class TgEfContext : DbContext
     public DbSet<TgEfStoryEntity> Stories { get; set; } = default!;
     /// <summary> Version queries </summary>
     public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
-    public TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
+    public static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
-	public bool IsReady =>
-        TgAppSettings.AppXml.IsExistsEfStorage &&
-        IsTableExists(TgEfConstants.TableApps) && IsTableExists(TgEfConstants.TableDocuments) &&
-		IsTableExists(TgEfConstants.TableContacts) && IsTableExists(TgEfConstants.TableFilters) && 
-		IsTableExists(TgEfConstants.TableMessages) && IsTableExists(TgEfConstants.TableProxies) && 
-		IsTableExists(TgEfConstants.TableSources) && IsTableExists(TgEfConstants.TableStories) && 
-		IsTableExists(TgEfConstants.TableVersions);
+	public bool IsReady => TgAppSettings.AppXml.IsExistsEfStorage;
 
     #endregion
 
@@ -198,15 +192,6 @@ public class TgEfContext : DbContext
 		{
 			entity.ToTable(TgEfConstants.TableVersions);
 		});
-    }
-
-    /// <summary> Check table exists </summary>
-    public bool IsTableExists(string tableName)
-    {
-        var result = Database
-            .SqlQuery<string>($"SELECT [name] AS [Value] FROM [sqlite_master]")
-            .SingleOrDefault(x => x == tableName);
-        return tableName == result;
     }
 
     public (bool IsSuccess, string FileName) BackupDb()

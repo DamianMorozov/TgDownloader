@@ -10,8 +10,8 @@ public sealed class TgEfContactValidator : TgEfValidatorBase<TgEfContactEntity>
 
 	public TgEfContactValidator()
 	{
-		RuleFor(item => item.Id)
-			.NotNull().GreaterThan(0);
+		//RuleFor(item => item.Id)
+		//	.NotNull().GreaterThan(0);
 	}
 
 	#endregion

@@ -82,14 +82,11 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 	public async Task<TgEfVersionEntity> GetLastVersionAsync()
 	{
 		TgEfVersionEntity versionLast = new();
-		if (EfContext.IsTableExists(TgEfConstants.TableVersions))
-		{
-			var defaultVersion = new TgEfVersionEntity().Version;
-			var versions = (await GetListAsync(TgEnumTableTopRecords.All, 0)).Items
-				.Where(x => x.Version != defaultVersion).OrderBy(x => x.Version).ToList();
-			if (versions.Any())
-				versionLast = versions[^1];
-		}
+		var defaultVersion = new TgEfVersionEntity().Version;
+		var versions = (await GetListAsync(TgEnumTableTopRecords.All, 0)).Items
+			.Where(x => x.Version != defaultVersion).OrderBy(x => x.Version).ToList();
+		if (versions.Any())
+			versionLast = versions[^1];
 		return versionLast;
 	}
 

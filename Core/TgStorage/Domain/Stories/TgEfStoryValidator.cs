@@ -10,8 +10,8 @@ public sealed class TgEfStoryValidator : TgEfValidatorBase<TgEfStoryEntity>
 
 	public TgEfStoryValidator()
 	{
-		RuleFor(item => item.Id)
-			.NotNull().GreaterThan(0);
+		//RuleFor(item => item.Id)
+		//	.NotNull().GreaterThan(0);
 	}
 
 	#endregion
