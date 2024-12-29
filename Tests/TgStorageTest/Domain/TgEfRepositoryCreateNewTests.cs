@@ -117,7 +117,7 @@ internal sealed class TgEfRepositoryCreateNewTests : TgDbContextTestsBase
         });
     }
 
-	private async Task GetNewItemsAndDeleteAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
+	private static async Task GetNewItemsAndDeleteAsync<TEntity>(ITgEfRepository<TEntity> repository) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		TgEfStorageResult<TEntity> storageResult;
 		do

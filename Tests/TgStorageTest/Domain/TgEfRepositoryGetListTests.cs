@@ -18,7 +18,7 @@ internal sealed class TgEfRepositoryGetListTests : TgDbContextTestsBase
 			TestContext.WriteLine($"Found {storageResult.Items.Count()} items.");
 			foreach (TEntity item in storageResult.Items)
 			{
-				TEntity itemFind = (await repo.GetAsync(item)).Item;
+				TEntity itemFind = await repo.GetItemAsync(item);
 				Assert.That(itemFind, Is.Not.Null);
                 TestContext.WriteLine(itemFind.ToDebugString());
 			}

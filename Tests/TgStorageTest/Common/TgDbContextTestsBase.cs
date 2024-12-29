@@ -6,20 +6,30 @@ namespace TgStorageTest.Common;
 
 internal abstract class TgDbContextTestsBase
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    protected TgEfContext CreateEfContext()
+	protected TgDbContextTestsBase()
+	{
+		TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
+	}
+
+	#endregion
+
+	#region Public and private methods
+
+	protected static TgEfContext CreateEfContext()
 	{
 		LoggerFactory factory = new();
 		DbContextOptionsBuilder<TgEfContext> dbBuilder = new DbContextOptionsBuilder<TgEfContext>()
 			.UseLoggerFactory(factory)
 			.UseSqlite($"{TgInfrastructure.Helpers.TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}");
 		TgEfContext efContext = new(dbBuilder.Options);
+		TgEfUtils.CreateAndUpdateDbAsync().GetAwaiter().GetResult();
 		TestContext.WriteLine(efContext.Database.GetConnectionString());
 		return efContext;
 	}
 
-	protected TgEfContext CreateEfContextMemory()
+	protected static TgEfContext CreateEfContextMemory()
 	{
 		LoggerFactory factory = new();
 		DbContextOptionsBuilder<TgEfContext> builderMemory = new DbContextOptionsBuilder<TgEfContext>()

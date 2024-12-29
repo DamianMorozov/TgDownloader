@@ -18,7 +18,7 @@ internal sealed class TgEfSourceRepositorySaveTests : TgDbContextTestsBase
 			TgEfStorageResult<TgEfSourceEntity> storageResult = await repo.GetFirstAsync();
 			if (storageResult.IsExists)
 			{
-				TgEfSourceEntity itemFind = (await repo.GetAsync(storageResult.Item)).Item;
+				TgEfSourceEntity itemFind = await repo.GetItemAsync(storageResult.Item);
 				Assert.That(itemFind, Is.Not.Null);
 				TestContext.WriteLine(itemFind.ToDebugString());
 				// Save
