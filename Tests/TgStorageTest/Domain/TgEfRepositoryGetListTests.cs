@@ -2,6 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma warning disable NUnit1033
 
+using TgInfrastructure.Contracts;
+using TgInfrastructure.Enums;
+
 namespace TgStorageTest.Domain;
 
 [TestFixture]

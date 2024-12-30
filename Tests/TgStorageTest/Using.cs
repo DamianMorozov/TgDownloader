@@ -16,7 +16,6 @@ global using TgStorage.Domain.Sources;
 global using TgStorage.Domain.Stories;
 global using TgStorage.Domain.Versions;
 global using TgStorage.Domain;
-global using TgStorage.Enums;
 global using TgStorage.Helpers;
 global using TgStorage.Utils;
 global using TgStorageTest.Common;

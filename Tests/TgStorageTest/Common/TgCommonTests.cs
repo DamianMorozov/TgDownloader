@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgStorageTest.Common;
 
 [TestFixture]
@@ -26,8 +28,8 @@ internal sealed class TgCommonTests
 				Assert.That(Equals((uint)201, item.UintValue));
 				Assert.That(Equals((long)-301, item.LongValue));
 				Assert.That(Equals((ulong)301, item.UlongValue));
-				Assert.That(Equals(DateTime.ParseExact("2001-02-03 11:22:33", "yyyy-MM-dd HH:mm:ss", 
-					System.Globalization.CultureInfo.InvariantCulture), item.DtValue));
+				Assert.That(DateTime.ParseExact("2001-02-03 11:22:33", "yyyy-MM-dd HH:mm:ss",
+					System.Globalization.CultureInfo.InvariantCulture), Is.EqualTo(item.DtValue));
 			});
 		});
 	}
