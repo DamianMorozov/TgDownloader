@@ -70,13 +70,12 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfSourceDto> dtos)
+	private void SetOrderData(IList<TgEfSourceDto> dtos)
 	{
-		List<TgEfSourceDto> list = dtos.ToList();
-		if (!list.Any())
+		if (!dtos.Any())
 			return;
 		SourcesVms = [];
-		dtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
+		dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
 				SourcesVms.Add(dto);
@@ -119,9 +118,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var storageResult = await SourceRepository.GetListDtoAsync(take: 0, skip: 0, isReadOnly: false);
-		List<TgEfSourceDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderData(sourcesDtos);
+		var dtos = await SourceRepository.GetListDtosAsync(take: 0, skip: 0);
+		SetOrderData(dtos);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());

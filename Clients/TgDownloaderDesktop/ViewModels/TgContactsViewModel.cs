@@ -72,9 +72,8 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var storageResult = await ContactRepository.GetListDtoAsync(take: 0, skip: 0, isReadOnly: false);
-		List<TgEfContactDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderData(sourcesDtos);
+		var dtos = await ContactRepository.GetListDtosAsync(take: 0, skip: 0);
+		SetOrderData(dtos);
 	}
 
 	private async Task DefaultSortAsync()

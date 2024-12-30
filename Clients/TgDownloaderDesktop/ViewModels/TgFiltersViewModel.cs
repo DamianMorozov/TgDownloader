@@ -46,13 +46,12 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfFilterDto> dtos)
+	private void SetOrderData(IList<TgEfFilterDto> dtos)
 	{
-		List<TgEfFilterDto> list = dtos.ToList();
-		if (!list.Any())
+		if (!dtos.Any())
 			return;
 		FiltersVms = [];
-		dtos = [.. list.OrderBy(x => x.Name)];
+		dtos = [.. dtos.OrderBy(x => x.Name)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
 				FiltersVms.Add(dto);
@@ -72,9 +71,8 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var storageResult = await FilterRepository.GetListDtoAsync(take: 0, skip: 0, isReadOnly: false);
-		List<TgEfFilterDto> sourcesDtos = storageResult.IsExists ? storageResult.Items.ToList() : [];
-		SetOrderData(sourcesDtos);
+		var dtos = await FilterRepository.GetListDtosAsync(take: 0, skip: 0);
+		SetOrderData(dtos);
 	}
 
 	private async Task DefaultSortAsync()

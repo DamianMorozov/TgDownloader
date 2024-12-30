@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -161,7 +163,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	        _newPassword = Password;
 			_newPhoneNumber = PhoneNumber;
 	        _newVerificationCode = VerificationCode;
-			await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Item, ConfigClientDesktop);
+			await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Dto.GetEntity(), ConfigClientDesktop);
         }
         catch (Exception ex)
         {
@@ -233,17 +235,17 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	    // Insert empty proxy if not exists
 	    TgEfProxyViewModel? emptyProxyVm = null;
 	    var proxiesVmsEmpty = ProxiesVms.Where(x =>
-		    x.ProxyType == TgEnumProxyType.None && (x.ProxyUserName == "No user" || x.ProxyPassword == "No password"));
+		    x.Dto.Type == TgEnumProxyType.None && (x.Dto.UserName == "No user" || x.Dto.Password == "No password"));
 	    if (!proxiesVmsEmpty.Any())
 	    {
 		    emptyProxyVm = new(new());
 		    ProxiesVms.Add(emptyProxyVm);
 	    }
 	    // Select proxy
-	    var proxiesUids = ProxiesVms.Select(x => x.Item.Uid).ToList();
+	    var proxiesUids = ProxiesVms.Select(x => x.Dto.Uid).ToList();
 	    if (App.ProxyUid is { } proxyUid && proxiesUids.Contains(proxyUid))
 	    {
-		    ProxyVm = ProxiesVms.FirstOrDefault(x => x.ProxyUid == proxyUid);
+		    ProxyVm = ProxiesVms.FirstOrDefault(x => x.Dto.Uid == proxyUid);
 	    }
 	    // Select empty proxy
 	    else
@@ -263,7 +265,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		App.FirstName = FirstName;
 		App.LastName = LastName;
 		App.PhoneNumber = PhoneNumber;
-		App.ProxyUid = ProxyVm?.ProxyUid;
+		App.ProxyUid = ProxyVm?.Dto.Uid;
 		if (App.ProxyUid is null || App.ProxyUid == Guid.Empty)
 			App.Proxy = null;
 		
@@ -277,7 +279,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 		var storageResult = await AppRepository.GetNewAsync(isReadOnly: false);
         App = storageResult.IsExists ? storageResult.Item : new();
 		ProxiesVms.Clear();
-		ProxyVm?.Default();
+		if (ProxyVm is not null)
+			ProxyVm.Dto = new();
         
 		await ReloadUiAsync(isClearPassw: true);
     }

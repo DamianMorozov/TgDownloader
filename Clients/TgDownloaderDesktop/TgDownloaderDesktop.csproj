@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Animations" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
@@ -45,11 +45,11 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
     <PackageReference Include="WinUIEx" Version="2.5.0" />
+    <PackageReference Include="WTelegramClient" Version="4.2.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TgDownloaderDesktop.Core\TgDownloaderDesktop.Core.csproj" />
-    <ProjectReference Include="..\..\Core\TgDownloader\TgDownloader.csproj" />
     <ProjectReference Include="..\..\Core\TgInfrastructure\TgInfrastructure.csproj" />
     <ProjectReference Include="..\..\Core\TgStorage\TgStorage.csproj" />
   </ItemGroup>

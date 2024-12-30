@@ -253,7 +253,7 @@
 							SelectedItem="{x:Bind ViewModel.ProxyVm, Mode=TwoWay}">
 							<ComboBox.ItemTemplate>
 								<DataTemplate x:DataType="proxies:TgEfProxyViewModel">
-									<TextBlock Text="{x:Bind PrettyName, Mode=OneWay}" />
+									<TextBlock Text="{x:Bind Dto.PrettyName, Mode=OneWay}" />
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>
