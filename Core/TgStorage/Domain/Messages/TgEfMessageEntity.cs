@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Messages;
 
+/// <summary> Messagte entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]

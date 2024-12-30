@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Stories;
 
+/// <summary> Story validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfStoryValidator : TgEfValidatorBase<TgEfStoryEntity>
 {
@@ -10,8 +11,7 @@ public sealed class TgEfStoryValidator : TgEfValidatorBase<TgEfStoryEntity>
 
 	public TgEfStoryValidator()
 	{
-		//RuleFor(item => item.Id)
-		//	.NotNull().GreaterThan(0);
+		//
 	}
 
 	#endregion

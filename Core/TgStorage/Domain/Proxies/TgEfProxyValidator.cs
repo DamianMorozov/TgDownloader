@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Proxies;
 
+/// <summary> Proxy validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfProxyValidator : TgEfValidatorBase<TgEfProxyEntity>
 {

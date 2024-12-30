@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Documents;
 
+/// <summary> Document validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfDocumentValidator : TgEfValidatorBase<TgEfDocumentEntity>
 {

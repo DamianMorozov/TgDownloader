@@ -3,12 +3,11 @@
 
 namespace TgStorage.Domain.Sources;
 
-public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbFillEntity<TgEfSourceDto>
+/// <summary> Source DTO </summary>
+public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgEfSourceEntity>
 {
 	#region Public and private fields, properties, constructor
 
-	[ObservableProperty]
-	private Guid _uid;
 	[ObservableProperty]
 	private long _id;
 	[ObservableProperty]
@@ -16,11 +15,7 @@ public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbF
 	[ObservableProperty]
 	private string _userName = string.Empty;
 	[ObservableProperty]
-	private string _dtChanged = string.Empty;
-	[ObservableProperty]
-	private string _dtChangedString = string.Empty;
-	[ObservableProperty]
-	private DateTime _sourceDtChanged = DateTime.MinValue;
+	private DateTime _dtChanged = DateTime.MinValue;
 	[ObservableProperty]
 	private bool _isSourceActive;
 	[ObservableProperty]
@@ -35,7 +30,6 @@ public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbF
 	private string _directory = string.Empty;
 	[ObservableProperty]
 	private bool _isAutoUpdate;
-
 	[ObservableProperty]
 	private long _currentFileSize;
 	[ObservableProperty]
@@ -44,32 +38,27 @@ public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbF
 	private long _currentFileSpeed;
 	[ObservableProperty]
 	private bool _isDownload;
-	[DefaultValue(1)]
 	[ObservableProperty]
 	private int _sourceScanCurrent = 1;
-	[DefaultValue(1)]
 	[ObservableProperty]
 	private int _sourceScanCount;
 	[ObservableProperty]
 	private string _currentFileName = string.Empty;
 
+	public string DtChangedString => $"{DtChanged:yyyy-MM-dd HH:mm:ss}";
+
 	public float Progress => (float)FirstId * 100 / Count;
 	public string ProgressPercentString => Progress == 0 ? "{0:00.00}" : $"{Progress:#00.00} %";
 	public bool IsComplete => FirstId >= Count;
-	[DefaultValue("")]
-	public string SourceDtChangedString => $"{SourceDtChanged:yyyy-MM-dd HH:mm:ss}";
 	public string ProgressItemString => $"{FirstId} from {Count}";
 	public float CurrentFileProgress => CurrentFileSize > 0 ? (float)CurrentFileTransmitted * 100 / CurrentFileSize : 0;
 	public string CurrentFileProgressPercentString =>
 		(CurrentFileProgress == 0 ? "{0:00.00}" : $"{CurrentFileProgress:#00.00}") + " %";
-	// ReSharper disable once InconsistentNaming
 	public string CurrentFileProgressMBString =>
 		(CurrentFileTransmitted == 0 ? "{0:0.00}" : $"{(float)CurrentFileTransmitted / 1024 / 1024:### ##0.00}") + " from " +
 		(CurrentFileSize == 0 ? "{0:0.00}" : $"{(float)CurrentFileSize / 1024 / 1024:### ##0.00}") + " MB";
-	// ReSharper disable once InconsistentNaming
 	public string CurrentFileSpeedKBString =>
 		(CurrentFileSpeed == 0 ? "{0:0.00}" : $"{(float)CurrentFileSpeed / 1024:### 000.00}") + " KB/sec";
-	// ReSharper disable once InconsistentNaming
 	public string CurrentFileSpeedMBString =>
 		(CurrentFileSpeed == 0 ? "{0:0.00}" : $"{(float)CurrentFileSpeed / 1024 / 1024:##0.00}") + " MB/sec";
 	public bool IsReadySourceId => Id > 0;
@@ -85,39 +74,76 @@ public sealed partial class TgEfSourceDto : TgViewModelBase, ITgDbEntity, ITgDbF
 
 	public override string ToString() => ProgressPercentString;
 
-	public void Default()
-	{
-		throw new NotImplementedException();
-	}
-
-	public TgEfSourceDto Fill(TgEfSourceDto item, bool isUidCopy)
+	public TgEfSourceDto Fill(TgEfSourceDto dto, bool isUidCopy)
 	{
 		if (isUidCopy)
-			Uid = item.Uid;
-		DtChangedString = string.IsNullOrEmpty(item.DtChanged) ? item.DtChanged : TgEfHelper.GetDtAsDateString(DateTime.Now);
-		if (Id == this.GetDefaultPropertyLong(nameof(Id)))
-			Id = item.Id;
-		AccessHash = item.AccessHash;
-		IsActive = item.IsActive;
-		FirstId = item.FirstId;
-		UserName = item.UserName;
-		Title = item.Title;
-		About = item.About;
-		Count = item.Count;
-		Directory = item.Directory;
-		IsAutoUpdate = item.IsAutoUpdate;
+			Uid = dto.Uid;
+		DtChanged = dto.DtChanged;
+		Id = dto.Id;
+		AccessHash = dto.AccessHash;
+		IsSourceActive = dto.IsActive;
+		UserName = dto.UserName;
+		Title = dto.Title;
+		About = dto.About;
+		FirstId = dto.FirstId;
+		Count = dto.Count;
+		Directory = dto.Directory;
+		IsAutoUpdate = dto.IsAutoUpdate;
+
+		SourceScanCurrent = dto.SourceScanCurrent;
+		SourceScanCount = dto.SourceScanCount;
+		CurrentFileName = dto.CurrentFileName;
+
 		return this;
 	}
 
-	public void SetIsDownload(bool isDownload) => IsDownload = isDownload;
-
-	/// <summary> Set new source </summary>
-	public void SetSource(long id, string title, string about)
+	public TgEfSourceDto Fill(TgEfSourceEntity item, bool isUidCopy)
 	{
-		Id = id;
-		Title = title;
-		About = about;
+		if (isUidCopy)
+			Uid = item.Uid;
+		DtChanged = item.DtChanged;
+		Id = item.Id;
+		AccessHash = item.AccessHash;
+		IsSourceActive = item.IsActive;
+		UserName = item.UserName ?? string.Empty;
+		Title = item.Title ?? string.Empty;
+		About = item.About ?? string.Empty;
+		FirstId = item.FirstId;
+		Count = item.Count;
+		Directory = item.Directory ?? string.Empty;
+		IsAutoUpdate = item.IsAutoUpdate;
+
+		SourceScanCurrent = 1;
+		SourceScanCount = 1;
+		CurrentFileName = string.Empty;
+
+		return this;
 	}
+
+	public TgEfSourceDto GetDto(TgEfSourceEntity item)
+	{
+		var dto = new TgEfSourceDto();
+		dto.Fill(item, isUidCopy: true);
+		return dto;
+	}
+
+	public TgEfSourceEntity GetEntity() => new()
+	{
+		Uid = Uid,
+		DtChanged = DtChanged,
+		Id = Id,
+		AccessHash = AccessHash,
+		IsActive = IsSourceActive,
+		UserName = UserName,
+		Title = Title,
+		About = About,
+		FirstId = FirstId,
+		Count = Count,
+		Directory = Directory,
+		IsAutoUpdate = IsAutoUpdate,
+	};
+
+	public void SetIsDownload(bool isDownload) => IsDownload = isDownload;
 
 	#endregion
 }

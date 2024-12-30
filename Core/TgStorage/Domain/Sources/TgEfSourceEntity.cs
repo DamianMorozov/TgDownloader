@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Sources;
 
+/// <summary> Source entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(DtChanged))]

@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Proxies;
 
+/// <summary> Proxy repository </summary>
 public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfProxyEntity>(efContext), ITgEfProxyRepository
 {
 	#region Public and private methods
@@ -31,6 +32,16 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
+
+	public async Task<List<TgEfProxyDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
+	{
+		var dtos = take > 0
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
+		return dtos;
+	}
+
+	private static Expression<Func<TgEfProxyEntity, TgEfProxyDto>> SelectDto() => item => new TgEfProxyDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

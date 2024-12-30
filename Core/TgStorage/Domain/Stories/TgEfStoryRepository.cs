@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Stories;
 
+/// <summary> Story repository </summary>
 public sealed class TgEfStoryRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfStoryEntity>(efContext)
 {
 	#region Public and private methods
@@ -30,6 +31,16 @@ public sealed class TgEfStoryRepository(TgEfContext efContext) : TgEfRepositoryB
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfStoryEntity>(TgEnumEntityState.IsExists, item);
 	}
+
+	public async Task<List<TgEfStoryDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
+	{
+		var dtos = take > 0
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
+		return dtos;
+	}
+
+	private static Expression<Func<TgEfStoryEntity, TgEfStoryDto>> SelectDto() => item => new TgEfStoryDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfStoryEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

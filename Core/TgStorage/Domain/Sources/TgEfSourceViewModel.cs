@@ -3,64 +3,46 @@
 
 namespace TgStorage.Domain.Sources;
 
-/// <summary> View-model for TgSqlTableSourceModel </summary>
+/// <summary> Source view-model </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfSourceViewModel : TgViewModelBase
+public sealed partial class TgEfSourceViewModel : TgEntityViewModelBase<TgEfSourceEntity>, ITgDtoViewModel
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    public TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
+	public override TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
     [ObservableProperty]
     private TgEfSourceDto _dto = default!;
 
     public TgEfSourceViewModel(TgEfSourceEntity item) : base()
     {
-		Default(item, isResetDto: true);
+		Fill(item);
     }
 
     public TgEfSourceViewModel() : base()
     {
-	    TgEfSourceEntity item = SourceRepository.GetNew().Item;
-		Default(item, isResetDto: true);
+	    var item = Repository.GetNewItem();
+		Fill(item);
 	}
 
-    #endregion
+	#endregion
 
-    #region Public and private methods
+	#region Public and private methods
 
-    public void Default(TgEfSourceEntity item, bool isResetDto)
+	public override string ToString() => Dto.ToString();
+
+	public override string ToDebugString() => Dto.ToDebugString();
+
+	public void Fill(TgEfSourceEntity item)
     {
-		if (isResetDto)
-		{
-			SetSourceUidAsync(item.Uid).GetAwaiter().GetResult();
-			Dto.SourceDtChanged = item.DtChanged;
-			Dto.Id = item.Id;
-			Dto.AccessHash = item.AccessHash;
-			Dto.IsSourceActive = item.IsActive;
-			Dto.UserName = item.UserName ?? string.Empty;
-			Dto.About = item.About ?? string.Empty;
-			Dto.Title = item.Title ?? string.Empty;
-			Dto.Directory = item.Directory ?? string.Empty;
-			Dto.FirstId = item.FirstId;
-			Dto.Count = item.Count;
-			Dto.IsAutoUpdate = item.IsAutoUpdate;
-		}
-
-		Dto.SourceScanCurrent = this.GetDefaultPropertyInt(nameof(Dto.SourceScanCurrent));
-	    Dto.SourceScanCount = this.GetDefaultPropertyInt(nameof(Dto.SourceScanCount));
-	    Dto.CurrentFileName = string.Empty;
+		Dto ??= new();
+		Dto.Fill(item, isUidCopy: true);
 	}
 
-    public override string ToString() => Dto.ToString();
+	public async Task<TgEfStorageResult<TgEfSourceEntity>> SaveAsync(TgEfSourceEntity item) =>
+		await Repository.SaveAsync(item);
 
-    public override string ToDebugString() => $"{base.ToDebugString()} | {TgCommonUtils.GetIsReady(Dto.IsReady)} | " +
-        $"{TgCommonUtils.GetIsAutoUpdate(Dto.IsAutoUpdate)} | {Dto.UserName} | {Dto.Id} | {Dto.FirstId}";
-
-	public async Task SetSourceUidAsync(Guid uid)
-	{
-		var storageResult = await SourceRepository.GetAsync(new() { Uid = uid });
-		Dto = TgEfHelper.ConvertToDto(storageResult.IsExists ? storageResult.Item : (await SourceRepository.GetNewAsync()).Item);
-	}
+	public async Task<TgEfStorageResult<TgEfSourceEntity>> SaveAsync() =>
+		await Repository.SaveAsync(Dto.GetEntity());
 
 	#endregion
 }

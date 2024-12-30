@@ -3,76 +3,48 @@
 
 namespace TgStorage.Domain.Proxies;
 
-/// <summary> View-model for TgSqlTableSourceModel </summary>
+/// <summary> Proxy view-model </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfProxyViewModel : TgViewModelBase
+public sealed partial class TgEfProxyViewModel : TgEntityViewModelBase<TgEfProxyEntity>, ITgDtoViewModel
 {
 	#region Public and private fields, properties, constructor
 
-	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
-	public TgEfProxyEntity Item { get; set; } = default!;
-    public Guid ProxyUid
-    {
-	    get => Item.Uid;
-	    set
-	    {
-		    TgEfStorageResult<TgEfProxyEntity> storageResult = ProxyRepository.Get(
-			    new() { Uid = value }, isReadOnly: false);
-		    Item = storageResult.IsExists
-			    ? storageResult.Item
-			    : ProxyRepository.GetNew(isReadOnly: false).Item;
-	    }
-    }
+	public override TgEfProxyRepository Repository { get; } = new(TgEfUtils.EfContext);
+	[ObservableProperty]
+	private TgEfProxyDto _dto = default!;
+	public Action<TgEfProxyViewModel> UpdateAction { get; set; } = _ => { };
 
-    [DefaultValue(0)]
-    public TgEnumProxyType ProxyType { get => Item.Type; set => Item.Type = value; }
-    [DefaultValue("")]
-    public string ProxyHostName { get => Item.HostName; set => Item.HostName = value; }
-    [DefaultValue(0)]
-    public ushort ProxyPort { get => Item.Port; set => Item.Port = value; }
-    [DefaultValue("")]
-    public string ProxyUserName { get => Item.UserName; set => Item.UserName = value; }
-    [DefaultValue("")]
-    public string ProxyPassword { get => Item.Password; set => Item.Password = value; }
-    [DefaultValue("")]
-    public string ProxySecret { get => Item.Secret; set => Item.Secret = value; }
-    [ObservableProperty]
-	private string _prettyName = default!;
 
-    public TgEfProxyViewModel(TgEfProxyEntity item) : base()
+	public TgEfProxyViewModel(TgEfProxyEntity item) : base()
 	{
-		Default(item);
-    }
-    
-    public TgEfProxyViewModel() : base()
-    {
-	    TgEfProxyEntity item = ProxyRepository.GetNew(isReadOnly: false).Item;
-	    Default(item);
-    }
+		Fill(item);
+	}
+
+	public TgEfProxyViewModel() : base()
+	{
+		TgEfProxyEntity item = Repository.GetNewItem();
+		Fill(item);
+	}
 
 	#endregion
 
 	#region Public and private methods
 
-	public void Default(TgEfProxyEntity? item = null)
+	public override string ToString() => Dto.ToString() ?? string.Empty;
+
+	public override string ToDebugString() => Dto.ToDebugString();
+
+	public void Fill(TgEfProxyEntity item)
 	{
-		item ??= new();
-		Item = item;
-		ProxyUid = item.Uid;
-		ProxyType = item.Type;
-		ProxyHostName = item.HostName;
-		ProxyPort = item.Port;
-		ProxyUserName = item.UserName;
-		ProxyPassword = item.Password;
-		ProxySecret = item.Secret;
-		SetPrettyName();
+		Dto ??= new();
+		Dto.Fill(item, isUidCopy: true);
 	}
 
-	private void SetPrettyName() => PrettyName = $"{Item.Type} | {TgDataFormatUtils.GetFormatString(Item.HostName, 30)} | {Item.Port} | {Item.UserName}";
+	public async Task<TgEfStorageResult<TgEfProxyEntity>> SaveAsync(TgEfProxyEntity item) =>
+		await Repository.SaveAsync(item);
 
-	public override string ToString() => PrettyName;
-
-	public override string ToDebugString() => PrettyName;
+	public async Task<TgEfStorageResult<TgEfProxyEntity>> SaveAsync() =>
+		await Repository.SaveAsync(Dto.GetEntity());
 
 	#endregion
 }

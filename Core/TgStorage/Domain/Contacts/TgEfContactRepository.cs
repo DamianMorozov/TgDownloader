@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Contacts;
 
+/// <summary> Contact repository </summary>
 public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfContactEntity>(efContext)
 {
 	#region Public and private methods
@@ -31,28 +32,15 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public async Task<TgEfStorageResult<TgEfContactDto>> GetListDtoAsync(int take, int skip, bool isReadOnly = true)
+	public async Task<List<TgEfContactDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
-		IList<TgEfContactDto> items;
-		items = take > 0
+		var dtos = take > 0
 			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
-		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return dtos;
 	}
 
-	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectDto() => item => new TgEfContactDto
-	{
-		Uid = item.Uid,
-		Id = item.Id,
-		UserName = item.UserName ?? string.Empty,
-		DtChanged = $"{item.DtChanged:yyyy-MM-dd}",
-		IsContactActive = item.IsActive,
-		IsBot = item.IsBot,
-		FirstName = item.FirstName ?? string.Empty,
-		LastName = item.LastName ?? string.Empty,
-		Phone = item.PhoneNumber ?? string.Empty,
-		Status = item.Status ?? string.Empty,
-	}; 
+	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectDto() => item => new TgEfContactDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

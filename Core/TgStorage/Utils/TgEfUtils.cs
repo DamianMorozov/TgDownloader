@@ -96,8 +96,9 @@ public static class TgEfUtils
 			item.Uid = Guid.NewGuid();
 	}
 
-	private static TgEfContext? _efContext;
-	public static TgEfContext EfContext => _efContext ??= CreateEfContext();
+	//private static TgEfContext? _efContext;
+	//public static TgEfContext EfContext => _efContext ??= CreateEfContext();
+	public static TgEfContext EfContext => CreateEfContext();
 
 	public static TgEfContext CreateEfContext() => new();
 
@@ -137,8 +138,9 @@ public static class TgEfUtils
 		await efContext.CompactDbAsync();
 	}
 
+	//public static void RecreateEfContext() => _efContext = CreateEfContext();
 	/// <summary> Recreate </summary>
-	public static void RecreateEfContext() => _efContext = CreateEfContext();
+	public static void RecreateEfContext() => CreateEfContext();
 
 	///// <summary> Data transfer between storages </summary>
 	//public static async Task DataTransferBetweenStoragesAsync(TgEfContext efContextFrom, TgEfContext efContextTo, Action<string> logWrite)

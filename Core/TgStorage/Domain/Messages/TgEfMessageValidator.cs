@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Messages;
 
+/// <summary> Messagte validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfMessageValidator : TgEfValidatorBase<TgEfMessageEntity>
 {
@@ -11,11 +12,8 @@ public sealed class TgEfMessageValidator : TgEfValidatorBase<TgEfMessageEntity>
 	public TgEfMessageValidator()
 	{
 		RuleFor(item => item.Id)
-				.NotNull()
-				.GreaterThanOrEqualTo(0);
-		//RuleFor(item => item.SourceId)
-		//		.NotNull()
-		//		.GreaterThanOrEqualTo(0);
+			.NotNull()
+			.GreaterThanOrEqualTo(0);
 		RuleFor(item => item.DtCreated)
 			.NotNull();
 		RuleFor(item => item.Message)

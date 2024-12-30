@@ -3,23 +3,48 @@
 
 namespace TgStorage.Domain.Messages;
 
-/// <summary> View-model for TgSqlTableSourceModel </summary>
+/// <summary> Message view-model </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgEfMessageViewModel(TgEfMessageEntity message, Action<TgEfMessageViewModel> updateAction) : TgViewModelBase
+public sealed partial class TgEfMessageViewModel : TgEntityViewModelBase<TgEfMessageEntity>, ITgDtoViewModel
 {
 	#region Public and private fields, properties, constructor
 
-	public TgEfMessageEntity Message { get; set; } = message;
+	public override TgEfMessageRepository Repository { get; } = new(TgEfUtils.EfContext);
+	[ObservableProperty]
+	private TgEfMessageDto _dto = default!;
+	public Action<TgEfMessageViewModel> UpdateAction { get; set; } = _ => { };
 
-	public Action<TgEfMessageViewModel> UpdateAction { get; set; } = updateAction;
 
-	public TgEfMessageViewModel() : this(new(), _ => { }) { }
+	public TgEfMessageViewModel(TgEfMessageEntity item) : base()
+	{
+		Fill(item);
+	}
+
+	public TgEfMessageViewModel() : base()
+	{
+		TgEfMessageEntity item = Repository.GetNewItem();
+		Fill(item);
+	}
 
 	#endregion
 
 	#region Public and private methods
 
-	public override string ToString() => $"{Message}";
+	public override string ToString() => Dto.ToString() ?? string.Empty;
+
+	public override string ToDebugString() => Dto.ToDebugString();
+
+	public void Fill(TgEfMessageEntity item)
+	{
+		Dto ??= new();
+		Dto.Fill(item, isUidCopy: true);
+	}
+
+	public async Task<TgEfStorageResult<TgEfMessageEntity>> SaveAsync(TgEfMessageEntity item) =>
+		await Repository.SaveAsync(item);
+
+	public async Task<TgEfStorageResult<TgEfMessageEntity>> SaveAsync() =>
+		await Repository.SaveAsync(Dto.GetEntity());
 
 	#endregion
 }

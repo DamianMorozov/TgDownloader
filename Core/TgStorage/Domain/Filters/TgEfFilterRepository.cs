@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Filters;
 
+/// <summary> Filter repository </summary>
 public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfFilterEntity>(efContext)
 {
 	#region Public and private methods
@@ -31,24 +32,15 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.IsExists, item);
 	}
 
-	public async Task<TgEfStorageResult<TgEfFilterDto>> GetListDtoAsync(int take, int skip, bool isReadOnly = true)
+	public async Task<List<TgEfFilterDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
-		IList<TgEfFilterDto> items;
-		items = take > 0
+		var dtos = take > 0
 			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
-		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
+		return dtos;
 	}
 
-	private static Expression<Func<TgEfFilterEntity, TgEfFilterDto>> SelectDto() => item => new TgEfFilterDto
-	{
-		Uid = item.Uid,
-		IsEnabled = item.IsEnabled,
-		FilterType = item.GetStringForFilterType(),
-		Name = item.Name,
-		Mask = item.Mask,
-		Size = $"{item.Size} {item.SizeType}",
-	};
+	private static Expression<Func<TgEfFilterEntity, TgEfFilterDto>> SelectDto() => item => new TgEfFilterDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

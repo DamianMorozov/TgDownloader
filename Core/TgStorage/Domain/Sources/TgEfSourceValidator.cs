@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Sources;
 
+/// <summary> Source validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfSourceValidator : TgEfValidatorBase<TgEfSourceEntity>
 {

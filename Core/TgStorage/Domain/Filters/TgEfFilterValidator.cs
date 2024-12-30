@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Filters;
 
+/// <summary> Filter validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfFilterValidator : TgEfValidatorBase<TgEfFilterEntity>
 {

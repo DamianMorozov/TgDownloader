@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TgStorage.Migrations
 {
-    /// <inheritdoc />
-    public partial class AddedStories : Migration
+	/// <inheritdoc />
+	public partial class AddedStories : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

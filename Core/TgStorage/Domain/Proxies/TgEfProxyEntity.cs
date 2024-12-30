@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Proxies;
 
+/// <summary> Proxy entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Type))]

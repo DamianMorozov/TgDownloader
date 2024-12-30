@@ -3,21 +3,46 @@
 
 namespace TgStorage.Domain.Apps;
 
-/// <summary> View-model for TgSqlTableSourceModel </summary>
+/// <summary> App view-model </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfAppViewModel(TgEfAppEntity app) : TgViewModelBase
+public sealed partial class TgEfAppViewModel : TgEntityViewModelBase<TgEfAppEntity>, ITgDtoViewModel
 {
 	#region Public and private fields, properties, constructor
 
+	public override TgEfAppRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfAppEntity _app = app;
+	private TgEfAppDto _dto = default!;
+
+	public TgEfAppViewModel(TgEfAppEntity item) : base()
+	{
+		Fill(item);
+	}
+
+	public TgEfAppViewModel() : base()
+	{
+		var item = Repository.GetNewItem();
+		Fill(item);
+	}
 
 	#endregion
 
 	#region Public and private methods
 
-	public override string ToString() => $"{App}";
-	public override string ToDebugString() => $"{base.ToDebugString()} | {App}";
+	public override string ToString() => Dto.ToString() ?? string.Empty;
+
+	public override string ToDebugString() => Dto.ToDebugString();
+
+	public void Fill(TgEfAppEntity item)
+	{
+		Dto ??= new();
+		Dto.Fill(item, isUidCopy: true);
+	}
+
+	public async Task<TgEfStorageResult<TgEfAppEntity>> SaveAsync(TgEfAppEntity item) =>
+		await Repository.SaveAsync(item);
+
+	public async Task<TgEfStorageResult<TgEfAppEntity>> SaveAsync() =>
+		await Repository.SaveAsync(Dto.GetEntity());
 
 	#endregion
 }

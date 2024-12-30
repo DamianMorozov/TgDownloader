@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Documents;
 
+/// <summary> Document repository </summary>
 public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfDocumentEntity>(efContext)
 {
 	#region Public and private methods

@@ -5,7 +5,7 @@ using ValidationException = FluentValidation.ValidationException;
 
 namespace TgStorage.Common;
 
-public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, ITgEfRepository<TEntity>
+public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, ITgEfRepository<TEntity>
 	where TEntity : ITgDbFillEntity<TEntity>, new()
 {
 	#region Public and private fields, properties, constructor
@@ -111,8 +111,12 @@ public abstract class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCom
 	public TEntity GetItem(TEntity item, bool isReadOnly = true) => GetItemAsync(item, isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetNewAsync(bool isReadOnly = true) => await GetAsync(new(), isReadOnly);
+	
+	public virtual async Task<TEntity> GetNewItemAsync(bool isReadOnly = true) => (await GetNewAsync(isReadOnly)).Item;
 
 	public TgEfStorageResult<TEntity> GetNew(bool isReadOnly = true) => GetNewAsync(isReadOnly).GetAwaiter().GetResult();
+
+	public TEntity GetNewItem(bool isReadOnly = true) => GetNewItemAsync(isReadOnly).GetAwaiter().GetResult();
 
 	public virtual async Task<TgEfStorageResult<TEntity>> GetFirstAsync(bool isReadOnly = true) => await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
 

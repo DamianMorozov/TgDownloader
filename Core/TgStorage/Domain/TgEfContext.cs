@@ -4,7 +4,7 @@
 
 namespace TgStorage.Domain;
 
-/// <summary> DB context </summary>
+/// <summary> EF DB context </summary>
 public class TgEfContext : DbContext
 {
     #region Public and private fields, properties, constructor
@@ -29,7 +29,7 @@ public class TgEfContext : DbContext
     public DbSet<TgEfVersionEntity> Versions { get; set; } = default!;
     public static TgAppSettingsHelper TgAppSettings => TgAppSettingsHelper.Instance;
 
-	public bool IsReady => TgAppSettings.AppXml.IsExistsEfStorage;
+	public static bool IsXmlReady => TgAppSettings.AppXml.IsExistsEfStorage;
 
     #endregion
 

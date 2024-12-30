@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Versions;
 
+/// <summary> Version entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(Version), IsUnique = true)]

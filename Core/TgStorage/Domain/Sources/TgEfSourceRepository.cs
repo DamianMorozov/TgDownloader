@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Sources;
 
+/// <summary> Source repository </summary>
 public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfSourceEntity>(efContext)
 {
 	#region Public and private methods
@@ -31,6 +32,16 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 			: new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	public async Task<List<TgEfSourceDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
+	{
+		var dtos = take > 0
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
+		return dtos;
+	}
+
+	private static Expression<Func<TgEfSourceEntity, TgEfSourceDto>> SelectDto() => item => new TgEfSourceDto().GetDto(item);
+
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
 		IList<TgEfSourceEntity> items;
@@ -39,32 +50,6 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 			: await GetQuery(isReadOnly).ToListAsync();
 		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
 	}
-
-	public async Task<TgEfStorageResult<TgEfSourceDto>> GetListDtoAsync(int take, int skip, bool isReadOnly = true)
-	{
-		IList<TgEfSourceDto> items;
-		items = take > 0
-			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
-			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
-		return new(items.Any() ? TgEnumEntityState.IsExists : TgEnumEntityState.NotExists, items);
-	}
-
-	private static Expression<Func<TgEfSourceEntity, TgEfSourceDto>> SelectDto() => item => new TgEfSourceDto
-	{
-		Uid = item.Uid,
-		Id = item.Id,
-		SourceDtChanged = item.DtChanged,
-		DtChanged = $"{item.DtChanged:yyyy-MM-dd}",
-		AccessHash = item.AccessHash,
-		IsSourceActive = item.IsActive,
-		UserName = item.UserName ?? string.Empty,
-		Title = item.Title ?? string.Empty,
-		About = item.About ?? string.Empty,
-		FirstId = item.FirstId,
-		Count = item.Count,
-		Directory = item.Directory ?? string.Empty,
-		IsAutoUpdate = item.IsAutoUpdate,
-	};
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetListAsync(int take, int skip, Expression<Func<TgEfSourceEntity, bool>> where, bool isReadOnly = true)
 	{

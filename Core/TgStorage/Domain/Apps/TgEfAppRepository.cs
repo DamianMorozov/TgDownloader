@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Apps;
 
+/// <summary> App repository </summary>
 public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfAppEntity>(efContext), ITgEfAppRepository
 {
 	#region Public and private methods
@@ -30,6 +31,16 @@ public sealed class TgEfAppRepository(TgEfContext efContext) : TgEfRepositoryBas
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfAppEntity>(TgEnumEntityState.IsExists, item);
 	}
+
+	public async Task<List<TgEfAppDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
+	{
+		var dtos = take > 0
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
+		return dtos;
+	}
+
+	private static Expression<Func<TgEfAppEntity, TgEfAppDto>> SelectDto() => item => new TgEfAppDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfAppEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

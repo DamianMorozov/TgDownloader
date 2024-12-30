@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Filters;
 
+/// <summary> Filter entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(IsEnabled))]
@@ -48,16 +49,6 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
 	[ConcurrencyCheck]
 	[Column(TgEfConstants.ColumnSize, TypeName = "LONG(20)")]
 	public long Size { get; set; }
-
-	[NotMapped]
-	public long SizeAtBytes => SizeType switch
-	{
-		TgEnumFileSizeType.KBytes => Size * 1024,
-		TgEnumFileSizeType.MBytes => Size * 1024 * 1024,
-		TgEnumFileSizeType.GBytes => Size * 1024 * 1024 * 1024,
-		TgEnumFileSizeType.TBytes => Size * 1024 * 1024 * 1024 * 1024,
-		_ => Size,
-	};
 
 	[DefaultValue(TgEnumFileSizeType.Bytes)]
 	[ConcurrencyCheck]
@@ -106,10 +97,9 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
 		IsEnabled = item.IsEnabled;
 		FilterType = item.FilterType;
 		Name = item.Name;
-		//_mask = filter.Mask;
 		Mask = string.IsNullOrEmpty(item.Mask) &&
-				(Equals(item.FilterType, TgEnumFilterType.MinSize) ||
-				 Equals(item.FilterType, TgEnumFilterType.MaxSize)) ? "*" : item.Mask;
+			(Equals(item.FilterType, TgEnumFilterType.MinSize) ||
+			Equals(item.FilterType, TgEnumFilterType.MaxSize)) ? "*" : item.Mask;
 		Size = item.Size;
 		SizeType = item.SizeType;
 		return this;

@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Apps;
 
+/// <summary> App entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(ApiHash), IsUnique = true)]
@@ -26,24 +27,10 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
     [SQLite.Collation("NOCASE")]
     public Guid ApiHash { get; set; }
     
-    [NotMapped]
-    public string ApiHashString
-	{
-	    get => ApiHash.ToString();
-	    set => ApiHash = Guid.TryParse(value, out Guid apiHash) ? apiHash : Guid.Empty;
-    }
-
 	[DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnApiId, TypeName = "INT")]
     public int ApiId { get; set; }
-
-	[NotMapped]
-	public string ApiIdString
-	{
-		get => ApiId.ToString();
-		set => ApiId = int.TryParse(value, out int apiId) ? apiId : 0;
-	}
 
 	[DefaultValue("+00000000000")]
 	[ConcurrencyCheck]
@@ -98,14 +85,13 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 	{
 		if (isUidCopy)
 			Uid = item.Uid;
-		//Uid = item is { } entity ? entity.Uid : Guid.Empty;
 		if (ApiHash == this.GetDefaultPropertyGuid(nameof(ApiHash)))
 			ApiHash = item.ApiHash;
 	    ApiId = item.ApiId;
-	    PhoneNumber = item.PhoneNumber;
+		FirstName = item.FirstName;
+		LastName = item.LastName;
+		PhoneNumber = item.PhoneNumber;
 	    ProxyUid = item.ProxyUid;
-	    FirstName = item.FirstName;
-	    LastName = item.LastName;
 		return this;
     }
 

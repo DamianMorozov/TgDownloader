@@ -1,26 +1,27 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Stories;
+namespace TgStorage.Domain.Contacts;
 
-/// <summary> Story view-model </summary>
+/// <summary> Contact view-model </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgEfStoryViewModel : TgEntityViewModelBase<TgEfStoryEntity>, ITgDtoViewModel
+public sealed partial class TgEfFilterViewModel : TgEntityViewModelBase<TgEfFilterEntity>, ITgDtoViewModel
 {
 	#region Public and private fields, properties, constructor
 
-	public override TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
+	public override TgEfFilterRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfStoryDto _dto = default!;
+	private TgEfFilterDto _dto = default!;
 
-	public TgEfStoryViewModel(TgEfStoryEntity item) : base()
+
+	public TgEfFilterViewModel(TgEfFilterEntity item) : base()
 	{
 		Fill(item);
 	}
 
-	public TgEfStoryViewModel() : base()
+	public TgEfFilterViewModel() : base()
 	{
-		var item = Repository.GetNewItem();
+		TgEfFilterEntity item = Repository.GetNewItem();
 		Fill(item);
 	}
 
@@ -32,16 +33,16 @@ public sealed partial class TgEfStoryViewModel : TgEntityViewModelBase<TgEfStory
 
 	public override string ToDebugString() => Dto.ToDebugString();
 
-	public void Fill(TgEfStoryEntity item)
+	public void Fill(TgEfFilterEntity item)
 	{
 		Dto ??= new();
 		Dto.Fill(item, isUidCopy: true);
 	}
 
-	public async Task<TgEfStorageResult<TgEfStoryEntity>> SaveAsync(TgEfStoryEntity item) =>
+	public async Task<TgEfStorageResult<TgEfFilterEntity>> SaveAsync(TgEfFilterEntity item) =>
 		await Repository.SaveAsync(item);
 
-	public async Task<TgEfStorageResult<TgEfStoryEntity>> SaveAsync() =>
+	public async Task<TgEfStorageResult<TgEfFilterEntity>> SaveAsync() =>
 		await Repository.SaveAsync(Dto.GetEntity());
 
 	#endregion

@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Apps;
 
+/// <summary> App validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfAppValidator : TgEfValidatorBase<TgEfAppEntity>
 {

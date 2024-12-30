@@ -5,22 +5,29 @@ namespace TgStorage.Models;
 
 /// <summary> Download settings </summary>
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
+public sealed partial class TgDownloadSettingsViewModel : ObservableRecipient, ITgCommon
 {
 	#region Public and private fields, properties, constructor
 
-	public TgEfContactViewModel ContactVm { get; set; }
-	public TgEfSourceViewModel SourceVm { get; set; }
-	public TgEfStoryViewModel StoryVm { get; set; }
-	public TgEfVersionViewModel VersionVm { get; set; }
-	[DefaultValue(false)]
-	public bool IsRewriteFiles { get; set; }
-	[DefaultValue(false)]
-	public bool IsRewriteMessages { get; set; }
-	[DefaultValue(true)]
-	public bool IsJoinFileNameWithMessageId { get; set; }
+	[ObservableProperty]
+	private TgEfContactViewModel _contactVm;
+	[ObservableProperty]
+	private TgEfSourceViewModel _sourceVm;
+	[ObservableProperty]
+	private TgEfStoryViewModel _storyVm;
+	[ObservableProperty]
+	private TgEfVersionViewModel _versionVm;
+	[ObservableProperty]
+	private bool _isRewriteFiles;
+	[ObservableProperty]
+	private bool _isRewriteMessages;
+	[ObservableProperty]
+	private bool _isJoinFileNameWithMessageId;
+	[ObservableProperty]
 	[DefaultValue(5)]
-	public int CountThreads { get; set; }
+	private int _countThreads;
+	[ObservableProperty]
+	private TgDownloadChat _chat;
 
 	public TgDownloadSettingsViewModel()
 	{
@@ -28,11 +35,12 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
 		SourceVm = new();
 		StoryVm = new();
 		VersionVm = new();
-		
-		IsJoinFileNameWithMessageId = this.GetDefaultPropertyBool(nameof(IsJoinFileNameWithMessageId));
-		IsRewriteFiles = this.GetDefaultPropertyBool(nameof(IsRewriteFiles));
-		IsRewriteMessages = this.GetDefaultPropertyBool(nameof(IsRewriteMessages));
-		CountThreads = this.GetDefaultPropertyInt(nameof(CountThreads));
+		_chat = new();
+
+		IsJoinFileNameWithMessageId = true;
+		IsRewriteFiles = false;
+		IsRewriteMessages = false;
+		CountThreads = 5;
 	}
 
 	#endregion
@@ -44,28 +52,20 @@ public sealed class TgDownloadSettingsViewModel : ObservableObject, ITgCommon
     public async Task UpdateSourceWithSettingsAsync()
     {
         if (!SourceVm.Dto.IsReadySourceId) return;
-		var entity = TgEfHelper.ConvertToEntity(SourceVm.Dto);
-        var storageResult = await SourceVm.SourceRepository.SaveAsync(entity);
-		if (storageResult.IsExists)
-		{
-			SourceVm.Dto = TgEfHelper.ConvertToDto(storageResult.Item);
-		}
+		var entity = SourceVm.Dto.GetEntity();
+        _ = await SourceVm.SaveAsync(entity);
     }
 
     public async Task UpdateContactWithSettingsAsync()
     {
-        if (!ContactVm.IsReady) return;
-        var storageResult = await ContactVm.ContactRepository.SaveAsync(ContactVm.Item);
-        if (storageResult.IsExists)
-			ContactVm.Item = storageResult.Item;
+        if (!ContactVm.Dto.IsReady) return;
+        _ = await ContactVm.SaveAsync();
     }
 
     public async Task UpdateStoryWithSettingsAsync()
     {
-        if (!StoryVm.IsReady) return;
-        var storageResult = await StoryVm.StoryRepository.SaveAsync(StoryVm.Item);
-        if (storageResult.IsExists)
-			StoryVm.Item = storageResult.Item;
+        if (!StoryVm.Dto.IsReady) return;
+        _ = await StoryVm.SaveAsync();
     }
 
     #endregion

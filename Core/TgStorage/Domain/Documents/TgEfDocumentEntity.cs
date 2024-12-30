@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Documents;
 
+/// <summary> Document entity </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 [Index(nameof(Uid), IsUnique = true)]
 [Index(nameof(SourceId))]

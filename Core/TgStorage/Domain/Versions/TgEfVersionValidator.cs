@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Versions;
 
+/// <summary> Version validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfVersionValidator : TgEfValidatorBase<TgEfVersionEntity>
 {

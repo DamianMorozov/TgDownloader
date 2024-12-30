@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Messages;
 
+/// <summary> Messagte repository </summary>
 public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositoryBase<TgEfMessageEntity>(efContext)
 {
 	#region Public and private methods
@@ -33,6 +34,16 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 			? new(TgEnumEntityState.NotExists)
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
+
+	public async Task<List<TgEfMessageDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
+	{
+		var dtos = take > 0
+			? await GetQuery(isReadOnly).Skip(skip).Take(take).Select(SelectDto()).ToListAsync()
+			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
+		return dtos;
+	}
+
+	private static Expression<Func<TgEfMessageEntity, TgEfMessageDto>> SelectDto() => item => new TgEfMessageDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

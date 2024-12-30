@@ -3,6 +3,7 @@
 
 namespace TgStorage.Domain.Contacts;
 
+/// <summary> Contact validator </summary>
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed class TgEfContactValidator : TgEfValidatorBase<TgEfContactEntity>
 {
