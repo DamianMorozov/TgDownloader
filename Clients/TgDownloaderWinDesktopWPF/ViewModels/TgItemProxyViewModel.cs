@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderWinDesktopWPF.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -42,14 +44,14 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
     }
 
     public void SetItemProxyVm(TgEfProxyViewModel itemProxyVm) =>
-        SetItemProxyVm(itemProxyVm.Item);
+        SetItemProxyVm(itemProxyVm.Dto.GetEntity());
 
     public void SetItemProxyVm(TgEfProxyEntity proxy)
     {
-        ItemProxyVm.Item.Fill(proxy, isUidCopy: false);
+        ItemProxyVm.Dto.Fill(proxy, isUidCopy: false);
         TgEfProxyViewModel itemBackup = ItemProxyVm;
-        ItemProxyVm = new(itemBackup.Item);
-    }
+		ItemProxyVm = new() { Dto = itemBackup.Dto };
+	}
 
     // GetProxyFromStorageCommand
     [RelayCommand]
@@ -58,8 +60,8 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            if (ItemProxyVm.ProxyUid != Guid.Empty)
-                ProxyUid = ItemProxyVm.ProxyUid;
+            if (ItemProxyVm.Dto.Uid != Guid.Empty)
+                ProxyUid = ItemProxyVm.Dto.Uid;
             TgEfProxyEntity proxy = (await ProxyRepository.GetAsync(new TgEfProxyEntity { Uid = ProxyUid }, isReadOnly: false)).Item;
             SetItemProxyVm(proxy);
         }, true);
@@ -72,9 +74,10 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            if (ItemProxyVm.ProxyUid != Guid.Empty)
-                ProxyUid = ItemProxyVm.ProxyUid;
-            ItemProxyVm.Item = (await ProxyRepository.GetNewAsync(isReadOnly: false)).Item;
+            if (ItemProxyVm.Dto.Uid != Guid.Empty)
+                ProxyUid = ItemProxyVm.Dto.Uid;
+            var proxy = await ProxyRepository.GetNewItemAsync();
+            ItemProxyVm.Fill(proxy);
         }, false);
     }
 
@@ -85,7 +88,7 @@ public sealed partial class TgItemProxyViewModel : TgPageViewModelBase, INavigat
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            await ProxyRepository.SaveAsync(ItemProxyVm.Item);
+            await ProxyRepository.SaveAsync(ItemProxyVm.Dto.GetEntity());
         }, false);
     }
 

@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderWinDesktopWPF.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -64,8 +66,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         {
             if (SourcesVms[i].Dto.Id.Equals(sourceId))
             {
-                var entity = (await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceId })).Item;
-				SourcesVms[i].Dto = TgEfHelper.ConvertToDto(entity);
+                var entity = await SourceRepository.GetItemAsync(new TgEfSourceEntity { Id = sourceId });
+				SourcesVms[i].Dto = new TgEfSourceDto().Fill(entity, isUidCopy: true);
                 break;
             }
         }
@@ -95,7 +97,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             //    await ContextManager.SourceRepository.SaveAsync(sourceDefault);
             //    sources.Add(sourceDefault);
             //}
-            SetOrderSources(sources.Select(x => TgEfHelper.ConvertToDto(x)));
+            SetOrderSources(sources.Select(x => new TgEfSourceDto().Fill(x, isUidCopy: true)));
         }, false);
     }
 
@@ -196,7 +198,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 			TgEfStorageResult<TgEfSourceEntity> storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Dto.Id }, isReadOnly: false);
             if (!storageResult.IsExists)
             {
-                var entity = TgEfHelper.ConvertToEntity(sourceVm.Dto);
+                var entity = sourceVm.Dto.GetEntity();
                 await SourceRepository.SaveAsync(entity);
                 await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Dto.Id, 0, $"Saved source | {sourceVm.Dto}");
             }

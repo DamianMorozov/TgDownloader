@@ -79,8 +79,8 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             await Task.Delay(1);
             if (ItemSourceVm.Dto.Uid != SourceUid)
                 SourceUid = ItemSourceVm.Dto.Uid;
-            TgEfSourceEntity source = (await SourceRepository.GetAsync(new TgEfSourceEntity() { Uid = SourceUid })).Item;
-            var dto = TgEfHelper.ConvertToDto(source);
+            TgEfSourceEntity source = await SourceRepository.GetItemAsync(new TgEfSourceEntity() { Uid = SourceUid });
+            var dto = new TgEfSourceDto().Fill(source, isUidCopy: true);
 			SetItemSourceVm(dto);
         }, true);
     }
@@ -159,7 +159,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
 			// Update source from Telegram
 			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
-            var entity = TgEfHelper.ConvertToEntity(ItemSourceVm.Dto);
+            var entity = ItemSourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
             // Message
             await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Dto.Id, ItemSourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
@@ -229,7 +229,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
             var entity = (await SourceRepository.GetNewAsync()).Item;
-            ItemSourceVm.Dto = TgEfHelper.ConvertToDto(entity);
+            ItemSourceVm.Dto = new TgEfSourceDto().Fill(entity, isUidCopy: true);
         }, false);
     }
 
@@ -240,7 +240,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            var entity = TgEfHelper.ConvertToEntity(ItemSourceVm.Dto);
+            var entity = ItemSourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
         }, false);
 
@@ -279,7 +279,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 			    nameof(ItemSourceVm.Dto.Count) => ItemSourceVm.Dto.Count.ToString(),
 			    nameof(ItemSourceVm.Dto.Directory) => ItemSourceVm.Dto.Directory,
 			    nameof(ItemSourceVm.Dto.CurrentFileName) => ItemSourceVm.Dto.CurrentFileName,
-			    nameof(ItemSourceVm.Dto.SourceDtChangedString) => ItemSourceVm.Dto.SourceDtChangedString,
+			    nameof(ItemSourceVm.Dto.DtChangedString) => ItemSourceVm.Dto.DtChangedString,
 			    _ => string.Empty
 		    };
 		    Clipboard.SetText(value);

@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderWinDesktopWPF.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -78,7 +80,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            await ProxyRepository.DeleteAsync(proxyVm.Item);
+            await ProxyRepository.DeleteAsync(proxyVm.Dto.GetEntity());
             LoadProxiesFromStorageCommand.Execute(null);
             await TgDesktopUtils.TgClientVm.LoadProxiesForClientAsync();
         }, false).ConfigureAwait(false);

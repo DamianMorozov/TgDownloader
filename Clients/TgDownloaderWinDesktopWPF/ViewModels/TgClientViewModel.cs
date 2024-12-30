@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderWinDesktopWPF.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -109,14 +111,14 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            TgEfProxyEntity proxyNew = (await ProxyRepository.GetAsync(
-	            new TgEfProxyEntity { Uid = AppVm.App.ProxyUid ?? Guid.Empty })).Item;
+            var app = AppVm.Dto.GetEntity();
+            TgEfProxyEntity proxyNew = await ProxyRepository.GetItemAsync(new TgEfProxyEntity { Uid = app.ProxyUid ?? Guid.Empty });
             ProxiesVms = new();
             foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));
             }
-            if (!ProxiesVms.Select(p => p.Item.UserName).Contains(proxyNew.UserName))
+            if (!ProxiesVms.Select(p => p.Dto.UserName).Contains(proxyNew.UserName))
             {
                 ProxyVm = new(proxyNew);
                 ProxiesVms.Add(ProxyVm);
@@ -144,12 +146,12 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         switch (what)
         {
             case "api_hash":
-                string apiHash = TgDataFormatUtils.ParseGuidToString(AppVm.App.ApiHash);
+                string apiHash = TgDataFormatUtils.ParseGuidToString(AppVm.Dto.ApiHash);
                 return apiHash;
             case "api_id":
-                return AppVm.App.ApiId.ToString();
+                return AppVm.Dto.ApiId.ToString();
             case "phone_number":
-                return AppVm.App.PhoneNumber;
+                return AppVm.Dto.PhoneNumber;
             case "notifications":
                 return Notifications;
             case "first_name":
@@ -205,9 +207,9 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            if (!TgEfUtils.GetEfValid<TgEfAppEntity>(AppVm.App).IsValid)
+            if (!TgEfUtils.GetEfValid<TgEfAppEntity>(AppVm.Dto.GetEntity()).IsValid)
                 return;
-            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Item ?? ProxyVm.Item);
+            await TgDesktopUtils.TgClient.ConnectSessionAsync(proxyVm?.Dto.GetEntity() ?? ProxyVm.Dto.GetEntity());
         }, true);
 
         ServerMessage = TgDesktopUtils.TgClientVm.Exception.IsExist 
@@ -231,7 +233,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 	    await TgDesktopUtils.RunFuncAsync(this, async () =>
 	    {
 		    await Task.Delay(1);
-		    AppVm.App = await AppRepository.GetFirstItemAsync(isReadOnly: false);
+		    var app = await AppRepository.GetFirstItemAsync(isReadOnly: false);
+		    AppVm.Dto = new TgEfAppDto().GetDto(app);
 	    }, false).ConfigureAwait(false);
     }
 
@@ -243,7 +246,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         {
             await Task.Delay(1);
             await AppRepository.DeleteAllAsync();
-            await AppRepository.SaveAsync(AppVm.App);
+            await AppVm.SaveAsync();
         }, false).ConfigureAwait(false);
     }
 
@@ -254,7 +257,8 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            AppVm.App = (await AppRepository.GetNewAsync(isReadOnly: false)).Item;
+            var app = await AppRepository.GetNewItemAsync();
+            AppVm.Fill(app);
         }, false).ConfigureAwait(true);
     }
 
