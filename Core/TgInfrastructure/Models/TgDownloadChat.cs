@@ -1,14 +1,15 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgDownloader.Models;
+namespace TgInfrastructure.Models;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public class TgDownloadChat
+public sealed partial class TgDownloadChat : ObservableRecipient
 {
 	#region Public and private fields, properties, constructor
 
-	public TlChatBase? Base { get; set; }
+	[ObservableProperty]
+	private TL.ChatBase? _base;
 
 	#endregion
 
