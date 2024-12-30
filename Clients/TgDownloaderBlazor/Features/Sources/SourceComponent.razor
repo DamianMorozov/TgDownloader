@@ -1,6 +1,6 @@
 ﻿@page "/sources"
 @using TgStorage.Domain.Sources
-@inherits TgPageComponentEnumerable<TgStorage.Domain.Sources.TgEfSourceEntity>
+@inherits TgPageComponentEnumerable<TgEfSourceDto, TgEfSourceEntity>
 
 <PageTitle>@TgLocale.MenuMainSources</PageTitle>
 
@@ -13,13 +13,13 @@
 else
 {
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
-	<RadzenDataGrid Data="@Items" TItem="TgEfSourceEntity" AllowSorting="true">
+	<RadzenDataGrid Data="@Dtos" TItem="TgEfSourceDto" AllowSorting="true">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Id" Title=@TgLocale.FieldId SortProperty="Id" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="UserName" Title=@TgLocale.FieldUserName SortProperty="UserName" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Title" Title=@TgLocale.FieldTitle SortProperty="Title" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="FirstId" Title=@TgLocale.FieldFirstId SortProperty="FirstId" />
-			<RadzenDataGridColumn TItem="TgEfSourceEntity" Property="Count" Title=@TgLocale.FieldCount SortProperty="Count" />
+			<RadzenDataGridColumn TItem="TgEfSourceDto" Property="Id" Title=@TgLocale.FieldId SortProperty="Id" />
+			<RadzenDataGridColumn TItem="TgEfSourceDto" Property="UserName" Title=@TgLocale.FieldUserName SortProperty="UserName" />
+			<RadzenDataGridColumn TItem="TgEfSourceDto" Property="Title" Title=@TgLocale.FieldTitle SortProperty="Title" />
+			<RadzenDataGridColumn TItem="TgEfSourceDto" Property="FirstId" Title=@TgLocale.FieldFirstId SortProperty="FirstId" />
+			<RadzenDataGridColumn TItem="TgEfSourceDto" Property="Count" Title=@TgLocale.FieldCount SortProperty="Count" />
 		</Columns>
 	</RadzenDataGrid>
 }

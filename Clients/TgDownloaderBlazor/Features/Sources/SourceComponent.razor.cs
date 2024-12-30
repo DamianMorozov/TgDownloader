@@ -1,11 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Domain;
-
 namespace TgDownloaderBlazor.Features.Sources;
 
-public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntity>
+public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceDto, TgEfSourceEntity>
 {
 	#region Public and private fields, properties, constructor
 
@@ -28,8 +26,8 @@ public partial class SourceComponent : TgPageComponentEnumerable<TgEfSourceEntit
 		    return;
 	    }
 
-	    Items = (await SourceRepository.GetListAsync(0, 0))
-			.Items.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
+		Dtos = await SourceRepository.GetListDtosAsync(0, 0);
+		Dtos = Dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title);
         ItemsCount = await SourceRepository.GetCountAsync();
 
         IsBlazorLoading = false;

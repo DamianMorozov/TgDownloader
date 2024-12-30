@@ -1,11 +1,9 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Domain;
-
 namespace TgDownloaderBlazor.Features.Filters;
 
-public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntity>
+public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterDto, TgEfFilterEntity>
 {
     #region Public and private fields, properties, constructor
 
@@ -28,7 +26,7 @@ public partial class FilterComponent : TgPageComponentEnumerable<TgEfFilterEntit
 		    return;
 	    }
 
-		Items = (await FilterRepository.GetListAsync(0, 0)).Items;
+		Dtos = await FilterRepository.GetListDtosAsync(0, 0);
         ItemsCount = await FilterRepository.GetCountAsync();
 
         IsBlazorLoading = false;

@@ -1,5 +1,5 @@
 ﻿@page "/client"
-@inherits TgPageComponentEnumerable<TgStorage.Domain.Apps.TgEfAppEntity>
+@inherits TgPageComponentEnumerable<TgEfAppDto, TgEfAppEntity>
 
 <PageTitle>@TgLocale.MenuMainApps</PageTitle>
 
@@ -113,7 +113,7 @@ else
 				<RadzenText Text=@TgLocale.ServerMessage TextStyle="TextStyle.Body1" TextAlign="TextAlign.Center" Style="margin-top: 10px; " />
 			</RadzenColumn>
 			<RadzenColumn Size="8" SizeMD="8">
-				@if (Item is null)
+				@if (Dto is null)
 				{
 					<RadzenTextBox Value="" TextAlign="TextAlign.Justify" Style="width: 100%; " Disabled="true" />
 					<RadzenTextBox Value="" TextAlign="TextAlign.Justify" Style="width: 100%; " Disabled="true" />
@@ -127,9 +127,9 @@ else
 				}
 				else
 				{
-					<RadzenTextBox @bind-Value=@Item.ApiHashString TextAlign="TextAlign.Justify" Style="width: 100%; "/>
-					<RadzenTextBox @bind-Value=@Item.ApiIdString TextAlign="TextAlign.Justify" Style="width: 100%; " />
-					<RadzenTextBox @bind-Value=@Item.PhoneNumber TextAlign="TextAlign.Justify" Style="width: 100%; " />
+					<RadzenTextBox @bind-Value=@Dto.ApiHashString TextAlign="TextAlign.Justify" Style="width: 100%; "/>
+					<RadzenTextBox @bind-Value=@Dto.ApiIdString TextAlign="TextAlign.Justify" Style="width: 100%; " />
+					<RadzenTextBox @bind-Value=@Dto.PhoneNumber TextAlign="TextAlign.Justify" Style="width: 100%; " />
 					<RadzenTextBox Value="" TextAlign="TextAlign.Justify" Style="width: 100%; " Disabled="true" />
 					<RadzenTextBox Value="" TextAlign="TextAlign.Justify" Style="width: 100%; " Disabled="true" />
 					<RadzenTextBox Value="" TextAlign="TextAlign.Justify" Style="width: 100%; " Disabled="true" />

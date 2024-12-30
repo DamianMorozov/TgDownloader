@@ -1,15 +1,13 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Domain;
-
 namespace TgDownloaderBlazor.Features.Client;
 
-public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppEntity>
+public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppDto, TgEfAppEntity>
 {
 	#region Public and private fields, properties, constructor
 
-	private TgEfAppEntity? Item { get; set; }
+	private TgEfAppDto Dto { get; set; } = default!;
 	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
 
 	#endregion
@@ -28,7 +26,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 	        return;
 		}
 
-		Items = (await AppRepository.GetListAsync(0, 0)).Items.ToList();
+		Dtos = await AppRepository.GetListDtosAsync(0, 0);
         ItemsCount = await AppRepository.GetCountAsync();
         
         await OnClientLoad();
@@ -226,7 +224,8 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			Item = await AppRepository.GetFirstItemAsync();
+			var item = await AppRepository.GetFirstItemAsync();
+			Dto = new TgEfAppDto().GetDto(item);
 		}, message =>
 		{
 			NotificationService.Notify(new()
@@ -252,9 +251,10 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			if (Item is not null)
+			if (Dto is not null)
 			{
-				await AppRepository.SaveAsync(Item);
+				var item = Dto.GetEntity();
+				await AppRepository.SaveAsync(item);
 			}
 		}, message =>
 		{
@@ -284,7 +284,7 @@ public sealed partial class ClientComponent : TgPageComponentEnumerable<TgEfAppE
 		{
 			await Task.Delay(1).ConfigureAwait(false);
 			await using TgEfContext efContext = await EfFactory.CreateDbContextAsync();
-			Item = new();
+			Dto = new();
 		}, message =>
 		{
 			NotificationService.Notify(new()

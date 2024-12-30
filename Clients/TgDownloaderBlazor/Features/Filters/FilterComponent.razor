@@ -1,6 +1,6 @@
 ﻿@page "/filters"
 @using TgStorage.Domain.Filters
-@inherits TgPageComponentEnumerable<TgStorage.Domain.Filters.TgEfFilterEntity>
+@inherits TgPageComponentEnumerable<TgEfFilterDto, TgEfFilterEntity>
 
 <PageTitle>@TgLocale.MenuMainFilters</PageTitle>
 
@@ -13,14 +13,14 @@
 else
 {
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
-	<RadzenDataGrid Data="@Items" TItem="TgEfFilterEntity">
+	<RadzenDataGrid Data="@Dtos" TItem="TgEfFilterDto">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="IsEnabled" Title=@TgLocale.FieldIsEnabled  />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="FilterType" Title=@TgLocale.FieldFilterType />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Name" Title=@TgLocale.FieldName />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Mask" Title=@TgLocale.FieldMask />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="Size" Title=@TgLocale.FieldSize />
-			<RadzenDataGridColumn TItem="TgEfFilterEntity" Property="SizeType" Title=@TgLocale.FieldSizeType />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="IsEnabled" Title=@TgLocale.FieldIsEnabled />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="FilterType" Title=@TgLocale.FieldFilterType />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="Name" Title=@TgLocale.FieldName />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="Mask" Title=@TgLocale.FieldMask />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="Size" Title=@TgLocale.FieldSize />
+			<RadzenDataGridColumn TItem="TgEfFilterDto" Property="SizeType" Title=@TgLocale.FieldSizeType />
 		</Columns>
 	</RadzenDataGrid>
 }

@@ -3,13 +3,13 @@
 
 namespace TgDownloaderBlazor.Common;
 
-public abstract class TgPageComponentEnumerable<TEntity> : TgPageComponentBase where TEntity : ITgDbEntity, new()
+public abstract class TgPageComponentEnumerable<ITgDto, TEntity> : TgPageComponentBase //where TDto : ITgDto<TDto, TEntity>
 {
 	#region Public and private fields, properties, constructor
 
-    protected RadzenDataGrid<TEntity> Grid { get; set; } = new();
+    protected RadzenDataGrid<ITgDto> Grid { get; set; } = new();
 	protected string SearchString { get; set; } = string.Empty;
-	protected IEnumerable<TEntity> Items { get; set; } = new List<TEntity>();
+	protected IEnumerable<ITgDto> Dtos { get; set; } = [];
 	protected int ItemsCount { get; set; }
     protected string ItemsSummaryString => $"{TgLocale.FoundRows}: {ItemsCount}";
 

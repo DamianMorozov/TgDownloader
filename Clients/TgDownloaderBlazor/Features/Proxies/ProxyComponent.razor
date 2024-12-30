@@ -1,6 +1,6 @@
 ﻿@page "/proxies"
 @using TgStorage.Domain.Proxies
-@inherits TgPageComponentEnumerable<TgStorage.Domain.Proxies.TgEfProxyEntity>
+@inherits TgPageComponentEnumerable<TgEfProxyDto, TgEfProxyEntity>
 
 <PageTitle>@TgLocale.MenuMainProxies</PageTitle>
 
@@ -13,14 +13,14 @@
 else
 {
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
-	<RadzenDataGrid Data="@Items" TItem="TgEfProxyEntity">
+	<RadzenDataGrid Data="@Dtos" TItem="TgEfProxyDto">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Type" Title=@TgLocale.FieldType  />
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="HostName" Title=@TgLocale.FieldHostname />
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Port" Title=@TgLocale.FieldPort />
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="UserName" Title=@TgLocale.FieldUserName />
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Password" Title=@TgLocale.ProxiesUserPassword />
-			<RadzenDataGridColumn TItem="TgEfProxyEntity" Property="Secret" Title=@TgLocale.ProxiesUserSecret />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="Type" Title=@TgLocale.FieldType />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="HostName" Title=@TgLocale.FieldHostname />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="Port" Title=@TgLocale.FieldPort />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="UserName" Title=@TgLocale.FieldUserName />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="Password" Title=@TgLocale.ProxiesUserPassword />
+			<RadzenDataGridColumn TItem="TgEfProxyDto" Property="Secret" Title=@TgLocale.ProxiesUserSecret />
 		</Columns>
 	</RadzenDataGrid>
 }

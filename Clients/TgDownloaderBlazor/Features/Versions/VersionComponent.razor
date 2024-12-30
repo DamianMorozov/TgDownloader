@@ -1,6 +1,6 @@
 ﻿@page "/versions"
 @using TgStorage.Domain.Versions
-@inherits TgDownloaderBlazor.Common.TgPageComponentEnumerable<TgStorage.Domain.Versions.TgEfVersionEntity>
+@inherits TgPageComponentEnumerable<TgEfVersionDto, TgEfVersionEntity>
 
 <PageTitle>@TgLocale.MenuMainVersions</PageTitle>
 
@@ -13,10 +13,10 @@
 else
 {
 	<RadzenLabel Text="@ItemsSummaryString"></RadzenLabel>
-	<RadzenDataGrid Data="@Items" TItem="TgEfVersionEntity">
+	<RadzenDataGrid Data="@Dtos" TItem="TgEfVersionDto">
 		<Columns>
-			<RadzenDataGridColumn TItem="TgEfVersionEntity" Property="Version" Title=@TgLocale.FieldVersion  />
-			<RadzenDataGridColumn TItem="TgEfVersionEntity" Property="Description" Title=@TgLocale.FieldDescription />
+			<RadzenDataGridColumn TItem="TgEfVersionDto" Property="Version" Title=@TgLocale.FieldVersion />
+			<RadzenDataGridColumn TItem="TgEfVersionDto" Property="Description" Title=@TgLocale.FieldDescription />
 		</Columns>
 	</RadzenDataGrid>
 }
