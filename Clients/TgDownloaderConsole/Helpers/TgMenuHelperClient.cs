@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -119,7 +121,7 @@ internal partial class TgMenuHelper
 
 	private string? ConfigConsole(string what)
 	{
-		var appNew = AppRepository.GetNew().Item;
+		var appNew = AppRepository.GetNewItem();
 		var app = AppRepository.GetFirstItem(isReadOnly: false);
 		switch (what)
 		{

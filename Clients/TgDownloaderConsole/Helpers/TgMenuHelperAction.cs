@@ -195,7 +195,7 @@ internal partial class TgMenuHelper
 				async Task UpdateStateContactAsync(long id, string firstName, string lastName, string userName)
 				{
 					statusContext.Status(TgLog.GetMarkupString(
-						$"{GetStatus(tgDownloadSettings.ContactVm.SourceScanCount, id),15} | {firstName,20} | {lastName,20} | {userName,20}"));
+						$"{GetStatus(tgDownloadSettings.ContactVm.Dto.SourceScanCount, id),15} | {firstName,20} | {lastName,20} | {userName,20}"));
 					statusContext.Refresh();
 					await Task.CompletedTask;
 				}
@@ -203,7 +203,7 @@ internal partial class TgMenuHelper
 				async Task UpdateStateStoryAsync(long id, string caption)
 				{
 					statusContext.Status(TgLog.GetMarkupString(
-						$"{GetStatus(tgDownloadSettings.StoryVm.SourceScanCount, id),15} | {caption,30}"));
+						$"{GetStatus(tgDownloadSettings.StoryVm.Dto.SourceScanCount, id),15} | {caption,30}"));
 					statusContext.Refresh();
 					await Task.CompletedTask;
 				}

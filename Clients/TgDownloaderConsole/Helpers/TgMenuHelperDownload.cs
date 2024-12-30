@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -106,8 +108,8 @@ internal partial class TgMenuHelper
 	private async Task<TgDownloadSettingsViewModel> SetupDownloadSourceAsync(long? id = null)
 	{
 		TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSourceCore(id);
-		_ = await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
-		await LoadTgClientSettingsAsync(tgDownloadSettings, isSkipLoadFirstId: false, isSkipLoadDirectory: true);
+		await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 		return tgDownloadSettings;
 	}
 
@@ -141,12 +143,9 @@ internal partial class TgMenuHelper
 
 	private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		TgDownloadChat chat = await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
-		if (chat.Base is not null)
-		{
-			await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings, chat.Base);
-			await LoadTgClientSettingsAsync(tgDownloadSettings, true, false);
-		}
+		await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
+		await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings);
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private async Task SetupDownloadSourceFirstIdManualAsync(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -155,7 +154,7 @@ internal partial class TgMenuHelper
 		{
 			tgDownloadSettings.SourceVm.Dto.FirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgSourceFirstId}:"));
 		} while (!tgDownloadSettings.SourceVm.Dto.IsReadySourceFirstId);
-		await LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private void SetupDownloadDestDirectory(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -195,15 +194,12 @@ internal partial class TgMenuHelper
 
 	private async Task SetTgDownloadCountThreadsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		do
-		{
-			tgDownloadSettings.CountThreads = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetCountThreads}:"));
-			if (tgDownloadSettings.CountThreads < 1)
-				tgDownloadSettings.CountThreads = 1;
-			else if (tgDownloadSettings.CountThreads > 20)
-				tgDownloadSettings.CountThreads = 20;
-		} while (!tgDownloadSettings.SourceVm.Dto.IsReadySourceFirstId);
-		await LoadTgClientSettingsAsync(tgDownloadSettings, true, true);
+		tgDownloadSettings.CountThreads = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetCountThreads}:"));
+		if (tgDownloadSettings.CountThreads < 1)
+			tgDownloadSettings.CountThreads = 1;
+		else if (tgDownloadSettings.CountThreads > 20)
+			tgDownloadSettings.CountThreads = 20;
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private async Task UpdateSourceWithSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -213,16 +209,10 @@ internal partial class TgMenuHelper
 		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.FirstId, TgLocale.SettingsSource);
 	}
 
-	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSkipLoadFirstId, bool isSkipLoadDirectory)
+	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		int sourceFirstId = tgDownloadSettings.SourceVm.Dto.FirstId;
-		string sourceDirectory = tgDownloadSettings.SourceVm.Dto.Directory;
-		TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
-		tgDownloadSettings.SourceVm.Dto = TgEfHelper.ConvertToDto(source);
-		if (isSkipLoadFirstId)
-			tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId;
-		if (isSkipLoadDirectory)
-			tgDownloadSettings.SourceVm.Dto.Directory = sourceDirectory;
+		var source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
+		tgDownloadSettings.SourceVm.Dto = new TgEfSourceDto().Fill(source, isUidCopy: true);
 	}
 
 	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)

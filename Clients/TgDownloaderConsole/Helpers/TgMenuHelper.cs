@@ -2,6 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using TgInfrastructure.Contracts;
+using TgInfrastructure.Enums;
+
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -104,9 +107,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	{
 		// App version
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
-		TgEfVersionEntity version = !EfContext.IsTableExists(TgEfConstants.TableVersions) 
-            ? new() 
-			: (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).
+		TgEfVersionEntity version = (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
 
@@ -116,9 +117,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(TgAppSettings.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Storage settings
-		table.AddRow(new Markup(EfContext.IsReady
+		table.AddRow(new Markup(TgEfContext.IsXmlReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(TgEfContext.IsXmlReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// TG client settings
 		table.AddRow(new Markup(TgClient.IsReady ?
@@ -174,9 +175,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <param name="table"></param>
 	internal async Task FillTableRowsStorageAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		table.AddRow(new Markup(EfContext.IsReady
+		table.AddRow(new Markup(TgEfContext.IsXmlReady
 				? TgLocale.InfoMessage(TgLocale.MenuMainStorage) : TgLocale.WarningMessage(TgLocale.MenuMainStorage)),
-			new Markup(EfContext.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
+			new Markup(TgEfContext.IsXmlReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 		await Task.CompletedTask;
 	}
 
@@ -281,12 +282,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Contact info </summary>
 	internal async Task FillTableRowsDownloadedContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.ContactVm.IsReady)
+		if (!tgDownloadSettings.ContactVm.Dto.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsContact)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var contact = (await ContactRepository.GetAsync(new() { Id = tgDownloadSettings.ContactVm.Id })).Item;
+			var contact = (await ContactRepository.GetAsync(new() { Id = tgDownloadSettings.ContactVm.Dto.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsContact)),
 				new Markup(TgLog.GetMarkupString(contact.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -302,7 +303,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
+			var source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -313,12 +314,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Story info </summary>
 	internal async Task FillTableRowsDownloadedStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.StoryVm.IsReady)
+		if (!tgDownloadSettings.StoryVm.Dto.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsStory)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			var story = (await StoryRepository.GetAsync(new() { Id = tgDownloadSettings.StoryVm.Id })).Item;
+			var story = (await StoryRepository.GetAsync(new() { Id = tgDownloadSettings.StoryVm.Dto.Id })).Item;
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsStory)),
 				new Markup(TgLog.GetMarkupString(story.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -334,7 +335,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
-			TgEfSourceEntity source = (await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id })).Item;
+			TgEfSourceEntity source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
@@ -504,7 +505,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			{
 				string sourceId = parts[0].TrimEnd(' ');
 				if (long.TryParse(sourceId, out long id))
-					return (await SourceRepository.GetAsync(new() { Id = id })).Item;
+					return await SourceRepository.GetItemAsync(new() { Id = id });
 			}
 		}
 		return new();
