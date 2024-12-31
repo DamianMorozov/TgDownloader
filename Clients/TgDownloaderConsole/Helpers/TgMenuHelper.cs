@@ -298,7 +298,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Source info </summary>
 	internal async Task FillTableRowsDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
@@ -330,7 +330,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	/// <summary> Version info </summary>
 	internal async Task FillTableRowsDownloadedVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
-		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
 			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else

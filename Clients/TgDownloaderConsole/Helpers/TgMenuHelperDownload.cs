@@ -107,9 +107,9 @@ internal partial class TgMenuHelper
 
 	private async Task<TgDownloadSettingsViewModel> SetupDownloadSourceAsync(long? id = null)
 	{
-		TgDownloadSettingsViewModel tgDownloadSettings = SetupDownloadSourceCore(id);
-		await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
+		var tgDownloadSettings = SetupDownloadSourceCore(id);
 		await LoadTgClientSettingsAsync(tgDownloadSettings);
+		await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
 		return tgDownloadSettings;
 	}
 
@@ -127,7 +127,7 @@ internal partial class TgMenuHelper
 				if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out long sourceId))
 				{
 					tgDownloadSettings.SourceVm.Dto.Id = sourceId;
-					isCheck = tgDownloadSettings.SourceVm.Dto.IsReadySourceId;
+					isCheck = tgDownloadSettings.SourceVm.Dto.IsReady;
 				}
 				else
 				{
@@ -143,18 +143,18 @@ internal partial class TgMenuHelper
 
 	private async Task SetupDownloadSourceFirstIdAutoAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 		await TgClient.CreateChatAsync(tgDownloadSettings, isSilent: true);
 		await TgClient.SetChannelMessageIdFirstAsync(tgDownloadSettings);
-		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private async Task SetupDownloadSourceFirstIdManualAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 		do
 		{
 			tgDownloadSettings.SourceVm.Dto.FirstId = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.TypeTgSourceFirstId}:"));
 		} while (!tgDownloadSettings.SourceVm.Dto.IsReadySourceFirstId);
-		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private void SetupDownloadDestDirectory(TgDownloadSettingsViewModel tgDownloadSettings)
@@ -194,18 +194,17 @@ internal partial class TgMenuHelper
 
 	private async Task SetTgDownloadCountThreadsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
+		await LoadTgClientSettingsAsync(tgDownloadSettings);
 		tgDownloadSettings.CountThreads = AnsiConsole.Ask<int>(TgLog.GetLineStampInfo($"{TgLocale.MenuDownloadSetCountThreads}:"));
 		if (tgDownloadSettings.CountThreads < 1)
 			tgDownloadSettings.CountThreads = 1;
 		else if (tgDownloadSettings.CountThreads > 20)
 			tgDownloadSettings.CountThreads = 20;
-		await LoadTgClientSettingsAsync(tgDownloadSettings);
 	}
 
 	private async Task UpdateSourceWithSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await tgDownloadSettings.UpdateSourceWithSettingsAsync();
-		// Refresh
 		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.FirstId, TgLocale.SettingsSource);
 	}
 
