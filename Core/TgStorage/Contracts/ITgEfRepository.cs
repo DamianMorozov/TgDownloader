@@ -57,7 +57,7 @@ public interface ITgEfRepository<TEntity> where TEntity : ITgDbFillEntity<TEntit
 
 	#region Public and private methods - Write
 
-	public Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity item);
+	public Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity item, bool isFirstTry = true);
 	public TgEfStorageResult<TEntity> Save(TEntity item);
 	public Task<TgEfStorageResult<TEntity>> SaveListAsync(List<TEntity> items);
 	public TgEfStorageResult<TEntity> SaveList(List<TEntity> items);

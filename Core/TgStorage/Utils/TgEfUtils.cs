@@ -48,6 +48,9 @@ public static class TgEfUtils
 
 	public static bool IsPercentCountAll(TgEfSourceEntity source) => source.Count <= source.FirstId;
 
+	/// <summary> Validate entity </summary>
+	/// <typeparam name="TEntity"> Type of entity </typeparam>
+	/// <param name="item"> Entity </param>
 	public static ValidationResult GetEfValid<TEntity>(TEntity item) where TEntity : ITgDbFillEntity<TEntity>, new() =>
 		item switch
 		{
@@ -63,6 +66,9 @@ public static class TgEfUtils
 			_ => new() { Errors = [new ValidationFailure(nameof(item), "Type error!")] }
 		};
 
+	/// <summary> Normilize entity </summary>
+	/// <typeparam name="TEntity"> Type of entity </typeparam>
+	/// <param name="item"> Entity </param>
 	public static void Normilize<TEntity>(TEntity item) where TEntity : ITgDbFillEntity<TEntity>, new()
 	{
 		switch (item)

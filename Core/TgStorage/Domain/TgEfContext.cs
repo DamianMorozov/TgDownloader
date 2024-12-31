@@ -96,33 +96,30 @@ public class TgEfContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-		//// Magic string - Define the model
-		//// Concurrency tokens
-		//// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
+		// Magic string - Define the model
+		// Concurrency tokens
+		// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
+		// https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/concurrency?view=aspnetcore-9.0&source=docs
 		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
-		//modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(x => x.RowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
-		//modelBuilder.Entity<TgEfAppEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfDocumentEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfFilterEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfMessageEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfProxyEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfSourceEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfVersionEntity>().Property<byte[]>(TgEfConstants.ColumnRowVersion).IsRowVersion().HasColumnName(TgEfConstants.ColumnRowVersion);
-		//// Ignore
-		//modelBuilder.Entity<TgEfAppEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfDocumentEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfFilterEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfMessageEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfProxyEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfSourceEntity>().Ignore(TgEfConstants.ColumnRowVersion);
-		//modelBuilder.Entity<TgEfVersionEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfAppEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfContactEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfDocumentEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfFilterEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfMessageEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfProxyEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfSourceEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfStoryEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfVersionEntity>().Property(x => x.RowVersion).IsRowVersion();
+		// Ignore
+		modelBuilder.Entity<TgEfAppEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfContactEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfDocumentEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfFilterEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfMessageEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfProxyEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfSourceEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfStoryEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfVersionEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 
 		// Apps
 		modelBuilder.Entity<TgEfAppEntity>(entity =>

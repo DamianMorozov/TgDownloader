@@ -228,14 +228,14 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 
 	#region Public and private methods - Write
 
-	public virtual async Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity? item)
+	public virtual async Task<TgEfStorageResult<TEntity>> SaveAsync(TEntity? item, bool isFirstTry = true)
 	{
 		await TransactionSemaphore.WaitAsync();
 		IDbContextTransaction transaction = await EfContext.Database.BeginTransactionAsync();
-		TgEfStorageResult<TEntity>? storageResult = null;
+		TgEfStorageResult<TEntity> storageResult = new(TgEnumEntityState.Unknown, item);
 		await using (transaction)
 		{
-			if (item is null) return new(TgEnumEntityState.Unknown, item);
+			if (item is null) return storageResult;
 			try
 			{
 				// Load actual entity
@@ -267,7 +267,21 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 #if DEBUG
 				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
 #endif
-				throw;
+				// Retry
+				if (isFirstTry)
+				{
+					var entry = ex.Entries.Single();
+					var databaseValues = await entry.GetDatabaseValuesAsync();
+					if (databaseValues is null)
+					{
+						throw new Exception("The record you attempted to edit was deleted!");
+					}
+					entry.OriginalValues.SetValues(databaseValues);
+					TransactionSemaphore.Release();
+					await SaveAsync(item, isFirstTry: false);
+				}
+				else
+					throw;
 			}
 			catch (Exception ex)
 			{
@@ -279,7 +293,8 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 			}
 			finally
 			{
-				TransactionSemaphore.Release();
+				if (isFirstTry)
+					TransactionSemaphore.Release();
 			}
 			return storageResult;
 		}

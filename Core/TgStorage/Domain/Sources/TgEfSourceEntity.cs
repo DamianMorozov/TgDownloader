@@ -27,6 +27,10 @@ public sealed class TgEfSourceEntity : ITgDbEntity, ITgDbFillEntity<TgEfSourceEn
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
+	[Timestamp]
+	[Column(TgEfConstants.ColumnRowVersion)]
+	public byte[]? RowVersion { get; set; }
+
 	[DefaultValue("0001-01-01 00:00:00")]
 	[ConcurrencyCheck]
 	[Column(TgEfConstants.ColumnDtChanged, TypeName = "DATETIME")]

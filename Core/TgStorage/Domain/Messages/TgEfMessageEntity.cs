@@ -23,6 +23,10 @@ public sealed class TgEfMessageEntity : ITgDbEntity, ITgDbFillEntity<TgEfMessage
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
+	[Timestamp]
+	[Column(TgEfConstants.ColumnRowVersion)]
+	public byte[]? RowVersion { get; set; }
+
 	[DefaultValue(0)]
     [ConcurrencyCheck]
     [Column(TgEfConstants.ColumnSourceId, TypeName = "LONG(20)")]

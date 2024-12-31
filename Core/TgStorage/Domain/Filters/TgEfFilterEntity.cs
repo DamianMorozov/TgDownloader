@@ -23,6 +23,10 @@ public sealed class TgEfFilterEntity : ITgDbEntity, ITgDbFillEntity<TgEfFilterEn
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
+	[Timestamp]
+	[Column(TgEfConstants.ColumnRowVersion)]
+	public byte[]? RowVersion { get; set; }
+
 	[DefaultValue(true)]
 	[ConcurrencyCheck]
 	[Column(TgEfConstants.ColumnIsEnabled, TypeName = "BIT")]

@@ -18,8 +18,6 @@ public sealed class TgEfAppValidator : TgEfValidatorBase<TgEfAppEntity>
 		RuleFor(item => item.PhoneNumber)
 			.NotEmpty()
 			.NotNull();
-		//RuleFor(item => item.ProxyUid)
-		//	.NotNull();
 	}
 
 	#endregion

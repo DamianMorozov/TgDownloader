@@ -9,6 +9,7 @@ public interface ITgDbEntity : ITgCommon
 	#region Public and private fields, properties, constructor
 
 	public Guid Uid { get; set; }
+	public byte[]? RowVersion { get; set; }
 
 	#endregion
 

@@ -19,6 +19,10 @@ public sealed class TgEfVersionEntity : ITgDbEntity, ITgDbFillEntity<TgEfVersion
 	[SQLite.Collation("NOCASE")]
 	public Guid Uid { get; set; }
 
+	[Timestamp]
+	[Column(TgEfConstants.ColumnRowVersion)]
+	public byte[]? RowVersion { get; set; }
+
 	[DefaultValue(1024)]
     [MaxLength(4)]
     [ConcurrencyCheck]
