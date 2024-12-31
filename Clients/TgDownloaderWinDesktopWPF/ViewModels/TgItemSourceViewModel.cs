@@ -9,7 +9,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
     #region Public and private fields, properties, constructor
 
     private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
-    public TgEfSourceViewModel ItemSourceVm { get; } = new();
+    public TgEfSourceViewModel SourceVm { get; } = new();
     public Visibility ChartVisibility { get; private set; } = Visibility.Hidden;
     private LineSeries LineSerie { get; set; } = new()
     {
@@ -19,7 +19,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	    PointGeometry = null,
     };
     private Stopwatch SwDownloadChart { get; set; } = Stopwatch.StartNew();
-	public SeriesCollection FileSpeedSeries { get; } = new();
+	public SeriesCollection FileSpeedSeries { get; } = [];
 	public List<string> FileSpeedFormatterX { get; set; } = ["0", "1"];
 	public Func<long, string> FileSpeedFormatterY { get; set; } = value => value.ToString();
 	public TgPageViewModelBase? ViewModel { get; set; }
@@ -47,7 +47,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
     private async Task UpdateStateItemSourceAsync(long sourceId)
     {
-	    if (ItemSourceVm.Dto.Id.Equals(sourceId))
+	    if (SourceVm.Dto.Id.Equals(sourceId))
 	    {
 		    await OnGetSourceFromStorageAsync();
 	    }
@@ -67,7 +67,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 
     public void SetItemSourceVm(TgEfSourceDto dto)
     {
-        ItemSourceVm.Dto.Fill(dto, isUidCopy: false);
+        SourceVm.Dto.Fill(dto, isUidCopy: false);
     }
 
     // GetSourceFromStorageCommand
@@ -77,8 +77,8 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            if (ItemSourceVm.Dto.Uid != SourceUid)
-                SourceUid = ItemSourceVm.Dto.Uid;
+            if (SourceVm.Dto.Uid != SourceUid)
+                SourceUid = SourceVm.Dto.Uid;
             TgEfSourceEntity source = await SourceRepository.GetItemAsync(new TgEfSourceEntity() { Uid = SourceUid });
             var dto = new TgEfSourceDto().Fill(source, isUidCopy: true);
 			SetItemSourceVm(dto);
@@ -93,7 +93,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 	    {
 		    await Task.Delay(1);
 			// Download job.
-			if (!string.IsNullOrEmpty(fileName) && !isFileNewDownload && ItemSourceVm.Dto.Id.Equals(sourceId))
+			if (!string.IsNullOrEmpty(fileName) && !isFileNewDownload && SourceVm.Dto.Id.Equals(sourceId))
             {
 				// Download chart job.
 				if (fileSize > FileSizeMinSizeMonitoring && SwDownloadChart.Elapsed.Seconds > 5)
@@ -107,11 +107,11 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 					ChartVisibility = Visibility.Hidden;
 				}
 				// Download status job.
-				ItemSourceVm.Dto.FirstId = messageId;
-				ItemSourceVm.Dto.CurrentFileName = fileName;
-                ItemSourceVm.Dto.CurrentFileSize = fileSize;
-                ItemSourceVm.Dto.CurrentFileTransmitted = transmitted;
-                ItemSourceVm.Dto.CurrentFileSpeed = fileSpeed;
+				SourceVm.Dto.FirstId = messageId;
+				SourceVm.Dto.CurrentFileName = fileName;
+                SourceVm.Dto.CurrentFileSize = fileSize;
+                SourceVm.Dto.CurrentFileTransmitted = transmitted;
+                SourceVm.Dto.CurrentFileSpeed = fileSpeed;
 			}
 			// Download reset.
 			else
@@ -119,7 +119,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 				ChartVisibility = Visibility.Hidden;
 				// Download chart reset.
 				SwDownloadChart = Stopwatch.StartNew();
-				ItemSourceVm.Dto.CurrentFileName = fileName;
+				SourceVm.Dto.CurrentFileName = fileName;
 				LineSerie = new()
 				{
 					Title = fileName,
@@ -127,15 +127,15 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 					StrokeThickness = 0.5,
 					PointGeometry = null,
 				};
-				FileSpeedFormatterX = new List<string>();
+				FileSpeedFormatterX = [];
 				FileSpeedSeries.Clear();
 				FileSpeedSeries.Add(LineSerie);
 				// Download status reset.
-				ItemSourceVm.Dto.FirstId = messageId;
-				ItemSourceVm.Dto.CurrentFileName = string.Empty;
-				ItemSourceVm.Dto.CurrentFileSize = 0;
-				ItemSourceVm.Dto.CurrentFileTransmitted = 0;
-				ItemSourceVm.Dto.CurrentFileSpeed = 0;
+				SourceVm.Dto.FirstId = messageId;
+				SourceVm.Dto.CurrentFileName = string.Empty;
+				SourceVm.Dto.CurrentFileSize = 0;
+				SourceVm.Dto.CurrentFileTransmitted = 0;
+				SourceVm.Dto.CurrentFileSpeed = 0;
 			}
 		}, true);
     }
@@ -150,19 +150,19 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            if (ItemSourceVm.Dto.Uid != SourceUid)
-				SourceUid = ItemSourceVm.Dto.Uid;
+            if (SourceVm.Dto.Uid != SourceUid)
+				SourceUid = SourceVm.Dto.Uid;
             // Collect chats from Telegram
             if (!TgDesktopUtils.TgClient.DicChatsAll.Any())
                 await TgDesktopUtils.TgClient.CollectAllChatsAsync();
 			// Download settings
-            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
+            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(SourceVm);
 			// Update source from Telegram
-			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(ItemSourceVm, tgDownloadSettings);
-            var entity = ItemSourceVm.Dto.GetEntity();
+			await TgDesktopUtils.TgClient.UpdateSourceDbAsync(SourceVm, tgDownloadSettings);
+            var entity = SourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
             // Message
-            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Dto.Id, ItemSourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, false);
 
         await OnGetSourceFromStorageAsync();
@@ -182,20 +182,20 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         {
             await Task.Delay(1);
             // Check directory.
-            if (!Directory.Exists(ItemSourceVm.Dto.Directory))
+            if (!Directory.Exists(SourceVm.Dto.Directory))
             {
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Dto.Id, ItemSourceVm.Dto.FirstId,
-                    $"Directory is not exists! {ItemSourceVm.Dto.Directory}");
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId,
+                    $"Directory is not exists! {SourceVm.Dto.Directory}");
                 result = false;
                 return;
             }
 
             // Download settings.
-            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(ItemSourceVm);
+            TgDownloadSettingsViewModel tgDownloadSettings = TgDesktopUtils.TgDownloadsVm.CreateDownloadSettings(SourceVm);
             SwDownloadChart = Stopwatch.StartNew();
 			// Job.
 			await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(ItemSourceVm.Dto.Id, ItemSourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
         }, true);
 
         await OnGetSourceFromStorageAsync();
@@ -212,7 +212,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
 	        await Task.Delay(1).ConfigureAwait(false);
-	        ItemSourceVm.Dto.SetIsDownload(false);
+	        SourceVm.Dto.SetIsDownload(false);
         }, true);
 
         await OnGetSourceFromStorageAsync();
@@ -229,7 +229,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             //if (ItemSourceVm.SourceUid != SourceUid)
             //    SourceUid = ItemSourceVm.SourceUid;
             var entity = (await SourceRepository.GetNewAsync()).Item;
-            ItemSourceVm.Dto = new TgEfSourceDto().Fill(entity, isUidCopy: true);
+            SourceVm.Dto = new TgEfSourceDto().Fill(entity, isUidCopy: true);
         }, false);
     }
 
@@ -240,7 +240,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
             await Task.Delay(1);
-            var entity = ItemSourceVm.Dto.GetEntity();
+            var entity = SourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
         }, false);
 
@@ -271,15 +271,15 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 		    await Task.Delay(1);
 		    string value = fieldName switch
 		    {
-			    nameof(ItemSourceVm.Dto.Id) => ItemSourceVm.Dto.Id.ToString(),
-			    nameof(ItemSourceVm.Dto.UserName) => ItemSourceVm.Dto.UserName,
-			    nameof(ItemSourceVm.Dto.Title) => ItemSourceVm.Dto.Title,
-			    nameof(ItemSourceVm.Dto.About) => ItemSourceVm.Dto.About,
-			    nameof(ItemSourceVm.Dto.FirstId) => ItemSourceVm.Dto.FirstId.ToString(),
-			    nameof(ItemSourceVm.Dto.Count) => ItemSourceVm.Dto.Count.ToString(),
-			    nameof(ItemSourceVm.Dto.Directory) => ItemSourceVm.Dto.Directory,
-			    nameof(ItemSourceVm.Dto.CurrentFileName) => ItemSourceVm.Dto.CurrentFileName,
-			    nameof(ItemSourceVm.Dto.DtChangedString) => ItemSourceVm.Dto.DtChangedString,
+			    nameof(SourceVm.Dto.Id) => SourceVm.Dto.Id.ToString(),
+			    nameof(SourceVm.Dto.UserName) => SourceVm.Dto.UserName,
+			    nameof(SourceVm.Dto.Title) => SourceVm.Dto.Title,
+			    nameof(SourceVm.Dto.About) => SourceVm.Dto.About,
+			    nameof(SourceVm.Dto.FirstId) => SourceVm.Dto.FirstId.ToString(),
+			    nameof(SourceVm.Dto.Count) => SourceVm.Dto.Count.ToString(),
+			    nameof(SourceVm.Dto.Directory) => SourceVm.Dto.Directory,
+			    nameof(SourceVm.Dto.CurrentFileName) => SourceVm.Dto.CurrentFileName,
+			    nameof(SourceVm.Dto.DtChangedString) => SourceVm.Dto.DtChangedString,
 			    _ => string.Empty
 		    };
 		    Clipboard.SetText(value);

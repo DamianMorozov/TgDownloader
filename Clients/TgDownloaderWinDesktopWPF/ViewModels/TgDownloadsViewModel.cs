@@ -8,7 +8,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
 {
     #region Public and private fields, properties, constructor
 
-    public ObservableCollection<TgEfDownloadViewModel> DownloadVms { get; set; } = new();
+    public ObservableCollection<TgEfDownloadViewModel> DownloadVms { get; set; } = [];
 
     #endregion
 
@@ -35,7 +35,7 @@ public sealed partial class TgDownloadsViewModel : TgPageViewModelBase, INavigat
     {
 	    List<TgEfDownloadViewModel> list = downloadVms.ToList();
 	    if (!list.Any()) return;
-	    DownloadVms = new();
+	    DownloadVms = [];
 
 	    downloadVms = [.. list.OrderBy(x => x.DownloadSetting.SourceVm.Dto.UserName).ThenBy(x => x.DownloadSetting.SourceVm.Dto.Title)];
 	    if (downloadVms.Any())

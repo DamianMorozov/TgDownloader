@@ -6,11 +6,11 @@ namespace TgDownloaderWinDesktopWPF.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
 {
-	public ObservableCollection<INavigationControl> NavigationItems { get; set; } = new();
+	public ObservableCollection<INavigationControl> NavigationItems { get; set; } = [];
 
-	public ObservableCollection<INavigationControl> NavigationFooter { get; set; } = new();
+	public ObservableCollection<INavigationControl> NavigationFooter { get; set; } = [];
 
-	public ObservableCollection<MenuItem> TrayMenuItems { get; set; } = new();
+	public ObservableCollection<MenuItem> TrayMenuItems { get; set; } = [];
 
 	public TgMainWindowViewModel(INavigationService navigationService) : base()
 	{
@@ -37,9 +37,9 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
         //contextMenuAdvanced.Items.Add(navigationItemAutoViewEvents);
         //Label labelAdvanced = new() { Content = "Button 1", CommandBindings = { new CommandBinding() }};
         //navigationItemAdvanced.Content = contextMenuAdvanced;
-        NavigationItems = new()
-        {
-            new NavigationItem
+        NavigationItems =
+		[
+			new NavigationItem
             {
                 Content = "Home",
                 PageTag =  "page_home",
@@ -74,28 +74,28 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
             //    Icon = SymbolRegular.DataBarHorizontal24,
             //    PageType = typeof(TgDownloadsPage),
             //},
-        };
+        ];
 
-        NavigationFooter = new()
-        {
-            new NavigationItem
+        NavigationFooter =
+		[
+			new NavigationItem
             {
                 Content = TgLocaleHelper.Instance.MenuMainSettings,
                 PageTag = "page_settings",
                 Icon = SymbolRegular.Settings24,
                 PageType = typeof(TgSettingsPage)
             }
-        };
+        ];
 
-        TrayMenuItems = new()
-        {
-            new () { Header = "Home", Tag = "page_home" },
+        TrayMenuItems =
+		[
+			new () { Header = "Home", Tag = "page_home" },
             new() { Header = "Client", Tag = "page_client" },
             new() { Header = "Proxies", Tag = "page_proxies" },
             new() { Header = "Sources", Tag = "page_sources" },
             new() { Header = "Downloads", Tag = "page_downloads" },
             new() { Header = "Settings", Tag = "page_settings" },
-        };
+        ];
 
         IsInitialized = true;
 	}

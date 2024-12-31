@@ -10,7 +10,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 {
 	#region Public and private fields, properties, constructor
 
-	public ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; set; } = new();
+	public ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; set; } = [];
 	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 
 	#endregion
@@ -38,7 +38,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
 	{
         List<TgEfProxyEntity> list = proxies.ToList();
         if (!list.Any()) return;
-        ProxiesVms = new();
+        ProxiesVms = [];
 
         proxies = list.OrderBy(x => x.Port).ThenBy(x => x.HostName).ToList();
         if (proxies.Any())
@@ -69,7 +69,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            ProxiesVms = new();
+            ProxiesVms = [];
         }, false).ConfigureAwait(true);
 	}
 

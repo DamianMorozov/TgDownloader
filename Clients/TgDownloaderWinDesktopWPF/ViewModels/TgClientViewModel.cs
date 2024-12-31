@@ -71,7 +71,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
     {
         AppVm = new(AppRepository.GetFirstItem(isReadOnly: false));
         ProxyVm = new(new());
-        ProxiesVms = new();
+        ProxiesVms = [];
 
         FirstName = string.Empty;
         LastName = string.Empty;
@@ -113,7 +113,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
             await Task.Delay(1);
             var app = AppVm.Dto.GetEntity();
             TgEfProxyEntity proxyNew = await ProxyRepository.GetItemAsync(new TgEfProxyEntity { Uid = app.ProxyUid ?? Guid.Empty });
-            ProxiesVms = new();
+            ProxiesVms = [];
             foreach (TgEfProxyEntity proxy in (await ProxyRepository.GetListAsync(TgEnumTableTopRecords.All, 0, isReadOnly: false)).Items)
             {
                 ProxiesVms.Add(new(proxy));

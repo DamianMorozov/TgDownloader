@@ -10,7 +10,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
 {
     #region Public and private fields, properties, constructor
 
-    public ObservableCollection<TgEfSourceViewModel> SourcesVms { get; set; } = new();
+    public ObservableCollection<TgEfSourceViewModel> SourcesVms { get; set; } = [];
     private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
 
     #endregion
@@ -36,7 +36,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     {
         var list = dtos.ToList();
         if (!list.Any()) return;
-        SourcesVms = new();
+        SourcesVms = [];
 
         dtos = list.OrderBy(x => x.UserName).ThenBy(x => x.Title).ToList();
         if (dtos.Any())
@@ -152,7 +152,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
         await TgDesktopUtils.RunFuncAsync(this, async () =>
         {
             await Task.Delay(1);
-            SourcesVms = new();
+            SourcesVms = [];
         }, false);
     }
 
@@ -223,7 +223,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             {
                 if (SourcesVms[i].Dto.Id.Equals(sourceVm.Dto.Id))
                 {
-                    SourcesVms[i].Dto.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Dto, isUidCopy: false);
+                    SourcesVms[i].Dto.Fill(TgDesktopUtils.TgItemSourceVm.SourceVm.Dto, isUidCopy: false);
                     break;
                 }
             }
