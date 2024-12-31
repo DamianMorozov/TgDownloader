@@ -49,24 +49,11 @@ public sealed partial class TgDownloadSettingsViewModel : ObservableRecipient, I
 
     public string ToDebugString() => $"{SourceVm.ToDebugString()}";
 
-    public async Task UpdateSourceWithSettingsAsync()
-    {
-        if (!SourceVm.Dto.IsReadySourceId) return;
-		var entity = SourceVm.Dto.GetEntity();
-        _ = await SourceVm.SaveAsync(entity);
-    }
+    public async Task UpdateSourceWithSettingsAsync() => await SourceVm.SaveAsync();
 
-    public async Task UpdateContactWithSettingsAsync()
-    {
-        if (!ContactVm.Dto.IsReady) return;
-        _ = await ContactVm.SaveAsync();
-    }
+    public async Task UpdateContactWithSettingsAsync() => await ContactVm.SaveAsync();
 
-    public async Task UpdateStoryWithSettingsAsync()
-    {
-        if (!StoryVm.Dto.IsReady) return;
-        _ = await StoryVm.SaveAsync();
-    }
+    public async Task UpdateStoryWithSettingsAsync() => await StoryVm.SaveAsync();
 
     #endregion
 }

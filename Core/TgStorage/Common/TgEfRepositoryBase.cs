@@ -238,25 +238,36 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 			if (item is null) return new(TgEnumEntityState.Unknown, item);
 			try
 			{
+				// Load actual entity
 				storageResult = await GetAsync(item, isReadOnly: false);
-				// Create
+				// Entity is not exists - Create
 				if (!storageResult.IsExists)
 				{
 					await EfContext.AddAsync(storageResult.Item);
 				}
-				// Update
+				// Entity is exists - Update
 				else
 				{
 					storageResult.Item.Fill(item, isUidCopy: false);
 				}
-				// Validate
-				FluentValidation.Results.ValidationResult validationResult = TgEfUtils.GetEfValid(storageResult.Item);
+				// Validate entity
+				var validationResult = TgEfUtils.GetEfValid(storageResult.Item);
 				if (!validationResult.IsValid)
 					throw new ValidationException(validationResult.Errors);
+				// Normilize entity
 				TgEfUtils.Normilize(storageResult.Item);
+				// Save entity
 				await EfContext.SaveChangesAsync();
 				await transaction.CommitAsync();
 				storageResult.State = TgEnumEntityState.IsSaved;
+			}
+			catch (DbUpdateConcurrencyException ex)
+			{
+				await transaction.RollbackAsync();
+#if DEBUG
+				Debug.WriteLine(ex, TgConstants.LogTypeStorage);
+#endif
+				throw;
 			}
 			catch (Exception ex)
 			{

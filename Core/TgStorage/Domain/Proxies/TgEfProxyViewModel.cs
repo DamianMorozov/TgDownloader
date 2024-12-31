@@ -40,9 +40,6 @@ public sealed partial class TgEfProxyViewModel : TgEntityViewModelBase<TgEfProxy
 		Dto.Fill(item, isUidCopy: true);
 	}
 
-	public async Task<TgEfStorageResult<TgEfProxyEntity>> SaveAsync(TgEfProxyEntity item) =>
-		await Repository.SaveAsync(item);
-
 	public async Task<TgEfStorageResult<TgEfProxyEntity>> SaveAsync() =>
 		await Repository.SaveAsync(Dto.GetEntity());
 

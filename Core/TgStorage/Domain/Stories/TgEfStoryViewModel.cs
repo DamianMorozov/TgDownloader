@@ -38,9 +38,6 @@ public sealed partial class TgEfStoryViewModel : TgEntityViewModelBase<TgEfStory
 		Dto.Fill(item, isUidCopy: true);
 	}
 
-	public async Task<TgEfStorageResult<TgEfStoryEntity>> SaveAsync(TgEfStoryEntity item) =>
-		await Repository.SaveAsync(item);
-
 	public async Task<TgEfStorageResult<TgEfStoryEntity>> SaveAsync() =>
 		await Repository.SaveAsync(Dto.GetEntity());
 

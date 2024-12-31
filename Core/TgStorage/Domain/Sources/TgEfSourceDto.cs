@@ -61,11 +61,10 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 		(CurrentFileSpeed == 0 ? "{0:0.00}" : $"{(float)CurrentFileSpeed / 1024:### 000.00}") + " KB/sec";
 	public string CurrentFileSpeedMBString =>
 		(CurrentFileSpeed == 0 ? "{0:0.00}" : $"{(float)CurrentFileSpeed / 1024 / 1024:##0.00}") + " MB/sec";
-	public bool IsReadySourceId => Id > 0;
 	public bool IsReadySourceDirectory => !string.IsNullOrEmpty(Directory) && System.IO.Directory.Exists(Directory);
 	public string IsReadySourceDirectoryDescription => IsReadySourceDirectory
 		? $"{TgLocaleHelper.Instance.TgDirectoryIsExists}." : $"{TgLocaleHelper.Instance.TgDirectoryIsNotExists}!";
-	public bool IsReady => IsReadySourceId && IsReadySourceDirectory;
+	public bool IsReady => Id > 0;
 	public bool IsReadySourceFirstId => FirstId > 0;
 
 	#endregion

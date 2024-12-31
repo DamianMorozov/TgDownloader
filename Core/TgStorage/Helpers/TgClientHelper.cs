@@ -284,7 +284,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
 
-		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReady)
 		{
 			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
 			foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
@@ -327,7 +327,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
 
-		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReady)
 		{
 			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
 			foreach (KeyValuePair<long, ChatBase> chat in DicChatsAll)
@@ -366,7 +366,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		if (!DicChatsAll.Any())
 			await CollectAllChatsAsync();
-		if (tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (tgDownloadSettings.SourceVm.Dto.IsReady)
 		{
 			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
 			var chatBase = DicChatsAll.FirstOrDefault(x => x.Key.Equals(tgDownloadSettings.SourceVm.Dto.Id)).Value;
@@ -387,9 +387,9 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		if (tgDownloadSettings.SourceVm.Dto.Id is 0)
 			tgDownloadSettings.SourceVm.Dto.Id = await GetPeerIdAsync(tgDownloadSettings.SourceVm.Dto.UserName);
-		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
 			tgDownloadSettings.SourceVm.Dto.Id = ReduceChatId(tgDownloadSettings.SourceVm.Dto.Id);
-		if (!tgDownloadSettings.SourceVm.Dto.IsReadySourceId)
+		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
 			return null;
 		Bots_BotInfo? botInfo = null;
 		if (Me is not null)
@@ -1117,8 +1117,8 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 
 	public async Task CreateChatAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
-		var source = await SourceRepository
-			.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id }, isReadOnly: false);
+		var dto = tgDownloadSettings.SourceVm.Dto;
+		var source = await SourceRepository.GetItemAsync(new() { Id = dto.Id }, isReadOnly: false);
 		await CreateChatBaseCoreAsync(tgDownloadSettings);
 		if (tgDownloadSettings.Chat.Base is ChatBase chatBase && await IsChatBaseAccessAsync(chatBase))
 		{
@@ -1132,8 +1132,13 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 				source.About = chatBaseFull.About;
 			}
 		}
+
+		source.Directory = dto.Directory;
+		source.FirstId = dto.FirstId;
+
 		await SourceRepository.SaveAsync(source);
 		tgDownloadSettings.SourceVm.Fill(source);
+		source = null;
 	}
 
 	/// <summary> Update source from Telegram </summary>
@@ -1573,7 +1578,10 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 
 			var dirExists = await CreateDestDirectoryIfNotExistsAsync(tgDownloadSettings);
 			if (!dirExists)
+			{
+				tgDownloadSettings.SourceVm.Dto.FirstId = tgDownloadSettings.SourceVm.Dto.Count;
 				return;
+			}
 
 			tgDownloadSettings.SourceVm.Dto.SetIsDownload(true);
 			var isAccessToMessages = await Client.Channels_ReadMessageContents(tgDownloadSettings.Chat.Base as Channel);
