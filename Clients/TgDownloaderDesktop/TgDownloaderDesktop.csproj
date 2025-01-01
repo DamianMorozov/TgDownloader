@@ -64,6 +64,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\TgClientPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\TgFiltersPage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -73,7 +76,7 @@
     <Page Update="Views\TgSourcesPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\TgClientPage.xaml">
+    <Page Update="Views\TgStoriesPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

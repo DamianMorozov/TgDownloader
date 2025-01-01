@@ -1,5 +1,5 @@
 ﻿<Page
-	x:Class="TgDownloaderDesktop.Views.TgContactsPage"
+	x:Class="TgDownloaderDesktop.Views.TgStoriesPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
@@ -161,43 +161,9 @@
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
-								<!--  Is active  -->
+								<!--  Date  -->
 								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnIsActive"
-									Width="Auto"
-									CanUserReorder="True"
-									CanUserSort="True">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<ToggleButton
-												Margin="2"
-												HorizontalAlignment="Center"
-												VerticalAlignment="Center"
-												IsChecked="{Binding IsContactActive, Mode=OneWay}"
-												IsEnabled="False" />
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
-								<!--  Is bot  -->
-								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnIsBot"
-									Width="Auto"
-									CanUserReorder="True"
-									CanUserSort="True">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<ToggleButton
-												Margin="2"
-												HorizontalAlignment="Center"
-												VerticalAlignment="Center"
-												IsChecked="{Binding IsBot, Mode=OneWay}"
-												IsEnabled="False" />
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
-								<!--  User name  -->
-								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnUserName"
+									x:Uid="TemplateColumnDate"
 									Width="Auto"
 									CanUserReorder="True"
 									CanUserSort="True">
@@ -208,13 +174,30 @@
 												HorizontalAlignment="Stretch"
 												VerticalAlignment="Center"
 												HorizontalTextAlignment="Left"
-												Text="{Binding UserName, Mode=OneWay}" />
+												Text="{Binding Date, Mode=OneWay}" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
-								<!--  First name  -->
+								<!--  Expire date  -->
 								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnFirstName"
+									x:Uid="TemplateColumnExpireDate"
+									Width="Auto"
+									CanUserReorder="True"
+									CanUserSort="True">
+									<controls:DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<TextBlock
+												Margin="2"
+												HorizontalAlignment="Stretch"
+												VerticalAlignment="Center"
+												HorizontalTextAlignment="Left"
+												Text="{Binding ExpireDate, Mode=OneWay}" />
+										</DataTemplate>
+									</controls:DataGridTemplateColumn.CellTemplate>
+								</controls:DataGridTemplateColumn>
+								<!--  Caption  -->
+								<controls:DataGridTemplateColumn
+									x:Uid="TemplateColumnCaption"
 									Width="3.0*"
 									CanUserReorder="True"
 									CanUserSort="True">
@@ -225,58 +208,7 @@
 												HorizontalAlignment="Stretch"
 												VerticalAlignment="Center"
 												HorizontalTextAlignment="Left"
-												Text="{Binding FirstName, Mode=OneWay}" />
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
-								<!--  Last name  -->
-								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnLastName"
-									Width="3.0*"
-									CanUserReorder="True"
-									CanUserSort="True">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<TextBlock
-												Margin="2"
-												HorizontalAlignment="Stretch"
-												VerticalAlignment="Center"
-												HorizontalTextAlignment="Left"
-												Text="{Binding LastName, Mode=OneWay}" />
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
-								<!--  Phone  -->
-								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnPhone"
-									Width="3.0*"
-									CanUserReorder="True"
-									CanUserSort="True">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<TextBlock
-												Margin="2"
-												HorizontalAlignment="Stretch"
-												VerticalAlignment="Center"
-												HorizontalTextAlignment="Left"
-												Text="{Binding Phone, Mode=OneWay}" />
-										</DataTemplate>
-									</controls:DataGridTemplateColumn.CellTemplate>
-								</controls:DataGridTemplateColumn>
-								<!--  Status  -->
-								<controls:DataGridTemplateColumn
-									x:Uid="TemplateColumnStatus"
-									Width="3.0*"
-									CanUserReorder="True"
-									CanUserSort="True">
-									<controls:DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<TextBlock
-												Margin="2"
-												HorizontalAlignment="Stretch"
-												VerticalAlignment="Center"
-												HorizontalTextAlignment="Left"
-												Text="{Binding Status, Mode=OneWay}" />
+												Text="{Binding Caption, Mode=OneWay}" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>

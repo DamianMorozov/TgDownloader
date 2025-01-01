@@ -8,9 +8,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfSourceRepository SourceRepository { get; } = new(TgEfUtils.EfContext);
+    private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfSourceDto> _sourcesVms = [];
+	private ObservableCollection<TgEfSourceDto> _dtos = [];
 	[ObservableProperty]
 	private bool _isReady;
 	//public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
@@ -74,17 +74,17 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (!dtos.Any())
 			return;
-		SourcesVms = [];
+		Dtos = [];
 		dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
-				SourcesVms.Add(dto);
+				Dtos.Add(dto);
 	}
 
 	//private async Task UpdateSourcesFromTelegramAsync()
 	//{
 	//	if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
-	//	foreach (TgEfSourceViewModel sourceVm in SourcesVms)
+	//	foreach (TgEfSourceViewModel sourceVm in Dtos)
 	//		await UpdateSourceFromTelegramAsync(sourceVm);
 	//}
 
@@ -101,8 +101,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	//	var storageResult = await SourceRepository.GetAsync(new TgEfSourceEntity { Id = sourceVm.Item.Id }, isReadOnly: false);
 	//	if (storageResult.IsExists)
 	//		sourceVm = new(storageResult.Item);
-	//	if (!SourcesVms.Select(x => x.SourceId).Contains(sourceVm.SourceId))
-	//		SourcesVms.Add(sourceVm);
+	//	if (!Dtos.Select(x => x.SourceId).Contains(sourceVm.SourceId))
+	//		Dtos.Add(sourceVm);
 	//	await SaveSourceAsync(sourceVm);
 	//}
 
@@ -118,7 +118,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var dtos = await SourceRepository.GetListDtosAsync(take: 0, skip: 0);
+		var dtos = await Repository.GetListDtosAsync(take: 0, skip: 0);
 		SetOrderData(dtos);
 	}
 
@@ -126,13 +126,13 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
 	private async Task ClearDataStorageCoreAsync()
 	{
-		SourcesVms.Clear();
+		Dtos.Clear();
 		await Task.CompletedTask;
 	}
 
 	private async Task DefaultSortAsync()
 	{
-		SetOrderData(SourcesVms);
+		SetOrderData(Dtos);
 		await Task.CompletedTask;
 	}
 
@@ -153,11 +153,11 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	//	//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
 	//	//await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
 
-	//	//for (int i = 0; i < SourcesVms.Count; i++)
+	//	//for (int i = 0; i < Dtos.Count; i++)
 	//	//{
-	//	//	if (SourcesVms[i].SourceId.Equals(sourceVm.SourceId))
+	//	//	if (Dtos[i].SourceId.Equals(sourceVm.SourceId))
 	//	//	{
-	//	//		SourcesVms[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
+	//	//		Dtos[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
 	//	//		break;
 	//	//	}
 	//	//}

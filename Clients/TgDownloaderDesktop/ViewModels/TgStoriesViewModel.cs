@@ -4,20 +4,20 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgContactsViewModel : TgPageViewModelBase
+public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
+    private TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfContactDto> _dtos = [];
+	private ObservableCollection<TgEfStoryDto> _dtos = [];
 	[ObservableProperty]
 	private bool _isReady;
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
 
-	public TgContactsViewModel(ITgSettingsService settingsService) : base(settingsService)
+	public TgStoriesViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
@@ -46,13 +46,13 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfContactDto> dtos)
+	private void SetOrderData(IEnumerable<TgEfStoryDto> dtos)
 	{
-		List<TgEfContactDto> list = dtos.ToList();
+		List<TgEfStoryDto> list = dtos.ToList();
 		if (!list.Any())
 			return;
 		Dtos = [];
-		dtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.FirstName).ThenBy(x => x.LastName)];
+		dtos = [.. list.OrderBy(x => x.DtChanged).ThenBy(x => x.FromName)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
 				Dtos.Add(dto);

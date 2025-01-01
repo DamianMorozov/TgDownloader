@@ -48,6 +48,7 @@ global using TgStorage.Domain.Contacts;
 global using TgStorage.Domain.Filters;
 global using TgStorage.Domain.Proxies;
 global using TgStorage.Domain.Sources;
+global using TgStorage.Domain.Stories;
 global using TgStorage.Models;
 global using TgStorage.Utils;
 global using Windows.ApplicationModel;

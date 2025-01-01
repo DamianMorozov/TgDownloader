@@ -85,6 +85,9 @@
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Sources</value>
   </data>
+  <data name="Shell_Stories.Content" xml:space="preserve">
+    <value>Stories</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Loading...</value>
   </data>
@@ -567,6 +570,12 @@
   <data name="TemplateColumnUpdated.Header" xml:space="preserve">
     <value>Updated</value>
   </data>
+  <data name="TemplateColumnDate.Header" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="TemplateColumnExpireDate.Header" xml:space="preserve">
+    <value>Expires</value>
+  </data>
   <data name="TemplateColumnUserName.Header" xml:space="preserve">
     <value>User name</value>
   </data>
@@ -614,6 +623,9 @@
   </data>
   <data name="TemplateColumnSize.Header" xml:space="preserve">
     <value>Size</value>
+  </data>
+  <data name="TemplateColumnCaption.Header" xml:space="preserve">
+    <value>Caption</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Wait until the data download is complete</value>

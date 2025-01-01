@@ -148,7 +148,7 @@
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
-							Text="{x:Bind ViewModel.SourcesVms.Count, Mode=OneWay}"
+							Text="{x:Bind ViewModel.Dtos.Count, Mode=OneWay}"
 							TextAlignment="Center" />
 
 					</Grid>
@@ -173,7 +173,7 @@
 							Background="Transparent"
 							CanUserSortColumns="True"
 							HeadersVisibility="Column"
-							ItemsSource="{x:Bind ViewModel.SourcesVms, Mode=OneWay}">
+							ItemsSource="{x:Bind ViewModel.Dtos, Mode=OneWay}">
 							<controls:DataGrid.Columns>
 								<!--  Get from storage  -->
 								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnEdit" Width="0.5*">

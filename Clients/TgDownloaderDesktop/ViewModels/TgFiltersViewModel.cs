@@ -8,9 +8,9 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfFilterRepository FilterRepository { get; } = new(TgEfUtils.EfContext);
+    private TgEfFilterRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfFilterDto> _filtersVms = [];
+	private ObservableCollection<TgEfFilterDto> _dtos = [];
 	[ObservableProperty]
 	private bool _isReady;
 	public IRelayCommand LoadDataStorageCommand { get; }
@@ -50,18 +50,18 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 	{
 		if (!dtos.Any())
 			return;
-		FiltersVms = [];
+		Dtos = [];
 		dtos = [.. dtos.OrderBy(x => x.Name)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
-				FiltersVms.Add(dto);
+				Dtos.Add(dto);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
 
 	private async Task ClearDataStorageCoreAsync()
 	{
-		FiltersVms.Clear();
+		Dtos.Clear();
 		await Task.CompletedTask;
 	}
 
@@ -71,13 +71,13 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 	{
 		if (!SettingsService.IsExistsAppStorage)
 			return;
-		var dtos = await FilterRepository.GetListDtosAsync(take: 0, skip: 0);
+		var dtos = await Repository.GetListDtosAsync(take: 0, skip: 0);
 		SetOrderData(dtos);
 	}
 
 	private async Task DefaultSortAsync()
 	{
-		SetOrderData(FiltersVms);
+		SetOrderData(Dtos);
 		await Task.CompletedTask;
 	}
 

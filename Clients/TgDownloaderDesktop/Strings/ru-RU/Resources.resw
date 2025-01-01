@@ -144,6 +144,9 @@
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Источники</value>
   </data>
+  <data name="Shell_Stories.Content" xml:space="preserve">
+    <value>Сторис</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Загрузка...</value>
   </data>
@@ -629,6 +632,12 @@
   <data name="TemplateColumnUpdated.Header" xml:space="preserve">
     <value>Обновлено</value>
   </data>
+  <data name="TemplateColumnDate.Header" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="TemplateColumnExpireDate.Header" xml:space="preserve">
+    <value>Истекает</value>
+  </data>
   <data name="TemplateColumnUserName.Header" xml:space="preserve">
     <value>Имя пользователя</value>
   </data>
@@ -676,6 +685,9 @@
   </data>
   <data name="TemplateColumnSize.Header" xml:space="preserve">
     <value>Размер</value>
+  </data>
+  <data name="TemplateColumnCaption.Header" xml:space="preserve">
+    <value>Заголовок</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Дождитесь окончания загрузки данных</value>
