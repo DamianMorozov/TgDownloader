@@ -27,6 +27,8 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 	[ObservableProperty]
 	private int _offset;
 	[ObservableProperty]
+	private int _length;
+	[ObservableProperty]
 	private string _message = string.Empty;
 
 	[ObservableProperty]
@@ -60,6 +62,7 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 		Caption = dto.Caption;
 		Type = dto.Type;
 		Offset = dto.Offset;
+		Length = dto.Length;
 		Message = dto.Message;
 
 		SourceScanCurrent = dto.SourceScanCurrent;
@@ -82,6 +85,7 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 		Caption = item.Caption ?? string.Empty;
 		Type = item.Type ?? string.Empty;
 		Offset = item.Offset;
+		Length = item.Length;
 		Message = item.Message ?? string.Empty;
 
 		SourceScanCurrent = 1;
