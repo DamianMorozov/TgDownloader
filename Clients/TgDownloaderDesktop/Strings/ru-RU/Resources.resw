@@ -270,17 +270,41 @@
   <data name="ClientPage_MyTelegram.Tag" xml:space="preserve">
     <value>"https://my.telegram.org/auth?to=apps"</value>
   </data>
-  <data name="SettingsPage_OfficialWebsite_Tgdownloader.Content" xml:space="preserve">
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderGlobal1.Content" xml:space="preserve">
+    <value>tgdownloader.online</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderGlobal1.Tag" xml:space="preserve">
+    <value>"http://tgdownloader.online"</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderGlobal2.Content" xml:space="preserve">
+    <value>tg-downloader.online</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderGlobal2.Tag" xml:space="preserve">
+    <value>"http://tg-downloader.online"</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderRu1.Content" xml:space="preserve">
     <value>tgdownloader.ru</value>
   </data>
-  <data name="SettingsPage_OfficialWebsite_Tgdownloader.Tag" xml:space="preserve">
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderRu1.Tag" xml:space="preserve">
     <value>"http://tgdownloader.ru"</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderRu2.Content" xml:space="preserve">
+    <value>tg-downloader.ru</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsite_TgdownloaderRu2.Tag" xml:space="preserve">
+    <value>"http://tg-downloader.ru"</value>
   </data>
   <data name="SettingsPage_Releases_Latest.Content" xml:space="preserve">
     <value>Релизы</value>
   </data>
   <data name="SettingsPage_Releases_Latest.Tag" xml:space="preserve">
     <value>"https://github.com/DamianMorozov/TgDownloader/releases"</value>
+  </data>
+  <data name="SettingsPage_Release_History.Content" xml:space="preserve">
+    <value>Релизы</value>
+  </data>
+  <data name="SettingsPage_Release_History.Tag" xml:space="preserve">
+    <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASE.md"</value>
   </data>
   <data name="SettingsPage_GitHub_DockerConsole.Content" xml:space="preserve">
     <value>TgDownloader-Console Докер образ</value>
@@ -350,8 +374,11 @@
   <data name="SettingsPage_GitHub.Text" xml:space="preserve">
     <value>ГитХаб сообщество</value>
   </data>
-  <data name="SettingsPage_OfficialWebsite.Text" xml:space="preserve">
-    <value>Официальный вебсайт</value>
+  <data name="SettingsPage_OfficialWebsiteGlobal.Text" xml:space="preserve">
+    <value>Официальный вебсайт (глобальная версия)</value>
+  </data>
+  <data name="SettingsPage_OfficialWebsiteRu.Text" xml:space="preserve">
+    <value>Официальный вебсайт (русская версия)</value>
   </data>
   <data name="SettingsPage_Download.Text" xml:space="preserve">
     <value>Скачать</value>
@@ -472,6 +499,9 @@
   </data>
   <data name="CancelButton" xml:space="preserve">
     <value>Отмена</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Ок</value>
   </data>
   <data name="ClientConnect.Content" xml:space="preserve">
     <value>Подключить клиент к серверу TG</value>
@@ -676,5 +706,38 @@
   </data>
   <data name="TextBlockMark.Text" xml:space="preserve">
     <value>Пометить</value>
+  </data>
+  <data name="Clipboard" xml:space="preserve">
+    <value>Буфер обмена</value>
+  </data>
+  <data name="DonateUsdtTrc20.Text" xml:space="preserve">
+    <value>Донат через USDT TRC20</value>
+  </data>
+  <data name="DonateUsdtTon.Text" xml:space="preserve">
+    <value>Донат через USDT TON</value>
+  </data>
+  <data name="DonateToncoin.Text" xml:space="preserve">
+    <value>Донат через Toncoin</value>
+  </data>
+  <data name="DonateBitcoin.Text" xml:space="preserve">
+    <value>Донат через Bitcoin</value>
+  </data>
+  <data name="DonateNotcoin.Text" xml:space="preserve">
+    <value>Донат через Notcoin</value>
+  </data>
+  <data name="DonateDogs.Text" xml:space="preserve">
+    <value>Донат через Dogs</value>
+  </data>
+  <data name="DonateHmstr.Text" xml:space="preserve">
+    <value>Донат через Hamster Kombat</value>
+  </data>
+  <data name="DonateX.Text" xml:space="preserve">
+    <value>Донат через X Empire</value>
+  </data>
+  <data name="DonateCatizen.Text" xml:space="preserve">
+    <value>Донат через Catizen</value>
+  </data>
+  <data name="DonateMajor.Text" xml:space="preserve">
+    <value>Донат через Major</value>
   </data>
 </root>

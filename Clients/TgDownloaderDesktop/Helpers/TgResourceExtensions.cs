@@ -31,11 +31,13 @@ public static class TgResourceExtensions
 	public static string GetCancelButton() => "CancelButton".GetLocalized();
 	public static string GetClientIsConnected() => "ClientIsConnected".GetLocalized();
 	public static string GetClientIsDisconnected() => "ClientIsDisconnected".GetLocalized();
+	public static string GetClipboard() => "Clipboard".GetLocalized();
 	public static string GetLicenseFreeDescription() => "LicenseFreeDescription".GetLocalized();
 	public static string GetLicensePaidDescription() => "LicensePaidDescription".GetLocalized();
 	public static string GetLicensePremiumDescription() => "LicensePremiumDescription".GetLocalized();
 	public static string GetMenuClientIsQuery() => "MenuClientIsQuery".GetLocalized();
 	public static string GetNoButton() => "NoButton".GetLocalized();
+	public static string GetOkButton() => "OkButton".GetLocalized();
 	public static string GetSettingAppLanguageTooltip => "SettingAppLanguageTooltip".GetLocalized();
 	public static string GetSettingAppThemeTooltip => "SettingAppThemeTooltip".GetLocalized();
 	public static string GetSettingsThemeDark() => "SettingsThemeDark".GetLocalized();

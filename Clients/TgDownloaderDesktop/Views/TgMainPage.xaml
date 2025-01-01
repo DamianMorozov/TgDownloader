@@ -19,6 +19,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<!--  About  -->
 			<StackPanel Grid.Row="0" Margin="{StaticResource MediumTopMargin}">
@@ -35,24 +36,44 @@
 					Margin="10,5,0,0"
 					Style="{ThemeResource BodyStrongTextBlockStyle}" />
 			</StackPanel>
-			<!--  Official website  -->
+			<!--  Official website (global version)  -->
 			<StackPanel Grid.Row="1" Margin="{StaticResource MediumTopMargin}">
-				<TextBlock x:Uid="SettingsPage_OfficialWebsite" Style="{ThemeResource TitleTextBlockStyle}" />
+				<TextBlock x:Uid="SettingsPage_OfficialWebsiteGlobal" Style="{ThemeResource TitleTextBlockStyle}" />
 				<HyperlinkButton
-					x:Uid="SettingsPage_OfficialWebsite_Tgdownloader"
+					x:Uid="SettingsPage_OfficialWebsite_TgdownloaderGlobal1"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_OfficialWebsite_TgdownloaderGlobal2"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
+			</StackPanel>
+			<!--  Official website (russian version)  -->
+			<StackPanel Grid.Row="2" Margin="{StaticResource MediumTopMargin}">
+				<TextBlock x:Uid="SettingsPage_OfficialWebsiteRu" Style="{ThemeResource TitleTextBlockStyle}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_OfficialWebsite_TgdownloaderRu1"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_OfficialWebsite_TgdownloaderRu2"
 					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
 			</StackPanel>
 			<!--  Download  -->
-			<StackPanel Grid.Row="2" Margin="{StaticResource MediumTopMargin}">
+			<StackPanel Grid.Row="3" Margin="{StaticResource MediumTopMargin}">
 				<TextBlock x:Uid="SettingsPage_Download" Style="{ThemeResource TitleTextBlockStyle}" />
 				<HyperlinkButton
 					x:Uid="SettingsPage_Releases_Latest"
 					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_Release_History"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
 			</StackPanel>
 			<!--  Github community  -->
-			<StackPanel Grid.Row="3" Margin="{StaticResource MediumTopMargin}">
+			<StackPanel Grid.Row="4" Margin="{StaticResource MediumTopMargin}">
 				<TextBlock x:Uid="SettingsPage_GitHub" Style="{ThemeResource TitleTextBlockStyle}" />
 				<HyperlinkButton
 					x:Uid="SettingsPage_GitHub_TgDownloader"
@@ -76,7 +97,7 @@
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
 			</StackPanel>
 			<!--  User support  -->
-			<StackPanel Grid.Row="4" Margin="{StaticResource MediumTopMargin}">
+			<StackPanel Grid.Row="5" Margin="{StaticResource MediumTopMargin}">
 				<TextBlock x:Uid="SettingsPage_GitHub_UserSupport" Style="{ThemeResource TitleTextBlockStyle}" />
 				<HyperlinkButton
 					x:Uid="SettingsPage_GitHub_TgDownloaderNews"
@@ -84,18 +105,6 @@
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
 				<HyperlinkButton
 					x:Uid="SettingsPage_GitHub_TgDownloaderGlobalChat"
-					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
-					Click="{x:Bind ViewModel.OpenHyperlink}" />
-			</StackPanel>
-			<!--  Project support  -->
-			<StackPanel Grid.Row="5" Margin="{StaticResource MediumTopMargin}">
-				<TextBlock x:Uid="SettingsPage_GitHub_ProjectSupport" Style="{ThemeResource TitleTextBlockStyle}" />
-				<HyperlinkButton
-					x:Uid="SettingsPage_GitHub_ProjectSupportGitHubStar"
-					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
-					Click="{x:Bind ViewModel.OpenHyperlink}" />
-				<HyperlinkButton
-					x:Uid="SettingsPage_GitHub_ProjectSupportDonateBoosty"
 					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
 			</StackPanel>
@@ -120,8 +129,260 @@
 					Click="{x:Bind ViewModel.OpenHyperlink}" />
 				<TextBlock x:Uid="SettingsPage_GitHub_InstallRequirementsSaveValues" Margin="10,5,0,0" />
 			</StackPanel>
-			<!--  License & version  -->
+			<!--  Project support  -->
 			<StackPanel Grid.Row="8" Margin="{StaticResource MediumTopMargin}">
+				<TextBlock x:Uid="SettingsPage_GitHub_ProjectSupport" Style="{ThemeResource TitleTextBlockStyle}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_GitHub_ProjectSupportGitHubStar"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
+				<HyperlinkButton
+					x:Uid="SettingsPage_GitHub_ProjectSupportDonateBoosty"
+					Margin="{StaticResource SettingsPageHyperlinkButtonMargin}"
+					Click="{x:Bind ViewModel.OpenHyperlink}" />
+				<!--  USDT TRC20 Card  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateUsdtTrc20}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateUsdtTrc20"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateUsdtTrc20, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  USDT TON Card  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateUsdtTon}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateUsdtTon"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateUsdtTon, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Toncoin  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateToncoin}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateToncoin"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateToncoin, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Bitcoin  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateBitcoin}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateBitcoin"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateBitcoin, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Notcoin  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateNotcoin}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateNotcoin"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateNotcoin, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Dogs  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateDogs}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateDogs"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateDogs, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Hamster Kombat  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateHmstr}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateHmstr"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateHmstr, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  X Empire  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateX}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateX"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateX, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Catizen  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateCatizen}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateCatizen"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateCatizen, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<!--  Major  -->
+				<Border Padding="10" CornerRadius="8">
+					<StackPanel Margin="0,-5,0,-5" Orientation="Horizontal">
+						<Button
+							Width="60"
+							Height="60"
+							Click="{x:Bind ViewModel.OnClipboardWriteClick}"
+							CornerRadius="10"
+							Tag="{x:Bind ViewModel.DonateMajor}">
+							<SymbolIcon Symbol="Copy" />
+						</Button>
+						<StackPanel Margin="10,0">
+							<TextBlock
+								x:Uid="DonateMajor"
+								Margin="0,5,0,5"
+								Style="{ThemeResource BodyTextBlockStyle}" />
+							<TextBlock
+								Margin="0,5,0,5"
+								FontWeight="Bold"
+								Style="{ThemeResource BodyTextBlockStyle}"
+								Text="{x:Bind ViewModel.DonateMajor, Mode=OneWay}" />
+						</StackPanel>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+			<!--  License & version  -->
+			<StackPanel Grid.Row="9" Margin="{StaticResource MediumTopMargin}">
 				<TextBlock x:Uid="SettingsLicense" Style="{ThemeResource TitleTextBlockStyle}" />
 				<TextBlock
 					Margin="10,0,0,0"

@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using Windows.ApplicationModel.DataTransfer;
+
 namespace TgDownloaderDesktop.Common;
 
 /// <summary> Base class for TgViewModel </summary>
@@ -51,11 +53,13 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			XamlRootVm = xamlRoot;
 	}
 
-	public virtual async Task OnNavigatedToAsync(NavigationEventArgs e)
-	{
-		await Task.CompletedTask;
-	}
-	
+	//public virtual async Task OnNavigatedToAsync(NavigationEventArgs e)
+	//{
+	//	await Task.CompletedTask;
+	//}
+
+	public virtual async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () => await Task.CompletedTask);
+
 	/// <summary> Open url </summary>
 	public void OpenHyperlink(object sender, RoutedEventArgs e)
 	{
@@ -123,6 +127,20 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		_ = await dialog.ShowAsync();
 	}
 
+	protected async Task ContentDialogAsync(string title, string content)
+	{
+		if (XamlRootVm is null) return;
+		ContentDialog dialog = new()
+		{
+			XamlRoot = XamlRootVm,
+			Title = title,
+			Content = content,
+			CloseButtonText = TgResourceExtensions.GetOkButton(),
+			DefaultButton = ContentDialogButton.Close,
+		};
+		_ = await dialog.ShowAsync();
+	}
+
 	protected async Task ContentDialogAsync(Func<Task> task, string title, ContentDialogButton defaultButton = ContentDialogButton.Close, bool useLoadData = false)
 	{
 		if (XamlRootVm is null) return;
@@ -165,6 +183,23 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		{
 			if (SettingsService.IsExistsAppStorage)
 				IsPageLoad = false;
+		}
+	}
+
+	/// <summary> Write text to clipboard </summary>
+	public async void OnClipboardWriteClick(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button button)
+		{
+			var address = button.Tag?.ToString();
+			if (string.IsNullOrEmpty(address)) return;
+			if (!string.IsNullOrEmpty(address))
+			{
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(address);
+				Clipboard.SetContent(dataPackage);
+				await ContentDialogAsync(TgResourceExtensions.GetClipboard(), address);
+			}
 		}
 	}
 

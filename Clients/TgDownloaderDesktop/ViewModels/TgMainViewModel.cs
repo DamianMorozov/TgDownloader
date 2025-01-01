@@ -18,6 +18,26 @@ public partial class TgMainViewModel : TgPageViewModelBase
 	private string _appVersionFull = string.Empty;
 	[ObservableProperty]
 	private string _licenseDescription = string.Empty;
+	[ObservableProperty]
+	private string _donateUsdtTrc20 = "TBTDRWnMBw7acfpkhAXjSQNSNHQGFR662Y";
+	[ObservableProperty]
+	private string _donateUsdtTon = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateToncoin = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateBitcoin = "1FJayytWUK6vkxK2nUcD2TJskk3g9ZnmfW";
+	[ObservableProperty]
+	private string _donateNotcoin = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateDogs = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateHmstr = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateX = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateCatizen = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	private string _donateMajor = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
 
 	public TgMainViewModel(ITgSettingsService settingsService) : base(settingsService)
 	{
