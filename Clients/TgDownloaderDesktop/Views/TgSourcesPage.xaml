@@ -10,6 +10,7 @@
 	xmlns:views="using:TgDownloaderDesktop.Views"
 	d:DataContext="{d:DesignInstance Type=viewmodels:TgSourcesViewModel}"
 	mc:Ignorable="d">
+
 	<Page.Resources>
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
 	</Page.Resources>
@@ -32,6 +33,7 @@
 				<Expander
 					x:Uid="SettingAppActions"
 					Grid.Row="2"
+					Margin="{StaticResource ExpanderMargin}"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True">
@@ -163,6 +165,7 @@
 				<Expander
 					x:Uid="ExpanderDataInStorage"
 					Grid.Row="0"
+					Margin="{StaticResource ExpanderMargin}"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					IsExpanded="True">

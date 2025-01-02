@@ -19,6 +19,7 @@
 			<Expander
 				x:Uid="SettingAppActions"
 				Grid.Row="0"
+				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True">
@@ -62,6 +63,7 @@
 			<Expander
 				x:Uid="ExpanderSettingApp"
 				Grid.Row="1"
+				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True">
@@ -121,6 +123,7 @@
 			<Expander
 				x:Uid="SettingAppFiles"
 				Grid.Row="2"
+				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True">

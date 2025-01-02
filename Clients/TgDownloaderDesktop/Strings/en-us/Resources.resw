@@ -160,10 +160,10 @@
   <data name="SettingsThemeDefault" xml:space="preserve">
     <value>Default</value>
   </data>
-  <data name="SettingsAbout.Text" xml:space="preserve">
+  <data name="ExpanderAbout.Header" xml:space="preserve">
     <value>TgDownloader - Telegram Files Downloader</value>
   </data>
-  <data name="SettingsLicense.Text" xml:space="preserve">
+  <data name="ExpanderLicense.Header" xml:space="preserve">
     <value>License</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
@@ -315,28 +315,31 @@
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
-  <data name="SettingsPage_GitHub.Text" xml:space="preserve">
+  <data name="ExpanderGitHub.Header" xml:space="preserve">
     <value>GitHub community</value>
   </data>
-  <data name="SettingsPage_OfficialWebsiteGlobal.Text" xml:space="preserve">
+  <data name="ExpanderOfficialWebsite.Header" xml:space="preserve">
+    <value>Official website</value>
+  </data>
+  <data name="TextOfficialWebsiteGlobal.Text" xml:space="preserve">
     <value>Official website (global version)</value>
   </data>
-  <data name="SettingsPage_OfficialWebsiteRu.Text" xml:space="preserve">
+  <data name="TextOfficialWebsiteRu.Text" xml:space="preserve">
     <value>Official website (russian version)</value>
   </data>
-  <data name="SettingsPage_Download.Text" xml:space="preserve">
+  <data name="ExpanderDownload.Header" xml:space="preserve">
     <value>Download</value>
   </data>
-  <data name="SettingsPage_GitHub_UserSupport.Text" xml:space="preserve">
+  <data name="ExpanderUserSupport.Header" xml:space="preserve">
     <value>User support</value>
   </data>
-  <data name="SettingsPage_GitHub_ProjectSupport.Text" xml:space="preserve">
+  <data name="ExpanderProjectSupport.Header" xml:space="preserve">
     <value>Project support</value>
   </data>
-  <data name="SettingsPage_GitHub_Docker.Text" xml:space="preserve">
+  <data name="ExpanderDocker.Header" xml:space="preserve">
     <value>Docker images</value>
   </data>
-  <data name="SettingsPage_GitHub_InstallRequirements.Text" xml:space="preserve">
+  <data name="ExpanderInstallRequirements.Header" xml:space="preserve">
     <value>Install Requirements</value>
   </data>
   <data name="SettingsPage_GitHub_InstallRequirementsSaveValues.Text" xml:space="preserve">
@@ -447,11 +450,11 @@
   <data name="OkButton" xml:space="preserve">
     <value>Ok</value>
   </data>
-  <data name="ClientConnect.Content" xml:space="preserve">
-    <value>Connect the client to TG server</value>
+  <data name="ClientConnect.Text" xml:space="preserve">
+    <value>Connect to TG server</value>
   </data>
-  <data name="ClientDisconnect.Content" xml:space="preserve">
-    <value>Disconnect the client from TG server</value>
+  <data name="ClientDisconnect.Text" xml:space="preserve">
+    <value>Disconnect from TG server</value>
   </data>
   <data name="MenuClientIsQuery" xml:space="preserve">
     <value>Client requests data</value>
@@ -480,6 +483,9 @@
   <data name="ClientVerificationCode.Text" xml:space="preserve">
     <value>Verification code</value>
   </data>
+  <data name="ClientLoginCode.Text" xml:space="preserve">
+    <value>Login code</value>
+  </data>
   <data name="ClientFirstName.Text" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -497,6 +503,15 @@
   </data>
   <data name="ClientIsDisconnected" xml:space="preserve">
     <value>Client is disconnected</value>
+  </data>
+  <data name="ClientEnterLoginCode" xml:space="preserve">
+    <value>Enter login code from the Telegram message</value>
+  </data>
+  <data name="ClientEnterPassword" xml:space="preserve">
+    <value>Enter the login password</value>
+  </data>
+  <data name="ClientFloodWait" xml:space="preserve">
+    <value>Flood defense has kicked in, stand by</value>
   </data>
   <data name="ClientConnectionState.Text" xml:space="preserve">
     <value>Connection state</value>

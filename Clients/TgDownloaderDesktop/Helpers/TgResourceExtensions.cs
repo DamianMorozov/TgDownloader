@@ -29,6 +29,9 @@ public static class TgResourceExtensions
 	public static string ClientSettingsAreNotValid() => "ClientSettingsAreNotValid".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();
 	public static string GetCancelButton() => "CancelButton".GetLocalized();
+	public static string GetClientEnterLoginCode() => "ClientEnterLoginCode".GetLocalized();
+	public static string GetClientEnterPassword() => "ClientEnterPassword".GetLocalized();
+	public static string GetClientFloodWait() => "ClientFloodWait".GetLocalized();
 	public static string GetClientIsConnected() => "ClientIsConnected".GetLocalized();
 	public static string GetClientIsDisconnected() => "ClientIsDisconnected".GetLocalized();
 	public static string GetClipboard() => "Clipboard".GetLocalized();

@@ -66,8 +66,8 @@ public partial class App : Application
 				services.AddTransient<TgMainPage>();
 				services.AddTransient<ShellViewModel>();
 				services.AddTransient<ShellPage>();
-				services.AddTransient<TgClientViewModel>();
-				services.AddTransient<TgClientPage>();
+				services.AddTransient<TgConnectViewModel>();
+				services.AddTransient<TgConnectPage>();
 				services.AddTransient<TgLoadDataViewModel>();
 				services.AddTransient<TgLoadDataPage>();
 				services.AddTransient<TgContactsViewModel>();

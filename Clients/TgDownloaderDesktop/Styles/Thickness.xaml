@@ -31,4 +31,6 @@
 
 	<Thickness x:Key="SettingsPageHyperlinkButtonMargin">0,0,10,0</Thickness>
 
+	<Thickness x:Key="ExpanderMargin">0,0,10,5</Thickness>
+
 </ResourceDictionary>

@@ -11,7 +11,6 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-	//public static TgClientViewModel TgClientVm { get; } = App.GetService<TgClientViewModel>();
 	public static string BaseDirectory = AppContext.BaseDirectory;
 	public static string LocalFolder = ApplicationData.Current.LocalFolder.Path;
 	public static string InstalledLocation = Package.Current.InstalledLocation.Path;
@@ -27,7 +26,7 @@ public static class TgDesktopUtils
 	//    {
 	//        if (isUpdateLoad)
 	//            viewModel.IsLoad = true;
-	//        TgClientViewModel.Exception.Clear();
+	//        TgConnectViewModel.Exception.Clear();
 	//        action();
 	//    }
 
@@ -42,7 +41,7 @@ public static class TgDesktopUtils
 	//    }
 	//    catch (Exception ex)
 	//    {
-	//     App.MainWindow.DispatcherQueue.TryEnqueue(() => { TgClientViewModel.Exception.Set(ex); });
+	//     App.MainWindow.DispatcherQueue.TryEnqueue(() => { TgConnectViewModel.Exception.Set(ex); });
 	//    }
 	//    finally
 	//    {
@@ -167,7 +166,7 @@ public static class TgDesktopUtils
  //       {
  //           if (isUpdateLoad)
  //               viewModel.IsLoad = true;
- //           //TgClientViewModel.Exception.Clear();
+ //           //TgConnectViewModel.Exception.Clear();
  //           await action();
  //       }
 
@@ -182,7 +181,7 @@ public static class TgDesktopUtils
  //       }
  //       catch (Exception ex)
  //       {
-	//        //App.MainWindow.DispatcherQueue.TryEnqueue(() => TgClientViewModel.Exception.Set(ex));
+	//        //App.MainWindow.DispatcherQueue.TryEnqueue(() => TgConnectViewModel.Exception.Set(ex));
  //       }
  //       finally
  //       {

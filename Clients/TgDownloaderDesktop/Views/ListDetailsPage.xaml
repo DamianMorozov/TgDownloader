@@ -12,6 +12,7 @@
 	behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
 	d:DataContext="{d:DesignInstance Type=viewmodels:ListDetailsViewModel}"
 	mc:Ignorable="d">
+
 	<Page.Resources>
 		<DataTemplate x:Key="ItemTemplate" x:DataType="models:SampleOrder">
 			<Grid Height="60">

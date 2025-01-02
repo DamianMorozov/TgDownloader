@@ -1,12 +1,10 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgInfrastructure.Enums;
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgClientViewModel : TgPageViewModelBase
+public sealed partial class TgConnectViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
@@ -65,7 +63,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
     public IRelayCommand AppDeleteCommand { get; }
 
 
-    public TgClientViewModel(ITgSettingsService settingsService) : base(settingsService)
+    public TgConnectViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
 	    AppClearCoreAsync().GetAwaiter().GetResult();
 		// Commands
@@ -95,21 +93,46 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
 	private async Task AfterClientConnectAsync()
 	{
 		ConnectionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-		ConnectionMsg = TgDesktopUtils.TgClient.Client is null || TgDesktopUtils.TgClient.Client.Disconnected
-			? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
-		if (TgDesktopUtils.TgClient.Client is not null)
+		var client = TgDesktopUtils.TgClient.Client;
+		// Check exceptions
+		if (Exception.Message.Contains("PHONE_CODE_INVALID", StringComparison.InvariantCultureIgnoreCase))
 		{
-			UserName = TgDesktopUtils.TgClient.Client.User?.MainUsername ?? string.Empty;
-			MtProxyUrl = TgDesktopUtils.TgClient.Client.MTProxyUrl;
-			MaxAutoReconnects = TgDesktopUtils.TgClient.Client.MaxAutoReconnects.ToString();
-			FloodRetryThreshold = TgDesktopUtils.TgClient.Client.FloodRetryThreshold.ToString();
-			PingInterval = TgDesktopUtils.TgClient.Client.PingInterval.ToString();
-			MaxCodePwdAttempts = TgDesktopUtils.TgClient.Client.MaxCodePwdAttempts.ToString();
+			ConnectionMsg = TgResourceExtensions.GetClientEnterLoginCode();
+		}
+		else if (Exception.Message.Contains("PASSWORD_HASH_INVALID", StringComparison.InvariantCultureIgnoreCase))
+		{
+			ConnectionMsg = TgResourceExtensions.GetClientEnterPassword();
+		}
+		else if (Exception.Message.Contains("FLOOD_WAIT", StringComparison.InvariantCultureIgnoreCase))
+		{
+			ConnectionMsg = TgResourceExtensions.GetClientFloodWait();
+		}
+		else if (Exception.Message.Contains("PHONE_PASSWORD_FLOOD", StringComparison.InvariantCultureIgnoreCase))
+		{
+			ConnectionMsg = TgResourceExtensions.GetClientFloodWait();
+		}
+		else
+		{
+			ConnectionMsg = client is null || client.Disconnected
+				? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
+			VerificationCode = string.Empty;
+			Password = string.Empty;
+		}
+		if (client is not null)
+		{
+			UserName = client.User?.MainUsername ?? string.Empty;
+			MtProxyUrl = client.MTProxyUrl;
+			MaxAutoReconnects = client.MaxAutoReconnects.ToString();
+			FloodRetryThreshold = client.FloodRetryThreshold.ToString();
+			PingInterval = client.PingInterval.ToString();
+			MaxCodePwdAttempts = client.MaxCodePwdAttempts.ToString();
 		}
 		else
 		{
 			await ReloadUiAsync(isClearPassw: false);
 		}
+		// Clear memory
+		client = null;
 	}
 
 	private string? ConfigClientDesktop(string what)
@@ -167,14 +190,14 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase
         }
         catch (Exception ex)
         {
-	        Exception.Set(ex);
-	        await TgDesktopUtils.FileLogAsync(ex);
+			Exception.Set(ex);
+			await TgDesktopUtils.FileLogAsync(ex);
 			if (isRetry) return;
-	        if (Exception.Message.Contains("or delete the file to start a new session"))
-	        {
-		        await TgDesktopUtils.DeleteFileStorageExistsAsync(SettingsService.AppSession);
+			if (Exception.Message.Contains("or delete the file to start a new session"))
+			{
+				await TgDesktopUtils.DeleteFileStorageExistsAsync(SettingsService.AppSession);
 				await ClientConnectCoreAsync(isRetry: true);
-	        }
+			}
 		}
 	}
 

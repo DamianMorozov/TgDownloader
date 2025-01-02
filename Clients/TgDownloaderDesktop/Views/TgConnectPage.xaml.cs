@@ -3,15 +3,15 @@
 
 namespace TgDownloaderDesktop.Views;
 
-public partial class TgClientPage
+public partial class TgConnectPage
 {
 	#region Public and private fields, properties, constructor
 
-	public TgClientViewModel ViewModel { get; }
+	public TgConnectViewModel ViewModel { get; }
 
-	public TgClientPage()
+	public TgConnectPage()
 	{
-		ViewModel = App.GetService<TgClientViewModel>();
+		ViewModel = App.GetService<TgConnectViewModel>();
 		InitializeComponent();
 	}
 

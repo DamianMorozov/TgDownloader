@@ -219,10 +219,10 @@
   <data name="SettingsThemeDefault" xml:space="preserve">
     <value>Default</value>
   </data>
-  <data name="SettingsAbout.Text" xml:space="preserve">
+  <data name="ExpanderAbout.Header" xml:space="preserve">
     <value>TgDownloader - Загрузчик файлов Telegram</value>
   </data>
-  <data name="SettingsLicense.Text" xml:space="preserve">
+  <data name="ExpanderLicense.Header" xml:space="preserve">
     <value>Лицензия</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
@@ -374,28 +374,31 @@
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Удалить</value>
   </data>
-  <data name="SettingsPage_GitHub.Text" xml:space="preserve">
+  <data name="ExpanderGitHub.Header" xml:space="preserve">
     <value>ГитХаб сообщество</value>
   </data>
-  <data name="SettingsPage_OfficialWebsiteGlobal.Text" xml:space="preserve">
+  <data name="ExpanderOfficialWebsite.Header" xml:space="preserve">
+    <value>Официальный вебсайт</value>
+  </data>
+  <data name="TextOfficialWebsiteGlobal.Text" xml:space="preserve">
     <value>Официальный вебсайт (глобальная версия)</value>
   </data>
-  <data name="SettingsPage_OfficialWebsiteRu.Text" xml:space="preserve">
+  <data name="TextOfficialWebsiteRu.Text" xml:space="preserve">
     <value>Официальный вебсайт (русская версия)</value>
   </data>
-  <data name="SettingsPage_Download.Text" xml:space="preserve">
+  <data name="ExpanderDownload.Header" xml:space="preserve">
     <value>Скачать</value>
   </data>
-  <data name="SettingsPage_GitHub_UserSupport.Text" xml:space="preserve">
+  <data name="ExpanderUserSupport.Header" xml:space="preserve">
     <value>Поддержка пользователей</value>
   </data>
-  <data name="SettingsPage_GitHub_ProjectSupport.Text" xml:space="preserve">
+  <data name="ExpanderProjectSupport.Header" xml:space="preserve">
     <value>Поддержка проекта</value>
   </data>
-  <data name="SettingsPage_GitHub_Docker.Text" xml:space="preserve">
+  <data name="ExpanderDocker.Header" xml:space="preserve">
     <value>Docker образы</value>
   </data>
-  <data name="SettingsPage_GitHub_InstallRequirements.Text" xml:space="preserve">
+  <data name="ExpanderInstallRequirements.Header" xml:space="preserve">
     <value>Требования к установке</value>
   </data>
   <data name="SettingsPage_GitHub_InstallRequirementsSaveValues.Text" xml:space="preserve">
@@ -506,11 +509,11 @@
   <data name="OkButton" xml:space="preserve">
     <value>Ок</value>
   </data>
-  <data name="ClientConnect.Content" xml:space="preserve">
-    <value>Подключить клиент к серверу TG</value>
+  <data name="ClientConnect.Text" xml:space="preserve">
+    <value>Подключиться к серверу TG</value>
   </data>
-  <data name="ClientDisconnect.Content" xml:space="preserve">
-    <value>Отключить клиент от сервера TG</value>
+  <data name="ClientDisconnect.Text" xml:space="preserve">
+    <value>Отключиться от сервера TG</value>
   </data>
   <data name="MenuClientIsQuery" xml:space="preserve">
     <value>Клиент запрашивает данные</value>
@@ -542,6 +545,9 @@
   <data name="ClientVerificationCode.Text" xml:space="preserve">
     <value>Проверочный код</value>
   </data>
+  <data name="ClientLoginCode.Text" xml:space="preserve">
+    <value>Код логина</value>
+  </data>
   <data name="ClientFirstName.Text" xml:space="preserve">
     <value>Имя</value>
   </data>
@@ -559,6 +565,15 @@
   </data>
   <data name="ClientIsDisconnected" xml:space="preserve">
     <value>Клиент отключен</value>
+  </data>
+  <data name="ClientEnterLoginCode" xml:space="preserve">
+    <value>Введите код входа в систему из сообщения Telegram</value>
+  </data>
+  <data name="ClientEnterPassword" xml:space="preserve">
+    <value>Введите пароль входа</value>
+  </data>
+  <data name="ClientFloodWait" xml:space="preserve">
+    <value>Сработала защита от флуда, ожидайте</value>
   </data>
   <data name="ClientConnectionState.Text" xml:space="preserve">
     <value>Состояние подключения</value>

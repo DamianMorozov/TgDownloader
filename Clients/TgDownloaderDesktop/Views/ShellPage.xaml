@@ -50,7 +50,7 @@
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 				<!--  Connections  -->
-				<NavigationViewItem x:Uid="Shell_Connect" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgClientViewModel">
+				<NavigationViewItem x:Uid="Shell_Connect" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgConnectViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
@@ -67,16 +67,16 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE8D4;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--  Sources  -->
-				<NavigationViewItem x:Uid="Shell_Sources" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
-					<NavigationViewItem.Icon>
-						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
-					</NavigationViewItem.Icon>
-				</NavigationViewItem>
 				<!--  Stories  -->
 				<NavigationViewItem x:Uid="Shell_Stories" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgStoriesViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE81C;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
+				<!--  Sources  -->
+				<NavigationViewItem x:Uid="Shell_Sources" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
