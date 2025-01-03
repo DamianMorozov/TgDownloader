@@ -4,16 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.270] - 2024-12-21
-### Changed
-- Updated sources table to storage
+## [0.5.300] - 2025-01-03
+### Cganged
 - Updated contacts page for TgDownloaderConsole
-- Updated home page for TgDownloaderConsole
+- Updated home page for TgDownloaderDesktop
 - Updated sources page for TgDownloaderConsole
+- Updated sources table to storage
+- Updated storage tables for asynchronous write cases
 - Updated stories page for TgDownloaderConsole
 ### Added
 - Added contacts page for TgDownloaderDesktop
 - Added filters page for TgDownloaderDesktop
+- Added stories page for TgDownloaderDesktop
+- Added reading of contacts on the contact page for TgDownloaderDesktop
+### Fixed
+- Connecting to Telegram server for TgDownloaderDesktop
 
 ## [0.5.250] - 2024-12-08
 ### Changed
