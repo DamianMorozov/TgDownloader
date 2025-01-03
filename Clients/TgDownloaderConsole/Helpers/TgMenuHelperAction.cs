@@ -143,7 +143,7 @@ internal partial class TgMenuHelper
 				}
                 UpdateStateSource(0, 0, 
                     isScanCount
-                        ? $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.SourceScanCount, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent)}"
+                        ? $"{GetStatus(sw, tgDownloadSettings.SourceScanCount, tgDownloadSettings.SourceScanCurrent)}"
                         : $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count)}");
             });
 
@@ -186,7 +186,7 @@ internal partial class TgMenuHelper
 					if (string.IsNullOrEmpty(message))
 						return;
 					statusContext.Status(TgLog.GetMarkupString(isScanCount
-						? $"{GetStatus(tgDownloadSettings.SourceVm.Dto.SourceScanCount, messageId),15} | {message,40}"
+						? $"{GetStatus(tgDownloadSettings.SourceScanCount, messageId),15} | {message,40}"
 						: GetFileStatus(message)));
 					statusContext.Refresh();
 					await Task.CompletedTask;
@@ -195,7 +195,7 @@ internal partial class TgMenuHelper
 				async Task UpdateStateContactAsync(long id, string firstName, string lastName, string userName)
 				{
 					statusContext.Status(TgLog.GetMarkupString(
-						$"{GetStatus(tgDownloadSettings.ContactVm.Dto.SourceScanCount, id),15} | {firstName,20} | {lastName,20} | {userName,20}"));
+						$"{GetStatus(tgDownloadSettings.SourceScanCount, id),15} | {firstName,20} | {lastName,20} | {userName,20}"));
 					statusContext.Refresh();
 					await Task.CompletedTask;
 				}
@@ -203,7 +203,7 @@ internal partial class TgMenuHelper
 				async Task UpdateStateStoryAsync(long id, string caption)
 				{
 					statusContext.Status(TgLog.GetMarkupString(
-						$"{GetStatus(tgDownloadSettings.StoryVm.Dto.SourceScanCount, id),15} | {caption,30}"));
+						$"{GetStatus(tgDownloadSettings.SourceScanCount, id),15} | {caption,30}"));
 					statusContext.Refresh();
 					await Task.CompletedTask;
 				}
@@ -261,7 +261,7 @@ internal partial class TgMenuHelper
 				sw.Stop();
 				// Update state source
 				UpdateStateSourceAsync(0, 0, isScanCount
-					? $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.SourceScanCount, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent)}"
+					? $"{GetStatus(sw, tgDownloadSettings.SourceScanCount, tgDownloadSettings.SourceScanCurrent)}"
 					: $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count)}")
 					.GetAwaiter().GetResult();
 			});

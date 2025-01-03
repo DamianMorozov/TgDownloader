@@ -7,6 +7,8 @@ global using System.Globalization;
 global using System.Reflection;
 global using System.Text;
 global using TgDownloaderConsole.Helpers;
+global using TgInfrastructure.Contracts;
+global using TgInfrastructure.Enums;
 global using TgInfrastructure.Helpers;
 global using TgStorage.Domain.Apps;
 global using TgStorage.Domain.Contacts;

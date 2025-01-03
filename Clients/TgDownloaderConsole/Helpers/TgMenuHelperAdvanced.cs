@@ -2,8 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
-using TgInfrastructure.Enums;
-
 namespace TgDownloaderConsole.Helpers;
 
 internal partial class TgMenuHelper
@@ -113,34 +111,9 @@ internal partial class TgMenuHelper
 			return;
 		}
 
-		switch (sourceType)
-		{
-			case TgEnumSourceType.Chat:
-				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesChatsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
-				break;
-			case TgEnumSourceType.Dialog:
-				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesDialogsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
-				break;
-			case TgEnumSourceType.Contact:
-				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesContactsWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
-				break;
-			case TgEnumSourceType.Story:
-				await RunTaskStatusAsync(tgDownloadSettings, SearchSourcesStoriesWithSaveAsync, isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
-				break;
-		}
+		await RunTaskStatusAsync(tgDownloadSettings, async _ => { await TgClient.SearchSourcesTgAsync(tgDownloadSettings, sourceType); }, 
+			isSkipCheckTgSettings: true, isScanCount: true, isWaitComplete: true);
 	}
-
-	private async Task SearchSourcesChatsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Chat);
-
-	private async Task SearchSourcesDialogsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
-
-	private async Task SearchSourcesContactsWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Contact);
-
-	private async Task SearchSourcesStoriesWithSaveAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-        await TgClient.SearchSourcesTgConsoleAsync(tgDownloadSettings, TgEnumSourceType.Story);
 
 	private async Task ViewContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
