@@ -10,10 +10,10 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
     private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfSourceDto> _dtos = [];
+	public partial ObservableCollection<TgEfSourceDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	private bool _isReady;
-	//public IRelayCommand UpdateSourcesFromTelegramCommand { get; }
+	public partial bool IsReady { get; set; }
+	//public IRelayCommand UpdateOnlineCommand { get; }
 	//public IRelayCommand GetSourcesFromTelegramCommand { get; }
 	//public IRelayCommand MarkAllMessagesAsReadCommand { get; }
 	public IRelayCommand LoadDataStorageCommand { get; }
@@ -28,14 +28,14 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     {
 		//AppClearCoreAsync().GetAwaiter().GetResult();
 		// Commands
-		//UpdateSourcesFromTelegramCommand = new AsyncRelayCommand(UpdateSourcesFromTelegramAsync);
+		//UpdateOnlineCommand = new AsyncRelayCommand(UpdateFromTelegramAsync);
 		//GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
 		//MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		//GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
-		//UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateSourceFromTelegramAsync);
+		//UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateDtoFromTelegramAsync);
 		//DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
 		//EditSourceCommand = new AsyncRelayCommand<TgEfSourceViewModel>(EditSourceAsync);
 		// Delegates
@@ -81,11 +81,11 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 				Dtos.Add(dto);
 	}
 
-	//private async Task UpdateSourcesFromTelegramAsync()
+	//private async Task UpdateFromTelegramAsync()
 	//{
 	//	if (!TgDesktopUtils.TgClient.CheckClientIsReady()) return;
 	//	foreach (TgEfSourceViewModel sourceVm in Dtos)
-	//		await UpdateSourceFromTelegramAsync(sourceVm);
+	//		await UpdateDtoFromTelegramAsync(sourceVm);
 	//}
 
 	//private async Task GetSourcesFromTelegramAsync()
@@ -164,7 +164,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	//	await Task.CompletedTask;
 	//}
 
-	//private async Task UpdateSourceFromTelegramAsync(TgEfSourceViewModel? sourceVm)
+	//private async Task UpdateDtoFromTelegramAsync(TgEfSourceViewModel? sourceVm)
 	//{
 	//	if (sourceVm is null) return;
 	//	//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);

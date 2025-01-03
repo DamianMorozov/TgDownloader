@@ -13,6 +13,7 @@ public sealed partial class TgMainPage : Page
 	{
 		ViewModel = App.GetService<TgMainViewModel>();
 		InitializeComponent();
+		Loaded += PageLoaded;
 	}
 
 	#endregion
@@ -23,8 +24,9 @@ public sealed partial class TgMainPage : Page
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-		ViewModel.OnLoaded(XamlRoot);
 	}
+
+	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	#endregion
 }

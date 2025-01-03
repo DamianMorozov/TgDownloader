@@ -13,6 +13,7 @@ public partial class TgContactsPage
 	{
 		ViewModel = App.GetService<TgContactsViewModel>();
 		InitializeComponent();
+		Loaded += PageLoaded;
 	}
 
 	#endregion
@@ -23,8 +24,9 @@ public partial class TgContactsPage
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-		ViewModel.OnLoaded(XamlRoot);
 	}
+
+	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	#endregion
 }

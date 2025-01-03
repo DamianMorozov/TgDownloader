@@ -432,6 +432,9 @@
   <data name="AskDataLoad" xml:space="preserve">
     <value>Load the data?</value>
   </data>
+  <data name="AskUpdateOnline" xml:space="preserve">
+    <value>Update online?</value>
+  </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Restart the application?</value>
   </data>
@@ -665,6 +668,9 @@
   </data>
   <data name="TextBlockUpdate.Text" xml:space="preserve">
     <value>Update</value>
+  </data>
+  <data name="TextBlockUpdateOnline.Text" xml:space="preserve">
+    <value>Online update</value>
   </data>
   <data name="TextBlockGet.Text" xml:space="preserve">
     <value>Get</value>

@@ -13,6 +13,7 @@ public partial class TgLoadDataPage
 	{
 		ViewModel = App.GetService<TgLoadDataViewModel>();
 		InitializeComponent();
+		Loaded += PageLoaded;
 	}
 
 	#endregion
@@ -23,9 +24,10 @@ public partial class TgLoadDataPage
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-		ViewModel.OnLoaded(XamlRoot);
 		ViewModel.IsPageLoad = true;
 	}
+
+	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	protected override void OnNavigatedFrom(NavigationEventArgs e)
 	{

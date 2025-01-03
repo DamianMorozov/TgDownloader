@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using Windows.ApplicationModel.DataTransfer;
-
 namespace TgDownloaderDesktop.Common;
 
 /// <summary> Base class for TgViewModel </summary>
@@ -12,27 +10,27 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private ITgSettingsService _settingsService;
+	public partial ITgSettingsService SettingsService { get; set; }
 	[ObservableProperty]
-	private TgLicenseManagerHelper _licenseManager = TgLicenseManagerHelper.Instance;
+	public partial TgLicenseManagerHelper LicenseManager { get; set; } = TgLicenseManagerHelper.Instance;
 	[ObservableProperty]
-	private TgExceptionViewModel _exception = new();
+	public partial TgExceptionViewModel Exception { get; set; } = new();
 	[ObservableProperty]
-	private bool _isPageLoad;
+	public partial bool IsPageLoad { get; set; }
 	[ObservableProperty]
-	private string _connectionDt = string.Empty;
+	public partial string ConnectionDt { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _connectionMsg = string.Empty;
+	public partial string ConnectionMsg { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _stateProxyDt = string.Empty;
+	public partial string StateProxyDt { get; set; }= string.Empty;
 	[ObservableProperty]
-	private string _stateProxyMsg = string.Empty;
+	public partial string StateProxyMsg { get; set; }= string.Empty;
 	[ObservableProperty]
-	private string _stateSourceDt = string.Empty;
+	public partial string StateSourceDt { get; set; }= string.Empty;
 	[ObservableProperty]
-	private string _stateSourceMsg = string.Empty;
+	public partial string StateSourceMsg { get; set; }= string.Empty;
 	[ObservableProperty]
-	private XamlRoot? _xamlRootVm;
+	public partial XamlRoot? XamlRootVm { get; set; }
 
 	public TgPageViewModelBase(ITgSettingsService settingsService)
 	{

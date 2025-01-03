@@ -10,9 +10,9 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 
     private TgEfFilterRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfFilterDto> _dtos = [];
+	public partial ObservableCollection<TgEfFilterDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	private bool _isReady;
+	public partial bool IsReady { get; set; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }

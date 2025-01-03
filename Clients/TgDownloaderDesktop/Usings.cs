@@ -53,6 +53,7 @@ global using TgStorage.Domain.Sources;
 global using TgStorage.Domain.Stories;
 global using TgStorage.Models;
 global using TgStorage.Utils;
+global using Windows.ApplicationModel.DataTransfer;
 global using Windows.ApplicationModel;
 global using Windows.Storage.Streams;
 global using Windows.Storage;

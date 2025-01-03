@@ -9,12 +9,14 @@ public partial class ContentGridViewModel : ObservableRecipient, INavigationAwar
 	private readonly ISampleDataService _sampleDataService;
 
 	[ObservableProperty]
-	private ObservableCollection<SampleOrder> _source = [];
+	public partial ObservableCollection<SampleOrder> Source { get; set; } = [];
+	public IRelayCommand ItemClickCommand { get; }
 
 	public ContentGridViewModel(INavigationService navigationService, ISampleDataService sampleDataService)
 	{
 		_navigationService = navigationService;
 		_sampleDataService = sampleDataService;
+		ItemClickCommand = new AsyncRelayCommand<SampleOrder>(OnItemClickAsync);
 	}
 
 	public async void OnNavigatedTo(object parameter)
@@ -33,13 +35,13 @@ public partial class ContentGridViewModel : ObservableRecipient, INavigationAwar
 	{
 	}
 
-	[RelayCommand]
-	private void OnItemClick(SampleOrder? clickedItem)
+	private async Task OnItemClickAsync(SampleOrder? clickedItem)
 	{
 		if (clickedItem != null)
 		{
 			_navigationService.SetListDataItemForNextConnectedAnimation(clickedItem);
 			_navigationService.NavigateTo(typeof(ContentGridDetailViewModel).FullName!, clickedItem.OrderID);
 		}
+		await Task.CompletedTask;
 	}
 }

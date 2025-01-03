@@ -10,9 +10,9 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 
     private TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfStoryDto> _dtos = [];
+	public partial ObservableCollection<TgEfStoryDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	private bool _isReady;
+	public partial bool IsReady { get; set; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }

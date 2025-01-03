@@ -41,6 +41,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="1.5*" />
+							<ColumnDefinition Width="1.5*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
@@ -59,9 +60,25 @@
 									VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>
-						<!--  Clear view  -->
+						<!--  Update from Telegram  -->
 						<Button
 							Grid.Column="1"
+							Margin="0,0,5,0"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Command="{x:Bind ViewModel.UpdateOnlineCommand, Mode=OneWay}"
+							IsEnabled="{x:Bind ViewModel.IsReady, Mode=OneWay}">
+							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+								<TextBlock
+									x:Uid="TextBlockUpdateOnline"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center" />
+							</StackPanel>
+						</Button>
+						<!--  Clear view  -->
+						<Button
+							Grid.Column="2"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
@@ -92,13 +109,13 @@
 						<!--  Count  -->
 						<TextBlock
 							x:Uid="TextBlockCount"
-							Grid.Column="2"
+							Grid.Column="3"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"
 							TextAlignment="Right" />
 						<TextBlock
-							Grid.Column="3"
+							Grid.Column="4"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Center"

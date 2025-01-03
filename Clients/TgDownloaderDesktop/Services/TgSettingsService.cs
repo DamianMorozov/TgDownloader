@@ -14,15 +14,15 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	private const string SettingsKeyAppStorage = nameof(LocalSettingsOptions.AppStorage);
 	private const string SettingsKeyAppSession = nameof(LocalSettingsOptions.AppSession);
 	[ObservableProperty]
-	private ObservableCollection<TgEnumTheme> _appThemes = default!;
+	public partial ObservableCollection<TgEnumTheme> AppThemes { get; set; } = default!;
 	[ObservableProperty]
-	private TgEnumTheme _appTheme = TgEnumTheme.Default;
+	public partial TgEnumTheme AppTheme { get; set; } = TgEnumTheme.Default;
 	[ObservableProperty]
-	private ObservableCollection<TgEnumLanguage> _appLanguages = default!;
+	public partial ObservableCollection<TgEnumLanguage> AppLanguages { get; set; } = default!;
 	[ObservableProperty]
-	private TgEnumLanguage _appLanguage = TgEnumLanguage.Default;
+	public partial TgEnumLanguage AppLanguage { get; set; } = TgEnumLanguage.Default;
 	[ObservableProperty]
-	private string _appFolder = default!;
+	public partial string AppFolder { get; set; } = default!;
 	private string _appStorage = default!;
 	public string AppStorage
 	{
@@ -46,9 +46,9 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		}
 	}
 	[ObservableProperty]
-	private bool _isExistsAppStorage;
+	public partial bool IsExistsAppStorage { get; set; }
 	[ObservableProperty]
-	private bool _isExistsAppSession;
+	public partial bool IsExistsAppSession { get; set; }
 
 	private const string DefaultApplicationDataFolder = "TgDownloaderDesktop/ApplicationData";
 	private const string DefaultLocalSettingsFile = "TgLocalSettings.json";

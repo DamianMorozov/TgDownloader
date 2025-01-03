@@ -25,6 +25,7 @@ public static class TgResourceExtensions
 	public static string AskSettingsDelete() => "AskSettingsDelete".GetLocalized();
 	public static string AskSettingsLoad() => "AskSettingsLoad".GetLocalized();
 	public static string AskSettingsSave() => "AskSettingsSave".GetLocalized();
+	public static string AskUpdateOnline() => "AskUpdateOnline".GetLocalized();
 	public static string AssertionRestartApp() => "AssertionRestartApp".GetLocalized();
 	public static string ClientSettingsAreNotValid() => "ClientSettingsAreNotValid".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();

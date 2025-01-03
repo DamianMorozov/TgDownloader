@@ -15,6 +15,7 @@ public sealed partial class TgSettingsPage : Page
 		InitializeComponent();
 		ComboBoxAppThemes.SelectionChanged += ComboBoxAppThemes_OnSelectionChanged;
 		ComboBoxAppLanguages.SelectionChanged += ComboBoxAppLanguages_OnSelectionChanged;
+		Loaded += PageLoaded;
 	}
 
 	#endregion
@@ -25,8 +26,9 @@ public sealed partial class TgSettingsPage : Page
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-		ViewModel.OnLoaded(XamlRoot);
 	}
+
+	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	private async void ComboBoxAppThemes_OnSelectionChanged(object sender, SelectionChangedEventArgs e) => await ViewModel.SettingsService.SetAppThemeAsync();
 

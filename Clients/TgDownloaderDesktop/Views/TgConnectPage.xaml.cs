@@ -13,6 +13,7 @@ public partial class TgConnectPage
 	{
 		ViewModel = App.GetService<TgConnectViewModel>();
 		InitializeComponent();
+		Loaded += PageLoaded;
 	}
 
 	#endregion
@@ -23,8 +24,9 @@ public partial class TgConnectPage
 	{
 		base.OnNavigatedTo(e);
 		await ViewModel.OnNavigatedToAsync(e);
-		ViewModel.OnLoaded(XamlRoot);
 	}
+
+	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
 	#endregion
 }

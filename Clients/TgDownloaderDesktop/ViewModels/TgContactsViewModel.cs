@@ -10,12 +10,13 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 
     private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private ObservableCollection<TgEfContactDto> _dtos = [];
+	public partial ObservableCollection<TgEfContactDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	private bool _isReady;
+	public partial bool IsReady { get; set; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
+	public IRelayCommand UpdateOnlineCommand { get; }
 
 	public TgContactsViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
@@ -23,6 +24,7 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
+		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
 	}
 
 	#endregion
@@ -42,6 +44,8 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 		ConnectionDt = string.Empty;
 		ConnectionMsg = string.Empty;
 		Exception.Default();
+		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
+		IsReady = TgDesktopUtils.TgClient.IsReady;
 		await Task.CompletedTask;
     }
 
@@ -81,6 +85,35 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 		SetOrderData(Dtos);
 		await Task.CompletedTask;
 	}
+
+	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
+
+	private async Task UpdateOnlineCoreAsync()
+	{
+		await LoadDataAsync(async () => {
+			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync())
+				return;
+			var tgDownloadSettings = new TgDownloadSettingsViewModel();
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Contact);
+			await LoadDataStorageCoreAsync();
+		});
+	}
+
+	private async Task UpdateDtoFromTelegramAsync(TgEfContactDto dto)
+	{
+		if (dto is null) return;
+		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+		//await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
+		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
+		//await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
+
+		//if (dto.Id.Equals(sourceVm.SourceId))
+		//{
+		//	Dtos[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
+		//	break;
+		//}
+	}
+
 
 	#endregion
 }

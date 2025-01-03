@@ -304,7 +304,7 @@
     <value>"https://github.com/DamianMorozov/TgDownloader/releases"</value>
   </data>
   <data name="SettingsPage_Release_History.Content" xml:space="preserve">
-    <value>Релизы</value>
+    <value>История релизов</value>
   </data>
   <data name="SettingsPage_Release_History.Tag" xml:space="preserve">
     <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASE.md"</value>
@@ -490,6 +490,9 @@
   </data>
   <data name="AskDataLoad" xml:space="preserve">
     <value>Загрузить данные?</value>
+  </data>
+  <data name="AskUpdateOnline" xml:space="preserve">
+    <value>Обновить онлайн?</value>
   </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Перезапустить приложение?</value>
@@ -727,6 +730,9 @@
   </data>
   <data name="TextBlockUpdate.Text" xml:space="preserve">
     <value>Обновить</value>
+  </data>
+  <data name="TextBlockUpdateOnline.Text" xml:space="preserve">
+    <value>Обновить онлайн</value>
   </data>
   <data name="TextBlockGet.Text" xml:space="preserve">
     <value>Получить</value>

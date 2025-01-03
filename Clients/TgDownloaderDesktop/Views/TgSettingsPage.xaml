@@ -83,7 +83,7 @@
 						Grid.Column="0"
 						Margin="10,5,10,5"
 						TextAlignment="Left"
-						ToolTipService.ToolTip="{x:Bind helpers:TgResourceExtensions.GetSettingAppLanguageTooltip, Mode=OneWay}" />
+						ToolTipService.ToolTip="{x:Bind helpers:TgResourceExtensions.GetSettingAppLanguageTooltip}" />
 					<StackPanel
 						Grid.Column="1"
 						Width="20"
@@ -103,7 +103,7 @@
 						Grid.Column="0"
 						Margin="10,5,10,5"
 						TextAlignment="Left"
-						ToolTipService.ToolTip="{x:Bind helpers:TgResourceExtensions.GetSettingAppThemeTooltip, Mode=OneWay}" />
+						ToolTipService.ToolTip="{x:Bind helpers:TgResourceExtensions.GetSettingAppThemeTooltip}" />
 					<StackPanel
 						Grid.Column="1"
 						Width="20"

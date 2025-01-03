@@ -6,46 +6,46 @@ namespace TgDownloaderDesktop.ViewModels;
 [DebuggerDisplay("{ToDebugString()}")]
 public sealed partial class TgConnectViewModel : TgPageViewModelBase
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
-    private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfAppRepository AppRepository { get; } = new(TgEfUtils.EfContext);
+	private TgEfProxyRepository ProxyRepository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfAppEntity _app = default!;
+	public partial TgEfAppEntity App { get; set; } = default!;
 	[ObservableProperty]
-    private TgEfProxyViewModel? _proxyVm = new();
+	public partial TgEfProxyViewModel? ProxyVm { get; set; } = new();
 	[ObservableProperty]
-    private ObservableCollection<TgEfProxyViewModel> _proxiesVms = [];
+	public partial ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; set; } = [];
 	[ObservableProperty]
-	private Guid _apiHash;
+	public partial Guid ApiHash { get; set; }
 	[ObservableProperty]
-	private int _apiId;
+	public partial int ApiId { get; set; }
 	[ObservableProperty]
-	private string _phoneNumber = default!;
+	public partial string PhoneNumber { get; set; } = default!;
 	[ObservableProperty]
-	private string _firstName = default!;
+	public partial string FirstName { get; set; }= default!;
 	[ObservableProperty]
-	private string _lastName = default!;
+	public partial string LastName { get; set; }= default!;
 	[ObservableProperty]
-	private string _password = default!;
+	public partial string Password { get; set; }= default!;
     [ObservableProperty]
-    private string _verificationCode = default!;
+	public partial string VerificationCode { get; set; }= default!;
 	[ObservableProperty]
-    private bool _isReady;
+	public partial bool IsReady { get; set; }
 	[ObservableProperty]
-    private bool _isNotReady;
+	public partial bool IsNotReady { get; set; }
 	[ObservableProperty]
-    private string _mtProxyUrl = default!;
+	public partial string MtProxyUrl { get; set; } = default!;
 	[ObservableProperty]
-    private string _userName = default!;
+	public partial string UserName { get; set; } = default!;
 	[ObservableProperty]
-    private string _maxAutoReconnects = default!;
+	public partial string MaxAutoReconnects { get; set; } = default!;
 	[ObservableProperty]
-    private string _floodRetryThreshold = default!;
+	public partial string FloodRetryThreshold { get; set; } = default!;
 	[ObservableProperty]
-    private string _pingInterval = default!;
+	public partial string PingInterval { get; set; } = default!;
 	[ObservableProperty]
-    private string _maxCodePwdAttempts = default!;
+    public partial string MaxCodePwdAttempts { get; set; } = default!;
 
 	private Guid _newApiHash = Guid.Empty;
 	private int _newApiId = 0;

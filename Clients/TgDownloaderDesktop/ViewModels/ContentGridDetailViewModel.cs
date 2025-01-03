@@ -8,7 +8,7 @@ public partial class ContentGridDetailViewModel : ObservableRecipient, INavigati
 	private readonly ISampleDataService _sampleDataService;
 
 	[ObservableProperty]
-	private SampleOrder? item;
+	public partial SampleOrder? Item { get; set; }
 
 	public ContentGridDetailViewModel(ISampleDataService sampleDataService)
 	{
