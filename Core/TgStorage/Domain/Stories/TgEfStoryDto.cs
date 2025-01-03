@@ -9,37 +9,30 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private DateTime _dtChanged;
+	public partial DateTime DtChanged { get; set; }
 	[ObservableProperty]
-	private long _id;
+	public partial long Id { get; set; }
 	[ObservableProperty]
-	private long _fromId;
+	public partial long FromId { get; set; }
 	[ObservableProperty]
-	private string _fromName = string.Empty;
+	public partial string FromName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private DateTime _date;
+	public partial DateTime Date { get; set; }
 	[ObservableProperty]
-	private DateTime _expireDate;
+	public partial DateTime ExpireDate { get; set; }
 	[ObservableProperty]
-	private string _caption = string.Empty;
+	public partial string Caption { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _type = string.Empty;
+	public partial string Type { get; set; } = string.Empty;
 	[ObservableProperty]
-	private int _offset;
+	public partial int Offset { get; set; }
 	[ObservableProperty]
-	private int _length;
+	public partial int Length { get; set; }
 	[ObservableProperty]
-	private string _message = string.Empty;
-
+	public partial string Message { get; set; } = string.Empty;
 	[ObservableProperty]
-	private int _sourceScanCurrent;
-	[ObservableProperty]
-	private int _sourceScanCount;
-	[ObservableProperty]
-	private bool _isDownload;
+	public partial bool IsDownload { get; set; }
 	public bool IsReady => Id > 0;
-
-
 
 	#endregion
 
@@ -65,8 +58,6 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 		Length = dto.Length;
 		Message = dto.Message;
 
-		SourceScanCurrent = dto.SourceScanCurrent;
-		SourceScanCount = dto.SourceScanCount;
 		IsDownload = dto.IsDownload;
 
 		return this;
@@ -88,8 +79,6 @@ public sealed partial class TgEfStoryDto : TgDtoBase, ITgDto<TgEfStoryDto, TgEfS
 		Length = item.Length;
 		Message = item.Message ?? string.Empty;
 
-		SourceScanCurrent = 1;
-		SourceScanCount = 1;
 		IsDownload = false;
 
 		return this;

@@ -11,7 +11,7 @@ public sealed partial class TgEfFilterViewModel : TgEntityViewModelBase<TgEfFilt
 
 	public override TgEfFilterRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfFilterDto _dto = default!;
+	public partial TgEfFilterDto Dto { get; set; } = default!;
 
 
 	public TgEfFilterViewModel(TgEfFilterEntity item) : base()

@@ -9,17 +9,17 @@ public sealed partial class TgEfProxyDto : TgDtoBase, ITgDto<TgEfProxyDto, TgEfP
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private TgEnumProxyType _type;
+	public partial TgEnumProxyType Type { get; set; }
 	[ObservableProperty]
-	private string _hostName = string.Empty;
+	public partial string HostName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private ushort _port;
+	public partial ushort Port { get; set; }
 	[ObservableProperty]
-	private string _userName = string.Empty;
+	public partial string UserName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _password = string.Empty;
+	public partial string Password { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _secret = string.Empty;
+	public partial string Secret { get; set; } = string.Empty;
 
 	public string PrettyName => $"{Type} | {TgDataFormatUtils.GetFormatString(HostName, 30)} | {Port} | {UserName}";
 

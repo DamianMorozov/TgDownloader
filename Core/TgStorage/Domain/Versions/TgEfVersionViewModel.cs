@@ -11,7 +11,7 @@ public sealed partial class TgEfVersionViewModel : TgEntityViewModelBase<TgEfVer
 
 	public override TgEfVersionRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfVersionDto _dto = default!;
+	public partial TgEfVersionDto Dto { get; set; } = default!;
 
 	public TgEfVersionViewModel(TgEfVersionEntity item) : base()
 	{

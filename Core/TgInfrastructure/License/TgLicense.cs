@@ -9,7 +9,7 @@ public abstract partial class TgLicense : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private string _description = "Empty license";
+	public partial string Description { get; set; } = "Empty license";
 	public string LicenseKey { get; set; } = "";
 
 	#endregion

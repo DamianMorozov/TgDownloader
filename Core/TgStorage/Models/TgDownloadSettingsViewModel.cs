@@ -10,24 +10,27 @@ public sealed partial class TgDownloadSettingsViewModel : ObservableRecipient, I
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private TgEfContactViewModel _contactVm;
+	public partial TgEfContactViewModel ContactVm { get; set; }
 	[ObservableProperty]
-	private TgEfSourceViewModel _sourceVm;
+	public partial TgEfSourceViewModel SourceVm { get; set; }
 	[ObservableProperty]
-	private TgEfStoryViewModel _storyVm;
+	public partial TgEfStoryViewModel StoryVm { get; set; }
 	[ObservableProperty]
-	private TgEfVersionViewModel _versionVm;
+	public partial TgEfVersionViewModel VersionVm { get; set; }
 	[ObservableProperty]
-	private bool _isRewriteFiles;
+	public partial bool IsRewriteFiles { get; set; }
 	[ObservableProperty]
-	private bool _isRewriteMessages;
+	public partial bool IsRewriteMessages { get; set; }
 	[ObservableProperty]
-	private bool _isJoinFileNameWithMessageId;
+	public partial bool IsJoinFileNameWithMessageId { get; set; } = true;
 	[ObservableProperty]
-	[DefaultValue(5)]
-	private int _countThreads;
+	public partial int CountThreads { get; set; } = 5;
 	[ObservableProperty]
-	private TgDownloadChat _chat;
+	public partial TgDownloadChat Chat { get; set; }
+	[ObservableProperty]
+	public partial int SourceScanCount { get; set; } = 1;
+	[ObservableProperty]
+	public partial int SourceScanCurrent { get; set; } = 1;
 
 	public TgDownloadSettingsViewModel()
 	{
@@ -35,12 +38,7 @@ public sealed partial class TgDownloadSettingsViewModel : ObservableRecipient, I
 		SourceVm = new();
 		StoryVm = new();
 		VersionVm = new();
-		_chat = new();
-
-		IsJoinFileNameWithMessageId = true;
-		IsRewriteFiles = false;
-		IsRewriteMessages = false;
-		CountThreads = 5;
+		Chat = new();
 	}
 
 	#endregion

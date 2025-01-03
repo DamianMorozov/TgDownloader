@@ -9,17 +9,17 @@ public sealed partial class TgEfAppDto : TgDtoBase, ITgDto<TgEfAppDto, TgEfAppEn
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private Guid _apiHash;
+	public partial Guid ApiHash { get; set; }
 	[ObservableProperty]
-	private int _apiId;
+	public partial int ApiId { get; set; }
 	[ObservableProperty]
-	private string _phoneNumber = string.Empty;
+	public partial string PhoneNumber { get; set; } = string.Empty;
 	[ObservableProperty]
-	private Guid _proxyUid;
+	public partial Guid ProxyUid { get; set; }
 	[ObservableProperty]
-	private string _firstName = string.Empty;
+	public partial string FirstName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _lastName = string.Empty;
+	public partial string LastName { get; set; } = string.Empty;
 
 	public string ApiIdString
 	{

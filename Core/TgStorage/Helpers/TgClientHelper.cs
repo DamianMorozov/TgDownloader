@@ -160,8 +160,13 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 		var result = Client is { Disconnected: false };
 		if (!result)
 			return ClientResultDisconnected();
-		if (!TgAppSettings.AppXml.IsExistsFileSession)
-			return ClientResultDisconnected();
+		switch (TgAsyncUtils.AppType)
+		{
+			case TgEnumAppType.Console:
+				if (!TgAppSettings.AppXml.IsExistsFileSession)
+					return ClientResultDisconnected();
+				break;
+		}
 		var storageResult = await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync());
 		if (TgAppSettings.IsUseProxy && !storageResult.IsExists)
 			return ClientResultDisconnected();
@@ -1328,18 +1333,26 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	private async Task UpdateSourceTgAsync(Channel channel, int count) =>
 		await UpdateSourceTgAsync(channel, string.Empty, count);
 
-	public async Task SearchSourcesTgConsoleAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
+	public async Task SearchSourcesTgAsync(TgDownloadSettingsViewModel tgDownloadSettings, TgEnumSourceType sourceType)
 	{
 		await TryCatchFuncAsync(async () =>
 		{
-			await LoginUserConsoleAsync();
+			switch (TgAsyncUtils.AppType)
+			{
+				case TgEnumAppType.Console:
+					await LoginUserConsoleAsync();
+					break;
+				case TgEnumAppType.Desktop:
+					await LoginUserDesktopAsync();
+					break;
+			}
 			switch (sourceType)
 			{
 				case TgEnumSourceType.Chat:
 					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, 0, TgLocale.CollectChats);
 					await CollectAllChatsAsync();
-					tgDownloadSettings.SourceVm.Dto.SourceScanCount = DicChatsAll.Count;
-					tgDownloadSettings.SourceVm.Dto.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceScanCurrent = 0;
 					// List channels
 					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
 					// List groups
@@ -1348,8 +1361,8 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 				case TgEnumSourceType.Dialog:
 					await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, 0, TgLocale.CollectDialogs);
 					await CollectAllDialogsAsync();
-					tgDownloadSettings.SourceVm.Dto.SourceScanCount = DicChatsAll.Count;
-					tgDownloadSettings.SourceVm.Dto.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceScanCount = DicChatsAll.Count;
+					tgDownloadSettings.SourceScanCurrent = 0;
 					// List channels
 					await SearchSourcesTgConsoleForChannelsAsync(tgDownloadSettings);
 					// List groups
@@ -1358,16 +1371,16 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 				case TgEnumSourceType.Contact:
 					await UpdateStateSourceAsync(tgDownloadSettings.ContactVm.Dto.Id, 0, TgLocale.CollectContacts);
 					await CollectAllContactsAsync();
-					tgDownloadSettings.ContactVm.Dto.SourceScanCount = DicContactsAll.Count;
-					tgDownloadSettings.ContactVm.Dto.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceScanCount = DicContactsAll.Count;
+					tgDownloadSettings.SourceScanCurrent = 0;
 					// List contacts
 					await SearchSourcesTgConsoleForContactsAsync(tgDownloadSettings);
 					break;
 				case TgEnumSourceType.Story:
 					await UpdateStateStoryAsync(tgDownloadSettings.StoryVm.Dto.Id, TgLocale.CollectStories);
 					await CollectAllStoriesAsync();
-					tgDownloadSettings.StoryVm.Dto.SourceScanCount = DicStoriesAll.Count;
-					tgDownloadSettings.StoryVm.Dto.SourceScanCurrent = 0;
+					tgDownloadSettings.SourceScanCount = DicStoriesAll.Count;
+					tgDownloadSettings.SourceScanCurrent = 0;
 					// List stories
 					await SearchSourcesTgConsoleForStoriesAsync(tgDownloadSettings);
 					break;
@@ -1380,7 +1393,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		foreach (var channel in EnumerableChannels)
 		{
-			tgDownloadSettings.SourceVm.Dto.SourceScanCurrent++;
+			tgDownloadSettings.SourceScanCurrent++;
 			if (channel.IsActive)
 			{
 				await TryCatchFuncAsync(async () =>
@@ -1393,19 +1406,19 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 						if (fullChannel?.full_chat is ChannelFull channelFull)
 						{
 							await UpdateSourceTgAsync(channel, channelFull.about, messagesCount);
-							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent,
+							await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceScanCurrent,
 								$"{channel} | {TgDataFormatUtils.TrimStringEnd(channelFull.about, 40)}");
 						}
 					}
 					else
 					{
 						await UpdateSourceTgAsync(channel, messagesCount);
-						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.SourceScanCurrent, $"{channel}");
+						await UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceScanCurrent, $"{channel}");
 					}
 				}, isLoginConsole: true);
 			}
-			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceVm.Dto.SourceScanCount,
-				tgDownloadSettings.SourceVm.Dto.SourceScanCurrent):#00.00} %");
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceScanCount,
+				tgDownloadSettings.SourceScanCurrent):#00.00} %");
 		}
 	}
 
@@ -1413,7 +1426,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		foreach (var group in EnumerableGroups)
 		{
-			tgDownloadSettings.SourceVm.Dto.SourceScanCurrent++;
+			tgDownloadSettings.SourceScanCurrent++;
 			if (group.IsActive)
 			{
 				await TryCatchFuncAsync(async () =>
@@ -1429,16 +1442,16 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 
 	private async Task SearchSourcesTgConsoleForContactsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		foreach (var contact in EnumerableContacts)
+		foreach (var user in EnumerableContacts)
 		{
-			tgDownloadSettings.ContactVm.Dto.SourceScanCurrent++;
+			tgDownloadSettings.SourceScanCurrent++;
 			await TryCatchFuncAsync(async () =>
 			{
-				await UpdateContactTgAsync(contact);
-				await UpdateStateContactAsync(contact.id, contact.first_name, contact.last_name, contact.username);
+				await UpdateContactTgAsync(user);
+				await UpdateStateContactAsync(user.id, user.first_name, user.last_name, user.username);
 			}, isLoginConsole: true);
-			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.ContactVm.Dto.SourceScanCount,
-				tgDownloadSettings.ContactVm.Dto.SourceScanCurrent):#00.00} %");
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceScanCount,
+				tgDownloadSettings.SourceScanCurrent):#00.00} %");
 		}
 	}
 
@@ -1446,14 +1459,14 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		foreach (var story in EnumerableStories)
 		{
-			tgDownloadSettings.ContactVm.Dto.SourceScanCurrent++;
+			tgDownloadSettings.SourceScanCurrent++;
 			await TryCatchFuncAsync(async () =>
 			{
 				await UpdateStoryTgAsync(story);
 				await UpdateStateStoryAsync(story.id, story.caption);
 			}, isLoginConsole: true);
-			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.StoryVm.Dto.SourceScanCount,
-				tgDownloadSettings.StoryVm.Dto.SourceScanCurrent):#00.00} %");
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceScanCount,
+				tgDownloadSettings.SourceScanCurrent):#00.00} %");
 		}
 	}
 
@@ -1461,14 +1474,14 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	{
 		foreach (var story in EnumerableStories)
 		{
-			tgDownloadSettings.ContactVm.Dto.SourceScanCurrent++;
+			tgDownloadSettings.SourceScanCurrent++;
 			await TryCatchFuncAsync(async () =>
 			{
 				await UpdateStoryTgAsync(story);
 				await UpdateStateStoryAsync(story.id, story.caption);
 			}, isLoginConsole: true);
-			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.ContactVm.Dto.SourceScanCount,
-				tgDownloadSettings.ContactVm.Dto.SourceScanCurrent):#00.00} %");
+			await UpdateTitleAsync($"{TgCommonUtils.CalcSourceProgress(tgDownloadSettings.SourceScanCount,
+				tgDownloadSettings.SourceScanCurrent):#00.00} %");
 		}
 	}
 

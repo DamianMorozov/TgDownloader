@@ -10,7 +10,7 @@ public abstract partial class TgViewModelBase : ObservableRecipient, ITgViewMode
     #region Public and private fields, properties, constructor
 
     [ObservableProperty]
-	private bool _isLoad;
+    public partial bool IsLoad { get; set; }
 
     #endregion
 

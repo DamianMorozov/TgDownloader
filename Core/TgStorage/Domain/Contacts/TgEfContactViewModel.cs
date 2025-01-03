@@ -11,7 +11,7 @@ public sealed partial class TgEfContactViewModel : TgEntityViewModelBase<TgEfCon
 
 	public override TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfContactDto _dto = default!;
+	public partial TgEfContactDto Dto { get; set; } = default!;
 
 
 	public TgEfContactViewModel(TgEfContactEntity item) : base()

@@ -9,17 +9,17 @@ public sealed partial class TgEfMessageDto : TgDtoBase, ITgDto<TgEfMessageDto, T
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private DateTime _dtCreated;
+	public partial DateTime DtCreated { get; set; }
 	[ObservableProperty]
-	private long _sourceId;
+	public partial long SourceId { get; set; }
 	[ObservableProperty]
-	private long _id;
+	public partial long Id { get; set; }
 	[ObservableProperty]
-	private TgEnumMessageType _type;
+	public partial TgEnumMessageType Type { get; set; }
 	[ObservableProperty]
-	private long _size;
+	public partial long Size { get; set; }
 	[ObservableProperty]
-	private string _message = string.Empty;
+	public partial string Message { get; set; } = string.Empty;
 
 
 

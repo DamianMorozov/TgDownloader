@@ -10,9 +10,9 @@ public abstract partial class TgDtoBase : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private bool _isLoad;
+	public partial bool IsLoad { get; set; }
 	[ObservableProperty]
-	private Guid _uid;
+	public partial Guid Uid { get; set; }
 
 	#endregion
 

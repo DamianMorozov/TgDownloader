@@ -9,46 +9,42 @@ public sealed partial class TgEfContactDto : TgDtoBase, ITgDto<TgEfContactDto, T
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private DateTime _dtChanged;
+	public partial DateTime DtChanged { get; set; }
 	[ObservableProperty]
-	private long _id;
+	public partial long Id { get; set; }
 	[ObservableProperty]
-	private long _accessHash;
+	public partial long AccessHash { get; set; }
 	[ObservableProperty]
-	private bool _isContactActive;
+	public partial bool IsContactActive { get; set; }
 	[ObservableProperty]
-	private bool _isBot;
+	public partial bool IsBot { get; set; }
 	[ObservableProperty]
-	private string _firstName = string.Empty;
+	public partial string FirstName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _lastName = string.Empty;
+	public partial string LastName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _userName = string.Empty;
+	public partial string UserName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _userNames = string.Empty;
+	public partial string UserNames { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _phoneNumber = string.Empty;
+	public partial string PhoneNumber { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _status = string.Empty;
+	public partial string Status { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _restrictionReason = string.Empty;
+	public partial string RestrictionReason { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _langCode = string.Empty;
+	public partial string LangCode { get; set; } = string.Empty;
 	[ObservableProperty]
-	private int _storiesMaxId;
+	public partial int StoriesMaxId { get; set; }
 	[ObservableProperty]
-	private string _botInfoVersion = string.Empty;
+	public partial string BotInfoVersion { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _botInlinePlaceholder = string.Empty;
+	public partial string BotInlinePlaceholder { get; set; } = string.Empty;
 	[ObservableProperty]
-	private int _botActiveUsers;
+	public partial int BotActiveUsers { get; set; }
 
 	[ObservableProperty]
-	private int _sourceScanCurrent;
-	[ObservableProperty]
-	private int _sourceScanCount;
-	[ObservableProperty]
-	private bool _isDownload;
+	public partial bool IsDownload { get; set; }
 	public bool IsReady => Id > 0;
 
 	#endregion
@@ -81,8 +77,6 @@ public sealed partial class TgEfContactDto : TgDtoBase, ITgDto<TgEfContactDto, T
 		BotInlinePlaceholder = dto.BotInlinePlaceholder;
 		BotActiveUsers = dto.BotActiveUsers;
 
-		SourceScanCurrent = dto.SourceScanCurrent;
-		SourceScanCount = dto.SourceScanCount;
 		IsDownload = dto.IsDownload;
 
 		return this;
@@ -110,8 +104,6 @@ public sealed partial class TgEfContactDto : TgDtoBase, ITgDto<TgEfContactDto, T
 		BotInlinePlaceholder = item.BotInlinePlaceholder;
 		BotActiveUsers = item.BotActiveUsers;
 
-		SourceScanCurrent = 1;
-		SourceScanCount = 1;
 		IsDownload = false;
 
 		return this;

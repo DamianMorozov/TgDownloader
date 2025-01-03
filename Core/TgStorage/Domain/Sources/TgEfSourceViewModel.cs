@@ -11,7 +11,7 @@ public sealed partial class TgEfSourceViewModel : TgEntityViewModelBase<TgEfSour
 
 	public override TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
     [ObservableProperty]
-    private TgEfSourceDto _dto = default!;
+	public partial TgEfSourceDto Dto { get; set; } = default!;
 
     public TgEfSourceViewModel(TgEfSourceEntity item) : base()
     {

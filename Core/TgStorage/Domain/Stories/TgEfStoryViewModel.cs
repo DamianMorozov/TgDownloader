@@ -11,7 +11,7 @@ public sealed partial class TgEfStoryViewModel : TgEntityViewModelBase<TgEfStory
 
 	public override TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfStoryDto _dto = default!;
+	public partial TgEfStoryDto Dto { get; set; } = default!;
 
 	public TgEfStoryViewModel(TgEfStoryEntity item) : base()
 	{

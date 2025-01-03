@@ -9,17 +9,17 @@ public sealed partial class TgEfFilterDto : TgDtoBase, ITgDto<TgEfFilterDto, TgE
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private bool _isEnabled;
+	public partial bool IsEnabled { get; set; }
 	[ObservableProperty]
-	private TgEnumFilterType _filterType;
+	public partial TgEnumFilterType FilterType { get; set; }
 	[ObservableProperty]
-	private string _name = string.Empty;
+	public partial string Name { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _mask = string.Empty;
+	public partial string Mask { get; set; } = string.Empty;
 	[ObservableProperty]
-	private long _size;
+	public partial long Size { get; set; }
 	[ObservableProperty]
-	private TgEnumFileSizeType _sizeType;
+	public partial TgEnumFileSizeType SizeType { get; set; }
 
 	public long SizeAtBytes => SizeType switch
 	{

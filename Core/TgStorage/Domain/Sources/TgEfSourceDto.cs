@@ -9,41 +9,37 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private long _id;
+	public partial long Id { get; set; }
 	[ObservableProperty]
-	private long _accessHash = -1;
+	public partial long AccessHash { get; set; } = -1;
 	[ObservableProperty]
-	private string _userName = string.Empty;
+	public partial string UserName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private DateTime _dtChanged = DateTime.MinValue;
+	public partial DateTime DtChanged { get; set; } = DateTime.MinValue;
 	[ObservableProperty]
-	private bool _isSourceActive;
+	public partial bool IsSourceActive { get; set; }
 	[ObservableProperty]
-	private string _title = string.Empty;
+	public partial string Title { get; set; } = string.Empty;
 	[ObservableProperty]
-	private string _about = string.Empty;
+	public partial string About { get; set; } = string.Empty;
 	[ObservableProperty]
-	private int _firstId;
+	public partial int FirstId { get; set; }
 	[ObservableProperty]
-	private int _count;
+	public partial int Count { get; set; }
 	[ObservableProperty]
-	private string _directory = string.Empty;
+	public partial string Directory { get; set; } = string.Empty;
 	[ObservableProperty]
-	private bool _isAutoUpdate;
+	public partial bool IsAutoUpdate { get; set; }
 	[ObservableProperty]
-	private long _currentFileSize;
+	public partial string CurrentFileName { get; set; } = string.Empty;
 	[ObservableProperty]
-	private long _currentFileTransmitted;
+	public partial long CurrentFileSize { get; set; }
 	[ObservableProperty]
-	private long _currentFileSpeed;
+	public partial long CurrentFileTransmitted { get; set; }
 	[ObservableProperty]
-	private bool _isDownload;
+	public partial long CurrentFileSpeed { get; set; }
 	[ObservableProperty]
-	private int _sourceScanCurrent = 1;
-	[ObservableProperty]
-	private int _sourceScanCount;
-	[ObservableProperty]
-	private string _currentFileName = string.Empty;
+	public partial bool IsDownload { get; set; }
 
 	public string DtChangedString => $"{DtChanged:yyyy-MM-dd HH:mm:ss}";
 
@@ -88,11 +84,7 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 		Count = dto.Count;
 		Directory = dto.Directory;
 		IsAutoUpdate = dto.IsAutoUpdate;
-
-		SourceScanCurrent = dto.SourceScanCurrent;
-		SourceScanCount = dto.SourceScanCount;
 		CurrentFileName = dto.CurrentFileName;
-
 		return this;
 	}
 
@@ -111,11 +103,6 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 		Count = item.Count;
 		Directory = item.Directory ?? string.Empty;
 		IsAutoUpdate = item.IsAutoUpdate;
-
-		SourceScanCurrent = 1;
-		SourceScanCount = 1;
-		CurrentFileName = string.Empty;
-
 		return this;
 	}
 

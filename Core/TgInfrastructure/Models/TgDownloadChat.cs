@@ -9,7 +9,7 @@ public sealed partial class TgDownloadChat : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private TL.ChatBase? _base;
+	public partial TL.ChatBase? Base { get; set; }
 
 	#endregion
 

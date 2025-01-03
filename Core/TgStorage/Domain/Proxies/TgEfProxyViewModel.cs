@@ -11,7 +11,7 @@ public sealed partial class TgEfProxyViewModel : TgEntityViewModelBase<TgEfProxy
 
 	public override TgEfProxyRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfProxyDto _dto = default!;
+	public partial TgEfProxyDto Dto { get; set; } = default!;
 	public Action<TgEfProxyViewModel> UpdateAction { get; set; } = _ => { };
 
 

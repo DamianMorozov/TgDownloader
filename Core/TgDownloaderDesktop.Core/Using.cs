@@ -5,4 +5,3 @@ global using TgDownloaderDesktop.Core.Contracts.Services;
 global using TgDownloaderDesktop.Core.Models;
 global using Newtonsoft.Json;
 global using System.Text;
-global using Newtonsoft.Json;

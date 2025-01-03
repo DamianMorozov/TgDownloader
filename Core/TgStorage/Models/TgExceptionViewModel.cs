@@ -24,9 +24,9 @@ public sealed partial class TgExceptionViewModel : TgViewModelBase
 		}
 	}
 	[ObservableProperty]
-	private bool _isExist;
+	public partial bool IsExist { get; set; }
 	[ObservableProperty]
-	private string _message;
+	public partial string Message { get; set; }
 
 	public TgExceptionViewModel() : base()
 	{

@@ -9,11 +9,9 @@ public sealed partial class TgEfVersionDto : TgDtoBase, ITgDto<TgEfVersionDto, T
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	private short _version;
+	public partial short Version { get; set; }
 	[ObservableProperty]
-	private string _description = string.Empty;
-
-
+	public partial string Description { get; set; } = string.Empty;
 
 	#endregion
 	

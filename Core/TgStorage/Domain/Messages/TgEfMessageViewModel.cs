@@ -11,7 +11,7 @@ public sealed partial class TgEfMessageViewModel : TgEntityViewModelBase<TgEfMes
 
 	public override TgEfMessageRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	private TgEfMessageDto _dto = default!;
+	public partial TgEfMessageDto Dto { get; set; } = default!;
 	public Action<TgEfMessageViewModel> UpdateAction { get; set; } = _ => { };
 
 
