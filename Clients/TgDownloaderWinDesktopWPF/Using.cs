@@ -31,6 +31,7 @@ global using TgDownloaderWinDesktopWPF.Services;
 global using TgDownloaderWinDesktopWPF.ViewModels;
 global using TgDownloaderWinDesktopWPF.Views.Pages;
 global using TgDownloaderWinDesktopWPF.Views;
+global using TgInfrastructure.Contracts;
 global using TgInfrastructure.Helpers;
 global using TgStorage.Common;
 global using TgStorage.Domain.Apps;

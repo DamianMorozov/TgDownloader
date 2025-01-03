@@ -278,7 +278,6 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 			    nameof(SourceVm.Dto.FirstId) => SourceVm.Dto.FirstId.ToString(),
 			    nameof(SourceVm.Dto.Count) => SourceVm.Dto.Count.ToString(),
 			    nameof(SourceVm.Dto.Directory) => SourceVm.Dto.Directory,
-			    nameof(SourceVm.Dto.CurrentFileName) => SourceVm.Dto.CurrentFileName,
 			    nameof(SourceVm.Dto.DtChangedString) => SourceVm.Dto.DtChangedString,
 			    _ => string.Empty
 		    };
