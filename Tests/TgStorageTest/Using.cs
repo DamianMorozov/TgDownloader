@@ -4,6 +4,8 @@
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using NUnit.Framework;
+global using TgInfrastructure.Contracts;
+global using TgInfrastructure.Enums;
 global using TgStorage.Common;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;
