@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.310] - 2025-01-04
+### Fixed
+- Fixed `Sequence contains more than one element` error for TgDownloaderConsole
+- Fixed `Access to the path ...\TgDownloader.xml is denied` error when connecting to the server for TgDownloaderDesktop
+### Cganged
+- Updated contacts page for TgDownloaderDesktop
+- Updated filters page for TgDownloaderDesktop
+- Updated sources page for TgDownloaderDesktop
+- Updated stories page for TgDownloaderDesktop
+### Added
+- Source search by UserName field for TgDownloaderConsole
+- Added proxies page for TgDownloaderDesktop
+
 ## [0.5.300] - 2025-01-03
+### Fixed
+- Connecting to Telegram server for TgDownloaderDesktop
 ### Cganged
 - Updated contacts page for TgDownloaderConsole
 - Updated home page for TgDownloaderDesktop
@@ -17,8 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added filters page for TgDownloaderDesktop
 - Added stories page for TgDownloaderDesktop
 - Added reading of contacts on the contact page for TgDownloaderDesktop
-### Fixed
-- Connecting to Telegram server for TgDownloaderDesktop
 
 ## [0.5.250] - 2024-12-08
 ### Changed

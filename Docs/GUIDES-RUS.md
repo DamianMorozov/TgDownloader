@@ -3,11 +3,14 @@
 - [Руководство по настройке докер версии](GUIDE-SETUP-DOCKER-RUS.md)
 
 ## Запуск TgDownloaderDesktop под ОС Windows
-- Запустите файл `TgDownloaderDesktop-Installing.ps1` в PowerShell.
+- Скачать файл `TgDownloaderDesktop-Installing.ps1` в `c:\TgDownloader-Releases`
+- Запустить `PowerShell` с правами администратора
+- Выдать временные права доступа на установку `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Запустить файл `TgDownloaderDesktop-Installing.ps1` в `PowerShell`
 
 ## Запуск TgDownloaderConsole под ОС Windows
-- Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`.
-- Измените текущий каталог `cd TgDownloader v1.2.333`.
+- Распакуйте архив `TgDownloader v1.2.333.zip` в каталог `TgDownloader v1.2.333`
+- Измените текущий каталог `cd TgDownloader v1.2.333`
 - Выполните команду `TgDownloaderConsole.exe`
 
 ## Запуск TgDownloaderConsole под ОС Linux

@@ -1,5 +1,11 @@
 # Guide to setup the desktop version
 
+## Run TgDownloaderDesktop under Windows OS
+- Download the `TgDownloaderDesktop-Installing.ps1` file to `c:\TgDownloader-Releases`
+- Run `PowerShell` with administrator rights
+- Grant temporary access rights to install `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Run the `TgDownloaderDesktop-Installing.ps1` file in `PowerShell`
+
 1. Start the software.
 Both checkboxes should be in the on position.
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
@@ -17,9 +23,4 @@ Enter the data you received into the fields:
 - First Name: if requested by Telegram in the access error message (at the bottom of the form)
 - Last name: if requested by Telegram in the access error message (at the bottom of the form).
 Save your settings.
-Click on the "Connect client to TG server" button. 
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Error_ApiHash.png"></p>
-In case of a connection error, you may see this window
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-If the connection is successful, you may see this window
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
+Click on the "Connect to TG server" button. 

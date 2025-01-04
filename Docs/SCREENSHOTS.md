@@ -1,5 +1,19 @@
 # Screenshots
 
+## [0.5.310] - 2025-01-04
+### TgDownloaderConsole
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderConsoleHome.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderConsoleAdvanced.png"></p>
+### TgDownloaderDesktop
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopConnection.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopFilters.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopProxies.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopContacts.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopStories.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopSources.png"></p>
+<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopSettings.png"></p>
+
 ## [0.5.300] - 2025-01-03
 ### TgDownloaderConsole
 <p align="center"><img src="Assets/v0.5.300/TgDownloaderConsoleHome.png"></p>

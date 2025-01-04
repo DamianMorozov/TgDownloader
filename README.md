@@ -10,11 +10,13 @@
 ## Product assignment
 Organized downloading of files from TG channels/groups/chats (accessed under your account). Files from each source can be downloaded to a separate directory. You can specify which sources to include in auto-downloading. There is a multithreaded download mode. Console version is almost completed (production). The desktop version is in active development stage (preview).
 
-## Official website (global version)
+## Official website
+
+### Global version
 - [tgdownloader.online](http://tgdownloader.online)
 - [tg-downloader.online](http://tg-downloader.online)
 
-## Official website (russian version)
+### Russian version
 - [tgdownloader.ru](http://tgdownloader.ru)
 - [tg-downloader.ru](http://tg-downloader.ru)
 

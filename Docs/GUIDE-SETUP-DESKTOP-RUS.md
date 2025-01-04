@@ -1,5 +1,11 @@
 # Руководство по настройке десктоп версии
 
+## Запуск TgDownloaderDesktop под ОС Windows
+- Скачать файл `TgDownloaderDesktop-Installing.ps1` в `c:\TgDownloader-Releases`
+- Запустить `PowerShell` с правами администратора
+- Выдать временные права доступа на установку `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Запустить файл `TgDownloaderDesktop-Installing.ps1` в `PowerShell`
+
 1. Запустите ПО.
 Оба чекбокса должны быть в положении включено.
 <p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
@@ -17,10 +23,4 @@
 - Имя: если таковой запросит телеграм в сообщении об ошибке доступа (снизу формы)
 - Фамилия: если таковой запросит телеграм в сообщении об ошибке доступа (снизу формы)
 Сохраните ваши настройки.
-Кликните по кнопке "Подключить клиент к ТГ серверу". 
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Error_ApiHash.png"></p>
-В случае ошибки подключения вы можете увидеть такое окно
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client.png"></p>
-В случае успешного подключения вы можете увидеть такое окно
-<p align="center"><img src="Assets/TgDownloaderWinDesktop_Client_Success.png"></p>
-
+Кликните по кнопке "Подключиться к ТГ серверу". 

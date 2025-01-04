@@ -4,7 +4,22 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.310] - 2025-01-04
+### Исправлено
+- Устранена ошибка `Последовательность содержит более одного элемента` для TgDownloaderConsole
+- Устранена ошибка `Access to the path ...\TgDownloader.xml is denied` при подключении к серверу для TgDownloaderDesktop
+### Изменено
+- Обновлена страница источников для TgDownloaderDesktop
+- Обновлена страница контактов для TgDownloaderDesktop
+- Обновлена страница сторис для TgDownloaderDesktop
+- Обновлена страница фильтров для TgDownloaderDesktop
+### Добавлено
+- Поиск источника по полю UserName для TgDownloaderConsole
+- Обновлена страница прокси для TgDownloaderDesktop
+
 ## [0.5.300] - 2025-01-03
+### Исправлено
+- Подключение к Телеграм серверу для TgDownloaderDesktop
 ### Изменено
 - Обновлена домашняя страница для TgDownloaderDesktop
 - Обновлена страница источников для TgDownloaderConsole
@@ -17,8 +32,6 @@
 - Добавлена страница фильтров для TgDownloaderDesktop
 - Добавлена страница сторис для TgDownloaderDesktop
 - Добавлено чтение контактов на странице контактов для TgDownloaderDesktop
-### Исправлено
-- Подключение к Телеграм серверу для TgDownloaderDesktop
 
 ## [0.5.250] - 2024-12-08
 ### Изменено
