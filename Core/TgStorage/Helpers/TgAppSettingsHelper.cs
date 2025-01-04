@@ -45,7 +45,7 @@ public sealed class TgAppSettingsHelper : ITgHelper
 
 	public void LoadXmlSettings(Encoding? encoding = null)
 	{
-		if (TgAsyncUtils.AppType != TgEnumAppType.Console) return;
+		if (TgAsyncUtils.AppType != TgEnumAppType.Console && TgAsyncUtils.AppType != TgEnumAppType.Default) return;
 
         if (!File.Exists(TgFileUtils.FileAppXmlSettings)) return;
 		using StreamReader streamReader = new(TgFileUtils.FileAppXmlSettings, encoding ?? Encoding.Unicode);
@@ -62,7 +62,7 @@ public sealed class TgAppSettingsHelper : ITgHelper
 
 	public void StoreXmlSettings(Encoding? encoding = null)
 	{
-		if (TgAsyncUtils.AppType != TgEnumAppType.Console) return;
+		if (TgAsyncUtils.AppType != TgEnumAppType.Console && TgAsyncUtils.AppType != TgEnumAppType.Default) return;
 
 		var xml = TgDataFormatUtils.SerializeAsXmlDocument(AppXml, isAddEmptyNamespace: true).InnerXml;
 		xml = TgDataFormatUtils.GetPrettyXml(xml);
