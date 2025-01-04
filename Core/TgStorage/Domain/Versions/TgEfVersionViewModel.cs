@@ -20,7 +20,7 @@ public sealed partial class TgEfVersionViewModel : TgEntityViewModelBase<TgEfVer
 
 	public TgEfVersionViewModel() : base()
 	{
-		var item = Repository.GetNewItem();
+		TgEfVersionEntity item = new();
 		Fill(item);
 	}
 

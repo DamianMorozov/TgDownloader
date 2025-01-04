@@ -129,9 +129,11 @@ internal partial class TgMenuHelper
 				}
 				else
 				{
-					tgDownloadSettings.SourceVm.Dto.UserName = source.StartsWith("https://t.me/")
-						? source.Replace("https://t.me/", string.Empty)
-						: source;
+					if (source.StartsWith("https://t.me/"))
+						source = source.Replace("https://t.me/", string.Empty);
+					else if (source.StartsWith('@'))
+						source = source.Replace("@", string.Empty);
+					tgDownloadSettings.SourceVm.Dto.UserName = source;
 					isCheck = !string.IsNullOrEmpty(tgDownloadSettings.SourceVm.Dto.UserName);
 				}
 			}
@@ -208,8 +210,16 @@ internal partial class TgMenuHelper
 
 	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
-		var source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
-		tgDownloadSettings.SourceVm.Dto = new TgEfSourceDto().Fill(source, isUidCopy: true);
+		var directory = tgDownloadSettings.SourceVm.Dto.Directory;
+		// Find by Id
+		var storageResult = await SourceRepository.GetAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
+		// Find by UserName
+		if (!storageResult.IsExists || storageResult.Item.Id < 0)
+			storageResult = await SourceRepository.GetAsync(new() { UserName = tgDownloadSettings.SourceVm.Dto.UserName });
+		tgDownloadSettings.SourceVm.Dto = new TgEfSourceDto().Fill(storageResult.Item, isUidCopy: true);
+		// Restore directory
+		if (!string.IsNullOrEmpty(directory))
+			tgDownloadSettings.SourceVm.Dto.Directory = directory;
 	}
 
 	private async Task ManualDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings)

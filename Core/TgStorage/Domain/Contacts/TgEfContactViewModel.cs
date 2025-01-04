@@ -21,7 +21,7 @@ public sealed partial class TgEfContactViewModel : TgEntityViewModelBase<TgEfCon
 
 	public TgEfContactViewModel() : base()
 	{
-		TgEfContactEntity item = Repository.GetNewItem();
+		TgEfContactEntity item = new();
 		Fill(item);
 	}
 

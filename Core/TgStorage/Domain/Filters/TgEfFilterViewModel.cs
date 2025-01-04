@@ -21,7 +21,7 @@ public sealed partial class TgEfFilterViewModel : TgEntityViewModelBase<TgEfFilt
 
 	public TgEfFilterViewModel() : base()
 	{
-		TgEfFilterEntity item = Repository.GetNewItem();
+		TgEfFilterEntity item = new();
 		Fill(item);
 	}
 

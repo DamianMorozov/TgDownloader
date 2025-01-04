@@ -22,7 +22,7 @@ public sealed partial class TgEfProxyViewModel : TgEntityViewModelBase<TgEfProxy
 
 	public TgEfProxyViewModel() : base()
 	{
-		TgEfProxyEntity item = Repository.GetNewItem();
+		TgEfProxyEntity item = new();
 		Fill(item);
 	}
 

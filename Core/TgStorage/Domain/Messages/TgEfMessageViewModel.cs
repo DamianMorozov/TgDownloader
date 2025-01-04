@@ -22,7 +22,7 @@ public sealed partial class TgEfMessageViewModel : TgEntityViewModelBase<TgEfMes
 
 	public TgEfMessageViewModel() : base()
 	{
-		TgEfMessageEntity item = Repository.GetNewItem();
+		TgEfMessageEntity item = new();
 		Fill(item);
 	}
 

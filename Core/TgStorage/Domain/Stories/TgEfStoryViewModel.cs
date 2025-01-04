@@ -20,7 +20,7 @@ public sealed partial class TgEfStoryViewModel : TgEntityViewModelBase<TgEfStory
 
 	public TgEfStoryViewModel() : base()
 	{
-		var item = Repository.GetNewItem();
+		TgEfStoryEntity item = new();
 		Fill(item);
 	}
 
