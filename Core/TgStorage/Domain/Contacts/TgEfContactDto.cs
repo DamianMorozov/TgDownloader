@@ -96,7 +96,7 @@ public sealed partial class TgEfContactDto : TgDtoBase, ITgDto<TgEfContactDto, T
 		UserName = item.UserName ?? string.Empty;
 		UserNames = item.UserNames ?? string.Empty;
 		PhoneNumber = item.PhoneNumber ?? string.Empty;
-		Status = item.Status ?? string.Empty;
+		Status = GetShortStatus(item.Status ?? string.Empty);
 		RestrictionReason = item.RestrictionReason ?? string.Empty;
 		LangCode = item.LangCode ?? string.Empty;
 		StoriesMaxId = item.StoriesMaxId;
@@ -129,13 +129,38 @@ public sealed partial class TgEfContactDto : TgDtoBase, ITgDto<TgEfContactDto, T
 		UserName = UserName,
 		UserNames = UserNames,
 		PhoneNumber = PhoneNumber,
-		Status = Status,
+		Status = GetShortStatus(Status),
 		RestrictionReason = RestrictionReason,
 		LangCode = LangCode,
 		StoriesMaxId = StoriesMaxId,
 		BotInfoVersion = BotInfoVersion,
 		BotInlinePlaceholder = BotInlinePlaceholder,
 		BotActiveUsers = BotActiveUsers,
+	};
+
+	private string GetShortStatus(string status) => status switch
+	{
+		nameof(TL.UserStatusLastMonth) => "LastMonth",
+		"TL." + nameof(TL.UserStatusLastMonth) => "LastMonth",
+		nameof(TL.UserStatusLastWeek) => "LastWeek",
+		"TL." + nameof(TL.UserStatusLastWeek) => "LastWeek",
+		nameof(TL.UserStatusOffline) => "Offline",
+		"TL." + nameof(TL.UserStatusOffline) => "Offline",
+		nameof(TL.UserStatusOnline) => "Online",
+		"TL." + nameof(TL.UserStatusOnline) => "Online",
+		nameof(TL.UserStatusRecently) => "Recently",
+		"TL." + nameof(TL.UserStatusRecently) => "Recently",
+		_ => status,
+	};
+
+	private string GetLongStatus(string status) => status switch
+	{
+		"LastMonth" => nameof(TL.UserStatusLastMonth),
+		"LastWeek" => nameof(TL.UserStatusLastWeek),
+		"Offline" => nameof(TL.UserStatusOffline),
+		"Online" => nameof(TL.UserStatusOnline),
+		"Recently" => nameof(TL.UserStatusRecently),
+		_ => status,
 	};
 
 	#endregion
