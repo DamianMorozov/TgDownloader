@@ -4,7 +4,7 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.310] - 2025-01-04
+## [0.5.320] - 2025-01-04
 ### Исправлено
 - Устранена ошибка `Последовательность содержит более одного элемента` для TgDownloaderConsole
 - Устранена ошибка `Access to the path ...\TgDownloader.xml is denied` при подключении к серверу для TgDownloaderDesktop

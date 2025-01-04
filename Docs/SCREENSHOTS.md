@@ -1,18 +1,18 @@
 # Screenshots
 
-## [0.5.310] - 2025-01-04
+## [0.5.320] - 2025-01-04
 ### TgDownloaderConsole
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderConsoleHome.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderConsoleAdvanced.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderConsoleHome.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderConsoleAdvanced.png"></p>
 ### TgDownloaderDesktop
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopHome.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopConnection.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopFilters.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopProxies.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopContacts.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopStories.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopSources.png"></p>
-<p align="center"><img src="Assets/v0.5.310/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopConnection.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopFilters.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopProxies.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopContacts.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopStories.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopSources.png"></p>
+<p align="center"><img src="Assets/v0.5.320/TgDownloaderDesktopSettings.png"></p>
 
 ## [0.5.300] - 2025-01-03
 ### TgDownloaderConsole
