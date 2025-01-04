@@ -4,19 +4,19 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgStoriesViewModel : TgPageViewModelBase
+public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
+    private TgEfProxyRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfStoryDto> Dtos { get; set; } = [];
+	public partial ObservableCollection<TgEfProxyDto> Dtos { get; set; } = [];
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgStoriesViewModel(ITgSettingsService settingsService) : base(settingsService)
+	public TgProxiesViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
@@ -47,13 +47,13 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfStoryDto> dtos)
+	private void SetOrderData(IEnumerable<TgEfProxyDto> dtos)
 	{
-		List<TgEfStoryDto> list = dtos.ToList();
+		List<TgEfProxyDto> list = dtos.ToList();
 		if (!list.Any())
 			return;
 		Dtos = [];
-		dtos = [.. list.OrderBy(x => x.DtChanged).ThenBy(x => x.FromName)];
+		dtos = [.. list.OrderBy(x => x.HostName).ThenBy(x => x.Type)];
 		if (dtos.Any())
 			foreach (var dto in dtos)
 				Dtos.Add(dto);

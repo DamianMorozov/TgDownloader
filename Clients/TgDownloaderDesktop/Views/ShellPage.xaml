@@ -61,6 +61,12 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE71C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--  Proxies  -->
+				<NavigationViewItem x:Uid="Shell_Proxies" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgProxiesViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xEDA3;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
 				<!--  Contacts  -->
 				<NavigationViewItem x:Uid="Shell_Contacts" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgContactsViewModel">
 					<NavigationViewItem.Icon>

@@ -141,6 +141,9 @@
   <data name="Shell_Filters.Content" xml:space="preserve">
     <value>Фильтры</value>
   </data>
+  <data name="Shell_Proxies.Content" xml:space="preserve">
+    <value>Прокси</value>
+  </data>
   <data name="Shell_Sources.Content" xml:space="preserve">
     <value>Источники</value>
   </data>
@@ -712,6 +715,18 @@
   </data>
   <data name="TemplateColumnCaption.Header" xml:space="preserve">
     <value>Заголовок</value>
+  </data>
+  <data name="TemplateColumnHostName.Header" xml:space="preserve">
+    <value>Имя хоста</value>
+  </data>
+  <data name="TemplateColumnPort.Header" xml:space="preserve">
+    <value>Порт</value>
+  </data>
+  <data name="TemplateColumnUserName.Header" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="TemplateColumnPassword.Header" xml:space="preserve">
+    <value>Пароль</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Дождитесь окончания загрузки данных</value>

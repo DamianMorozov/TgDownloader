@@ -240,7 +240,7 @@
 												VerticalAlignment="Center" />
 											-->
 								<!--
-									IsEnabled="{x:Bind Path=IsReady, Mode=OneWay}"
+									IsEnabled="{x:Bind Path=IsOnlineReady, Mode=OneWay}"
 									Command="{x:Bind DownloadCommand, Mode=OneWay}"
 									CommandParameter="{x:Bind DataContext, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}, Converter={StaticResource ExistsToValueConverter}}"
 								-->

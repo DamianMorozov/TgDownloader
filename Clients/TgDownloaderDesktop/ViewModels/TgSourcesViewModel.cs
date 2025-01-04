@@ -11,8 +11,6 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
 	public partial ObservableCollection<TgEfSourceDto> Dtos { get; set; } = [];
-	[ObservableProperty]
-	public partial bool IsReady { get; set; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }

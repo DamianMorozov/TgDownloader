@@ -31,8 +31,6 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
     [ObservableProperty]
 	public partial string VerificationCode { get; set; }= default!;
 	[ObservableProperty]
-	public partial bool IsReady { get; set; }
-	[ObservableProperty]
 	public partial bool IsNotReady { get; set; }
 	[ObservableProperty]
 	public partial string MtProxyUrl { get; set; } = default!;

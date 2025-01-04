@@ -73,6 +73,9 @@
     <Page Update="Views\TgSourcesPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\TgProxiesPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\TgStoriesPage.xaml">
       <SubType>Designer</SubType>
     </Page>
