@@ -28,6 +28,7 @@ public static class TgResourceExtensions
 	public static string AskUpdateOnline() => "AskUpdateOnline".GetLocalized();
 	public static string AssertionRestartApp() => "AssertionRestartApp".GetLocalized();
 	public static string ClientSettingsAreNotValid() => "ClientSettingsAreNotValid".GetLocalized();
+	public static string GetAppDisplayName() => "AppDisplayName".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();
 	public static string GetCancelButton() => "CancelButton".GetLocalized();
 	public static string GetClientEnterLoginCode() => "ClientEnterLoginCode".GetLocalized();

@@ -23,7 +23,7 @@ public sealed partial class ShellPage : Microsoft.UI.Xaml.Controls.Page
 		App.MainWindow.ExtendsContentIntoTitleBar = true;
 		App.MainWindow.SetTitleBar(AppTitleBar);
 		App.MainWindow.Activated += MainWindow_Activated;
-		AppTitleBarText.Text = "AppDisplayName".GetLocalized();
+		//AppTitleBarText.Text = "AppDisplayName".GetLocalized();
 	}
 
 	#endregion
@@ -42,7 +42,7 @@ public sealed partial class ShellPage : Microsoft.UI.Xaml.Controls.Page
 
 	private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
 	{
-		App.AppTitlebar = AppTitleBarText as UIElement;
+		//App.AppTitlebar = AppTitleBarText as UIElement;
 	}
 
 	private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)

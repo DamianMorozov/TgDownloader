@@ -35,6 +35,7 @@ public partial class ShellViewModel : ObservableRecipient
 		{
 			Selected = selectedItem;
 		}
-		AppVersion = $"{TgLocaleHelper.Instance.AppVersion}: v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
+		AppVersion = 
+			TgResourceExtensions.GetAppDisplayName() + $" v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 	}
 }
