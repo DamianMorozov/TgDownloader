@@ -16,6 +16,7 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
+	public IRelayCommand UpdateOnlineCommand { get; }
 
 	public TgStoriesViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
@@ -23,6 +24,7 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
+		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
 	}
 
 	#endregion
@@ -42,6 +44,7 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 		ConnectionDt = string.Empty;
 		ConnectionMsg = string.Empty;
 		Exception.Default();
+		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
 		await Task.CompletedTask;
     }
 
@@ -70,16 +73,26 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 
 	private async Task LoadDataStorageCoreAsync()
 	{
-		if (!SettingsService.IsExistsAppStorage)
-			return;
-		var dtos = await Repository.GetListDtosAsync(take: 0, skip: 0);
-		SetOrderData(dtos);
+		if (!SettingsService.IsExistsAppStorage) return;
+		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
 	}
 
 	private async Task DefaultSortAsync()
 	{
 		SetOrderData(Dtos);
 		await Task.CompletedTask;
+	}
+
+	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
+
+	private async Task UpdateOnlineCoreAsync()
+	{
+		await LoadDataAsync(async () => {
+			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
+			var tgDownloadSettings = new TgDownloadSettingsViewModel();
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Story);
+			await LoadDataStorageCoreAsync();
+		});
 	}
 
 	#endregion

@@ -11,8 +11,6 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
     private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
 	public partial ObservableCollection<TgEfContactDto> Dtos { get; set; } = [];
-	[ObservableProperty]
-	public partial bool IsReady { get; set; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
@@ -45,7 +43,7 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 		ConnectionMsg = string.Empty;
 		Exception.Default();
 		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
-		IsReady = TgDesktopUtils.TgClient.IsReady;
+		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
 		await Task.CompletedTask;
     }
 
@@ -74,10 +72,8 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 
 	private async Task LoadDataStorageCoreAsync()
 	{
-		if (!SettingsService.IsExistsAppStorage)
-			return;
-		var dtos = await Repository.GetListDtosAsync(take: 0, skip: 0);
-		SetOrderData(dtos);
+		if (!SettingsService.IsExistsAppStorage) return;
+		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
 	}
 
 	private async Task DefaultSortAsync()
@@ -91,29 +87,12 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 	private async Task UpdateOnlineCoreAsync()
 	{
 		await LoadDataAsync(async () => {
-			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync())
-				return;
+			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
 			var tgDownloadSettings = new TgDownloadSettingsViewModel();
 			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Contact);
 			await LoadDataStorageCoreAsync();
 		});
 	}
-
-	private async Task UpdateDtoFromTelegramAsync(TgEfContactDto dto)
-	{
-		if (dto is null) return;
-		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//await TgDesktopUtils.TgItemSourceVm.OnUpdateSourceFromTelegramAsync();
-		//TgDesktopUtils.TgItemSourceVm.SetItemSourceVm(sourceVm);
-		//await TgDesktopUtils.TgItemSourceVm.OnGetSourceFromStorageAsync();
-
-		//if (dto.Id.Equals(sourceVm.SourceId))
-		//{
-		//	Dtos[i].Item.Fill(TgDesktopUtils.TgItemSourceVm.ItemSourceVm.Item, isUidCopy: false);
-		//	break;
-		//}
-	}
-
 
 	#endregion
 }

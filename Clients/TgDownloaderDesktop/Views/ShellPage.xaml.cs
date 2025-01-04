@@ -3,7 +3,6 @@
 
 namespace TgDownloaderDesktop.Views;
 
-// TODO: Update NavigationViewItem titles and icons in ShellPage.xaml.
 public sealed partial class ShellPage : Microsoft.UI.Xaml.Controls.Page
 {
 	#region Public and private fields, properties, constructor

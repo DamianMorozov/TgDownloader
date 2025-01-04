@@ -290,7 +290,7 @@
     <value>&lt;toast launch="action=ToastClick"&gt;
   &lt;visual&gt;
     &lt;binding template="ToastGeneric"&gt;
-      &lt;text&gt;App Notification&lt;/text&gt;
+      &lt;text&gt;TgDownloader launched&lt;/text&gt;
       &lt;text&gt;&lt;/text&gt;
       &lt;image placement="appLogoOverride" hint-crop="circle" src="{0}Assets/applicationIcon.ico"/&gt;
     &lt;/binding&gt;
@@ -309,8 +309,14 @@
   <data name="ActionLoad.Text" xml:space="preserve">
     <value>Load</value>
   </data>
+  <data name="ActionLoadFromStorage.Text" xml:space="preserve">
+    <value>Storage loading</value>
+  </data>
   <data name="ActionClear.Text" xml:space="preserve">
     <value>Clear</value>
+  </data>
+  <data name="ActionClearView.Text" xml:space="preserve">
+    <value>Clear viewing</value>
   </data>
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Delete</value>

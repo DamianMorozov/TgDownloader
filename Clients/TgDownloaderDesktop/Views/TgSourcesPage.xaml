@@ -15,68 +15,68 @@
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
 	</Page.Resources>
 
-	<ScrollView VerticalScrollMode="Auto">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-			<!--  Load data  -->
-			<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
-			<!--  Actions  -->
-			<ContentControl
-				Grid.Row="1"
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="1*" />
+		</Grid.RowDefinitions>
+		<!--  Load data  -->
+		<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
+		<!--  Actions  -->
+		<ContentControl
+			Grid.Row="1"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Stretch"
+			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			<Expander
+				x:Uid="SettingAppActions"
+				Grid.Row="2"
+				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-				<Expander
-					x:Uid="SettingAppActions"
-					Grid.Row="2"
-					Margin="{StaticResource ExpanderMargin}"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					IsExpanded="True">
-					<Grid Margin="0,-10,0,-10">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="1.5*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<!--  Load storage  -->
-						<Button
-							Grid.Column="0"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.LoadDataStorageCommand, Mode=OneWay}">
-							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
-								<TextBlock
-									x:Uid="TextBlockLoad"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-							</StackPanel>
-						</Button>
-						<!--  Update from Telegram  -->
-						<!--<Button
-							Grid.Column="1"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.UpdateOnlineCommand, Mode=OneWay}"
-							IsEnabled="False">
-							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-								<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
-								<TextBlock
-									x:Uid="TextBlockUpdate"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-							</StackPanel>
-						</Button>-->
-						<!--  Get from Telegram  -->
-						<!--<Button
+				IsExpanded="True">
+				<Grid Margin="0,-10,0,-10">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1.5*" />
+						<ColumnDefinition Width="1.5*" />
+						<ColumnDefinition Width="1.5*" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<!--  Load from storage  -->
+					<Button
+						Grid.Column="0"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Command="{x:Bind ViewModel.LoadDataStorageCommand, Mode=OneWay}">
+						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+							<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+							<TextBlock
+								x:Uid="ActionLoadFromStorage"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</StackPanel>
+					</Button>
+					<!--  Update from Telegram  -->
+					<Button
+						Grid.Column="1"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Command="{x:Bind ViewModel.UpdateOnlineCommand, Mode=OneWay}"
+						IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}">
+						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+							<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
+							<TextBlock
+								x:Uid="TextBlockUpdateOnline"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</StackPanel>
+					</Button>
+					<!--  Get from Telegram  -->
+					<!--<Button
 							Grid.Column="2"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -91,8 +91,8 @@
 									VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>-->
-						<!--  Mark as read  -->
-						<!--<Button
+					<!--  Mark as read  -->
+					<!--<Button
 							Grid.Column="3"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -107,23 +107,23 @@
 									VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>-->
-						<!--  Clear view  -->
-						<Button
-							Grid.Column="1"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.ClearDataStorageCommand, Mode=OneWay}">
-							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-								<FontIcon Margin="0,0,10,0" Glyph="&#xe894;" />
-								<TextBlock
-									x:Uid="TextBlockClear"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-							</StackPanel>
-						</Button>
-						<!--  Default sort  -->
-						<!--<Button
+					<!--  Clear viewing  -->
+					<Button
+						Grid.Column="2"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Command="{x:Bind ViewModel.ClearDataStorageCommand, Mode=OneWay}">
+						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+							<FontIcon Margin="0,0,10,0" Glyph="&#xe894;" />
+							<TextBlock
+								x:Uid="ActionClearView"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</StackPanel>
+					</Button>
+					<!--  Default sort  -->
+					<!--<Button
 							Grid.Column="5"
 							Margin="0,0,5,0"
 							HorizontalAlignment="Stretch"
@@ -137,39 +137,40 @@
 									VerticalAlignment="Center" />
 							</StackPanel>
 						</Button>-->
-						<!--  Count  -->
-						<TextBlock
-							x:Uid="TextBlockCount"
-							Grid.Column="2"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							TextAlignment="Right" />
-						<TextBlock
-							Grid.Column="3"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Center"
-							Text="{x:Bind ViewModel.Dtos.Count, Mode=OneWay}"
-							TextAlignment="Center" />
+					<!--  Count  -->
+					<TextBlock
+						x:Uid="TextBlockCount"
+						Grid.Column="3"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						TextAlignment="Right" />
+					<TextBlock
+						Grid.Column="4"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						Text="{x:Bind ViewModel.Dtos.Count, Mode=OneWay}"
+						TextAlignment="Center" />
 
-					</Grid>
-				</Expander>
-			</ContentControl>
-			<!--  Data in storage  -->
-			<ContentControl
-				Grid.Row="2"
+				</Grid>
+			</Expander>
+		</ContentControl>
+		<!--  Data in storage  -->
+		<ContentControl
+			Grid.Row="2"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Stretch"
+			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			<Expander
+				x:Uid="ExpanderDataInStorage"
+				Grid.Row="0"
+				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
-				Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-				<Expander
-					x:Uid="ExpanderDataInStorage"
-					Grid.Row="0"
-					Margin="{StaticResource ExpanderMargin}"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					IsExpanded="True">
-					<Grid Margin="0,-10,0,-10">
+				IsExpanded="True">
+				<ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
+					<Grid>
 						<controls:DataGrid
 							VerticalAlignment="Top"
 							AutoGenerateColumns="False"
@@ -422,8 +423,8 @@
 							</controls:DataGrid.Columns>
 						</controls:DataGrid>
 					</Grid>
-				</Expander>
-			</ContentControl>
-		</Grid>
-	</ScrollView>
+				</ScrollView>
+			</Expander>
+		</ContentControl>
+	</Grid>
 </Page>

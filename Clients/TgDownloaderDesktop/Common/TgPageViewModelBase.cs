@@ -31,6 +31,8 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	public partial string StateSourceMsg { get; set; }= string.Empty;
 	[ObservableProperty]
 	public partial XamlRoot? XamlRootVm { get; set; }
+	[ObservableProperty]
+	public partial bool IsOnlineReady { get; set; }
 
 	public TgPageViewModelBase(ITgSettingsService settingsService)
 	{

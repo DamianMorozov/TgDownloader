@@ -349,13 +349,13 @@
     <value>&lt;toast launch="action=ToastClick"&gt;
   &lt;visual&gt;
     &lt;binding template="ToastGeneric"&gt;
-      &lt;text&gt;App Notification&lt;/text&gt;
+      &lt;text&gt;Запущен TgDownloader&lt;/text&gt;
       &lt;text&gt;&lt;/text&gt;
       &lt;image placement="appLogoOverride" hint-crop="circle" src="{0}Assets/applicationIcon.ico"/&gt;
     &lt;/binding&gt;
   &lt;/visual&gt;
   &lt;actions&gt;
-    &lt;action content="Settings" arguments="action=Settings"/&gt;
+    &lt;action content="Настройки" arguments="action=Settings"/&gt;
   &lt;/actions&gt;
 &lt;/toast&gt;</value>
   </data>
@@ -368,8 +368,14 @@
   <data name="ActionLoad.Text" xml:space="preserve">
     <value>Загрузить</value>
   </data>
+  <data name="ActionLoadFromStorage.Text" xml:space="preserve">
+    <value>Загрузка хранилища</value>
+  </data>
   <data name="ActionClear.Text" xml:space="preserve">
     <value>Очистить</value>
+  </data>
+  <data name="ActionClearView.Text" xml:space="preserve">
+    <value>Очистить просмотр</value>
   </data>
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Удалить</value>

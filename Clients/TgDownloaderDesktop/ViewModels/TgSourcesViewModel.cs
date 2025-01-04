@@ -13,31 +13,18 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	public partial ObservableCollection<TgEfSourceDto> Dtos { get; set; } = [];
 	[ObservableProperty]
 	public partial bool IsReady { get; set; }
-	//public IRelayCommand UpdateOnlineCommand { get; }
-	//public IRelayCommand GetSourcesFromTelegramCommand { get; }
-	//public IRelayCommand MarkAllMessagesAsReadCommand { get; }
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
-	//public IRelayCommand<TgEfSourceViewModel> GetSourceFromStorageCommand { get; }
-	//public IRelayCommand<TgEfSourceViewModel> UpdateSourceFromTelegramCommand { get; }
-	//public IRelayCommand<TgEfSourceViewModel> DownloadCommand { get; }
-	//public IRelayCommand<TgEfSourceViewModel> EditSourceCommand { get; }
+	public IRelayCommand UpdateOnlineCommand { get; }
 
 	public TgSourcesViewModel(ITgSettingsService settingsService) : base(settingsService)
     {
-		//AppClearCoreAsync().GetAwaiter().GetResult();
 		// Commands
-		//UpdateOnlineCommand = new AsyncRelayCommand(UpdateFromTelegramAsync);
-		//GetSourcesFromTelegramCommand = new AsyncRelayCommand(GetSourcesFromTelegramAsync);
-		//MarkAllMessagesAsReadCommand = new AsyncRelayCommand(MarkAllMessagesAsReadAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
-		//GetSourceFromStorageCommand = new AsyncRelayCommand<TgEfSourceViewModel>(GetSourceFromStorageAsync);
-		//UpdateSourceFromTelegramCommand = new AsyncRelayCommand<TgEfSourceViewModel>(UpdateDtoFromTelegramAsync);
-		//DownloadCommand = new AsyncRelayCommand<TgEfSourceViewModel>(DownloadAsync);
-		//EditSourceCommand = new AsyncRelayCommand<TgEfSourceViewModel>(EditSourceAsync);
+		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
 		// Delegates
 		//TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
 		//TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
@@ -66,6 +53,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		ConnectionDt = string.Empty;
 		ConnectionMsg = string.Empty;
 		Exception.Default();
+		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
 		await Task.CompletedTask;
     }
 
@@ -116,10 +104,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 
 	private async Task LoadDataStorageCoreAsync()
 	{
-		if (!SettingsService.IsExistsAppStorage)
-			return;
-		var dtos = await Repository.GetListDtosAsync(take: 0, skip: 0);
-		SetOrderData(dtos);
+		if (!SettingsService.IsExistsAppStorage) return;
+		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -193,6 +179,19 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	//	//}
 	//	await Task.CompletedTask;
 	//}
+
+	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
+
+	private async Task UpdateOnlineCoreAsync()
+	{
+		await LoadDataAsync(async () => {
+			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
+			var tgDownloadSettings = new TgDownloadSettingsViewModel();
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Chat);
+			//await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
+			await LoadDataStorageCoreAsync();
+		});
+	}
 
 	#endregion
 }

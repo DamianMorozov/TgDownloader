@@ -9,6 +9,9 @@ public partial class ShellViewModel : ObservableRecipient
 	public partial bool IsBackEnabled { get; set; }
 	[ObservableProperty]
 	public partial object? Selected { get; set; }
+	[ObservableProperty]
+	public partial string AppVersion { get; set; } = "";
+
 	public INavigationService NavigationService { get; }
 	public INavigationViewService NavigationViewService { get; }
 
@@ -32,5 +35,6 @@ public partial class ShellViewModel : ObservableRecipient
 		{
 			Selected = selectedItem;
 		}
+		AppVersion = $"{TgLocaleHelper.Instance.AppVersion}: v{TgCommonUtils.GetTrimVersion(Assembly.GetExecutingAssembly().GetName().Version)}";
 	}
 }
