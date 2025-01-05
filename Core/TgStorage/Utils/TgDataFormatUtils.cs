@@ -27,7 +27,7 @@ public static class TgDataFormatUtils
 		// Don't use it.
 		// XmlSerializer xmlSerializer = new(typeof(T));
 		// Use it.
-		XmlSerializer? xmlSerializer = XmlSerializer.FromTypes(new[] { typeof(T) })[0];
+		XmlSerializer? xmlSerializer = XmlSerializer.FromTypes([typeof(T)])[0];
 		// The T object must have properties with { get; set; }.
 		using StringWriter stringWriter = new();
 		switch (isAddEmptyNamespace)
@@ -66,7 +66,7 @@ public static class TgDataFormatUtils
 		// Don't use it.
 		// XmlSerializer xmlSerializer = new(typeof(T));
 		// Use it.
-		XmlSerializer? xmlSerializer = XmlSerializer.FromTypes(new[] { typeof(T) })[0];
+		XmlSerializer? xmlSerializer = XmlSerializer.FromTypes([typeof(T)])[0];
 		if (xmlSerializer is null)
 			return new();
 		object? obj = xmlSerializer.Deserialize(new MemoryStream(Encoding.Unicode.GetBytes(xml)));

@@ -32,6 +32,14 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectDto() => item => new TgEfContactDto().GetDto(item);
+
+	public async Task<TgEfContactDto> GetDtoAsync(Expression<Func<TgEfContactEntity, bool>> where)
+	{
+		var dto = await GetQuery().Where(where).Select(SelectDto()).SingleOrDefaultAsync() ?? new TgEfContactDto();
+		return dto;
+	}
+
 	public async Task<List<TgEfContactDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
 		var dtos = take > 0
@@ -39,8 +47,6 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return dtos;
 	}
-
-	private static Expression<Func<TgEfContactEntity, TgEfContactDto>> SelectDto() => item => new TgEfContactDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
