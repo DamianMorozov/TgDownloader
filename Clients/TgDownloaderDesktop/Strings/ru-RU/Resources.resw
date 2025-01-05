@@ -138,6 +138,9 @@
   <data name="Shell_Contacts.Content" xml:space="preserve">
     <value>Контакты</value>
   </data>
+  <data name="Shell_ContactDetails.Content" xml:space="preserve">
+    <value>Редактирование контакта</value>
+  </data>
   <data name="Shell_Filters.Content" xml:space="preserve">
     <value>Фильтры</value>
   </data>
@@ -811,5 +814,50 @@
   </data>
   <data name="RpcErrorFloodWait" xml:space="preserve">
     <value>Необходимо подождать</value>
+  </data>
+  <data name="FieldUid.Text" xml:space="preserve">
+    <value>УИД</value>
+  </data>
+  <data name="FieldId.Text" xml:space="preserve">
+    <value>ИД</value>
+  </data>
+  <data name="FieldDtChanged.Text" xml:space="preserve">
+    <value>Изменено</value>
+  </data>
+  <data name="FieldAccessHash.Text" xml:space="preserve">
+    <value>Хэш доступа</value>
+  </data>
+  <data name="FieldIsActive.Text" xml:space="preserve">
+    <value>Активно</value>
+  </data>
+  <data name="FieldIsBot.Text" xml:space="preserve">
+    <value>Бот</value>
+  </data>
+  <data name="FieldFirstName.Text" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="FieldLastName.Text" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="FieldUserName.Text" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="FieldUserNames.Text" xml:space="preserve">
+    <value>Имена пользователя</value>
+  </data>
+  <data name="FieldPhoneNumber.Text" xml:space="preserve">
+    <value>Номер телефона</value>
+  </data>
+  <data name="FieldStatus.Text" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="FieldRestrictionReason.Text" xml:space="preserve">
+    <value>Причина ограничения</value>
+  </data>
+  <data name="FieldLangCode.Text" xml:space="preserve">
+    <value>Код языка</value>
+  </data>
+  <data name="FieldStoriesMaxId.Text" xml:space="preserve">
+    <value>Максимальный Id сторис</value>
   </data>
 </root>

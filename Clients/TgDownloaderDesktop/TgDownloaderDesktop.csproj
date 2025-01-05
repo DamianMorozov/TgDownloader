@@ -64,6 +64,9 @@
     <Page Update="Views\TgConnectPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\TgContactDetailsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\TgFiltersPage.xaml">
       <SubType>Designer</SubType>
     </Page>

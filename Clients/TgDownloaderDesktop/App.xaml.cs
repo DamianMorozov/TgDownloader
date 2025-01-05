@@ -72,6 +72,8 @@ public partial class App : Application
 				services.AddTransient<TgLoadDataPage>();
 				services.AddTransient<TgContactsViewModel>();
 				services.AddTransient<TgContactsPage>();
+				services.AddTransient<TgContactDetailsViewModel>();
+				services.AddTransient<TgContactDetailsPage>();
 				services.AddTransient<TgSourcesViewModel>();
 				services.AddTransient<TgSourcesPage>();
 				services.AddTransient<TgFiltersViewModel>();

@@ -79,6 +79,9 @@
   <data name="Shell_Contacts.Content" xml:space="preserve">
     <value>Contacts</value>
   </data>
+  <data name="Shell_ContactDetails.Content" xml:space="preserve">
+    <value>Edit contact</value>
+  </data>
   <data name="Shell_Filters.Content" xml:space="preserve">
     <value>Filters</value>
   </data>
@@ -749,5 +752,50 @@
   </data>
   <data name="RpcErrorFloodWait" xml:space="preserve">
     <value>A wait is required</value>
+  </data>
+  <data name="FieldUid.Text" xml:space="preserve">
+    <value>UID</value>
+  </data>
+  <data name="FieldId.Text" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="FieldDtChanged.Text" xml:space="preserve">
+    <value>Changed</value>
+  </data>
+  <data name="FieldAccessHash.Text" xml:space="preserve">
+    <value>Access hash</value>
+  </data>
+  <data name="FieldIsActive.Text" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="FieldIsBot.Text" xml:space="preserve">
+    <value>Bot</value>
+  </data>
+  <data name="FieldFirstName.Text" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="FieldLastName.Text" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="FieldUserName.Text" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="FieldUserNames.Text" xml:space="preserve">
+    <value>User names</value>
+  </data>
+  <data name="FieldPhoneNumber.Text" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="FieldStatus.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="FieldRestrictionReason.Text" xml:space="preserve">
+    <value>Restriction reason</value>
+  </data>
+  <data name="FieldLangCode.Text" xml:space="preserve">
+    <value>Language code</value>
+  </data>
+  <data name="FieldStoriesMaxId.Text" xml:space="preserve">
+    <value>Maximum Id storis</value>
   </data>
 </root>

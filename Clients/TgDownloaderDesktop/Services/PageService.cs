@@ -9,20 +9,21 @@ public sealed class PageService : IPageService
 
 	public PageService()
 	{
-		Configure<TgMainViewModel, TgMainPage>();
-		Configure<TgLoadDataViewModel, TgLoadDataPage>();
+		Configure<ContentGridDetailViewModel, ContentGridDetailPage>();
+		Configure<ContentGridViewModel, ContentGridPage>();
+		Configure<DataGridViewModel, DataGridPage>();
+		Configure<ListDetailsViewModel, ListDetailsPage>();
 		Configure<TgConnectViewModel, TgConnectPage>();
+		Configure<TgContactDetailsViewModel, TgContactDetailsPage>();
 		Configure<TgContactsViewModel, TgContactsPage>();
 		Configure<TgFiltersViewModel, TgFiltersPage>();
+		Configure<TgLoadDataViewModel, TgLoadDataPage>();
+		Configure<TgMainViewModel, TgMainPage>();
+		Configure<TgProxiesViewModel, TgProxiesPage>();
+		Configure<TgSettingsViewModel, TgSettingsPage>();
 		Configure<TgSourcesViewModel, TgSourcesPage>();
 		Configure<TgStoriesViewModel, TgStoriesPage>();
-		Configure<TgProxiesViewModel, TgProxiesPage>();
 		Configure<WebViewViewModel, WebViewPage>();
-		Configure<ListDetailsViewModel, ListDetailsPage>();
-		Configure<ContentGridViewModel, ContentGridPage>();
-		Configure<ContentGridDetailViewModel, ContentGridDetailPage>();
-		Configure<DataGridViewModel, DataGridPage>();
-		Configure<TgSettingsViewModel, TgSettingsPage>();
 	}
 
 	public Type GetPageType(string key)

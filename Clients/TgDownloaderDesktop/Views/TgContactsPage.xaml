@@ -90,21 +90,6 @@
 								VerticalAlignment="Center" />
 						</StackPanel>
 					</Button>
-					<!--  Default sort  -->
-					<!--<Button
-							Grid.Column="5"
-							Margin="0,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Command="{x:Bind ViewModel.DefaultSortCommand, Mode=OneWay}">
-							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-								<FontIcon Margin="0,0,10,0" Glyph="&#xe8cb;" />
-								<TextBlock
-									x:Uid="TextBlockDefaultSort"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center" />
-							</StackPanel>
-						</Button>-->
 					<!--  Count  -->
 					<TextBlock
 						x:Uid="TextBlockCount"
@@ -120,7 +105,6 @@
 						VerticalAlignment="Center"
 						Text="{x:Bind ViewModel.Dtos.Count, Mode=OneWay}"
 						TextAlignment="Center" />
-
 				</Grid>
 			</Expander>
 		</ContentControl>
@@ -144,8 +128,10 @@
 							AutoGenerateColumns="False"
 							Background="Transparent"
 							CanUserSortColumns="True"
+							DoubleTapped="{x:Bind ViewModel.DataGrid_DoubleTapped, Mode=OneWay}"
 							HeadersVisibility="Column"
-							ItemsSource="{x:Bind ViewModel.Dtos, Mode=OneWay}">
+							ItemsSource="{x:Bind ViewModel.Dtos, Mode=OneWay}"
+							SelectionMode="Single">
 							<controls:DataGrid.Columns>
 								<!--  ID  -->
 								<controls:DataGridTemplateColumn
