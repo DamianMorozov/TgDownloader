@@ -31,6 +31,7 @@ public static class TgResourceExtensions
 	public static string GetAppDisplayName() => "AppDisplayName".GetLocalized();
 	public static string GetAppVersion() => "AppVersion".GetLocalized();
 	public static string GetCancelButton() => "CancelButton".GetLocalized();
+	public static string GetClientDataRequestEmptyResponse() => "ClientDataRequestEmptyResponse".GetLocalized();
 	public static string GetClientEnterLoginCode() => "ClientEnterLoginCode".GetLocalized();
 	public static string GetClientEnterPassword() => "ClientEnterPassword".GetLocalized();
 	public static string GetClientFloodWait() => "ClientFloodWait".GetLocalized();
@@ -43,6 +44,10 @@ public static class TgResourceExtensions
 	public static string GetMenuClientIsQuery() => "MenuClientIsQuery".GetLocalized();
 	public static string GetNoButton() => "NoButton".GetLocalized();
 	public static string GetOkButton() => "OkButton".GetLocalized();
+	public static string GetRpcErrorFloodWait() => "RpcErrorFloodWait".GetLocalized();
+	public static string GetRpcErrorPasswordHashInvalid() => "RpcErrorPasswordHashInvalid".GetLocalized();
+	public static string GetRpcErrorPhoneCodeInvalid() => "RpcErrorPhoneCodeInvalid".GetLocalized();
+	public static string GetRpcErrorPhonePasswordFlood() => "RpcErrorPhonePasswordFlood".GetLocalized();
 	public static string GetSettingAppLanguageTooltip => "SettingAppLanguageTooltip".GetLocalized();
 	public static string GetSettingAppThemeTooltip => "SettingAppThemeTooltip".GetLocalized();
 	public static string GetSettingsThemeDark() => "SettingsThemeDark".GetLocalized();

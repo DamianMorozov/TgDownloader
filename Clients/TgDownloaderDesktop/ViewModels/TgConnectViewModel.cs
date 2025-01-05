@@ -1,6 +1,8 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+using TL;
+
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -17,41 +19,37 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 	[ObservableProperty]
 	public partial ObservableCollection<TgEfProxyViewModel> ProxiesVms { get; set; } = [];
 	[ObservableProperty]
-	public partial Guid ApiHash { get; set; }
+	public partial string ApiHash { get; set; } = "";
 	[ObservableProperty]
-	public partial int ApiId { get; set; }
+	public partial int ApiId { get; set; } = 0;
 	[ObservableProperty]
-	public partial string PhoneNumber { get; set; } = default!;
+	public partial string PhoneNumber { get; set; } = "";
 	[ObservableProperty]
-	public partial string FirstName { get; set; }= default!;
+	public partial string FirstName { get; set; }= "";
 	[ObservableProperty]
-	public partial string LastName { get; set; }= default!;
+	public partial string LastName { get; set; }= "";
 	[ObservableProperty]
-	public partial string Password { get; set; }= default!;
+	public partial string Password { get; set; }= "";
     [ObservableProperty]
-	public partial string VerificationCode { get; set; }= default!;
+	public partial string VerificationCode { get; set; }= "";
 	[ObservableProperty]
 	public partial bool IsNotReady { get; set; }
 	[ObservableProperty]
-	public partial string MtProxyUrl { get; set; } = default!;
+	public partial string MtProxyUrl { get; set; } = "";
 	[ObservableProperty]
-	public partial string UserName { get; set; } = default!;
+	public partial string UserName { get; set; } = "";
 	[ObservableProperty]
-	public partial string MaxAutoReconnects { get; set; } = default!;
+	public partial string MaxAutoReconnects { get; set; } = "";
 	[ObservableProperty]
-	public partial string FloodRetryThreshold { get; set; } = default!;
+	public partial string FloodRetryThreshold { get; set; } = "";
 	[ObservableProperty]
-	public partial string PingInterval { get; set; } = default!;
+	public partial string PingInterval { get; set; } = "";
 	[ObservableProperty]
-    public partial string MaxCodePwdAttempts { get; set; } = default!;
-
-	private Guid _newApiHash = Guid.Empty;
-	private int _newApiId = 0;
-	private string _newFirstName = "";
-	private string _newLastName = "";
-	private string _newPassword = "";
-	private string _newPhoneNumber = "";
-	private string _newVerificationCode = "";
+    public partial string MaxCodePwdAttempts { get; set; } = "";
+	[ObservableProperty]
+    public partial string DataRequest { get; set; } = "";
+	[ObservableProperty]
+    public partial string DataRequestEmptyResponse { get; set; } = "";
 
 	public IRelayCommand ClientConnectCommand { get; }
     public IRelayCommand ClientDisconnectCommand { get; }
@@ -93,28 +91,27 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		ConnectionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 		var client = TgDesktopUtils.TgClient.Client;
 		// Check exceptions
+		// https://www.infotelbot.com/2021/06/telegram-error-lists.html
 		if (Exception.Message.Contains("PHONE_CODE_INVALID", StringComparison.InvariantCultureIgnoreCase))
 		{
-			ConnectionMsg = TgResourceExtensions.GetClientEnterLoginCode();
+			ConnectionMsg = TgResourceExtensions.GetRpcErrorPhoneCodeInvalid();
 		}
 		else if (Exception.Message.Contains("PASSWORD_HASH_INVALID", StringComparison.InvariantCultureIgnoreCase))
 		{
-			ConnectionMsg = TgResourceExtensions.GetClientEnterPassword();
+			ConnectionMsg = TgResourceExtensions.GetRpcErrorPasswordHashInvalid();
 		}
 		else if (Exception.Message.Contains("FLOOD_WAIT", StringComparison.InvariantCultureIgnoreCase))
 		{
-			ConnectionMsg = TgResourceExtensions.GetClientFloodWait();
+			ConnectionMsg = TgResourceExtensions.GetRpcErrorFloodWait();
 		}
 		else if (Exception.Message.Contains("PHONE_PASSWORD_FLOOD", StringComparison.InvariantCultureIgnoreCase))
 		{
-			ConnectionMsg = TgResourceExtensions.GetClientFloodWait();
+			ConnectionMsg = TgResourceExtensions.GetRpcErrorPhonePasswordFlood();
 		}
 		else
 		{
 			ConnectionMsg = client is null || client.Disconnected
 				? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
-			VerificationCode = string.Empty;
-			Password = string.Empty;
 		}
 		if (client is not null)
 		{
@@ -127,7 +124,7 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		}
 		else
 		{
-			await ReloadUiAsync(isClearPassw: false);
+			await ReloadUiAsync();
 		}
 		// Clear memory
 		client = null;
@@ -135,40 +132,33 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 
 	private string? ConfigClientDesktop(string what)
     {
-		// await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgResourceExtensions.GetMenuClientIsQuery()}: {what}"));
-		switch (what)
+		var response = what switch
 		{
-			case "api_hash":
-				return TgDataFormatUtils.ParseGuidToString(_newApiHash);
-			case "api_id":
-				return _newApiId.ToString();
-			case "phone_number":
-				return _newPhoneNumber;
-			case "first_name":
-				return _newFirstName;
-			case "last_name":
-				return _newLastName;
-			case "password":
-				return _newPassword;
-			case "verification_code":
-				return _newVerificationCode;
-			case "session_pathname":
-				return SettingsService.AppSession;
-			//case "notifications":
-			//    return Notifications;
-			//case "session_key":
-			//case "server_address":
-			//case "device_model":
-			//case "system_version":
-			//case "app_version":
-			//case "system_lang_code":
-			//case "lang_pack":
-			//case "lang_code":
-			//case "init_params":
-			default:
-				return null;
+			"api_hash" => ApiHash,
+			"api_id" => ApiId.ToString(),
+			"phone_number" => PhoneNumber,
+			"first_name" => FirstName,
+			"last_name" => LastName,
+			"password" => Password,
+			"verification_code" => VerificationCode,
+			"session_pathname" => SettingsService.AppSession,
+			_ => null,
+		};
+		try
+		{
+			DataRequest = string.IsNullOrEmpty(DataRequest)
+				? $"{what}: {(string.IsNullOrEmpty(response) ? DataRequestEmptyResponse : response)}"
+				: DataRequest + Environment.NewLine +
+					$"{what}: {(string.IsNullOrEmpty(response) ? DataRequestEmptyResponse : response)}";
 		}
-    }
+		catch (Exception ex)
+		{
+#if DEBUG
+			Debug.WriteLine(ex);
+#endif
+		}
+		return response;
+	}
 
 	private async Task ClientConnectAsync() => await ClientConnectCoreAsync(isRetry: false);
 
@@ -177,13 +167,7 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
         try
         {
 	        Exception.Default();
-	        _newApiHash = ApiHash;
-	        _newApiId = ApiId;
-	        _newFirstName = FirstName;
-	        _newLastName = LastName;
-	        _newPassword = Password;
-			_newPhoneNumber = PhoneNumber;
-	        _newVerificationCode = VerificationCode;
+			DataRequest = string.Empty;
 			await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Dto.GetEntity(), ConfigClientDesktop);
         }
         catch (Exception ex)
@@ -211,12 +195,12 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		var storageResult = await AppRepository.GetFirstAsync(isReadOnly: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 
-		await ReloadUiAsync(isClearPassw: false);
+		await ReloadUiAsync();
 	}
 
-    private async Task ReloadUiAsync(bool isClearPassw)
+    private async Task ReloadUiAsync(bool isClearPassw = false)
     {
-	    ApiHash = App.ApiHash;
+	    ApiHash = TgDataFormatUtils.ParseGuidToString(App.ApiHash);
 	    ApiId = App.ApiId;
 		PhoneNumber = App.PhoneNumber;
 		FirstName = App.FirstName;
@@ -238,6 +222,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		ConnectionDt = string.Empty;
 		ConnectionMsg = string.Empty;
 		Exception.Default();
+		DataRequest = string.Empty;
+		DataRequestEmptyResponse = TgResourceExtensions.GetClientDataRequestEmptyResponse();
 
 		await ReloadProxyAsync();
     }
@@ -281,7 +267,7 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 	{
 		await AppRepository.DeleteAllAsync();
 		
-		App.ApiHash = ApiHash;
+		App.ApiHash = TgDataFormatUtils.ParseStringToGuid(ApiHash);
 		App.ApiId = ApiId;
 		App.FirstName = FirstName;
 		App.LastName = LastName;
@@ -302,7 +288,6 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		ProxiesVms.Clear();
 		if (ProxyVm is not null)
 			ProxyVm.Dto = new();
-        
 		await ReloadUiAsync(isClearPassw: true);
     }
 

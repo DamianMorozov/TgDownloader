@@ -593,6 +593,9 @@
   <data name="ClientConnectionDt.Text" xml:space="preserve">
     <value>Дата время подключения</value>
   </data>
+  <data name="ClientDataRequest.Text" xml:space="preserve">
+    <value>Запрос данных</value>
+  </data>
   <data name="ClientConnectionException.Text" xml:space="preserve">
     <value>Исключение подключения</value>
   </data>
@@ -613,6 +616,9 @@
   </data>
   <data name="ClientMaxCodePwdAttempts.Text" xml:space="preserve">
     <value>Макс кол-во попыток ввода кода</value>
+  </data>
+  <data name="ClientDataRequestEmptyResponse" xml:space="preserve">
+    <value>Пусто</value>
   </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Бесплатная лицензия</value>
@@ -793,5 +799,17 @@
   </data>
   <data name="DonateMajor.Text" xml:space="preserve">
     <value>Донат через Major</value>
+  </data>
+  <data name="RpcErrorPhonePasswordFlood" xml:space="preserve">
+    <value>Вы пытались войти в систему слишком много раз</value>
+  </data>
+  <data name="RpcErrorPhoneCodeInvalid" xml:space="preserve">
+    <value>Введенный телефонный код недействителен</value>
+  </data>
+  <data name="RpcErrorPasswordHashInvalid" xml:space="preserve">
+    <value>Введенный вами пароль (и, соответственно, его хэш-значение) недействителен</value>
+  </data>
+  <data name="RpcErrorFloodWait" xml:space="preserve">
+    <value>Необходимо подождать</value>
   </data>
 </root>

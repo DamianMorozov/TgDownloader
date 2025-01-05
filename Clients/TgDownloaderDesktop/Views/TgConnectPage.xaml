@@ -323,6 +323,7 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
@@ -526,6 +527,26 @@
 							IsEnabled="False"
 							IsReadOnly="True"
 							Text="{x:Bind ViewModel.PingInterval, Mode=OneWay}"
+							TextWrapping="Wrap" />
+						<!--  Data request  -->
+						<TextBlock
+							x:Uid="ClientDataRequest"
+							Grid.Row="6"
+							Margin="2,7,2,2"
+							VerticalAlignment="Center"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="6"
+							Grid.Column="1"
+							Grid.ColumnSpan="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							VerticalContentAlignment="Center"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.DataRequest, Mode=OneWay}"
 							TextWrapping="Wrap" />
 					</Grid>
 				</Expander>

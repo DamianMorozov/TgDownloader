@@ -531,6 +531,9 @@
   <data name="ClientConnectionDt.Text" xml:space="preserve">
     <value>Connection date time</value>
   </data>
+  <data name="ClientDataRequest.Text" xml:space="preserve">
+    <value>Data request</value>
+  </data>
   <data name="ClientConnectionException.Text" xml:space="preserve">
     <value>Connection exception</value>
   </data>
@@ -551,6 +554,9 @@
   </data>
   <data name="ClientMaxCodePwdAttempts.Text" xml:space="preserve">
     <value>Max code pwd attempts</value>
+  </data>
+  <data name="ClientDataRequestEmptyResponse" xml:space="preserve">
+    <value>Empty</value>
   </data>
   <data name="LicenseFreeDescription" xml:space="preserve">
     <value>Free license</value>
@@ -731,5 +737,17 @@
   </data>
   <data name="DonateMajor.Text" xml:space="preserve">
     <value>Donate through Major</value>
+  </data>
+  <data name="RpcErrorPhonePasswordFlood" xml:space="preserve">
+    <value>You have tried logging in too many times</value>
+  </data>
+  <data name="RpcErrorPhoneCodeInvalid" xml:space="preserve">
+    <value>The phone code entered was invalid</value>
+  </data>
+  <data name="RpcErrorPasswordHashInvalid" xml:space="preserve">
+    <value>The password (and thus its hash value) you entered is invalid</value>
+  </data>
+  <data name="RpcErrorFloodWait" xml:space="preserve">
+    <value>A wait is required</value>
   </data>
 </root>
