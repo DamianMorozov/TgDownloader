@@ -32,6 +32,14 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	private static Expression<Func<TgEfVersionEntity, TgEfVersionDto>> SelectDto() => item => new TgEfVersionDto().GetDto(item);
+
+	public async Task<TgEfVersionDto> GetDtoAsync(Expression<Func<TgEfVersionEntity, bool>> where)
+	{
+		var dto = await GetQuery().Where(where).Select(SelectDto()).SingleOrDefaultAsync() ?? new TgEfVersionDto();
+		return dto;
+	}
+
 	public async Task<List<TgEfVersionDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
 		var dtos = take > 0
@@ -39,8 +47,6 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return dtos;
 	}
-
-	private static Expression<Func<TgEfVersionEntity, TgEfVersionDto>> SelectDto() => item => new TgEfVersionDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

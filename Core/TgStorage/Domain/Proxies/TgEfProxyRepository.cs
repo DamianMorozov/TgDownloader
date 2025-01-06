@@ -33,6 +33,14 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			: new TgEfStorageResult<TgEfProxyEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	private static Expression<Func<TgEfProxyEntity, TgEfProxyDto>> SelectDto() => item => new TgEfProxyDto().GetDto(item);
+
+	public async Task<TgEfProxyDto> GetDtoAsync(Expression<Func<TgEfProxyEntity, bool>> where)
+	{
+		var dto = await GetQuery().Where(where).Select(SelectDto()).SingleOrDefaultAsync() ?? new TgEfProxyDto();
+		return dto;
+	}
+
 	public async Task<List<TgEfProxyDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
 		var dtos = take > 0
@@ -40,8 +48,6 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return dtos;
 	}
-
-	private static Expression<Func<TgEfProxyEntity, TgEfProxyDto>> SelectDto() => item => new TgEfProxyDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

@@ -35,6 +35,14 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 			: new TgEfStorageResult<TgEfMessageEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	private static Expression<Func<TgEfMessageEntity, TgEfMessageDto>> SelectDto() => item => new TgEfMessageDto().GetDto(item);
+
+	public async Task<TgEfMessageDto> GetDtoAsync(Expression<Func<TgEfMessageEntity, bool>> where)
+	{
+		var dto = await GetQuery().Where(where).Select(SelectDto()).SingleOrDefaultAsync() ?? new TgEfMessageDto();
+		return dto;
+	}
+
 	public async Task<List<TgEfMessageDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
 		var dtos = take > 0
@@ -42,8 +50,6 @@ public sealed class TgEfMessageRepository(TgEfContext efContext) : TgEfRepositor
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return dtos;
 	}
-
-	private static Expression<Func<TgEfMessageEntity, TgEfMessageDto>> SelectDto() => item => new TgEfMessageDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfMessageEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{

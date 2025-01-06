@@ -32,6 +32,14 @@ public sealed class TgEfStoryRepository(TgEfContext efContext) : TgEfRepositoryB
 			: new TgEfStorageResult<TgEfStoryEntity>(TgEnumEntityState.IsExists, item);
 	}
 
+	private static Expression<Func<TgEfStoryEntity, TgEfStoryDto>> SelectDto() => item => new TgEfStoryDto().GetDto(item);
+
+	public async Task<TgEfStoryDto> GetDtoAsync(Expression<Func<TgEfStoryEntity, bool>> where)
+	{
+		var dto = await GetQuery().Where(where).Select(SelectDto()).SingleOrDefaultAsync() ?? new TgEfStoryDto();
+		return dto;
+	}
+
 	public async Task<List<TgEfStoryDto>> GetListDtosAsync(int take, int skip, bool isReadOnly = true)
 	{
 		var dtos = take > 0
@@ -39,8 +47,6 @@ public sealed class TgEfStoryRepository(TgEfContext efContext) : TgEfRepositoryB
 			: await GetQuery(isReadOnly).Select(SelectDto()).ToListAsync();
 		return dtos;
 	}
-
-	private static Expression<Func<TgEfStoryEntity, TgEfStoryDto>> SelectDto() => item => new TgEfStoryDto().GetDto(item);
 
 	public override async Task<TgEfStorageResult<TgEfStoryEntity>> GetListAsync(int take, int skip, bool isReadOnly = true)
 	{
