@@ -39,7 +39,7 @@ public partial class TgMainViewModel : TgPageViewModelBase
 	[ObservableProperty]
 	public partial string DonateMajor { get; set; } = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
 
-	public TgMainViewModel(ITgSettingsService settingsService) : base(settingsService)
+	public TgMainViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		VersionDescription = GetVersionDescription();
 		AppVersionTitle =

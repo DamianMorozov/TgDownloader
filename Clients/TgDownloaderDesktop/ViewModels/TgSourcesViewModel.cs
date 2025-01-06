@@ -16,8 +16,8 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgSourcesViewModel(ITgSettingsService settingsService) : base(settingsService)
-    {
+	public TgSourcesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	{
 		// Commands
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
@@ -56,15 +56,10 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IList<TgEfSourceDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfSourceDto> dtos)
 	{
-		if (!dtos.Any())
-			return;
-		Dtos = [];
-		dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
-		if (dtos.Any())
-			foreach (var dto in dtos)
-				Dtos.Add(dto);
+		if (!dtos.Any()) return;
+		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
 	}
 
 	//private async Task UpdateFromTelegramAsync()
@@ -103,7 +98,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	private async Task LoadDataStorageCoreAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
-		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
+		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -189,6 +184,16 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 			//await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
 			await LoadDataStorageCoreAsync();
 		});
+	}
+
+	public void DataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+	{
+		if (sender is not DataGrid dataGrid)
+			return;
+		if (dataGrid.SelectedItem is not TgEfContactDto dto)
+			return;
+
+		NavigationService.NavigateTo(typeof(TgContactDetailsViewModel).FullName!, dto.Uid);
 	}
 
 	#endregion

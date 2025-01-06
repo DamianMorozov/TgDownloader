@@ -16,8 +16,8 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgProxiesViewModel(ITgSettingsService settingsService) : base(settingsService)
-    {
+	public TgProxiesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	{
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
@@ -47,16 +47,10 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfProxyDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfProxyDto> dtos)
 	{
-		List<TgEfProxyDto> list = dtos.ToList();
-		if (!list.Any())
-			return;
-		Dtos = [];
-		dtos = [.. list.OrderBy(x => x.HostName).ThenBy(x => x.Type)];
-		if (dtos.Any())
-			foreach (var dto in dtos)
-				Dtos.Add(dto);
+		if (!dtos.Any()) return;
+		Dtos = [.. dtos.OrderBy(x => x.HostName).ThenBy(x => x.Type)];
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -72,7 +66,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 	private async Task LoadDataStorageCoreAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
-		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
+		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
 	}
 
 	private async Task DefaultSortAsync()

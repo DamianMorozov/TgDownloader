@@ -10,7 +10,9 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	#region Public and private fields, properties, constructor
 
 	[ObservableProperty]
-	public partial ITgSettingsService SettingsService { get; set; }
+	public partial ITgSettingsService SettingsService { get; private set; }
+	[ObservableProperty]
+	public partial INavigationService NavigationService { get; private set; }
 	[ObservableProperty]
 	public partial TgLicenseManagerHelper LicenseManager { get; set; } = TgLicenseManagerHelper.Instance;
 	[ObservableProperty]
@@ -34,9 +36,10 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	public partial bool IsOnlineReady { get; set; }
 
-	public TgPageViewModelBase(ITgSettingsService settingsService)
+	public TgPageViewModelBase(ITgSettingsService settingsService, INavigationService navigationService)
 	{
 		SettingsService = settingsService;
+		NavigationService = navigationService;
 		LicenseManager.ActivateLicense(string.Empty, TgResourceExtensions.GetLicenseFreeDescription(),
 			TgResourceExtensions.GetLicensePaidDescription(), TgResourceExtensions.GetLicensePremiumDescription());
 	}

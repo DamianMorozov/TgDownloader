@@ -8,7 +8,6 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
-	private readonly INavigationService _navigationService;
 	private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
 	public partial ObservableCollection<TgEfContactDto> Dtos { get; set; } = [];
@@ -17,9 +16,8 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgContactsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService)
+	public TgContactsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
     {
-		_navigationService = navigationService;
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
@@ -50,16 +48,10 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(IEnumerable<TgEfContactDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfContactDto> dtos)
 	{
-		List<TgEfContactDto> list = dtos.ToList();
-		if (!list.Any())
-			return;
-		Dtos = [];
-		dtos = [.. list.OrderBy(x => x.UserName).ThenBy(x => x.FirstName).ThenBy(x => x.LastName)];
-		if (dtos.Any())
-			foreach (var dto in dtos)
-				Dtos.Add(dto);
+		if (!dtos.Any()) return;
+		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.FirstName).ThenBy(x => x.LastName)];
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -75,7 +67,7 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 	private async Task LoadDataStorageCoreAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
-		SetOrderData(await Repository.GetListDtosAsync(take: 0, skip: 0));
+		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
 	}
 
 	private async Task DefaultSortAsync()
@@ -101,7 +93,7 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 		if (sender is not DataGrid dataGrid) return;
 		if (dataGrid.SelectedItem is not TgEfContactDto dto) return;
 
-		_navigationService.NavigateTo(typeof(TgContactDetailsViewModel).FullName!, dto.Uid);
+		NavigationService.NavigateTo(typeof(TgContactDetailsViewModel).FullName!, dto.Uid);
 	}
 
 	#endregion

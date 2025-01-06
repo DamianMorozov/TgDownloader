@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TL;
-
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -59,8 +57,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
     public IRelayCommand AppDeleteCommand { get; }
 
 
-    public TgConnectViewModel(ITgSettingsService settingsService) : base(settingsService)
-    {
+    public TgConnectViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	{
 	    AppClearCoreAsync().GetAwaiter().GetResult();
 		// Commands
 		ClientConnectCommand = new AsyncRelayCommand(ClientConnectAsync);
