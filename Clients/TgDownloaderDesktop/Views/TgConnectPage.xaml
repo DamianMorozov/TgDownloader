@@ -192,7 +192,7 @@
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True">
 				<ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
-					<Grid>
+					<Grid Margin="0,0,10,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -317,7 +317,7 @@
 				HorizontalContentAlignment="Stretch"
 				IsExpanded="True">
 				<ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
-					<Grid>
+					<Grid Margin="0,0,10,0">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />

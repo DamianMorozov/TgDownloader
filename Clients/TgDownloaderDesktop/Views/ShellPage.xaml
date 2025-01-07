@@ -79,10 +79,10 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE81C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--  Sources  -->
-				<NavigationViewItem x:Uid="Shell_Sources" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
+				<!--  Chats  -->
+				<NavigationViewItem x:Uid="Shell_Chats" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
 					<NavigationViewItem.Icon>
-						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE773;" />
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">

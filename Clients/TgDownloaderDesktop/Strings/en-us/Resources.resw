@@ -94,6 +94,9 @@
   <data name="Shell_Stories.Content" xml:space="preserve">
     <value>Stories</value>
   </data>
+  <data name="Shell_Chats.Content" xml:space="preserve">
+    <value>Chats</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Loading...</value>
   </data>
@@ -395,6 +398,9 @@
   </data>
   <data name="ExpanderSettingWithoutSaving.Header" xml:space="preserve">
     <value>Settings without saving</value>
+  </data>
+  <data name="ExpanderContent.Header" xml:space="preserve">
+    <value>Content</value>
   </data>
   <data name="SettingAppFiles.Header" xml:space="preserve">
     <value>Files</value>
@@ -771,6 +777,9 @@
   <data name="FieldIsBot.Text" xml:space="preserve">
     <value>Bot</value>
   </data>
+  <data name="FieldIsAutoUpdate.Text" xml:space="preserve">
+    <value>Auto-update</value>
+  </data>
   <data name="FieldFirstName.Text" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -797,5 +806,29 @@
   </data>
   <data name="FieldStoriesMaxId.Text" xml:space="preserve">
     <value>Maximum Id storis</value>
+  </data>
+  <data name="FieldTitle.Text" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="FieldAbout.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="FieldDirectory.Text" xml:space="preserve">
+    <value>Directory</value>
+  </data>
+  <data name="FieldFirstId.Text" xml:space="preserve">
+    <value>First ID</value>
+  </data>
+  <data name="FieldCount.Text" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="FieldEmptyData.Text" xml:space="preserve">
+    <value>Empty data</value>
+  </data>
+  <data name="FieldFilter.PlaceholderText" xml:space="preserve">
+    <value>Enter the text to filter</value>
+  </data>
+  <data name="ButtonFilter.Content" xml:space="preserve">
+    <value>Filter</value>
   </data>
 </root>

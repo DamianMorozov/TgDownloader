@@ -1,8 +1,6 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-using TgStorage.Helpers;
-
 namespace TgDownloaderDesktop.Helpers;
 
 /// <summary> Desktop utils </summary>
@@ -371,6 +369,42 @@ public static class TgDesktopUtils
 		}
 		return rawUrl;
 	}
+
+	public static T? FindName<T>(this DependencyObject parent, string name) where T : FrameworkElement
+	{
+		if (parent == null) return null;
+		if (parent is T element && element.Name == name)
+		{
+			return element;
+		}
+		for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+		{
+			var child = VisualTreeHelper.GetChild(parent, i);
+			var result = FindName<T>(child, name);
+			if (result != null)
+			{
+				return result;
+			}
+		}
+		return null;
+	}
+
+	//public static async void OnClipboardWriteClick(this TgEfMessageDto dto, object sender, RoutedEventArgs e)
+	//{
+	//	if (sender is Button button)
+	//	{
+	//		var address = button.Tag?.ToString();
+	//		if (string.IsNullOrEmpty(address))
+	//			return;
+	//		if (!string.IsNullOrEmpty(address))
+	//		{
+	//			var dataPackage = new DataPackage();
+	//			dataPackage.SetText(address);
+	//			Clipboard.SetContent(dataPackage);
+	//			await ContentDialogAsync(TgResourceExtensions.GetClipboard(), address);
+	//		}
+	//	}
+	//}
 
 	#endregion
 }
