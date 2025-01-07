@@ -1,7 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-namespace TgStorage.Domain.Contacts;
+namespace TgStorage.Domain.Messages;
 
 /// <summary> Message DTO </summary>
 public sealed partial class TgEfMessageDto : TgDtoBase, ITgDto<TgEfMessageDto, TgEfMessageEntity>
@@ -20,8 +20,8 @@ public sealed partial class TgEfMessageDto : TgDtoBase, ITgDto<TgEfMessageDto, T
 	public partial long Size { get; set; }
 	[ObservableProperty]
 	public partial string Message { get; set; } = string.Empty;
-
-
+	[ObservableProperty]
+	public partial TgEnumDirection Direction { get; set; } = TgEnumDirection.Default;
 
 	#endregion
 
@@ -54,6 +54,7 @@ public sealed partial class TgEfMessageDto : TgDtoBase, ITgDto<TgEfMessageDto, T
 		Type = item.Type;
 		Size = item.Size;
 		Message = item.Message;
+		Direction = TgEnumDirection.Default;
 		return this;
 	}
 
