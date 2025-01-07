@@ -28,5 +28,7 @@ public partial class TgSourcesPage
 
 	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
+	private void OnFilterTextChanged(object sender, TextChangedEventArgs e) => ViewModel.OnFilterTextChanged(sender, e);
+
 	#endregion
 }

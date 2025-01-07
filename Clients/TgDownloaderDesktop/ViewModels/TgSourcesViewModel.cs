@@ -11,6 +11,10 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
     private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
 	public partial ObservableCollection<TgEfSourceDto> Dtos { get; set; } = [];
+	[ObservableProperty]
+	public partial ObservableCollection<TgEfSourceDto> FilteredDtos { get; set; } = [];
+	[ObservableProperty]
+	public partial string FilterText { get; set; } = string.Empty;
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
@@ -60,6 +64,24 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (!dtos.Any()) return;
 		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
+		ApplyFilter();
+	}
+
+	public void ApplyFilter()
+	{
+		if (string.IsNullOrWhiteSpace(FilterText))
+		{
+			FilteredDtos = [.. Dtos];
+		}
+		else
+		{
+			var filtered = Dtos.Where(dto =>
+				dto.Id.ToString().Contains(FilterText, StringComparison.InvariantCultureIgnoreCase) ||
+				dto.UserName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase) ||
+				dto.Title.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)
+				).ToList();
+			FilteredDtos = new ObservableCollection<TgEfSourceDto>(filtered);
+		}
 	}
 
 	//private async Task UpdateFromTelegramAsync()
@@ -106,6 +128,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	private async Task ClearDataStorageCoreAsync()
 	{
 		Dtos.Clear();
+		FilteredDtos.Clear();
 		await Task.CompletedTask;
 	}
 
@@ -190,10 +213,23 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	{
 		if (sender is not DataGrid dataGrid)
 			return;
-		if (dataGrid.SelectedItem is not TgEfContactDto dto)
+		if (dataGrid.SelectedItem is not TgEfSourceDto dto)
 			return;
 
-		NavigationService.NavigateTo(typeof(TgContactDetailsViewModel).FullName!, dto.Uid);
+		NavigationService.NavigateTo(typeof(TgSourceDetailsViewModel).FullName!, dto.Uid);
+	}
+
+	public void OnFilterButtonClick(object sender, RoutedEventArgs e)
+	{
+		ApplyFilter();
+	}
+
+	public void OnFilterTextChanged(object sender, TextChangedEventArgs e)
+	{
+		var textBox = sender as TextBox;
+		if (textBox is null) return;
+		FilterText = textBox.Text;
+		ApplyFilter();
 	}
 
 	#endregion
