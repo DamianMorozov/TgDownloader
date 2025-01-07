@@ -4,7 +4,7 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgSourceDetailsViewModel : TgPageViewModelBase
+public sealed partial class TgChatDetailsViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
@@ -24,7 +24,7 @@ public sealed partial class TgSourceDetailsViewModel : TgPageViewModelBase
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgSourceDetailsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	public TgChatDetailsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);

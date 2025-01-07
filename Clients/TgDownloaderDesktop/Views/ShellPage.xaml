@@ -80,7 +80,7 @@
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 				<!--  Chats  -->
-				<NavigationViewItem x:Uid="Shell_Chats" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgSourcesViewModel">
+				<NavigationViewItem x:Uid="Shell_Chats" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgChatsViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
 					</NavigationViewItem.Icon>

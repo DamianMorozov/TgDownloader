@@ -3,16 +3,15 @@
 
 namespace TgDownloaderDesktop.Views;
 
-public partial class TgSourceDetailsPage
+public partial class TgChatsPage
 {
 	#region Public and private fields, properties, constructor
 
-	public TgSourceDetailsViewModel ViewModel { get; }
+	public TgChatsViewModel ViewModel { get; }
 
-	public TgSourceDetailsPage()
+	public TgChatsPage()
 	{
-		ViewModel = App.GetService<TgSourceDetailsViewModel>();
-		ViewModel.ScrollRequested = ScrollRequested;
+		ViewModel = App.GetService<TgChatsViewModel>();
 		InitializeComponent();
 		Loaded += PageLoaded;
 	}
@@ -29,12 +28,7 @@ public partial class TgSourceDetailsPage
 
 	private void PageLoaded(object sender, RoutedEventArgs e) => ViewModel.OnLoaded(XamlRoot);
 
-	private void ScrollRequested()
-	{
-		if (ListViewData is null) return;
-		if (ListViewData.Items.Any())
-			ListViewData.ScrollIntoView(ListViewData.Items.Last());
-	}
+	private void OnFilterTextChanged(object sender, TextChangedEventArgs e) => ViewModel.OnFilterTextChanged(sender, e);
 
 	#endregion
 }

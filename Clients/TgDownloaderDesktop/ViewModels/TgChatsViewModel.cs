@@ -4,7 +4,7 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgSourcesViewModel : TgPageViewModelBase
+public sealed partial class TgChatsViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
@@ -20,7 +20,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgSourcesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	public TgChatsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		// Commands
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
@@ -216,7 +216,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase
 		if (dataGrid.SelectedItem is not TgEfSourceDto dto)
 			return;
 
-		NavigationService.NavigateTo(typeof(TgSourceDetailsViewModel).FullName!, dto.Uid);
+		NavigationService.NavigateTo(typeof(TgChatDetailsViewModel).FullName!, dto.Uid);
 	}
 
 	public void OnFilterButtonClick(object sender, RoutedEventArgs e)

@@ -1,5 +1,5 @@
 ﻿<Page
-	x:Class="TgDownloaderDesktop.Views.TgSourceDetailsPage"
+	x:Class="TgDownloaderDesktop.Views.TgChatDetailsPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
 	xmlns:messages="using:TgStorage.Domain.Messages"
 	xmlns:viewmodels="using:TgDownloaderDesktop.ViewModels"
 	xmlns:views="using:TgDownloaderDesktop.Views"
-	d:DataContext="{d:DesignInstance Type=viewmodels:TgSourceDetailsViewModel}"
+	d:DataContext="{d:DesignInstance Type=viewmodels:TgChatDetailsViewModel}"
 	mc:Ignorable="d">
 
 	<Page.Resources>
@@ -350,8 +350,6 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
 							Text="{x:Bind ViewModel.Dto.FirstId, Mode=TwoWay}" />
 						<!--  Count  -->
 						<TextBlock
@@ -367,8 +365,6 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
 							Text="{x:Bind ViewModel.Dto.Count, Mode=TwoWay}" />
 					</Grid>
 				</ScrollView>

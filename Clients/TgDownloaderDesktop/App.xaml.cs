@@ -74,10 +74,10 @@ public partial class App : Application
 				services.AddTransient<TgContactsPage>();
 				services.AddTransient<TgContactDetailsViewModel>();
 				services.AddTransient<TgContactDetailsPage>();
-				services.AddTransient<TgSourceDetailsViewModel>();
-				services.AddTransient<TgSourceDetailsPage>();
-				services.AddTransient<TgSourcesViewModel>();
-				services.AddTransient<TgSourcesPage>();
+				services.AddTransient<TgChatDetailsViewModel>();
+				services.AddTransient<TgChatDetailsPage>();
+				services.AddTransient<TgChatsViewModel>();
+				services.AddTransient<TgChatsPage>();
 				services.AddTransient<TgFiltersViewModel>();
 				services.AddTransient<TgFiltersPage>();
 				services.AddTransient<TgStoriesViewModel>();
