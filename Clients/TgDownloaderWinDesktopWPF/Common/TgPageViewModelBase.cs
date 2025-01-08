@@ -107,19 +107,21 @@ public partial class TgPageViewModelBase : TgViewModelBase
     /// <param name="sourceId"></param>
     /// <param name="messageId"></param>
     /// <param name="message"></param>
-    public virtual async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
+    public virtual async Task UpdateStateSourceAsync(long sourceId, int messageId, int count, string message)
     {
-	    if (sourceId == 0 && messageId == 0)
-	    {
-		    await UpdateStateMessageAsync(message);
-            return;
-	    }
-        await TgDesktopUtils.RunFuncAsync(this, async () =>
-        {
-	        await Task.Delay(1);
-			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-            StateSourceMsg = $"{sourceId} | {messageId} | {message}";
-        }, false);
+		await TgDesktopUtils.RunFuncAsync(this, async () =>
+		{
+            if (sourceId == 0 && messageId == 0)
+            {
+                await UpdateStateMessageAsync(message);
+                return;
+            }
+            else
+            {
+				StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
+				StateSourceMsg = $"{sourceId} | {messageId} | {message}";
+			}
+		}, false);
     }
 
     /// <summary>

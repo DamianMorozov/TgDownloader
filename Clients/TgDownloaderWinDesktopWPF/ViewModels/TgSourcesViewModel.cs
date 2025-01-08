@@ -59,9 +59,9 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
     }
 
     /// <summary> Update state </summary>
-    public override async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
+    public override async Task UpdateStateSourceAsync(long sourceId, int messageId, int count, string message)
     {
-        await base.UpdateStateSourceAsync(sourceId, messageId, message);
+        await base.UpdateStateSourceAsync(sourceId, messageId, count, message);
         for (int i = 0; i < SourcesVms.Count; i++)
         {
             if (SourcesVms[i].Dto.Id.Equals(sourceId))
@@ -180,7 +180,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             // Checks.
             if (!SourcesVms.Any())
             {
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, "Empty sources list!");
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, 0, "Empty sources list!");
                 return;
             }
             foreach (TgEfSourceViewModel sourceVm in SourcesVms)
@@ -200,7 +200,7 @@ public sealed partial class TgSourcesViewModel : TgPageViewModelBase, INavigatio
             {
                 var entity = sourceVm.Dto.GetEntity();
                 await SourceRepository.SaveAsync(entity);
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Dto.Id, 0, $"Saved source | {sourceVm.Dto}");
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(sourceVm.Dto.Id, sourceVm.Dto.FirstId, sourceVm.Dto.Count, $"Saved source | {sourceVm.Dto}");
             }
         }, false);
     }

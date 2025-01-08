@@ -142,7 +142,7 @@ public sealed partial class TgClientViewModel : TgPageViewModelBase, INavigation
 
     public string ConfigClientDesktop(string what)
     {
-        TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, $"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
+        TgDesktopUtils.TgClient.UpdateStateSourceAsync(0, 0, 0, $"{TgDesktopUtils.TgLocale.MenuClientIsQuery}: {what}").GetAwaiter();
         switch (what)
         {
             case "api_hash":

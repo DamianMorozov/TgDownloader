@@ -162,7 +162,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             var entity = SourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
             // Message
-            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsSource);
         }, false);
 
         await OnGetSourceFromStorageAsync();
@@ -184,7 +184,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             // Check directory.
             if (!Directory.Exists(SourceVm.Dto.Directory))
             {
-                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId,
+                await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count,
                     $"Directory is not exists! {SourceVm.Dto.Directory}");
                 result = false;
                 return;
@@ -195,7 +195,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             SwDownloadChart = Stopwatch.StartNew();
 			// Job.
 			await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, TgDesktopUtils.TgLocale.SettingsSource);
+			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsSource);
         }, true);
 
         await OnGetSourceFromStorageAsync();
@@ -212,7 +212,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
         await TgDesktopUtils.RunFuncAsync(ViewModel ?? this, async () =>
         {
 	        await Task.Delay(1).ConfigureAwait(false);
-	        SourceVm.Dto.SetIsDownload(false);
+	        SourceVm.Dto.IsDownload = false;
         }, true);
 
         await OnGetSourceFromStorageAsync();
@@ -282,7 +282,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
 			    _ => string.Empty
 		    };
 		    Clipboard.SetText(value);
-		    await UpdateStateSourceAsync(0, 0, $"{fieldName} is copied");
+		    await UpdateStateSourceAsync(0, 0, 0, $"{fieldName} is copied");
 	    }, false);
     }
 
