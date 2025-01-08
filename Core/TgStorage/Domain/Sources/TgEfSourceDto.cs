@@ -44,7 +44,7 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 	public string DtChangedString => $"{DtChanged:yyyy-MM-dd HH:mm:ss}";
 
 	public float Progress => (float)FirstId * 100 / Count;
-	public string ProgressPercentString => Progress == 0 ? "{0:00.00}" : $"{Progress:#00.00} %";
+	public string ProgressPercentString => Progress == 0 ? $"{0:00.00} %" : $"{Progress:#00.00} %";
 	public bool IsComplete => FirstId >= Count;
 	public string ProgressItemString => $"{FirstId} from {Count}";
 	public float CurrentFileProgress => CurrentFileSize > 0 ? (float)CurrentFileTransmitted * 100 / CurrentFileSize : 0;
@@ -84,6 +84,7 @@ public sealed partial class TgEfSourceDto : TgDtoBase, ITgDto<TgEfSourceDto, TgE
 		Count = dto.Count;
 		Directory = dto.Directory;
 		IsAutoUpdate = dto.IsAutoUpdate;
+		IsDownload = dto.IsDownload;
 		CurrentFileName = dto.CurrentFileName;
 		return this;
 	}
