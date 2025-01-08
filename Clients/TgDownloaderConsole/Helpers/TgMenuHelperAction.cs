@@ -24,14 +24,14 @@ internal partial class TgMenuHelper
         return result;
     }
 
-    private ProgressColumn[] GetProgressColumns() => new ProgressColumn[]
-    {
-	    new TaskDescriptionColumn { Alignment = Justify.Left },
+    private ProgressColumn[] GetProgressColumns() =>
+	[
+		new TaskDescriptionColumn { Alignment = Justify.Left },
 	    new ProgressBarColumn { Width = 25 },
 	    new PercentageColumn(),
 	    new DownloadedColumn { Culture = CultureInfo.InvariantCulture },
 	    new TransferSpeedColumn { Culture = CultureInfo.InvariantCulture }
-    };
+    ];
 
     private const string DownloadingFile = "Downloading file";
 
@@ -73,17 +73,17 @@ internal partial class TgMenuHelper
 					await Task.CompletedTask;
 				}
 				// Update source
-				async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
+				async Task UpdateStateSourceAsync(long sourceId, int messageId, int count, string message)
 				{
 					if (string.IsNullOrEmpty(message)) return;
-					progressTaskSource.Description = $"{message} {messageId} from {tgDownloadSettings.SourceVm.Dto.Count}";
+					progressTaskSource.Description = $"{message} {messageId} from {count}";
 					progressTaskSource.Value = messageId;
 					context.Refresh();
 					await Task.CompletedTask;
 				}
 				// Update source
-				void UpdateStateSource(long sourceId, int messageId, string message) => 
-					UpdateStateSourceAsync(sourceId, messageId, message).GetAwaiter().GetResult();
+				void UpdateStateSource(long sourceId, int messageId, int count, string message) => 
+					UpdateStateSourceAsync(sourceId, messageId, count, message).GetAwaiter().GetResult();
 				// Update download file state
 				async Task UpdateStateFileAsync(long sourceId, int messageId, string fileName, long fileSize, long transmitted, long fileSpeed, 
 					bool isFileNewDownload, int threadNumber)
@@ -141,7 +141,7 @@ internal partial class TgMenuHelper
 					if (progressTaskFile.IsStarted)
 						progressTaskFile.StopTask();
 				}
-                UpdateStateSource(0, 0, 
+                UpdateStateSource(0, 0, 0,
                     isScanCount
                         ? $"{GetStatus(sw, tgDownloadSettings.SourceScanCount, tgDownloadSettings.SourceScanCurrent)}"
                         : $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count)}");
@@ -181,7 +181,7 @@ internal partial class TgMenuHelper
 						: $"{GetStatus(tgDownloadSettings.SourceVm.Dto.Count, tgDownloadSettings.SourceVm.Dto.FirstId)} | {message} | " +
 						  $"Progress {tgDownloadSettings.SourceVm.Dto.ProgressPercentString}";
 				// Update source
-				async Task UpdateStateSourceAsync(long sourceId, int messageId, string message)
+				async Task UpdateStateSourceAsync(long sourceId, int messageId, int count, string message)
 				{
 					if (string.IsNullOrEmpty(message))
 						return;
@@ -200,7 +200,7 @@ internal partial class TgMenuHelper
 					await Task.CompletedTask;
 				}
 				// Update story
-				async Task UpdateStateStoryAsync(long id, string caption)
+				async Task UpdateStateStoryAsync(long id, int messageId, int count , string caption)
 				{
 					statusContext.Status(TgLog.GetMarkupString(
 						$"{GetStatus(tgDownloadSettings.SourceScanCount, id),15} | {caption,30}"));
@@ -260,7 +260,7 @@ internal partial class TgMenuHelper
 				task(tgDownloadSettings).GetAwaiter().GetResult();
 				sw.Stop();
 				// Update state source
-				UpdateStateSourceAsync(0, 0, isScanCount
+				UpdateStateSourceAsync(0, 0, 0, isScanCount
 					? $"{GetStatus(sw, tgDownloadSettings.SourceScanCount, tgDownloadSettings.SourceScanCurrent)}"
 					: $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count)}")
 					.GetAwaiter().GetResult();
