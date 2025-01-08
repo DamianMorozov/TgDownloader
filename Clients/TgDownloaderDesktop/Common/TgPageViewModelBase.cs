@@ -72,6 +72,15 @@ public partial class TgPageViewModelBase : ObservableRecipient
 
 	public virtual async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () => await Task.CompletedTask);
 
+	protected virtual async Task ReloadUiAsync()
+	{
+		ConnectionDt = string.Empty;
+		ConnectionMsg = string.Empty;
+		Exception.Default();
+		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
+		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
+	}
+
 	/// <summary> Open url </summary>
 	public void OpenHyperlink(object sender, RoutedEventArgs e)
 	{
@@ -111,30 +120,30 @@ public partial class TgPageViewModelBase : ObservableRecipient
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 			StateSourceMsg = $"{messageId} | {message}";
 
-			long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
-			StateSourceDirectorySizeString = FormatSize(size);
+			//long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
+			//StateSourceDirectorySizeString = FormatSize(size);
 		});
 		await Task.CompletedTask;
 	}
 
-	protected void DirectorySystemWatcher_OnChanged(object sender, FileSystemEventArgs e)
-	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
-		{
-			try
-			{
-				long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
-				StateSourceDirectorySizeString = FormatSize(size);
-				//Debug.WriteLine($"File: {e.FullPath} {e.ChangeType}");
-			}
-			catch (Exception ex)
-			{
-#if DEBUG
-				Debug.WriteLine(ex);
-#endif
-			}
-		});
-	}
+//	protected void DirectorySystemWatcher_OnChanged(object sender, FileSystemEventArgs e)
+//	{
+//		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+//		{
+//			try
+//			{
+//				long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
+//				StateSourceDirectorySizeString = FormatSize(size);
+//				//Debug.WriteLine($"File: {e.FullPath} {e.ChangeType}");
+//			}
+//			catch (Exception ex)
+//			{
+//#if DEBUG
+//				Debug.WriteLine(ex);
+//#endif
+//			}
+//		});
+//	}
 
 	private string FormatSize(long size)
 	{

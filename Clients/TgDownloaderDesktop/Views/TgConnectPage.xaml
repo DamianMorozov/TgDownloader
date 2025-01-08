@@ -12,6 +12,7 @@
 	mc:Ignorable="d">
 
 	<Page.Resources>
+		<helpers:TgInverseBooleanConverter x:Key="InverseBooleanConverter" />
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
 	</Page.Resources>
 
@@ -149,7 +150,8 @@
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}"
-							FontWeight="Bold">
+							FontWeight="Bold"
+							IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
 							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 								<FontIcon Margin="0,0,10,0" Glyph="&#xE703;" />
 								<TextBlock
@@ -165,7 +167,8 @@
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.ClientDisconnectCommand, Mode=OneWay}"
-							FontWeight="Bold">
+							FontWeight="Bold"
+							IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}">
 							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 								<FontIcon Margin="0,0,10,0" Glyph="&#xE8BB;" />
 								<TextBlock

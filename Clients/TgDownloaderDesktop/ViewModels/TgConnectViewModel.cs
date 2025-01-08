@@ -126,6 +126,10 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		}
 		// Clear memory
 		client = null;
+
+		// Update connection buttons
+		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
+		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
 	}
 
 	private string? ConfigClientDesktop(string what)
@@ -196,19 +200,15 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		await ReloadUiAsync();
 	}
 
-    private async Task ReloadUiAsync(bool isClearPassw = false)
+	protected override async Task ReloadUiAsync()
     {
-	    ApiHash = TgDataFormatUtils.ParseGuidToString(App.ApiHash);
+		await base.ReloadUiAsync();
+
+		ApiHash = TgDataFormatUtils.ParseGuidToString(App.ApiHash);
 	    ApiId = App.ApiId;
 		PhoneNumber = App.PhoneNumber;
 		FirstName = App.FirstName;
 	    LastName = App.LastName;
-
-		if (isClearPassw)
-		{
-			Password = string.Empty;
-			VerificationCode = string.Empty;
-		}
 
 	    UserName = string.Empty;
 	    MtProxyUrl = string.Empty;
@@ -217,9 +217,6 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 	    PingInterval = string.Empty;
 	    MaxCodePwdAttempts = string.Empty;
 
-		ConnectionDt = string.Empty;
-		ConnectionMsg = string.Empty;
-		Exception.Default();
 		DataRequest = string.Empty;
 		DataRequestEmptyResponse = TgResourceExtensions.GetClientDataRequestEmptyResponse();
 
@@ -286,8 +283,11 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		ProxiesVms.Clear();
 		if (ProxyVm is not null)
 			ProxyVm.Dto = new();
-		await ReloadUiAsync(isClearPassw: true);
-    }
+		
+		await ReloadUiAsync();
+		Password = string.Empty;
+		VerificationCode = string.Empty;
+	}
 
 	private async Task AppDeleteAsync() => await ContentDialogAsync(AppDeleteCoreAsync, TgResourceExtensions.AskSettingsDelete());
 

@@ -37,16 +37,6 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 			await ReloadUiAsync();
 		});
 
-	private async Task ReloadUiAsync()
-    {
-		ConnectionDt = string.Empty;
-		ConnectionMsg = string.Empty;
-		Exception.Default();
-		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
-		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
-		await Task.CompletedTask;
-    }
-
 	/// <summary> Sort data </summary>
 	private void SetOrderData(ObservableCollection<TgEfContactDto> dtos)
 	{

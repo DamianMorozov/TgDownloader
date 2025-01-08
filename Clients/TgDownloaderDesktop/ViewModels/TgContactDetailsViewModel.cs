@@ -38,16 +38,6 @@ public sealed partial class TgContactDetailsViewModel : TgPageViewModelBase
 			await ReloadUiAsync();
 		});
 
-	private async Task ReloadUiAsync()
-    {
-		ConnectionDt = string.Empty;
-		ConnectionMsg = string.Empty;
-		Exception.Default();
-		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
-		IsOnlineReady = TgDesktopUtils.TgClient.IsReady;
-		await Task.CompletedTask;
-    }
-
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
 
 	private async Task ClearDataStorageCoreAsync()

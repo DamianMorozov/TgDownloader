@@ -35,14 +35,6 @@ public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 			await ReloadUiAsync();
 		});
 
-	private async Task ReloadUiAsync()
-    {
-		ConnectionDt = string.Empty;
-		ConnectionMsg = string.Empty;
-		Exception.Default();
-		await Task.CompletedTask;
-    }
-
 	/// <summary> Sort data </summary>
 	private void SetOrderData(ObservableCollection<TgEfFilterDto> dtos)
 	{

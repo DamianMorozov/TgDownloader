@@ -49,12 +49,19 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--  Connections  -->
+				<!--  Connection  -->
 				<NavigationViewItem x:Uid="Shell_Connect" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgConnectViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--<ToggleSwitch
+					Grid.Row="2"
+					Grid.Column="1"
+					Margin="2"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					IsOn="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}" />-->
 				<!--  Filters  -->
 				<NavigationViewItem x:Uid="Shell_Filters" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgFiltersViewModel">
 					<NavigationViewItem.Icon>

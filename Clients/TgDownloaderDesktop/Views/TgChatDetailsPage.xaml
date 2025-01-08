@@ -44,16 +44,6 @@
 						Style="{ThemeResource BodyTextBlockStyle}"
 						Text="{x:Bind Message}" />
 				</StackPanel>
-				<!--  Copy  -->
-				<!--<Button
-					Grid.Column="3"
-					Width="60"
-					Height="60"
-					Click="{x:Bind OnClipboardWriteClick}"
-					CornerRadius="10"
-					Tag="{x:Bind Message}">
-					<SymbolIcon Symbol="Copy" />
-				</Button>-->
 			</Grid>
 		</DataTemplate>
 	</Page.Resources>
@@ -219,24 +209,44 @@
 							x:Uid="FieldId"
 							Grid.Row="1"
 							Grid.Column="0"
-							Margin="2,7,7,2"
+							Margin="2,0,7,2"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
 							FontWeight="Bold"
-							TextAlignment="Left" />
-						<TextBox
+							Style="{ThemeResource BodyTextBlockStyle}" />
+						<Grid
 							Grid.Row="1"
 							Grid.Column="1"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.Id, Mode=OneWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsEnabled="False"
+								IsReadOnly="True"
+								Text="{x:Bind ViewModel.Dto.Id, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.Id, Mode=OneWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  IsActive  -->
 						<TextBlock
 							x:Uid="FieldIsActive"
 							Grid.Row="2"
 							Grid.Column="0"
-							Margin="2,7,7,2"
+							Margin="2,10,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
 						<ToggleSwitch
@@ -252,7 +262,7 @@
 							x:Uid="FieldIsAutoUpdate"
 							Grid.Row="2"
 							Grid.Column="2"
-							Margin="12,7,7,2"
+							Margin="12,10,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
 						<ToggleSwitch
@@ -271,16 +281,34 @@
 							Margin="2,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="3"
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.UserName, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsEnabled="False"
+								IsReadOnly="True"
+								Text="{x:Bind ViewModel.Dto.UserName, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.UserName, Mode=OneWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  Title  -->
 						<TextBlock
 							x:Uid="FieldTitle"
@@ -289,16 +317,34 @@
 							Margin="2,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="4"
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.Title, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsEnabled="False"
+								IsReadOnly="True"
+								Text="{x:Bind ViewModel.Dto.Title, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.Title, Mode=OneWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  About  -->
 						<TextBlock
 							x:Uid="FieldAbout"
@@ -307,16 +353,34 @@
 							Margin="2,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="5"
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.About, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsEnabled="False"
+								IsReadOnly="True"
+								Text="{x:Bind ViewModel.Dto.About, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.About, Mode=OneWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  Directory  -->
 						<TextBlock
 							x:Uid="FieldDirectory"
@@ -325,16 +389,34 @@
 							Margin="2,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="6"
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
-							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.Directory, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								IsEnabled="False"
+								IsReadOnly="True"
+								Text="{x:Bind ViewModel.Dto.Directory, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.Directory, Mode=TwoWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  FirstId  -->
 						<TextBlock
 							x:Uid="FieldFirstId"
@@ -343,13 +425,31 @@
 							Margin="2,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="7"
 							Grid.Column="1"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.Dto.FirstId, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								Text="{x:Bind ViewModel.Dto.FirstId, Mode=TwoWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.FirstId, Mode=OneWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 						<!--  Count  -->
 						<TextBlock
 							x:Uid="FieldCount"
@@ -358,13 +458,31 @@
 							Margin="12,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
-						<TextBox
+						<Grid
 							Grid.Row="7"
 							Grid.Column="3"
 							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.Dto.Count, Mode=TwoWay}" />
+							HorizontalAlignment="Stretch">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								HorizontalContentAlignment="Left"
+								Text="{x:Bind ViewModel.Dto.Count, Mode=OneWay}" />
+							<Button
+								Grid.Column="1"
+								Margin="10,0,0,0"
+								HorizontalContentAlignment="Left"
+								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+								CornerRadius="10"
+								FontWeight="Bold"
+								Tag="{x:Bind ViewModel.Dto.Count, Mode=TwoWay}">
+								<SymbolIcon Symbol="Copy" />
+							</Button>
+						</Grid>
 					</Grid>
 				</ScrollView>
 			</Expander>
@@ -427,7 +545,7 @@
 							IsReadOnly="True"
 							Text="{x:Bind ViewModel.StateSourceMsg, Mode=OneWay}" />
 						<!--  StateSourceProgress  -->
-						<TextBlock
+						<!--<TextBlock
 							x:Uid="FieldProgress"
 							Grid.Row="1"
 							Margin="2,7,7,2"
@@ -443,10 +561,26 @@
 							Maximum="100"
 							Minimum="0"
 							Visibility="Visible"
-							Value="{Binding ViewModel.StateSourceProgress, Mode=OneWay}" />
+							Value="{Binding ViewModel.StateSourceProgress, Mode=OneWay}" />-->
 						<!--  StateSourceProgressString  -->
 						<TextBlock
 							x:Uid="FieldPercent"
+							Grid.Row="1"
+							Grid.Column="0"
+							Margin="2,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							Text="{x:Bind ViewModel.StateSourceProgressString, Mode=OneWay}" />
+						<!--  StateSourceProgress  -->
+						<TextBlock
+							x:Uid="FieldDirectory"
 							Grid.Row="1"
 							Grid.Column="2"
 							Margin="12,7,7,2"
@@ -459,25 +593,10 @@
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
 							IsEnabled="False"
-							Text="{x:Bind ViewModel.StateSourceProgressString, Mode=OneWay}" />
-						<!--  StateSourceProgress  -->
-						<TextBlock
-							x:Uid="FieldDirectory"
-							Grid.Row="2"
-							Margin="2,7,7,2"
-							FontWeight="Bold"
-							TextAlignment="Left" />
-						<TextBox
-							Grid.Row="2"
-							Grid.Column="1"
-							Margin="2"
-							HorizontalAlignment="Stretch"
-							HorizontalContentAlignment="Left"
-							IsEnabled="False"
 							IsReadOnly="True"
 							Text="{x:Bind ViewModel.StateSourceDirectory, Mode=OneWay}" />
 						<!--  StateSourceProgressString  -->
-						<TextBlock
+						<!--<TextBlock
 							x:Uid="FieldSize"
 							Grid.Row="2"
 							Grid.Column="2"
@@ -491,7 +610,7 @@
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
 							IsEnabled="False"
-							Text="{x:Bind ViewModel.StateSourceDirectorySizeString, Mode=OneWay}" />
+							Text="{x:Bind ViewModel.StateSourceDirectorySizeString, Mode=OneWay}" />-->
 					</Grid>
 				</ScrollView>
 			</Expander>

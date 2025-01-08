@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public sealed class TgInverseBooleanToVisibilityConverter : IValueConverter
+public sealed partial class TgInverseBooleanToVisibilityConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, string language)
 	{

@@ -3,19 +3,23 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public sealed partial class TgElementThemeToStringConverter
+public sealed partial class TgInverseBooleanConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, string language)
 	{
-		if (value is ElementTheme theme)
+		if (value is bool boolValue)
 		{
-			return TgThemeUtils.GetThemeName(theme);
+			return !boolValue;
 		}
-		return "Unknown";
+		return DependencyProperty.UnsetValue;
 	}
 
 	public object ConvertBack(object value, Type targetType, object parameter, string language)
 	{
-		throw new NotImplementedException();
+		if (value is bool boolValue)
+		{
+			return !boolValue;
+		}
+		return DependencyProperty.UnsetValue;
 	}
 }

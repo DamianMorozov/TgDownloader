@@ -4,6 +4,12 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.360] - 2025-01-08
+### Добавлено
+- Добавлен фильтр чатов для TgDownloaderDesktop
+- Добавлено скачивание чата на странице подробностей для TgDownloaderDesktop
+- Добавлена страница подробностей чата для TgDownloaderDesktop
+
 ## [0.5.330] - 2025-01-05
 ### Исправлено
 - Исправлена страница подключения для TgDownloaderDesktop

@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public sealed class TgEnumToColumnSpanConverter : IValueConverter
+public sealed partial class TgEnumToColumnSpanConverter : IValueConverter
 {
 	public object Convert(object value, Type targetType, object parameter, string language)
 	{

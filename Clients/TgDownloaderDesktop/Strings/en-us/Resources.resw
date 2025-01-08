@@ -768,6 +768,9 @@
   <data name="FieldId.Text" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="ButtonId.Content" xml:space="preserve">
+    <value>ID</value>
+  </data>
   <data name="FieldDtChanged.Text" xml:space="preserve">
     <value>Changed</value>
   </data>

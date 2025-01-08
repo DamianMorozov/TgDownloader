@@ -3,7 +3,7 @@
 
 namespace TgDownloaderDesktop.Helpers;
 
-public sealed class TgEnumToBooleanConverter : IValueConverter
+public sealed partial class TgEnumToBooleanConverter : IValueConverter
 {
 	public TgEnumToBooleanConverter()
 	{

@@ -830,6 +830,9 @@
   <data name="FieldId.Text" xml:space="preserve">
     <value>ИД</value>
   </data>
+  <data name="ButtonId.Content" xml:space="preserve">
+    <value>ИД</value>
+  </data>
   <data name="FieldDtChanged.Text" xml:space="preserve">
     <value>Изменено</value>
   </data>
