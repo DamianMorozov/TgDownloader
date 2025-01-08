@@ -18,8 +18,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	public partial TgExceptionViewModel Exception { get; set; } = new();
 	[ObservableProperty]
-	public partial bool IsPageLoad { get; set; }
-	[ObservableProperty]
 	public partial string ConnectionDt { get; set; } = string.Empty;
 	[ObservableProperty]
 	public partial string ConnectionMsg { get; set; } = string.Empty;
@@ -32,9 +30,25 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	public partial string StateSourceMsg { get; set; }= string.Empty;
 	[ObservableProperty]
+	public partial int StateSourceProgress { get; set; } = 0;
+	[ObservableProperty]
+	public partial string StateSourceProgressString { get; set; } = string.Empty;
+	[ObservableProperty]
+	public partial string StateSourceDirectory { get; set; } = string.Empty;
+	[ObservableProperty]
+	public partial string StateSourceDirectorySizeString { get; set; } = string.Empty;
+	[ObservableProperty]
 	public partial XamlRoot? XamlRootVm { get; set; }
 	[ObservableProperty]
+	public partial bool IsPageLoad { get; set; }
+	[ObservableProperty]
 	public partial bool IsOnlineReady { get; set; }
+	[ObservableProperty]
+	public partial bool IsShowContent { get; set; }
+	[ObservableProperty]
+	public partial bool IsShowDownloading { get; set; }
+	[ObservableProperty]
+	public partial FileSystemWatcher? DirectorySystemWatcher { get; set; }
 
 	public TgPageViewModelBase(ITgSettingsService settingsService, INavigationService navigationService)
 	{
@@ -55,11 +69,6 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		if (parameter is XamlRoot xamlRoot)
 			XamlRootVm = xamlRoot;
 	}
-
-	//public virtual async Task OnNavigatedToAsync(NavigationEventArgs e)
-	//{
-	//	await Task.CompletedTask;
-	//}
 
 	public virtual async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () => await Task.CompletedTask);
 
@@ -92,28 +101,59 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	}
 
 	/// <summary> Update state source message </summary>
-	public virtual void UpdateStateSource(long sourceId, int messageId, string message)
+	public async Task UpdateStateSource(long sourceId, int messageId, int count, string message)
 	{
-		if (sourceId == 0 && messageId == 0)
+		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
 		{
-			UpdateStateMessage(message);
-			return;
-		}
-		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
-		{
+			float progress = messageId == 0 || count  == 0 ? 0 : messageId * 100 / count;
+			StateSourceProgress = (int)progress;
+			StateSourceProgressString = StateSourceProgress == 0 ? $"{0:00.00} %" : $"{StateSourceProgress:#00.00} %";
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-			StateSourceMsg = $"{sourceId} | {messageId} | {message}";
+			StateSourceMsg = $"{messageId} | {message}";
+
+			long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
+			StateSourceDirectorySizeString = FormatSize(size);
+		});
+		await Task.CompletedTask;
+	}
+
+	protected void DirectorySystemWatcher_OnChanged(object sender, FileSystemEventArgs e)
+	{
+		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+		{
+			try
+			{
+				long size = await TgDesktopUtils.CalculateDirSizeAsync(StateSourceDirectory);
+				StateSourceDirectorySizeString = FormatSize(size);
+				//Debug.WriteLine($"File: {e.FullPath} {e.ChangeType}");
+			}
+			catch (Exception ex)
+			{
+#if DEBUG
+				Debug.WriteLine(ex);
+#endif
+			}
 		});
 	}
 
-	/// <summary> Update state message </summary>
-	public virtual void UpdateStateMessage(string message)
+	private string FormatSize(long size)
 	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
+		if (size < 1024)
 		{
-			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-			StateSourceMsg = message;
-		});
+			return $"{size} B";
+		}
+		else if (size < 1024 * 1024)
+		{
+			return $"{size / 1024.0:###.###} KB";
+		}
+		else if (size < 1024 * 1024 * 1024)
+		{
+			return $"{size / (1024 * 1024.0):###.###} MB";
+		}
+		else
+		{
+			return $"{size / (1024 * 1024 * 1024.0):###.###} GB";
+		}
 	}
 
 	protected async Task ContentDialogAsync(string title, ContentDialogButton defaultButton = ContentDialogButton.Close)
@@ -178,6 +218,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	{
 		try
 		{
+			IsShowContent = false;
 			IsPageLoad = true;
 			await Task.Delay(100);
 			await task();
@@ -186,6 +227,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		{
 			if (SettingsService.IsExistsAppStorage)
 				IsPageLoad = false;
+			IsShowContent = true;
 		}
 	}
 

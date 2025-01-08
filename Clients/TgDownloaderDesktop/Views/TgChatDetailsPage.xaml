@@ -63,6 +63,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
 		<!--  Load data  -->
@@ -75,7 +76,6 @@
 			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 			<Expander
 				x:Uid="SettingAppActions"
-				Grid.Row="2"
 				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
@@ -160,7 +160,6 @@
 			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 			<Expander
 				x:Uid="ExpanderDataInStorage"
-				Grid.Row="0"
 				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
@@ -197,7 +196,7 @@
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
 							IsEnabled="False"
-							Text="{x:Bind ViewModel.Dto.Uid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.Dto.Uid, Mode=OneWay}" />
 						<!--  DtChanged  -->
 						<TextBlock
 							x:Uid="FieldDtChanged"
@@ -231,7 +230,7 @@
 							HorizontalContentAlignment="Left"
 							IsEnabled="False"
 							IsReadOnly="True"
-							Text="{x:Bind ViewModel.Dto.Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.Dto.Id, Mode=OneWay}" />
 						<!--  IsActive  -->
 						<TextBlock
 							x:Uid="FieldIsActive"
@@ -253,7 +252,7 @@
 							x:Uid="FieldIsAutoUpdate"
 							Grid.Row="2"
 							Grid.Column="2"
-							Margin="2,7,7,2"
+							Margin="12,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
 						<ToggleSwitch
@@ -356,7 +355,7 @@
 							x:Uid="FieldCount"
 							Grid.Row="7"
 							Grid.Column="2"
-							Margin="2,7,7,2"
+							Margin="12,7,7,2"
 							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
@@ -370,15 +369,141 @@
 				</ScrollView>
 			</Expander>
 		</ContentControl>
-		<!--  Content  -->
+		<!--  Downloading  -->
 		<ContentControl
 			Grid.Row="3"
 			HorizontalAlignment="Stretch"
 			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			Visibility="{x:Bind ViewModel.IsShowDownloading, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<Expander
+				x:Uid="ExpanderDownloading"
+				Margin="{StaticResource ExpanderMargin}"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch"
+				IsExpanded="True">
+				<ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
+					<Grid Margin="0,0,10,0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<!--  StateSourceDt  -->
+						<TextBlock
+							x:Uid="FieldDtChanged"
+							Grid.Row="0"
+							Margin="2,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							Text="{x:Bind ViewModel.StateSourceDt, Mode=OneWay}" />
+						<!--  StateSourceMsg  -->
+						<TextBlock
+							x:Uid="FieldMessage"
+							Grid.Row="0"
+							Grid.Column="2"
+							Margin="12,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="0"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.StateSourceMsg, Mode=OneWay}" />
+						<!--  StateSourceProgress  -->
+						<TextBlock
+							x:Uid="FieldProgress"
+							Grid.Row="1"
+							Margin="2,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<ProgressBar
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="5,0,5,0"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							IsIndeterminate="False"
+							Maximum="100"
+							Minimum="0"
+							Visibility="Visible"
+							Value="{Binding ViewModel.StateSourceProgress, Mode=OneWay}" />
+						<!--  StateSourceProgressString  -->
+						<TextBlock
+							x:Uid="FieldPercent"
+							Grid.Row="1"
+							Grid.Column="2"
+							Margin="12,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="1"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							Text="{x:Bind ViewModel.StateSourceProgressString, Mode=OneWay}" />
+						<!--  StateSourceProgress  -->
+						<TextBlock
+							x:Uid="FieldDirectory"
+							Grid.Row="2"
+							Margin="2,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							IsReadOnly="True"
+							Text="{x:Bind ViewModel.StateSourceDirectory, Mode=OneWay}" />
+						<!--  StateSourceProgressString  -->
+						<TextBlock
+							x:Uid="FieldSize"
+							Grid.Row="2"
+							Grid.Column="2"
+							Margin="12,7,7,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							Text="{x:Bind ViewModel.StateSourceDirectorySizeString, Mode=OneWay}" />
+					</Grid>
+				</ScrollView>
+			</Expander>
+		</ContentControl>
+		<!--  Content  -->
+		<ContentControl
+			Grid.Row="4"
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Stretch"
+			Visibility="{x:Bind ViewModel.IsShowContent, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 			<Expander
 				x:Uid="ExpanderContent"
-				Grid.Row="0"
 				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"

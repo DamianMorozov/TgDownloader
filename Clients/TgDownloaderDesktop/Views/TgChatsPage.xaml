@@ -186,7 +186,7 @@
 							Margin="0,0,5,10"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Text="{x:Bind ViewModel.FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							Text="{x:Bind ViewModel.FilterText, Mode=TwoWay}"
 							TextChanged="{x:Bind OnFilterTextChanged, Mode=OneWay}" />
 						<!--<Button
 							x:Uid="ButtonFilter"
@@ -253,7 +253,7 @@
 												HorizontalAlignment="Stretch"
 												VerticalAlignment="Center"
 												HorizontalTextAlignment="Left"
-												Text="{Binding DtChanged, Mode=OneWay}" />
+												Text="{Binding DtChangedString, Mode=OneWay}" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>
@@ -374,8 +374,9 @@
 												IsIndeterminate="{Binding IsLoad, Mode=OneWay}"
 												Maximum="100"
 												Minimum="0"
+												ToolTipService.ToolTip="{Binding ProgressPercentString, Mode=OneWay}"
 												Visibility="Visible"
-												Value="{Binding Progress, Mode=OneWay}" />
+												Value="{Binding ProgressPercentString, Mode=OneWay}" />
 										</DataTemplate>
 									</controls:DataGridTemplateColumn.CellTemplate>
 								</controls:DataGridTemplateColumn>

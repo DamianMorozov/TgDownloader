@@ -217,7 +217,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay}" />
 						<!--  API ID  -->
 						<TextBlock
 							x:Uid="ClientApiId"
@@ -232,7 +232,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.ApiId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.ApiId, Mode=TwoWay}" />
 						<!--  Phone number  -->
 						<TextBlock
 							x:Uid="ClientPhoneNumber"
@@ -246,7 +246,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay}" />
 						<!--  Proxy  -->
 						<TextBlock
 							x:Uid="ClientProxy"
@@ -283,7 +283,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.FirstName, Mode=TwoWay}" />
 						<!--  Last name  -->
 						<TextBlock
 							x:Uid="ClientLastName"
@@ -298,7 +298,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Text="{x:Bind ViewModel.LastName, Mode=TwoWay}" />
 					</Grid>
 				</ScrollView>
 			</Expander>
@@ -347,7 +347,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Stretch"
-							Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Password="{x:Bind ViewModel.VerificationCode, Mode=TwoWay}" />
 						<!--  Password  -->
 						<TextBlock
 							x:Uid="ClientPassword"
@@ -362,7 +362,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Stretch"
-							Password="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							Password="{x:Bind ViewModel.Password, Mode=TwoWay}" />
 						<!--  Connection dt  -->
 						<TextBlock
 							x:Uid="ClientConnectionDt"

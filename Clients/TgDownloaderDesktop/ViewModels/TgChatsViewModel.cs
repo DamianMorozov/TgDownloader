@@ -10,9 +10,9 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 
     private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfSourceDto> Dtos { get; set; } = [];
+	public partial ObservableCollection<TgEfSourceLiteDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfSourceDto> FilteredDtos { get; set; } = [];
+	public partial ObservableCollection<TgEfSourceLiteDto> FilteredDtos { get; set; } = [];
 	[ObservableProperty]
 	public partial string FilterText { get; set; } = string.Empty;
 	public IRelayCommand LoadDataStorageCommand { get; }
@@ -27,7 +27,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
-		// Delegates
+		// Updates
 		//TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
 		//TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
 		//TgDesktopUtils.TgClient.SetupUpdateStateSource(UpdateStateSourceAsync);
@@ -60,7 +60,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
     }
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(ObservableCollection<TgEfSourceDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfSourceLiteDto> dtos)
 	{
 		if (!dtos.Any()) return;
 		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
@@ -80,7 +80,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 				dto.UserName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase) ||
 				dto.Title.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)
 				).ToList();
-			FilteredDtos = new ObservableCollection<TgEfSourceDto>(filtered);
+			FilteredDtos = new ObservableCollection<TgEfSourceLiteDto>(filtered);
 		}
 	}
 
@@ -120,7 +120,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	private async Task LoadDataStorageCoreAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
-		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
+		SetOrderData([.. await Repository.GetListLiteDtosAsync(take: 0, skip: 0)]);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -213,7 +213,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	{
 		if (sender is not DataGrid dataGrid)
 			return;
-		if (dataGrid.SelectedItem is not TgEfSourceDto dto)
+		if (dataGrid.SelectedItem is not TgEfSourceLiteDto dto)
 			return;
 
 		NavigationService.NavigateTo(typeof(TgChatDetailsViewModel).FullName!, dto.Uid);

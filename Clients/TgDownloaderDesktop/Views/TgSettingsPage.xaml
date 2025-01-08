@@ -171,7 +171,7 @@
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
-						Text="{x:Bind ViewModel.SettingsService.AppSession, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						Text="{x:Bind ViewModel.SettingsService.AppSession, Mode=TwoWay}" />
 					<!--  Storage  -->
 					<TextBlock
 						x:Uid="SettingStorage"
@@ -194,7 +194,7 @@
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
-						Text="{x:Bind ViewModel.SettingsService.AppStorage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						Text="{x:Bind ViewModel.SettingsService.AppStorage, Mode=TwoWay}" />
 				</Grid>
 			</Expander>
 		</Grid>

@@ -359,6 +359,40 @@ public static class TgDesktopUtils
 		return false;
 	}
 
+	public static async Task<long> CalculateDirSizeAsync(string folderPath)
+	{
+		long totalSize = 0;
+		if (string.IsNullOrEmpty(folderPath)) return 0;
+		try
+		{
+			var storageFolder = await StorageFolder.GetFolderFromPathAsync(folderPath);
+			if (storageFolder is null) return 0;
+			// Get all files and subdirectories
+			var files = await storageFolder.GetFilesAsync();
+			var subFolders = await storageFolder.GetFoldersAsync();
+			// Calculate the size of all files in the current directory
+			foreach (var file in files)
+			{
+				//totalSize += file.Size;
+				var properties = await file.GetBasicPropertiesAsync();
+				totalSize += (long)properties.Size;
+			}
+			// Recursively count the size in subdirectories
+			foreach (var subFolder in subFolders)
+			{
+				totalSize += await CalculateDirSizeAsync(subFolder.Path);
+			}
+		}
+		catch (Exception ex)
+		{
+#if DEBUG
+			Debug.WriteLine(ex);
+#endif
+			return 0;
+		}
+		return totalSize;
+	}
+
 	public static string ExtractUrl(string rawUrl)
 	{
 		if (rawUrl.StartsWith("ms-resource:///Files/"))

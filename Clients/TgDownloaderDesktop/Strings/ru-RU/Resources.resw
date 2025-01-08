@@ -461,6 +461,9 @@
   <data name="ExpanderContent.Header" xml:space="preserve">
     <value>Содержимое</value>
   </data>
+  <data name="ExpanderDownloading.Header" xml:space="preserve">
+    <value>Скачивание</value>
+  </data>
   <data name="SettingAppFiles.Header" xml:space="preserve">
     <value>Файлы</value>
   </data>
@@ -887,10 +890,25 @@
   <data name="FieldEmptyData.Text" xml:space="preserve">
     <value>Пустые данные</value>
   </data>
+  <data name="FieldMessage.Text" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
+  <data name="FieldProgress.Text" xml:space="preserve">
+    <value>Прогресс</value>
+  </data>
+  <data name="FieldPercent.Text" xml:space="preserve">
+    <value>Процент</value>
+  </data>
+  <data name="FieldSize.Text" xml:space="preserve">
+    <value>Размер</value>
+  </data>
   <data name="FieldFilter.PlaceholderText" xml:space="preserve">
     <value>Введите текст для фильтрации</value>
   </data>
   <data name="ButtonFilter.Content" xml:space="preserve">
     <value>Фильтровать</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
   </data>
 </root>

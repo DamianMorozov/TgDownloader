@@ -25,6 +25,7 @@ global using System.Collections.Specialized;
 global using System.Data;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Diagnostics;
+global using System.IO.Enumeration;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.InteropServices;
