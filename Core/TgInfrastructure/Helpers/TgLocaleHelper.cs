@@ -1,4 +1,4 @@
-// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 namespace TgInfrastructure.Helpers;
@@ -95,9 +95,9 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuSearchDialogs => "Search dialogs";
 	public string MenuSearchStories => "Search stories";
 	public string MenuSetProxy => "Setup proxy";
+	public string MenuViewChats => "View chats";
 	public string MenuViewContacts => "View contacts";
 	public string MenuViewFilters => "View filters";
-	public string MenuViewSources => "View sources";
 	public string MenuViewStories => "View stories";
 	public string MenuViewVersions => "View versions";
 
@@ -200,11 +200,11 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string Save => "Save";
 	public string SettingCheck => "Check";
 	public string SettingName => "Setting";
+	public string SettingsChat => "Chat info";
 	public string SettingsContact => "Contact info";
 	public string SettingsDtChanged => "Changed";
 	public string SettingsIsNeedSetup => "Something is need setup";
 	public string SettingsIsOk => "Everything is ok";
-	public string SettingsSource => "Source info";
 	public string SettingsStory => "Story info";
 	public string SettingValue => "Value";
 	public string SortView => "Sort view";
@@ -253,6 +253,7 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string TypeTgProxySecret => "Type the secret";
 	public string TypeTgSourceFirstId => "Type the source first ID";
 	public string WaitDownloadComplete => "Wait download complete";
+	public string WaitDownloadCompleteWithQuit => "Wait download complete (q - quit)";
 
 	#endregion
 

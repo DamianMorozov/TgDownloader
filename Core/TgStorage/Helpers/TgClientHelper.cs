@@ -50,6 +50,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 	public IEnumerable<User> EnumerableContacts { get; set; }
 	public IEnumerable<StoryItem> EnumerableStories { get; set; }
 	public bool IsUpdateStatus { get; set; }
+	public bool IsForceStopDownloading { get; set; }
 	private IEnumerable<TgEfFilterDto> Filters { get; set; }
 	public Func<string, Task> UpdateTitleAsync { get; private set; }
 	public Func<string, Task> UpdateStateConnectAsync { get; private set; }
@@ -1144,6 +1145,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 		await SourceRepository.SaveAsync(source);
 		tgDownloadSettings.SourceVm.Fill(source);
 		source = null;
+		dto = null;
 	}
 
 	/// <summary> Update source from Telegram </summary>
@@ -1572,6 +1574,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 
 	public async Task DownloadAllDataAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
+		IsForceStopDownloading = false;
 		await CreateChatAsync(tgDownloadSettings, isSilent: false);
 		await TryCatchFuncAsync(async () =>
 		{
@@ -1598,7 +1601,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 			}
 
 			tgDownloadSettings.SourceVm.Dto.IsDownload = true;
-			var isAccessToMessages = await Client.Channels_ReadMessageContents(tgDownloadSettings.Chat.Base as Channel);
+			var isAccessToMessages = (tgDownloadSettings.Chat.Base is Channel channel) && await Client.Channels_ReadMessageContents(channel);
 			var sourceFirstId = tgDownloadSettings.SourceVm.Dto.FirstId;
 			var sourceLastId = tgDownloadSettings.SourceVm.Dto.Count;
 			var counterForSave = 0;
@@ -1625,7 +1628,7 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 							// Check message exists
 							downloadTasks.Add(message.Date > DateTime.MinValue
 								? DownloadDataAsync(tgDownloadSettings, message, threadNumber)
-								: UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, message.ID, tgDownloadSettings.SourceVm.Dto.Count, 
+								: UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, message.ID, tgDownloadSettings.SourceVm.Dto.Count,
 									$"Message {message.ID} is not exists in {tgDownloadSettings.SourceVm.Dto.Id}!"));
 							counterForSave++;
 						}
@@ -1639,19 +1642,31 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 						downloadTasks.Clear();
 						downloadTasks = [];
 						threadNumber = 0;
+						if (IsForceStopDownloading)
+						{
+							tgDownloadSettings.SourceVm.Dto.FirstId = sourceLastId;
+							break;
+						}
 					}
-					if (counterForSave > 99)
+					if (counterForSave > 49)
 					{
 						counterForSave = 0;
+						tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId;
 						await SourceRepository.SaveAsync(tgDownloadSettings.SourceVm.Dto.GetEntity());
 					}
 				}
+				tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId > sourceLastId ? sourceLastId : sourceFirstId;
 			}
-			tgDownloadSettings.SourceVm.Dto.FirstId = sourceFirstId > sourceLastId ? sourceLastId : sourceFirstId;
+			else
+			{
+				tgDownloadSettings.SourceVm.Dto.FirstId = sourceLastId;
+			}
 			tgDownloadSettings.SourceVm.Dto.IsDownload = false;
 		});
 		await UpdateTitleAsync(string.Empty);
 	}
+
+	public void SetForceStopDownloading() => IsForceStopDownloading = true;
 
 	public async Task MarkHistoryReadAsync()
 	{
