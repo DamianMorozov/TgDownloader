@@ -12,19 +12,18 @@ public sealed class TgEfDocumentValidator : TgEfValidatorBase<TgEfDocumentEntity
 	public TgEfDocumentValidator()
 	{
 		RuleFor(item => item.Id)
-				.NotNull()
-				.GreaterThanOrEqualTo(0);
+			.NotNull()
+			.GreaterThanOrEqualTo(0);
 		RuleFor(item => item.MessageId)
-				.NotNull()
-				.GreaterThanOrEqualTo(0);
+			.NotNull()
+			.GreaterThanOrEqualTo(0);
 		RuleFor(item => item.FileName)
-				.NotNull();
+			.NotNull();
 		RuleFor(item => item.FileSize)
-				.NotNull()
-				.GreaterThanOrEqualTo(0);
+			.NotNull()
+			.GreaterThanOrEqualTo(0);
 		RuleFor(item => item.AccessHash)
-				.NotNull()
-				.NotEqual(0);
+			.NotNull();
 	}
 
 	#endregion

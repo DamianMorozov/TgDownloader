@@ -79,6 +79,7 @@ public sealed partial class TgChatDetailsViewModel : TgPageViewModelBase
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
 			var entity = Dto.GetEntity();
 			DownloadSettings.SourceVm.Fill(entity);
+			DownloadSettings.SourceVm.Dto.DtChanged = DateTime.Now;
 			await DownloadSettings.UpdateSourceWithSettingsAsync();
 
 			StateSourceDirectory = Dto.Directory;
