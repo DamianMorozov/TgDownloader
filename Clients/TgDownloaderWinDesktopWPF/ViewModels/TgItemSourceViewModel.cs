@@ -162,7 +162,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             var entity = SourceVm.Dto.GetEntity();
             await SourceRepository.SaveAsync(entity);
             // Message
-            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsSource);
+            await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsChat);
         }, false);
 
         await OnGetSourceFromStorageAsync();
@@ -195,7 +195,7 @@ public sealed partial class TgItemSourceViewModel : TgPageViewModelBase, INaviga
             SwDownloadChart = Stopwatch.StartNew();
 			// Job.
 			await TgDesktopUtils.TgClient.DownloadAllDataAsync(tgDownloadSettings);
-			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsSource);
+			await TgDesktopUtils.TgClient.UpdateStateSourceAsync(SourceVm.Dto.Id, SourceVm.Dto.FirstId, SourceVm.Dto.Count, TgDesktopUtils.TgLocale.SettingsChat);
         }, true);
 
         await OnGetSourceFromStorageAsync();
