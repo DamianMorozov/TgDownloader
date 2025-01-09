@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.360] - 2025-01-08
+## [0.5.370] - 2025-01-10
+### Fixed
+- Fixed chat connection check for TgDownloaderConsole
 ### Added
 - Added chat filter for TgDownloaderDesktop
-- Added chat download to the details page for TgDownloaderDesktop
 - Added chat details page for TgDownloaderDesktop
+- Added launching download chat on the details page for TgDownloaderDesktop
+- Added chat download stop on the details page for TgDownloaderDesktop
 
 ## [0.5.330] - 2025-01-05
 ### Fixed
