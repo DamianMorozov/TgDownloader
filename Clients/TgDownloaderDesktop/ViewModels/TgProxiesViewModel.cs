@@ -72,8 +72,7 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 	{
 		await LoadDataAsync(async () => {
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			var tgDownloadSettings = new TgDownloadSettingsViewModel();
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Story);
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Story);
 			await LoadDataStorageCoreAsync();
 		});
 	}

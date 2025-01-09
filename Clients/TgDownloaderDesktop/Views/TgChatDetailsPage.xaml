@@ -12,6 +12,7 @@
 	mc:Ignorable="d">
 
 	<Page.Resources>
+		<helpers:TgInverseBooleanConverter x:Key="InverseBooleanConverter" />
 		<helpers:TgInverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
 		<helpers:TgBooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 		<helpers:TgEnumToColumnConverter x:Key="EnumToColumnConverter" />
@@ -57,13 +58,15 @@
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
 		<!--  Load data  -->
-		<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
+		<views:TgLoadDataPage
+			Grid.Row="0"
+			Margin="0,0,0,10"
+			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
 		<!--  Actions  -->
 		<ContentControl
 			Grid.Row="1"
 			HorizontalAlignment="Stretch"
-			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			HorizontalContentAlignment="Stretch">
 			<Expander
 				x:Uid="SettingAppActions"
 				Margin="{StaticResource ExpanderMargin}"
@@ -84,7 +87,8 @@
 						Margin="0,0,5,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
-						Command="{x:Bind ViewModel.LoadDataStorageCommand, Mode=OneWay}">
+						Command="{x:Bind ViewModel.LoadDataStorageCommand, Mode=OneWay}"
+						IsEnabled="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 							<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
 							<TextBlock
@@ -100,11 +104,29 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind ViewModel.UpdateOnlineCommand, Mode=OneWay}"
-						IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}">
+						IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}"
+						Visibility="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 							<FontIcon Margin="0,0,10,0" Glyph="&#xe777;" />
 							<TextBlock
 								x:Uid="TextBlockUpdateOnline"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</StackPanel>
+					</Button>
+					<!--  Stop downloading  -->
+					<Button
+						Grid.Column="1"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Command="{x:Bind ViewModel.StopDownloadingCommand, Mode=OneWay}"
+						IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}"
+						Visibility="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+							<FontIcon Margin="0,0,10,0" Glyph="&#xE71A;" />
+							<TextBlock
+								x:Uid="TextBlockStopDownloading"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center" />
 						</StackPanel>
@@ -115,7 +137,8 @@
 						Margin="0,0,5,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
-						Command="{x:Bind ViewModel.ClearDataStorageCommand, Mode=OneWay}">
+						Command="{x:Bind ViewModel.ClearDataStorageCommand, Mode=OneWay}"
+						IsEnabled="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 							<FontIcon Margin="0,0,10,0" Glyph="&#xe894;" />
 							<TextBlock
@@ -147,7 +170,7 @@
 			Grid.Row="2"
 			HorizontalAlignment="Stretch"
 			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+			IsEnabled="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
 			<Expander
 				x:Uid="ExpanderDataInStorage"
 				Margin="{StaticResource ExpanderMargin}"
@@ -177,7 +200,6 @@
 							x:Uid="FieldUid"
 							Grid.Row="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
 							Grid.Row="0"
@@ -193,7 +215,6 @@
 							Grid.Row="0"
 							Grid.Column="2"
 							Margin="12,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
 							Grid.Row="0"
@@ -212,7 +233,6 @@
 							Margin="2,0,7,2"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Center"
-							FontWeight="Bold"
 							Style="{ThemeResource BodyTextBlockStyle}" />
 						<Grid
 							Grid.Row="1"
@@ -236,7 +256,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.Id, Mode=OneWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -247,7 +266,6 @@
 							Grid.Row="2"
 							Grid.Column="0"
 							Margin="2,10,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<ToggleSwitch
 							Grid.Row="2"
@@ -263,7 +281,6 @@
 							Grid.Row="2"
 							Grid.Column="2"
 							Margin="12,10,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<ToggleSwitch
 							Grid.Row="2"
@@ -279,7 +296,6 @@
 							Grid.Row="3"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="3"
@@ -304,7 +320,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.UserName, Mode=OneWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -315,7 +330,6 @@
 							Grid.Row="4"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="4"
@@ -340,7 +354,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.Title, Mode=OneWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -351,7 +364,6 @@
 							Grid.Row="5"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="5"
@@ -376,7 +388,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.About, Mode=OneWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -387,7 +398,6 @@
 							Grid.Row="6"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="6"
@@ -403,16 +413,13 @@
 								Grid.Column="0"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Left"
-								IsEnabled="False"
-								IsReadOnly="True"
-								Text="{x:Bind ViewModel.Dto.Directory, Mode=OneWay}" />
+								Text="{x:Bind ViewModel.Dto.Directory, Mode=TwoWay}" />
 							<Button
 								Grid.Column="1"
 								Margin="10,0,0,0"
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.Directory, Mode=TwoWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -423,7 +430,6 @@
 							Grid.Row="7"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="7"
@@ -445,7 +451,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.FirstId, Mode=OneWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -456,7 +461,6 @@
 							Grid.Row="7"
 							Grid.Column="2"
 							Margin="12,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<Grid
 							Grid.Row="7"
@@ -478,7 +482,6 @@
 								HorizontalContentAlignment="Left"
 								Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
 								CornerRadius="10"
-								FontWeight="Bold"
 								Tag="{x:Bind ViewModel.Dto.Count, Mode=TwoWay}">
 								<SymbolIcon Symbol="Copy" />
 							</Button>
@@ -491,17 +494,19 @@
 		<ContentControl
 			Grid.Row="3"
 			HorizontalAlignment="Stretch"
-			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsShowDownloading, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+			HorizontalContentAlignment="Stretch">
 			<Expander
 				x:Uid="ExpanderDownloading"
 				Margin="{StaticResource ExpanderMargin}"
 				HorizontalAlignment="Stretch"
 				HorizontalContentAlignment="Stretch"
+				IsEnabled="{x:Bind ViewModel.IsDownloading, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
 				IsExpanded="True">
 				<ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
 					<Grid Margin="0,0,10,0">
 						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -512,15 +517,70 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
-						<!--  StateSourceDt  -->
+						<!--  CountThreads  -->
 						<TextBlock
-							x:Uid="FieldDtChanged"
+							x:Uid="FieldCountThreads"
 							Grid.Row="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
 							Grid.Row="0"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.DownloadSettings.CountThreads, Mode=TwoWay}" />
+						<!--  IsActive  -->
+						<TextBlock
+							x:Uid="FieldIsActive"
+							Grid.Row="0"
+							Grid.Column="2"
+							Margin="12,7,7,2"
+							TextAlignment="Left" />
+						<ToggleSwitch
+							Grid.Row="0"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="False"
+							IsOn="{x:Bind ViewModel.DownloadSettings.IsActive, Mode=OneWay}" />
+						<!--  IsRewriteFiles  -->
+						<TextBlock
+							x:Uid="FieldIsRewriteFiles"
+							Grid.Row="1"
+							Margin="2,7,7,2"
+							TextAlignment="Left" />
+						<ToggleSwitch
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsEnabled="True"
+							IsOn="{x:Bind ViewModel.DownloadSettings.IsRewriteFiles, Mode=TwoWay}" />
+						<!--  IsRewriteMessages  -->
+						<TextBlock
+							x:Uid="FieldIsRewriteMessages"
+							Grid.Row="1"
+							Grid.Column="2"
+							Margin="12,7,7,2"
+							TextAlignment="Left" />
+						<ToggleSwitch
+							Grid.Row="1"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							IsOn="{x:Bind ViewModel.DownloadSettings.IsRewriteMessages, Mode=TwoWay}" />
+						<!--  StateSourceDt  -->
+						<TextBlock
+							x:Uid="FieldDtChanged"
+							Grid.Row="2"
+							Margin="2,7,7,2"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="2"
 							Grid.Column="1"
 							Margin="2"
 							HorizontalAlignment="Stretch"
@@ -530,13 +590,12 @@
 						<!--  StateSourceMsg  -->
 						<TextBlock
 							x:Uid="FieldMessage"
-							Grid.Row="0"
+							Grid.Row="2"
 							Grid.Column="2"
 							Margin="12,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
-							Grid.Row="0"
+							Grid.Row="2"
 							Grid.Column="3"
 							Margin="2"
 							HorizontalAlignment="Stretch"
@@ -544,34 +603,15 @@
 							IsEnabled="False"
 							IsReadOnly="True"
 							Text="{x:Bind ViewModel.StateSourceMsg, Mode=OneWay}" />
-						<!--  StateSourceProgress  -->
-						<!--<TextBlock
-							x:Uid="FieldProgress"
-							Grid.Row="1"
-							Margin="2,7,7,2"
-							FontWeight="Bold"
-							TextAlignment="Left" />
-						<ProgressBar
-							Grid.Row="1"
-							Grid.Column="1"
-							Margin="5,0,5,0"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							IsIndeterminate="False"
-							Maximum="100"
-							Minimum="0"
-							Visibility="Visible"
-							Value="{Binding ViewModel.StateSourceProgress, Mode=OneWay}" />-->
 						<!--  StateSourceProgressString  -->
 						<TextBlock
 							x:Uid="FieldPercent"
-							Grid.Row="1"
+							Grid.Row="3"
 							Grid.Column="0"
 							Margin="2,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
-							Grid.Row="1"
+							Grid.Row="3"
 							Grid.Column="1"
 							Margin="2"
 							HorizontalAlignment="Stretch"
@@ -581,13 +621,12 @@
 						<!--  StateSourceProgress  -->
 						<TextBlock
 							x:Uid="FieldDirectory"
-							Grid.Row="1"
+							Grid.Row="3"
 							Grid.Column="2"
 							Margin="12,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
-							Grid.Row="1"
+							Grid.Row="3"
 							Grid.Column="3"
 							Margin="2"
 							HorizontalAlignment="Stretch"
@@ -595,13 +634,11 @@
 							IsEnabled="False"
 							IsReadOnly="True"
 							Text="{x:Bind ViewModel.StateSourceDirectory, Mode=OneWay}" />
-						<!--  StateSourceProgressString  -->
 						<!--<TextBlock
 							x:Uid="FieldSize"
 							Grid.Row="2"
 							Grid.Column="2"
 							Margin="12,7,7,2"
-							FontWeight="Bold"
 							TextAlignment="Left" />
 						<TextBox
 							Grid.Row="2"
@@ -620,7 +657,7 @@
 			Grid.Row="4"
 			HorizontalAlignment="Stretch"
 			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsShowContent, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+			Visibility="{x:Bind ViewModel.IsEnabledContent, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 			<Expander
 				x:Uid="ExpanderContent"
 				Margin="{StaticResource ExpanderMargin}"

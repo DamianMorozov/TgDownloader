@@ -456,6 +456,9 @@
   <data name="AskUpdateOnline" xml:space="preserve">
     <value>Update online?</value>
   </data>
+  <data name="AskStopDownloading" xml:space="preserve">
+    <value>Stop downloading?</value>
+  </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Restart the application?</value>
   </data>
@@ -711,6 +714,9 @@
   <data name="TextBlockUpdateOnline.Text" xml:space="preserve">
     <value>Online update</value>
   </data>
+  <data name="TextBlockStopDownloading.Text" xml:space="preserve">
+    <value>Stop downloading</value>
+  </data>
   <data name="TextBlockGet.Text" xml:space="preserve">
     <value>Get</value>
   </data>
@@ -842,6 +848,15 @@
   </data>
   <data name="FieldSize.Text" xml:space="preserve">
     <value>Size</value>
+  </data>
+  <data name="FieldCountThreads.Text" xml:space="preserve">
+    <value>Threads count</value>
+  </data>
+  <data name="FieldIsRewriteFiles.Text" xml:space="preserve">
+    <value>Overwrite files</value>
+  </data>
+  <data name="FieldIsRewriteMessages.Text" xml:space="preserve">
+    <value>Overwrite messages</value>
   </data>
   <data name="FieldFilter.PlaceholderText" xml:space="preserve">
     <value>Enter the text to filter</value>

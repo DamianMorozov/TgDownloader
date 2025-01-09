@@ -193,8 +193,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	{
 		await LoadDataAsync(async () => {
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			var tgDownloadSettings = new TgDownloadSettingsViewModel();
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Chat);
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Chat);
 			//await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
 			await LoadDataStorageCoreAsync();
 		});

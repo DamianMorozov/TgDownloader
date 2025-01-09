@@ -72,8 +72,7 @@ public sealed partial class TgContactsViewModel : TgPageViewModelBase
 	{
 		await LoadDataAsync(async () => {
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			var tgDownloadSettings = new TgDownloadSettingsViewModel();
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Contact);
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Contact);
 			await LoadDataStorageCoreAsync();
 		});
 	}

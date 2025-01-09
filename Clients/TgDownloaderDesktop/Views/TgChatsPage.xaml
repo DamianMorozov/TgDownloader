@@ -22,7 +22,10 @@
 			<RowDefinition Height="1*" />
 		</Grid.RowDefinitions>
 		<!--  Load data  -->
-		<views:TgLoadDataPage Grid.Row="0" Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
+		<views:TgLoadDataPage
+			Grid.Row="0"
+			Margin="0,0,0,10"
+			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay}" />
 		<!--  Actions  -->
 		<ContentControl
 			Grid.Row="1"
@@ -207,7 +210,7 @@
 							ItemsSource="{x:Bind ViewModel.FilteredDtos, Mode=OneWay}">
 							<controls:DataGrid.Columns>
 								<!--  Update from TG  -->
-								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="0.5*">
+								<!--<controls:DataGridTemplateColumn x:Uid="TemplateColumnUpdate" Width="Auto">
 									<controls:DataGridTemplateColumn.CellTemplate>
 										<DataTemplate>
 											<Button
@@ -277,7 +280,7 @@
 								<!--  Auto-update  -->
 								<controls:DataGridTemplateColumn
 									x:Uid="TemplateColumnAutoUpd"
-									Width=".5*"
+									Width="Auto"
 									CanUserReorder="True"
 									CanUserSort="True">
 									<controls:DataGridTemplateColumn.CellTemplate>

@@ -44,11 +44,13 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	[ObservableProperty]
 	public partial bool IsOnlineReady { get; set; }
 	[ObservableProperty]
-	public partial bool IsShowContent { get; set; }
+	public partial bool IsEnabledContent { get; set; }
 	[ObservableProperty]
-	public partial bool IsShowDownloading { get; set; }
+	public partial bool IsDownloading { get; set; }
 	[ObservableProperty]
 	public partial FileSystemWatcher? DirectorySystemWatcher { get; set; }
+	[ObservableProperty]
+	public partial TgDownloadSettingsViewModel DownloadSettings { get; set; } = new();
 
 	public TgPageViewModelBase(ITgSettingsService settingsService, INavigationService navigationService)
 	{
@@ -114,9 +116,9 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	{
 		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
 		{
-			float progress = messageId == 0 || count  == 0 ? 0 : messageId * 100 / count;
+			float progress = messageId == 0 || count  == 0 ? 0 : (float) messageId * 100 / count;
 			StateSourceProgress = (int)progress;
-			StateSourceProgressString = StateSourceProgress == 0 ? $"{0:00.00} %" : $"{StateSourceProgress:#00.00} %";
+			StateSourceProgressString = progress == 0 ? $"{0:00.00} %" : $"{progress:#00.00} %";
 			StateSourceDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
 			StateSourceMsg = $"{messageId} | {message}";
 
@@ -227,7 +229,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	{
 		try
 		{
-			IsShowContent = false;
+			IsEnabledContent = false;
 			IsPageLoad = true;
 			await Task.Delay(100);
 			await task();
@@ -236,7 +238,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		{
 			if (SettingsService.IsExistsAppStorage)
 				IsPageLoad = false;
-			IsShowContent = true;
+			IsEnabledContent = true;
 		}
 	}
 

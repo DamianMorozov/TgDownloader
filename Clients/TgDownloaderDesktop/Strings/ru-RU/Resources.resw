@@ -515,6 +515,9 @@
   <data name="AskUpdateOnline" xml:space="preserve">
     <value>Обновить онлайн?</value>
   </data>
+  <data name="AskStopDownloading" xml:space="preserve">
+    <value>Остановить загрузку?</value>
+  </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Перезапустить приложение?</value>
   </data>
@@ -773,6 +776,9 @@
   <data name="TextBlockUpdateOnline.Text" xml:space="preserve">
     <value>Обновить онлайн</value>
   </data>
+  <data name="TextBlockStopDownloading.Text" xml:space="preserve">
+    <value>Остановить загрузку</value>
+  </data>
   <data name="TextBlockGet.Text" xml:space="preserve">
     <value>Получить</value>
   </data>
@@ -904,6 +910,15 @@
   </data>
   <data name="FieldSize.Text" xml:space="preserve">
     <value>Размер</value>
+  </data>
+  <data name="FieldCountThreads.Text" xml:space="preserve">
+    <value>Количество потоков</value>
+  </data>
+  <data name="FieldIsRewriteFiles.Text" xml:space="preserve">
+    <value>Перезапись файлов</value>
+  </data>
+  <data name="FieldIsRewriteMessages.Text" xml:space="preserve">
+    <value>Перезапись сообщений</value>
   </data>
   <data name="FieldFilter.PlaceholderText" xml:space="preserve">
     <value>Введите текст для фильтрации</value>
