@@ -206,7 +206,7 @@ internal partial class TgMenuHelper
 	{
 		await tgDownloadSettings.UpdateSourceWithSettingsAsync();
 		await TgClient.UpdateStateSourceAsync(tgDownloadSettings.SourceVm.Dto.Id, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count, 
-			TgLocale.SettingsSource);
+			TgLocale.SettingsChat);
 	}
 
 	private async Task LoadTgClientSettingsAsync(TgDownloadSettingsViewModel tgDownloadSettings)

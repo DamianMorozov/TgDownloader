@@ -147,11 +147,13 @@ internal partial class TgMenuHelper
                         : $"{GetStatus(sw, tgDownloadSettings.SourceVm.Dto.FirstId, tgDownloadSettings.SourceVm.Dto.Count)}");
             });
 
-		TgLog.MarkupLine(TgLocale.WaitDownloadComplete);
+		TgLog.MarkupLine(TgLocale.WaitDownloadCompleteWithQuit);
 		while (!tgDownloadSettings.SourceVm.Dto.IsComplete)
 		{
-			Console.ReadKey();
-			TgLog.MarkupLine(TgLocale.WaitDownloadComplete);
+			var key = Console.ReadKey();
+			if (key.KeyChar == 'q' || key.KeyChar == 'Q')
+				break;
+			TgLog.MarkupLine(TgLocale.WaitDownloadCompleteWithQuit);
 		}
 	}
 

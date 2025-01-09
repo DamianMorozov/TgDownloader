@@ -27,7 +27,7 @@ internal partial class TgMenuHelper
 					TgLocale.MenuViewVersions,
 					TgLocale.MenuViewContacts,
 					TgLocale.MenuViewStories,
-					TgLocale.MenuViewSources
+					TgLocale.MenuViewChats
 				));
 		if (prompt.Equals(TgLocale.MenuAutoDownload))
 			return TgEnumMenuDownload.AutoDownload;
@@ -49,7 +49,7 @@ internal partial class TgMenuHelper
 			return TgEnumMenuDownload.ViewContacts;
 		if (prompt.Equals(TgLocale.MenuViewStories))
 			return TgEnumMenuDownload.ViewStories;
-		if (prompt.Equals(TgLocale.MenuViewSources))
+		if (prompt.Equals(TgLocale.MenuViewChats))
 			return TgEnumMenuDownload.ViewSources;
 		return TgEnumMenuDownload.Return;
 	}
@@ -132,7 +132,7 @@ internal partial class TgMenuHelper
 	{
 		await ShowTableViewSourcesAsync(tgDownloadSettings);
 		var storageResult = await SourceRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
-		var source = await GetSourceFromEnumerableAsync(TgLocale.MenuViewSources, storageResult.Items);
+		var source = await GetSourceFromEnumerableAsync(TgLocale.MenuViewChats, storageResult.Items);
 		if (source.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;
@@ -145,7 +145,7 @@ internal partial class TgMenuHelper
 	{
 		await ShowTableViewStoriesAsync(tgDownloadSettings);
 		var storageResult = await StoryRepository.GetListAsync(TgEnumTableTopRecords.All, 0);
-		var story = await GetStoryFromEnumerableAsync(TgLocale.MenuViewSources, storageResult.Items);
+		var story = await GetStoryFromEnumerableAsync(TgLocale.MenuViewChats, storageResult.Items);
 		if (story.Uid != Guid.Empty)
 		{
 			Value = TgEnumMenuMain.Download;
@@ -157,7 +157,7 @@ internal partial class TgMenuHelper
 	private async void ViewVersions(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		await ShowTableViewVersionsAsync(tgDownloadSettings);
-		GetVersionFromEnumerable(TgLocale.MenuViewSources,
+		GetVersionFromEnumerable(TgLocale.MenuViewChats,
 			(await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).Items);
 	}
 

@@ -79,7 +79,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedContacts);
 
 	internal async Task ShowTableViewSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedSourcesAsync);
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedChatsAsync);
 
 	internal async Task ShowTableViewStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainAdvanced, FillTableColumns, FillTableRowsViewDownloadedStoriesAsync);
@@ -292,16 +292,16 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		}
 	}
 
-	/// <summary> Source info </summary>
-	internal async Task FillTableRowsDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
+	/// <summary> Chat info </summary>
+	internal async Task FillTableRowsDownloadedChatsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
-			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsChat)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
 			var source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
-			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsChat)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
@@ -328,12 +328,12 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	internal async Task FillTableRowsDownloadedVersionsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table)
 	{
 		if (!tgDownloadSettings.SourceVm.Dto.IsReady)
-			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsSource)),
+			table.AddRow(new Markup(TgLocale.WarningMessage(TgLocale.SettingsChat)),
 				new Markup(TgLocale.SettingsIsNeedSetup));
 		else
 		{
 			TgEfSourceEntity source = await SourceRepository.GetItemAsync(new() { Id = tgDownloadSettings.SourceVm.Dto.Id });
-			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsSource)),
+			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsChat)),
 				new Markup(TgLog.GetMarkupString(source.ToConsoleString())));
 			table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.SettingsDtChanged)),
 				new Markup(TgDataFormatUtils.GetDtFormat(source.DtChanged)));
@@ -364,7 +364,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			new Markup(tgDownloadSettings.SourceVm.Dto.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Source info
-		await FillTableRowsDownloadedSourcesAsync(tgDownloadSettings, table);
+		await FillTableRowsDownloadedChatsAsync(tgDownloadSettings, table);
 
 		// Destination dir
 		if (string.IsNullOrEmpty(tgDownloadSettings.SourceVm.Dto.Directory))
@@ -418,8 +418,8 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		await FillTableRowsDownloadedContactsAsync(tgDownloadSettings, table);
 
 	/// <summary> Source ID/username </summary>
-	internal async Task FillTableRowsViewDownloadedSourcesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
-        await FillTableRowsDownloadedSourcesAsync(tgDownloadSettings, table);
+	internal async Task FillTableRowsViewDownloadedChatsAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
+        await FillTableRowsDownloadedChatsAsync(tgDownloadSettings, table);
 
     /// <summary> User ID/username </summary>
     internal async Task FillTableRowsViewDownloadedStoriesAsync(TgDownloadSettingsViewModel tgDownloadSettings, Table table) => 
