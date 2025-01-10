@@ -1,21 +1,20 @@
 # Screenshots
 
-## [0.5.360] - 2025-01-08
+## [0.5.370] - 2025-01-10
 ### TgDownloaderConsole
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderConsoleHome.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderConsoleAdvanced.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderConsoleHome.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderConsoleAdvanced.png"></p>
 ### TgDownloaderDesktop
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopHome.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopConnection.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopFilters.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopProxies.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopContacts.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopContactDetails.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopStories.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopChats.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopChatDetails.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopChatDownloading.png"></p>
-<p align="center"><img src="Assets/v0.5.360/TgDownloaderDesktopSettings.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopHome.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopConnection.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopFilters.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopProxies.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopContacts.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopContactDetails.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopStories.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopChats.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopChatDetails.png"></p>
+<p align="center"><img src="Assets/v0.5.370/TgDownloaderDesktopSettings.png"></p>
 
 ## [0.5.330] - 2025-01-05
 ### TgDownloaderConsole
