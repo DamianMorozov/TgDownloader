@@ -35,8 +35,8 @@
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-		<PackageReference Include="Radzen.Blazor" Version="5.7.2" />
-		<PackageReference Include="WTelegramClient" Version="4.2.4" />
+		<PackageReference Include="Radzen.Blazor" Version="5.7.4" />
+		<PackageReference Include="WTelegramClient" Version="4.2.7" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -42,7 +42,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
     <PackageReference Include="WinUIEx" Version="2.5.0" />
-    <PackageReference Include="WTelegramClient" Version="4.2.4" />
+    <PackageReference Include="WTelegramClient" Version="4.2.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +61,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Views\TgBotsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\TgConnectPage.xaml">
       <SubType>Designer</SubType>
     </Page>
