@@ -48,6 +48,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
     public partial string DataRequest { get; set; } = "";
 	[ObservableProperty]
     public partial string DataRequestEmptyResponse { get; set; } = "";
+	[ObservableProperty]
+    public partial bool IsFieldsCheck { get; set; }
 
 	public IRelayCommand ClientConnectCommand { get; }
     public IRelayCommand ClientDisconnectCommand { get; }
@@ -221,7 +223,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		DataRequestEmptyResponse = TgResourceExtensions.GetClientDataRequestEmptyResponse();
 
 		await ReloadProxyAsync();
-    }
+		OnFieldsTextChangedCore();
+	}
 
     private async Task ReloadProxyAsync()
     {
@@ -296,6 +299,53 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
         await AppRepository.DeleteAllAsync();
         await AppLoadCoreAsync();
     }
+
+	public void OnFieldsTextChangedCore()
+	{
+		if (TgDataFormatUtils.ParseStringToGuid(ApiHash) == Guid.Empty ||
+			ApiId <= 0 || string.IsNullOrEmpty(PhoneNumber))
+		{
+			IsFieldsCheck = false;
+			return;
+		}
+		IsFieldsCheck = true;
+	}
+
+	public void OnApiHashTextChanged(object sender, TextChangedEventArgs e)
+	{
+		if (sender is not TextBox textBox) return;
+		if (TgDataFormatUtils.ParseStringToGuid(textBox.Text) == Guid.Empty)
+		{
+			IsFieldsCheck = false;
+			return;
+		}
+		if (ApiId > 0 && !string.IsNullOrEmpty(PhoneNumber))
+			IsFieldsCheck = true;
+	}
+
+	public void OnApiIdTextChanged(object sender, TextChangedEventArgs e)
+	{
+		if (sender is not TextBox textBox) return;
+		if (!int.TryParse(textBox.Text, out int id) || id <= 0)
+		{
+			IsFieldsCheck = false;
+			return;
+		}
+		if (TgDataFormatUtils.ParseStringToGuid(ApiHash) != Guid.Empty && !string.IsNullOrEmpty(PhoneNumber))
+			IsFieldsCheck = true;
+	}
+
+	public void OnPhoneTextChanged(object sender, TextChangedEventArgs e)
+	{
+		if (sender is not TextBox textBox) return;
+		if (string.IsNullOrEmpty(textBox.Text))
+		{
+			IsFieldsCheck = false;
+			return;
+		}
+		if (TgDataFormatUtils.ParseStringToGuid(ApiHash) != Guid.Empty && ApiId > 0)
+			IsFieldsCheck = true;
+	}
 
 	#endregion
 }

@@ -154,7 +154,7 @@
 							VerticalAlignment="Stretch"
 							Command="{x:Bind ViewModel.ClientConnectCommand, Mode=OneWay}"
 							FontWeight="Bold"
-							IsEnabled="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}">
+							IsEnabled="{x:Bind ViewModel.IsFieldsCheck, Mode=OneWay}">
 							<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 								<FontIcon Margin="0,0,10,0" Glyph="&#xE703;" />
 								<TextBlock
@@ -223,7 +223,8 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay}" />
+							Text="{x:Bind ViewModel.ApiHash, Mode=TwoWay}"
+							TextChanged="{x:Bind OnApiHashTextChanged, Mode=OneWay}" />
 						<!--  API ID  -->
 						<TextBlock
 							x:Uid="ClientApiId"
@@ -238,7 +239,8 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.ApiId, Mode=TwoWay}" />
+							Text="{x:Bind ViewModel.ApiId, Mode=TwoWay}"
+							TextChanged="{x:Bind OnApiIdTextChanged, Mode=OneWay}" />
 						<!--  Phone number  -->
 						<TextBlock
 							x:Uid="ClientPhoneNumber"
@@ -252,7 +254,8 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
-							Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay}" />
+							Text="{x:Bind ViewModel.PhoneNumber, Mode=TwoWay}"
+							TextChanged="{x:Bind OnPhoneTextChanged, Mode=OneWay}" />
 						<!--  Proxy  -->
 						<TextBlock
 							x:Uid="ClientProxy"
