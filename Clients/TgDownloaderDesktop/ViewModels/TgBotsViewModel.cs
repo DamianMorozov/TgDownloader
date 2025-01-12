@@ -4,29 +4,29 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgChatsViewModel : TgPageViewModelBase
+public sealed partial class TgBotsViewModel : TgPageViewModelBase
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    private TgEfSourceRepository Repository { get; } = new(TgEfUtils.EfContext);
+	private TgEfBotRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfSourceLiteDto> Dtos { get; set; } = [];
+	public partial ObservableCollection<TgEfBotDto> Dtos { get; set; } = [];
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfSourceLiteDto> FilteredDtos { get; set; } = [];
+	public partial ObservableCollection<TgEfBotDto> FilteredDtos { get; set; } = [];
 	[ObservableProperty]
 	public partial string FilterText { get; set; } = string.Empty;
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
-	public IRelayCommand UpdateOnlineCommand { get; }
+	public IRelayCommand ClientConnectCommand { get; }
 
-	public TgChatsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	public TgBotsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		// Commands
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
-		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
+		ClientConnectCommand = new AsyncRelayCommand(ClientConnectAsync);
 		// Updates
 		//TgDesktopUtils.TgClient.SetupUpdateStateConnect(UpdateStateConnectAsync);
 		//TgDesktopUtils.TgClient.SetupUpdateStateProxy(UpdateStateProxyAsync);
@@ -51,10 +51,11 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 		});
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(ObservableCollection<TgEfSourceLiteDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfBotDto> dtos)
 	{
-		if (!dtos.Any()) return;
-		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.Title)];
+		if (!dtos.Any())
+			return;
+		Dtos = [.. dtos.OrderBy(x => x.BotToken)];
 		ApplyFilter();
 	}
 
@@ -67,11 +68,9 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 		else
 		{
 			var filtered = Dtos.Where(dto =>
-				dto.Id.ToString().Contains(FilterText, StringComparison.InvariantCultureIgnoreCase) ||
-				dto.UserName.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase) ||
-				dto.Title.Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)
+				dto.BotToken.ToString().Contains(FilterText, StringComparison.InvariantCultureIgnoreCase)
 				).ToList();
-			FilteredDtos = new ObservableCollection<TgEfSourceLiteDto>(filtered);
+			FilteredDtos = new ObservableCollection<TgEfBotDto>(filtered);
 		}
 	}
 
@@ -110,8 +109,9 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 
 	private async Task LoadDataStorageCoreAsync()
 	{
-		if (!SettingsService.IsExistsAppStorage) return;
-		SetOrderData([.. await Repository.GetListLiteDtosAsync(take: 0, skip: 0)]);
+		if (!SettingsService.IsExistsAppStorage)
+			return;
+		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -187,12 +187,14 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	//	await Task.CompletedTask;
 	//}
 
-	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
+	private async Task ClientConnectAsync() => await ContentDialogAsync(ClientConnectCoreAsync, TgResourceExtensions.AskUpdateOnline());
 
-	private async Task UpdateOnlineCoreAsync()
+	private async Task ClientConnectCoreAsync()
 	{
-		await LoadDataAsync(async () => {
-			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
+		await LoadDataAsync(async () =>
+		{
+			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync())
+				return;
 			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Chat);
 			//await TgDesktopUtils.TgClient.SearchSourcesTgAsync(tgDownloadSettings, TgEnumSourceType.Dialog);
 			await LoadDataStorageCoreAsync();
@@ -203,7 +205,7 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	{
 		if (sender is not DataGrid dataGrid)
 			return;
-		if (dataGrid.SelectedItem is not TgEfSourceLiteDto dto)
+		if (dataGrid.SelectedItem is not TgEfBotDto dto)
 			return;
 
 		NavigationService.NavigateTo(typeof(TgChatDetailsViewModel).FullName!, dto.Uid);
@@ -212,7 +214,8 @@ public sealed partial class TgChatsViewModel : TgPageViewModelBase
 	public void OnFilterTextChanged(object sender, TextChangedEventArgs e)
 	{
 		var textBox = sender as TextBox;
-		if (textBox is null) return;
+		if (textBox is null)
+			return;
 		FilterText = textBox.Text;
 		ApplyFilter();
 	}

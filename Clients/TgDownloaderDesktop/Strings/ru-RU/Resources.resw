@@ -156,6 +156,9 @@
   <data name="Shell_Chats.Content" xml:space="preserve">
     <value>Чаты</value>
   </data>
+  <data name="Shell_Bots.Content" xml:space="preserve">
+    <value>Боты</value>
+  </data>
   <data name="WebView_Loading.Text" xml:space="preserve">
     <value>Загрузка...</value>
   </data>
@@ -748,6 +751,9 @@
   </data>
   <data name="TemplateColumnPassword.Header" xml:space="preserve">
     <value>Пароль</value>
+  </data>
+  <data name="TemplateColumnBotToken.Header" xml:space="preserve">
+    <value>Токен бота</value>
   </data>
   <data name="DataLoadWait.Text" xml:space="preserve">
     <value>Дождитесь окончания загрузки данных</value>

@@ -38,11 +38,6 @@
 			SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}">
 			<NavigationView.MenuItems>
 				<!--  https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list  -->
-				<!--  App version  -->
-				<!--<TextBlock
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Text="{x:Bind ViewModel.AppVersion, Mode=OneWay}" />-->
 				<!--  Home  -->
 				<NavigationViewItem x:Uid="Shell_Home" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgMainViewModel">
 					<NavigationViewItem.Icon>
@@ -90,6 +85,12 @@
 				<NavigationViewItem x:Uid="Shell_Chats" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgChatsViewModel">
 					<NavigationViewItem.Icon>
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
+				<!--  Bots  -->
+				<NavigationViewItem x:Uid="Shell_Bots" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgBotsViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE99A;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">

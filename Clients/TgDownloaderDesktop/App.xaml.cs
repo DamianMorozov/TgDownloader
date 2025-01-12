@@ -84,6 +84,8 @@ public partial class App : Application
 				services.AddTransient<TgStoriesPage>();
 				services.AddTransient<TgProxiesViewModel>();
 				services.AddTransient<TgProxiesPage>();
+				services.AddTransient<TgBotsViewModel>();
+				services.AddTransient<TgBotsPage>();
 				// Configuration
 				services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 			})

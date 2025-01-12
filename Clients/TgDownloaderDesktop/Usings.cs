@@ -49,6 +49,7 @@ global using TgInfrastructure.Common;
 global using TgInfrastructure.Enums;
 global using TgInfrastructure.Helpers;
 global using TgStorage.Domain.Apps;
+global using TgStorage.Domain.Bots;
 global using TgStorage.Domain.Contacts;
 global using TgStorage.Domain.Filters;
 global using TgStorage.Domain.Messages;
