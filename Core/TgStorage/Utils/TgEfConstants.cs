@@ -9,6 +9,7 @@ public static class TgEfConstants
 	#region Public and private fields, properties, constructor - Tables
 
 	public const string TableApps = "APPS";
+	public const string TableBots = "BOTS";
 	public const string TableContacts = "CONTACTS";
 	public const string TableDocuments = "DOCUMENTS";
 	public const string TableFilters = "FILTERS";
@@ -29,6 +30,7 @@ public static class TgEfConstants
 	public const string ColumnBotActiveUsers = "BOT_ACTIVE_USERS";
 	public const string ColumnBotInfoVersion = "BOT_INFO_VERSION";
 	public const string ColumnBotInlinePlaceholder = "BOT_INLINE_PLACEHOLDER";
+	public const string ColumnBotToken = "BOT_TOKEN";
 	public const string ColumnCaption = "CAPTION";
 	public const string ColumnCount = "COUNT";
 	public const string ColumnCountThreads = "COUNT_THREADS";

@@ -22,6 +22,9 @@ internal sealed class TgEfRepositoryGetFirstTests : TgDbContextTestsBase
 	public void TgEf_get_first_app() => GetFirst(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
+	public void TgEf_get_first_bot() => GetFirst(new TgEfBotRepository(TgEfUtils.EfContext));
+
+	[Test]
 	public void TgEf_get_first_contact() => GetFirst(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]

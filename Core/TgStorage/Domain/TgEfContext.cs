@@ -11,6 +11,8 @@ public class TgEfContext : DbContext
 
     /// <summary> App queries </summary>
     public DbSet<TgEfAppEntity> Apps { get; set; } = default!;
+    /// <summary> Bot queries </summary>
+    public DbSet<TgEfBotEntity> Bots { get; set; } = default!;
 	/// <summary> Contact queries </summary>
 	public DbSet<TgEfContactEntity> Contacts { get; set; } = default!;
 	/// <summary> Document queries </summary>
@@ -102,6 +104,7 @@ public class TgEfContext : DbContext
 		// https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/concurrency?view=aspnetcore-9.0&source=docs
 		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
 		modelBuilder.Entity<TgEfAppEntity>().Property(x => x.RowVersion).IsRowVersion();
+		modelBuilder.Entity<TgEfBotEntity>().Property(x => x.RowVersion).IsRowVersion();
 		modelBuilder.Entity<TgEfContactEntity>().Property(x => x.RowVersion).IsRowVersion();
 		modelBuilder.Entity<TgEfDocumentEntity>().Property(x => x.RowVersion).IsRowVersion();
 		modelBuilder.Entity<TgEfFilterEntity>().Property(x => x.RowVersion).IsRowVersion();
@@ -112,6 +115,7 @@ public class TgEfContext : DbContext
 		modelBuilder.Entity<TgEfVersionEntity>().Property(x => x.RowVersion).IsRowVersion();
 		// Ignore
 		modelBuilder.Entity<TgEfAppEntity>().Ignore(TgEfConstants.ColumnRowVersion);
+		modelBuilder.Entity<TgEfBotEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		modelBuilder.Entity<TgEfContactEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		modelBuilder.Entity<TgEfDocumentEntity>().Ignore(TgEfConstants.ColumnRowVersion);
 		modelBuilder.Entity<TgEfFilterEntity>().Ignore(TgEfConstants.ColumnRowVersion);
@@ -131,6 +135,12 @@ public class TgEfContext : DbContext
 			.WithMany(proxy => proxy.Apps)
 			.HasForeignKey(app => app.ProxyUid)
 			.HasPrincipalKey(proxy => proxy.Uid);
+
+		// Bots
+		modelBuilder.Entity<TgEfBotEntity>(entity =>
+		{
+			entity.ToTable(TgEfConstants.TableBots);
+		});
 
 		// Contacts
 		modelBuilder.Entity<TgEfContactEntity>(entity =>

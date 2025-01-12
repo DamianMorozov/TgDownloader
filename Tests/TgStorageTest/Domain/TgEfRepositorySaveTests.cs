@@ -31,6 +31,9 @@ internal sealed class TgEfRepositorySaveTests : TgDbContextTestsBase
 	public void Save_apps_async() => SaveItemAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
+	public void Save_bots_async() => SaveItemAsync(new TgEfBotRepository(TgEfUtils.EfContext));
+
+	[Test]
 	public void Save_contacts_async() => SaveItemAsync(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]

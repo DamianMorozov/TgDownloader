@@ -19,31 +19,34 @@ internal sealed class TgEfRepositoryGetCountTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void TgEf_get_count_app_async() => GetCountAsync(new TgEfAppRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_appa_async() => GetCountAsync(new TgEfAppRepository(TgEfUtils.EfContext));
+
+	[Test]
+	public void TgEf_get_count_bots_async() => GetCountAsync(new TgEfBotRepository(TgEfUtils.EfContext));
 
 	[Test]
 	public void TgEf_get_count_contacts_async() => GetCountAsync(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_document_async() => GetCountAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_documents_async() => GetCountAsync(new TgEfDocumentRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_filter_async() => GetCountAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_filters_async() => GetCountAsync(new TgEfFilterRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_message_async() => GetCountAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_messages_async() => GetCountAsync(new TgEfMessageRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_proxy_async() => GetCountAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_proxies_async() => GetCountAsync(new TgEfProxyRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_source_async() => GetCountAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_sources_async() => GetCountAsync(new TgEfSourceRepository(TgEfUtils.EfContext));
 
 	[Test]
 	public void TgEf_get_count_stories_async() => GetCountAsync(new TgEfStoryRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_version_async() => GetCountAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
+	public void TgEf_get_count_versions_async() => GetCountAsync(new TgEfVersionRepository(TgEfUtils.EfContext));
 
 	#endregion
 }

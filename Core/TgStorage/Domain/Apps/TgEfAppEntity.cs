@@ -99,10 +99,5 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 		return this;
     }
 
-	public TgEfAppEntity Backup(object item)
-	{
-		return this;
-	}
-
 	#endregion
 }

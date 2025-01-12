@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #pragma warning disable NUnit1033
 
+using FluentAssertions;
+
 namespace TgStorageTest.Domain;
 
 [TestFixture]
@@ -18,10 +20,24 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(app);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals(Guid.Empty, app.ApiHash));
-				Assert.That(Equals(0, app.ApiId));
-				Assert.That(Equals("+00000000000", app.PhoneNumber));
-				Assert.That(Equals(null, app.ProxyUid));
+				app.ApiHash.Should().Be(Guid.Empty);
+				app.ApiId.Should().Be(0);
+				app.PhoneNumber.Should().Be("+00000000000");
+				app.ProxyUid.Should().Be(null);
+			});
+		});
+	}
+
+	[Test]
+	public void TgStorage_Bot_Constructor()
+	{
+		Assert.DoesNotThrow(() =>
+		{
+			TgEfBotEntity bot = new();
+			TestContext.WriteLine(bot);
+			Assert.Multiple(() =>
+			{
+				bot.BotToken.Should().Be(string.Empty);
 			});
 		});
 	}
@@ -35,12 +51,12 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(document);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals((long)0, document.Id));
-				Assert.That(Equals(null, document.SourceId));
-				Assert.That(Equals((long)0, document.MessageId));
-				Assert.That(Equals(string.Empty, document.FileName));
-				Assert.That(Equals((long)0, document.FileSize));
-				Assert.That(Equals((long)0, document.AccessHash));
+				document.Id.Should().Be((long)0);
+				document.SourceId.Should().Be(null);
+				document.MessageId.Should().Be((long)0);
+				document.FileName.Should().Be(string.Empty);
+				document.FileSize.Should().Be((long)0);
+				document.AccessHash.Should().Be((long)0);
 			});
 		});
 	}
@@ -54,12 +70,12 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(filter);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals(true, filter.IsEnabled));
-				Assert.That(Equals(TgEnumFilterType.SingleName, filter.FilterType));
-				Assert.That(Equals("Any", filter.Name));
-				Assert.That(Equals("*", filter.Mask));
-				Assert.That(Equals((long)0, filter.Size));
-				Assert.That(Equals(TgEnumFileSizeType.Bytes, filter.SizeType));
+				filter.IsEnabled.Should().Be(true);
+				filter.FilterType.Should().Be(TgEnumFilterType.SingleName);
+				filter.Name.Should().Be("Any");
+				filter.Mask.Should().Be("*");
+				filter.Size.Should().Be((long)0);
+				filter.SizeType.Should().Be(TgEnumFileSizeType.Bytes);
 			});
 		});
 	}
@@ -73,11 +89,11 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(message);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals((long)0, message.Id));
-				Assert.That(Equals(null, message.SourceId));
-				Assert.That(Equals(TgEnumMessageType.Message, message.Type));
-				Assert.That(Equals((long)0, message.Size));
-				Assert.That(Equals(string.Empty, message.Message));
+				message.Id.Should().Be((long)0);
+				message.SourceId.Should().Be(null);
+				message.Type.Should().Be(TgEnumMessageType.Message);
+				message.Size.Should().Be((long)0);
+				message.Message.Should().Be(string.Empty);
 			});
 		});
 	}
@@ -91,12 +107,12 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(proxy);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals(TgEnumProxyType.None, proxy.Type));
-				Assert.That(Equals("No proxy", proxy.HostName));
-				Assert.That(Equals((ushort)404, proxy.Port));
-				Assert.That(Equals("No user", proxy.UserName));
-				Assert.That(Equals("No password", proxy.Password));
-				Assert.That(Equals("", proxy.Secret));
+				proxy.Type.Should().Be(TgEnumProxyType.None);
+				proxy.HostName.Should().Be("No proxy");
+				proxy.Port.Should().Be((ushort)404);
+				proxy.UserName.Should().Be("No user");
+				proxy.Password.Should().Be("No password");
+				proxy.Secret.Should().Be(string.Empty);
 			});
 		});
 	}
@@ -110,11 +126,34 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(source);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals((long)-1, source.Id));
-				Assert.That(Equals("UserName", source.UserName));
-				Assert.That(Equals("Title", source.Title));
-				Assert.That(Equals("About", source.About));
-				Assert.That(Equals(1, source.Count));
+				source.Id.Should().Be((long)-1);
+				source.UserName.Should().Be("UserName");
+				source.Title.Should().Be("Title");
+				source.About.Should().Be("About");
+				source.Count.Should().Be(1);
+			});
+		});
+	}
+
+	[Test]
+	public void TgStorage_Story_Constructor()
+	{
+		Assert.DoesNotThrow(() =>
+		{
+			TgEfStoryEntity story = new();
+			TestContext.WriteLine(story);
+			Assert.Multiple(() =>
+			{
+				story.Id.Should().Be((long)-1);
+				story.FromId.Should().Be((long)-1);
+				story.FromName.Should().Be(string.Empty);
+				story.Date.Should().Be(TgCommonExtensions.GetDefaultPropertyDateTime(story, nameof(story.Date)));
+				story.ExpireDate.Should().Be(TgCommonExtensions.GetDefaultPropertyDateTime(story, nameof(story.Date)));
+				story.Caption.Should().Be(string.Empty);
+				story.Type.Should().Be(string.Empty);
+				story.Offset.Should().Be(-1);
+				story.Length.Should().Be(-1);
+				story.Message.Should().Be(string.Empty);
 			});
 		});
 	}
@@ -128,8 +167,8 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 			TestContext.WriteLine(version);
 			Assert.Multiple(() =>
 			{
-				Assert.That(Equals((short)1024, version.Version));
-				Assert.That(Equals("New version", version.Description));
+				version.Version.Should().Be((short)1024);
+				version.Description.Should().Be("New version");
 			});
 		});
 	}
