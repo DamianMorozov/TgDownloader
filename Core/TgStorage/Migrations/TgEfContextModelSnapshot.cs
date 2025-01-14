@@ -34,12 +34,24 @@ namespace TgStorage.Migrations
                         .HasColumnType("INT")
                         .HasColumnName("API_ID");
 
+                    b.Property<string>("BotToken")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR(50)")
+                        .HasColumnName("BOT_TOKEN");
+
                     b.Property<string>("FirstName")
                         .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("NVARCHAR(64)")
                         .HasColumnName("FIRST_NAME");
+
+                    b.Property<bool>("IsBot")
+                        .IsConcurrencyToken()
+                        .HasColumnType("BIT")
+                        .HasColumnName("IS_BOT");
 
                     b.Property<string>("LastName")
                         .IsConcurrencyToken()
@@ -75,31 +87,6 @@ namespace TgStorage.Migrations
                         .IsUnique();
 
                     b.ToTable("APPS", (string)null);
-                });
-
-            modelBuilder.Entity("TgStorage.Domain.Bots.TgEfBotEntity", b =>
-                {
-                    b.Property<Guid>("Uid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("CHAR(36)")
-                        .HasColumnName("UID");
-
-                    b.Property<string>("BotToken")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("NVARCHAR(50)")
-                        .HasColumnName("BOT_TOKEN");
-
-                    b.HasKey("Uid");
-
-                    b.HasIndex("BotToken")
-                        .IsUnique();
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
-
-                    b.ToTable("BOTS", (string)null);
                 });
 
             modelBuilder.Entity("TgStorage.Domain.Contacts.TgEfContactEntity", b =>

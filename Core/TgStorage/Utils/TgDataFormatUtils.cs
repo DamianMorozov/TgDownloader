@@ -96,7 +96,7 @@ public static class TgDataFormatUtils
 		return Regex.IsMatch(name, regexPattern, RegexOptions.IgnoreCase);
 	}
 
-	public static Guid ParseStringToGuid(string uid) => Guid.Parse(uid);
+	public static Guid ParseStringToGuid(string uid) => Guid.TryParse(uid, out Guid guid) ? guid : Guid.Empty;
 
 	public static string ParseGuidToString(Guid uid) => uid.ToString().Replace("-", "");
 

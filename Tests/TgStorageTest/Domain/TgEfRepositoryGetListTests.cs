@@ -29,9 +29,6 @@ internal sealed class TgEfRepositoryGetListTests : TgDbContextTestsBase
 	public void Get_apps_async() => GetListAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void Get_bots_async() => GetListAsync(new TgEfBotRepository(TgEfUtils.EfContext));
-
-	[Test]
 	public void Get_contacts_async() => GetListAsync(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]

@@ -9,7 +9,6 @@ global using TgInfrastructure.Enums;
 global using TgStorage.Common;
 global using TgStorage.Contracts;
 global using TgStorage.Domain.Apps;
-global using TgStorage.Domain.Bots;
 global using TgStorage.Domain.Contacts;
 global using TgStorage.Domain.Documents;
 global using TgStorage.Domain.Filters;

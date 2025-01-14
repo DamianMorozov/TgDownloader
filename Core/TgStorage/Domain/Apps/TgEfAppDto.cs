@@ -20,6 +20,10 @@ public sealed partial class TgEfAppDto : TgDtoBase, ITgDto<TgEfAppDto, TgEfAppEn
 	public partial string FirstName { get; set; } = string.Empty;
 	[ObservableProperty]
 	public partial string LastName { get; set; } = string.Empty;
+	[ObservableProperty]
+	public partial bool IsBot { get; set; }
+	[ObservableProperty]
+	public partial string BotToken { get; set; } = string.Empty;
 
 	public string ApiIdString
 	{
@@ -49,6 +53,8 @@ public sealed partial class TgEfAppDto : TgDtoBase, ITgDto<TgEfAppDto, TgEfAppEn
 		LastName = dto.LastName;
 		PhoneNumber = dto.PhoneNumber;
 		ProxyUid = dto.ProxyUid;
+		IsBot = dto.IsBot;
+		BotToken = dto.BotToken;
 		return this;
 	}
 
@@ -62,6 +68,8 @@ public sealed partial class TgEfAppDto : TgDtoBase, ITgDto<TgEfAppDto, TgEfAppEn
 		LastName = item.LastName;
 		PhoneNumber = item.PhoneNumber;
 		ProxyUid = item.ProxyUid ?? Guid.Empty;
+		IsBot = item.IsBot;
+		BotToken = item.BotToken;
 		return this;
 	}
 
@@ -81,6 +89,8 @@ public sealed partial class TgEfAppDto : TgDtoBase, ITgDto<TgEfAppDto, TgEfAppEn
 		LastName = LastName,
 		PhoneNumber = PhoneNumber,
 		ProxyUid = ProxyUid,
+		IsBot = IsBot,
+		BotToken = BotToken,
 	};
 
 	#endregion

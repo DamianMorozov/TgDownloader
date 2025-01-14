@@ -62,6 +62,17 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 	[Column(TgEfConstants.ColumnLastName, TypeName = "NVARCHAR(64)")]
 	public string LastName { get; set; } = default!;
 
+	[DefaultValue(false)]
+	[ConcurrencyCheck]
+	[Column(TgEfConstants.ColumnIsBot, TypeName = "BIT")]
+	public bool IsBot { get; set; } = default!;
+
+	[DefaultValue("")]
+	[ConcurrencyCheck]
+	[MaxLength(50)]
+	[Column(TgEfConstants.ColumnBotToken, TypeName = "NVARCHAR(50)")]
+	public string BotToken { get; set; } = default!;
+
 	public TgEfAppEntity() : base()
     {
 	    Default();
@@ -83,6 +94,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 		ProxyUid = null;
 		FirstName = this.GetDefaultPropertyString(nameof(FirstName));
 		LastName = this.GetDefaultPropertyString(nameof(LastName));
+		IsBot = this.GetDefaultPropertyBool(nameof(IsBot));
+		BotToken = this.GetDefaultPropertyString(nameof(BotToken));
     }
 
 	public TgEfAppEntity Fill(TgEfAppEntity item, bool isUidCopy)
@@ -96,6 +109,8 @@ public sealed class TgEfAppEntity : ITgDbEntity, ITgDbFillEntity<TgEfAppEntity>
 		LastName = item.LastName;
 		PhoneNumber = item.PhoneNumber;
 	    ProxyUid = item.ProxyUid;
+		IsBot = item.IsBot;
+		BotToken = item.BotToken;
 		return this;
     }
 

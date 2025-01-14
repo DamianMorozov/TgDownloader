@@ -15,8 +15,8 @@ public sealed class TgEfSourceValidator : TgEfValidatorBase<TgEfSourceEntity>
 			.NotNull();
 		RuleFor(item => item.About)
 			.NotNull();
-		RuleFor(item => item.Count)
-			.GreaterThan(0);
+		//RuleFor(item => item.Count)
+		//	.GreaterThan(0);
 		RuleFor(item => item.FirstId)
 			.GreaterThan(0);
 	}

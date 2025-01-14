@@ -29,20 +29,6 @@ internal sealed class TgEfModelTests : TgDbContextTestsBase
 	}
 
 	[Test]
-	public void TgStorage_Bot_Constructor()
-	{
-		Assert.DoesNotThrow(() =>
-		{
-			TgEfBotEntity bot = new();
-			TestContext.WriteLine(bot);
-			Assert.Multiple(() =>
-			{
-				bot.BotToken.Should().Be(string.Empty);
-			});
-		});
-	}
-
-	[Test]
 	public void TgStorage_Document_Constructor()
 	{
 		Assert.DoesNotThrow(() =>

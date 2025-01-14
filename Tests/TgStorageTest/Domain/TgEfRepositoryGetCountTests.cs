@@ -22,9 +22,6 @@ internal sealed class TgEfRepositoryGetCountTests : TgDbContextTestsBase
 	public void TgEf_get_count_appa_async() => GetCountAsync(new TgEfAppRepository(TgEfUtils.EfContext));
 
 	[Test]
-	public void TgEf_get_count_bots_async() => GetCountAsync(new TgEfBotRepository(TgEfUtils.EfContext));
-
-	[Test]
 	public void TgEf_get_count_contacts_async() => GetCountAsync(new TgEfContactRepository(TgEfUtils.EfContext));
 
 	[Test]
