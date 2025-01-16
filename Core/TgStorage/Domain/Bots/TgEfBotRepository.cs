@@ -12,13 +12,15 @@
 
 //	public override IQueryable<TgEfBotEntity> GetQuery(bool isReadOnly = true) =>
 //		isReadOnly ? EfContext.Bots.AsNoTracking() : EfContext.Bots.AsTracking();
-	
+
 //	public override async Task<TgEfStorageResult<TgEfBotEntity>> GetAsync(TgEfBotEntity item, bool isReadOnly = true)
 //	{
-//		TgEfStorageResult<TgEfBotEntity> storageResult = await base.GetAsync(item, isReadOnly);
-//		if (storageResult.IsExists)
-//			return storageResult;
-//		TgEfBotEntity? itemFind = await GetQuery(isReadOnly).Where(x => x.BotToken == item.BotToken).SingleOrDefaultAsync();
+// Find by Uid
+//var itemFind = await EfContext.Bots.FindAsync(item.Uid);
+//if (itemFind is not null)
+//	return new(TgEnumEntityState.IsExists, itemFind);
+// Find by BotToken
+//		itemFind = await GetQuery(isReadOnly).Where(x => x.BotToken == item.BotToken).SingleOrDefaultAsync();
 //		return itemFind is not null
 //			? new(TgEnumEntityState.IsExists, itemFind)
 //			: new TgEfStorageResult<TgEfBotEntity>(TgEnumEntityState.NotExists, item);

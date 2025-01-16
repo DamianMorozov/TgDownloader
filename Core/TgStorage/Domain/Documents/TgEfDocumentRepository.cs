@@ -15,10 +15,12 @@ public sealed class TgEfDocumentRepository(TgEfContext efContext) : TgEfReposito
 
 	public override async Task<TgEfStorageResult<TgEfDocumentEntity>> GetAsync(TgEfDocumentEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfDocumentEntity> storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
-		TgEfDocumentEntity? itemFind = await GetQuery(isReadOnly)
+		// Find by Uid
+		var itemFind = await EfContext.Documents.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
+		// Find by SourceId and Id and MessageId
+		itemFind = await GetQuery(isReadOnly)
 				.Where(x => x != null && x.SourceId == item.SourceId && x.Id == item.Id && x.MessageId == item.MessageId)
 				.Include(x => x.Source).SingleOrDefaultAsync();
 		return itemFind is not null

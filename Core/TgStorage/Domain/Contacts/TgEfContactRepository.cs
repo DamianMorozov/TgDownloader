@@ -15,10 +15,12 @@ public sealed class TgEfContactRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfContactEntity>> GetAsync(TgEfContactEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfContactEntity> storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
-		TgEfContactEntity? itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Id == item.Id);
+		// Find by Uid
+		var itemFind = await EfContext.Contacts.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
+		// Find by Id
+		itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Id == item.Id);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfContactEntity>(TgEnumEntityState.NotExists, item);

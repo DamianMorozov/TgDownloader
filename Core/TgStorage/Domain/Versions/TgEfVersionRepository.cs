@@ -15,10 +15,12 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	public override async Task<TgEfStorageResult<TgEfVersionEntity>> GetAsync(TgEfVersionEntity item, bool isReadOnly = true)
 	{
-		var storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
-		var itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Version == item.Version);
+		// Find by Uid
+		var itemFind = await EfContext.Versions.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
+		// Find by Version
+		itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Version == item.Version);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfVersionEntity>(TgEnumEntityState.NotExists, item);

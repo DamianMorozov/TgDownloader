@@ -15,10 +15,12 @@ public sealed class TgEfFilterRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfFilterEntity>> GetAsync(TgEfFilterEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfFilterEntity> storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
-		TgEfFilterEntity? itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name);
+		// Find by Uid
+		var itemFind = await EfContext.Filters.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
+		// Find by FilterType and Name
+		itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.FilterType == item.FilterType && x.Name == item.Name);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
 			: new TgEfStorageResult<TgEfFilterEntity>(TgEnumEntityState.NotExists, item);

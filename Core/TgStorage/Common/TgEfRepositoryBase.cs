@@ -46,62 +46,8 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 
 	#region Public and private methods - Read
 
-	public virtual async Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isReadOnly = true)
-	{
-		var uid = item?.Uid ?? Guid.Empty;
-		TEntity? result = default;
-		switch (typeof(TEntity))
-		{
-			case var cls when cls == typeof(TgEfAppEntity):
-				TgEfAppEntity? app = await EfContext.Apps.FindAsync(uid);
-				if (app is TEntity appEntity)
-					result = appEntity;
-				break;
-			case var cls when cls == typeof(TgEfDocumentEntity):
-				TgEfDocumentEntity? document = await EfContext.Documents.FindAsync(uid);
-				if (document is TEntity documentEntity)
-					result = documentEntity;
-				break;
-			case var cls when cls == typeof(TgEfContactEntity):
-				TgEfContactEntity? contact = await EfContext.Contacts.FindAsync(uid);
-				if (contact is TEntity contactEntity)
-					result = contactEntity;
-				break;
-			case var cls when cls == typeof(TgEfFilterEntity):
-				TgEfFilterEntity? filter = await EfContext.Filters.FindAsync(uid);
-				if (filter is TEntity filterEntity)
-					result = filterEntity;
-				break;
-			case var cls when cls == typeof(TgEfMessageEntity):
-				TgEfMessageEntity? message = await EfContext.Messages.FindAsync(uid);
-				if (message is TEntity messageEntity)
-					result = messageEntity;
-				break;
-			case var cls when cls == typeof(TgEfProxyEntity):
-				TgEfProxyEntity? proxy = await EfContext.Proxies.FindAsync(uid);
-				if (proxy is TEntity proxyEntity)
-					result = proxyEntity;
-				break;
-			case var cls when cls == typeof(TgEfSourceEntity):
-				TgEfSourceEntity? source = await EfContext.Sources.FindAsync(uid);
-				if (source is TEntity sourceEntity)
-					result = sourceEntity;
-				break;
-			case var cls when cls == typeof(TgEfStoryEntity):
-				TgEfStoryEntity? story = await EfContext.Stories.FindAsync(uid);
-				if (story is TEntity storyEntity)
-					result = storyEntity;
-				break;
-			case var cls when cls == typeof(TgEfVersionEntity):
-				TgEfVersionEntity? version = await EfContext.Versions.FindAsync(uid);
-				if (version is TEntity versionEntity)
-					result = versionEntity;
-				break;
-		}
-		return result is not null
-			? new(TgEnumEntityState.IsExists, result)
-			: new TgEfStorageResult<TEntity>(TgEnumEntityState.NotExists);
-	}
+	public virtual async Task<TgEfStorageResult<TEntity>> GetAsync(TEntity item, bool isReadOnly = true) =>
+		await TgEfRepositoryBase<TEntity>.UseOverrideMethodAsync();
 
 	public virtual async Task<TEntity> GetItemAsync(TEntity item, bool isReadOnly = true) =>
 		(await GetAsync(item, isReadOnly)).Item;

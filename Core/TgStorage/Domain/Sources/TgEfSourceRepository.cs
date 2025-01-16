@@ -15,17 +15,14 @@ public sealed class TgEfSourceRepository(TgEfContext efContext) : TgEfRepository
 
 	public override async Task<TgEfStorageResult<TgEfSourceEntity>> GetAsync(TgEfSourceEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfSourceEntity> storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
+		// Find by Uid
+		var itemFind = await EfContext.Sources.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
 		// Find by Id
-		var itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Id == item.Id);
+		itemFind = await GetQuery(isReadOnly).SingleOrDefaultAsync(x => x.Id == item.Id);
 		if (itemFind is not null && itemFind.Id > 0)
 			return new(TgEnumEntityState.IsExists, itemFind);
-		// Find by UserName
-		var itemsFind = await GetQuery(isReadOnly).Where(x => x.UserName == item.UserName).ToListAsync();
-		if (itemsFind is not null && itemsFind.Count == 1)
-			return new(TgEnumEntityState.IsExists, itemsFind.First());
 		return new TgEfStorageResult<TgEfSourceEntity>(TgEnumEntityState.NotExists, item);
 	}
 

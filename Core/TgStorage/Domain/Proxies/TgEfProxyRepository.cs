@@ -15,10 +15,12 @@ public sealed class TgEfProxyRepository(TgEfContext efContext) : TgEfRepositoryB
 
 	public override async Task<TgEfStorageResult<TgEfProxyEntity>> GetAsync(TgEfProxyEntity item, bool isReadOnly = true)
 	{
-		TgEfStorageResult<TgEfProxyEntity> storageResult = await base.GetAsync(item, isReadOnly);
-		if (storageResult.IsExists)
-			return storageResult;
-		TgEfProxyEntity? itemFind = await GetQuery(isReadOnly)
+		// Find by Uid
+		var itemFind = await EfContext.Proxies.FindAsync(item.Uid);
+		if (itemFind is not null)
+			return new(TgEnumEntityState.IsExists, itemFind);
+		// Find by Type
+		itemFind = await GetQuery(isReadOnly)
 			.SingleOrDefaultAsync(x => x.Type == item.Type && x.HostName == item.HostName && x.Port == item.Port);
 		return itemFind is not null
 			? new(TgEnumEntityState.IsExists, itemFind)
