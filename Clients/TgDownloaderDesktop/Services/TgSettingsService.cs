@@ -145,10 +145,10 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		var appLanguage = await LoadAppLanguageFromSettingsAsync();
 		AppLanguage = AppLanguages.First(x => x == appLanguage);
 		AppStorage = await LoadAppStorageFromSettingsAsync();
-		if (string.IsNullOrEmpty(AppStorage))
+		if (!File.Exists(AppStorage))
 			AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
 		AppSession = await LoadAppSessionFromSettingsAsync();
-		if (string.IsNullOrEmpty(AppSession))
+		if (!File.Exists(AppSession))
 			AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
 	}
 

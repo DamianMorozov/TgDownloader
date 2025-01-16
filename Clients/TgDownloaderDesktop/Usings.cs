@@ -57,6 +57,8 @@ global using TgStorage.Domain.Stories;
 global using TgStorage.Helpers;
 global using TgStorage.Models;
 global using TgStorage.Utils;
+global using Velopack.Sources;
+global using Velopack;
 global using Windows.ApplicationModel.DataTransfer;
 global using Windows.ApplicationModel;
 global using Windows.Storage.Streams;

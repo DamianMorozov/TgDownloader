@@ -296,7 +296,7 @@
 							Text="{x:Bind ViewModel.FirstName, Mode=TwoWay}" />
 						<!--  Last name  -->
 						<TextBlock
-							x:Uid="FieldBotToken"
+							x:Uid="FieldLastName"
 							Grid.Row="2"
 							Grid.Column="2"
 							Margin="12,7,2,2"
@@ -323,6 +323,7 @@
 							HorizontalAlignment="Left"
 							VerticalAlignment="Center"
 							HorizontalContentAlignment="Left"
+							IsEnabled="False"
 							IsOn="{x:Bind ViewModel.IsBot, Mode=TwoWay}" />
 						<!--  BotToken  -->
 						<TextBlock
@@ -338,6 +339,7 @@
 							Margin="2"
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
+							IsEnabled="False"
 							Text="{x:Bind ViewModel.BotToken, Mode=TwoWay}"
 							TextChanged="{x:Bind OnApiHashTextChanged, Mode=OneWay}" />
 					</Grid>

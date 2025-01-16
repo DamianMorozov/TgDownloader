@@ -178,6 +178,9 @@
   <data name="ExpanderLicense.Header" xml:space="preserve">
     <value>License</value>
   </data>
+  <data name="ExpanderUpdate.Header" xml:space="preserve">
+    <value>Update</value>
+  </data>
   <data name="SettingsPage_GitHub_TgDownloader.Content" xml:space="preserve">
     <value>TgDownloader repository</value>
   </data>

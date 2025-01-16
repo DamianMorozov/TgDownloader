@@ -31,6 +31,17 @@ public partial class App : Application
 	public App()
 	{
 		InitializeComponent();
+		VelopackApp.Build()
+			//.WithBeforeUninstallFastCallback((v) =>
+			//{
+			//	delete / clean up some files before uninstallation
+			//   UpdateLog += $"Uninstalling the {TgConstants.AppTitleConsole}!";
+			//})
+			//.WithFirstRun((v) =>
+			//{
+			//	UpdateLog += $"Thanks for installing the {TgConstants.AppTitleConsole}!";
+			//})
+			.Run();
 		Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder().UseContentRoot(AppContext.BaseDirectory)
 			.ConfigureServices((context, services) =>
 			{
@@ -84,8 +95,6 @@ public partial class App : Application
 				services.AddTransient<TgStoriesPage>();
 				services.AddTransient<TgProxiesViewModel>();
 				services.AddTransient<TgProxiesPage>();
-				services.AddTransient<TgBotsViewModel>();
-				services.AddTransient<TgBotsPage>();
 				// Configuration
 				services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 			})

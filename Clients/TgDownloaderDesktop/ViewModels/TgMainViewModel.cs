@@ -38,6 +38,8 @@ public partial class TgMainViewModel : TgPageViewModelBase
 	public partial string DonateCatizen { get; set; } = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
 	[ObservableProperty]
 	public partial string DonateMajor { get; set; } = "UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6";
+	[ObservableProperty]
+	public partial string UpdateLog { get; set; } = string.Empty;
 
 	public TgMainViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
@@ -54,6 +56,13 @@ public partial class TgMainViewModel : TgPageViewModelBase
 
 	#region Public and private methods
 
+	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
+	{
+		// Velopack installer update
+		await VelopackUpdateAsync();
+		await ReloadUiAsync();
+	});
+
 	private static string GetVersionDescription()
 	{
 		Version version;
@@ -67,6 +76,44 @@ public partial class TgMainViewModel : TgPageViewModelBase
 			version = Assembly.GetExecutingAssembly().GetName().Version!;
 		}
 		return $"{"AppDisplayName".GetLocalized()} - {version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+	}
+
+	/// <summary> Velopack installer update </summary>
+	private async Task VelopackUpdateAsync()
+	{
+		UpdateLog = string.Empty;
+		UpdateLog += $"{TgConstants.AppTitleDesktop} {TgAppSettingsHelper.Instance.AppVersion} started" + Environment.NewLine;
+
+		UpdateLog += $"Checking updates on the link {TgConstants.LinkGitHub}..." + Environment.NewLine;
+		var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
+		// Check for new version
+		try
+		{
+			var newVersion = await mgr.CheckForUpdatesAsync();
+			if (newVersion is null)
+			{
+				UpdateLog += "No update available" + Environment.NewLine;
+				return;
+			}
+			// Download new version
+			UpdateLog += "Download new version..." + Environment.NewLine;
+			await mgr.DownloadUpdatesAsync(newVersion);
+			//// Install new version and restart app
+			//var prompt = AnsiConsole.Prompt(
+			//	new SelectionPrompt<string>()
+			//		.Title("Install new version and restart app?")
+			//		.PageSize(Console.WindowHeight - 5)
+			//		.MoreChoicesText(TgLocale.MoveUpDown)
+			//		.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
+			//var isInstall = prompt.Equals(TgLocale.MenuYes);
+			//if (isInstall)
+			//	mgr.ApplyUpdatesAndRestart(newVersion);
+		}
+		// Cannot perform this operation in an application which is not installed
+		catch (Exception ex)
+		{
+			UpdateLog += ex.Message + Environment.NewLine;
+		}
 	}
 
 	#endregion
