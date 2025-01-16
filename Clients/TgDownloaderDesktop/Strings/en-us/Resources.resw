@@ -324,6 +324,9 @@
   <data name="ActionLoadFromStorage.Text" xml:space="preserve">
     <value>Storage loading</value>
   </data>
+  <data name="ActionAddRecordToStorage.Text" xml:space="preserve">
+    <value>Add record</value>
+  </data>
   <data name="ActionClear.Text" xml:space="preserve">
     <value>Clear</value>
   </data>
@@ -455,6 +458,9 @@
   </data>
   <data name="AskDataLoad" xml:space="preserve">
     <value>Load the data?</value>
+  </data>
+  <data name="AskAddRecord" xml:space="preserve">
+    <value>Add record?</value>
   </data>
   <data name="AskUpdateOnline" xml:space="preserve">
     <value>Update online?</value>
@@ -854,6 +860,9 @@
   </data>
   <data name="FieldSize.Text" xml:space="preserve">
     <value>Size</value>
+  </data>
+  <data name="FieldBotToken.Text" xml:space="preserve">
+    <value>Bot token</value>
   </data>
   <data name="FieldCountThreads.Text" xml:space="preserve">
     <value>Threads count</value>

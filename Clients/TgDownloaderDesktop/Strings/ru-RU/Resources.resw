@@ -383,6 +383,9 @@
   <data name="ActionLoadFromStorage.Text" xml:space="preserve">
     <value>Загрузка хранилища</value>
   </data>
+  <data name="ActionAddRecordToStorage.Text" xml:space="preserve">
+    <value>Добавить запись</value>
+  </data>
   <data name="ActionClear.Text" xml:space="preserve">
     <value>Очистить</value>
   </data>
@@ -514,6 +517,9 @@
   </data>
   <data name="AskDataLoad" xml:space="preserve">
     <value>Загрузить данные?</value>
+  </data>
+  <data name="AskAddRecord" xml:space="preserve">
+    <value>Добавить запись?</value>
   </data>
   <data name="AskUpdateOnline" xml:space="preserve">
     <value>Обновить онлайн?</value>
@@ -916,6 +922,9 @@
   </data>
   <data name="FieldSize.Text" xml:space="preserve">
     <value>Размер</value>
+  </data>
+  <data name="FieldBotToken.Text" xml:space="preserve">
+    <value>Токен бота</value>
   </data>
   <data name="FieldCountThreads.Text" xml:space="preserve">
     <value>Количество потоков</value>

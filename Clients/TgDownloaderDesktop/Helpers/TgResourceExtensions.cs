@@ -15,6 +15,7 @@ public static class TgResourceExtensions
 
 	#region Public and private methods
 
+	public static string AskAddRecord() => "AskAddRecord".GetLocalized();
 	public static string AskClientConnect() => "AskClientConnect".GetLocalized();
 	public static string AskClientDisconnect() => "AskClientDisconnect".GetLocalized();
 	public static string AskDataClear() => "AskDataClear".GetLocalized();

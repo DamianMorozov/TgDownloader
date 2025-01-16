@@ -114,7 +114,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	/// <summary> Update state source message </summary>
 	public async Task UpdateStateSource(long sourceId, int messageId, int count, string message)
 	{
-		App.MainWindow.DispatcherQueue.TryEnqueue(async () =>
+		App.MainWindow.DispatcherQueue.TryEnqueue(() =>
 		{
 			float progress = messageId == 0 || count  == 0 ? 0 : (float) messageId * 100 / count;
 			StateSourceProgress = (int)progress;

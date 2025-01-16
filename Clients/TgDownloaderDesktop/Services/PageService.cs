@@ -23,7 +23,6 @@ public sealed class PageService : IPageService
 		Configure<TgSettingsViewModel, TgSettingsPage>();
 		Configure<TgChatDetailsViewModel, TgChatDetailsPage>();
 		Configure<TgChatsViewModel, TgChatsPage>();
-		Configure<TgBotsViewModel, TgBotsPage>();
 		Configure<TgStoriesViewModel, TgStoriesPage>();
 		Configure<WebViewViewModel, WebViewPage>();
 	}

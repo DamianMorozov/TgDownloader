@@ -50,6 +50,10 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
     public partial string DataRequestEmptyResponse { get; set; } = "";
 	[ObservableProperty]
     public partial bool IsFieldsCheck { get; set; }
+	[ObservableProperty]
+	public partial bool IsBot { get; set; }
+	[ObservableProperty]
+	public partial string BotToken { get; set; } = "";
 
 	public IRelayCommand ClientConnectCommand { get; }
     public IRelayCommand ClientDisconnectCommand { get; }
@@ -89,45 +93,51 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 	private async Task AfterClientConnectAsync()
 	{
 		ConnectionDt = TgDataFormatUtils.GetDtFormat(DateTime.Now);
-		var client = TgDesktopUtils.TgClient.Client;
-		// Check exceptions
-		// https://www.infotelbot.com/2021/06/telegram-error-lists.html
-		if (Exception.Message.Contains("PHONE_CODE_INVALID", StringComparison.InvariantCultureIgnoreCase))
+		if (!IsBot)
 		{
-			ConnectionMsg = TgResourceExtensions.GetRpcErrorPhoneCodeInvalid();
-		}
-		else if (Exception.Message.Contains("PASSWORD_HASH_INVALID", StringComparison.InvariantCultureIgnoreCase))
-		{
-			ConnectionMsg = TgResourceExtensions.GetRpcErrorPasswordHashInvalid();
-		}
-		else if (Exception.Message.Contains("FLOOD_WAIT", StringComparison.InvariantCultureIgnoreCase))
-		{
-			ConnectionMsg = TgResourceExtensions.GetRpcErrorFloodWait();
-		}
-		else if (Exception.Message.Contains("PHONE_PASSWORD_FLOOD", StringComparison.InvariantCultureIgnoreCase))
-		{
-			ConnectionMsg = TgResourceExtensions.GetRpcErrorPhonePasswordFlood();
+			var client = TgDesktopUtils.TgClient.Client;
+			// Check exceptions
+			// https://www.infotelbot.com/2021/06/telegram-error-lists.html
+			if (Exception.Message.Contains("PHONE_CODE_INVALID", StringComparison.InvariantCultureIgnoreCase))
+			{
+				ConnectionMsg = TgResourceExtensions.GetRpcErrorPhoneCodeInvalid();
+			}
+			else if (Exception.Message.Contains("PASSWORD_HASH_INVALID", StringComparison.InvariantCultureIgnoreCase))
+			{
+				ConnectionMsg = TgResourceExtensions.GetRpcErrorPasswordHashInvalid();
+			}
+			else if (Exception.Message.Contains("FLOOD_WAIT", StringComparison.InvariantCultureIgnoreCase))
+			{
+				ConnectionMsg = TgResourceExtensions.GetRpcErrorFloodWait();
+			}
+			else if (Exception.Message.Contains("PHONE_PASSWORD_FLOOD", StringComparison.InvariantCultureIgnoreCase))
+			{
+				ConnectionMsg = TgResourceExtensions.GetRpcErrorPhonePasswordFlood();
+			}
+			else
+			{
+				ConnectionMsg = client is null || client.Disconnected
+					? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
+			}
+			if (client is not null)
+			{
+				UserName = client.User?.MainUsername ?? string.Empty;
+				MtProxyUrl = client.MTProxyUrl;
+				MaxAutoReconnects = client.MaxAutoReconnects.ToString();
+				FloodRetryThreshold = client.FloodRetryThreshold.ToString();
+				PingInterval = client.PingInterval.ToString();
+				MaxCodePwdAttempts = client.MaxCodePwdAttempts.ToString();
+			}
+			else
+			{
+				await ReloadUiAsync();
+			}
+			// Clear memory
+			client = null;
 		}
 		else
 		{
-			ConnectionMsg = client is null || client.Disconnected
-				? TgResourceExtensions.GetClientIsDisconnected() : TgResourceExtensions.GetClientIsConnected();
 		}
-		if (client is not null)
-		{
-			UserName = client.User?.MainUsername ?? string.Empty;
-			MtProxyUrl = client.MTProxyUrl;
-			MaxAutoReconnects = client.MaxAutoReconnects.ToString();
-			FloodRetryThreshold = client.FloodRetryThreshold.ToString();
-			PingInterval = client.PingInterval.ToString();
-			MaxCodePwdAttempts = client.MaxCodePwdAttempts.ToString();
-		}
-		else
-		{
-			await ReloadUiAsync();
-		}
-		// Clear memory
-		client = null;
 
 		// Update connection buttons
 		await TgDesktopUtils.TgClient.CheckClientIsReadyAsync();
@@ -172,7 +182,10 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
         {
 	        Exception.Default();
 			DataRequest = string.Empty;
-			await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Dto.GetEntity(), ConfigClientDesktop);
+			if (!IsBot)
+				await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Dto.GetEntity(), ConfigClientDesktop);
+			else
+				await TgDesktopUtils.TgClient.ConnectBotDesktopAsync(BotToken, ApiId, ApiHash, TgDesktopUtils.LocalFolder);
         }
         catch (Exception ex)
         {
@@ -211,6 +224,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		PhoneNumber = App.PhoneNumber;
 		FirstName = App.FirstName;
 	    LastName = App.LastName;
+		IsBot = App.IsBot;
+		BotToken = App.BotToken;
 
 	    UserName = string.Empty;
 	    MtProxyUrl = string.Empty;
@@ -271,6 +286,8 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 		App.LastName = LastName;
 		App.PhoneNumber = PhoneNumber;
 		App.ProxyUid = ProxyVm?.Dto.Uid;
+		App.IsBot = IsBot;
+		App.BotToken = BotToken;
 		if (App.ProxyUid is null || App.ProxyUid == Guid.Empty)
 			App.Proxy = null;
 		

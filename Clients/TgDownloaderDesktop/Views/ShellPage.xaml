@@ -50,13 +50,6 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xED5C;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--<ToggleSwitch
-					Grid.Row="2"
-					Grid.Column="1"
-					Margin="2"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					IsOn="{x:Bind ViewModel.IsOnlineReady, Mode=OneWay}" />-->
 				<!--  Filters  -->
 				<NavigationViewItem x:Uid="Shell_Filters" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgFiltersViewModel">
 					<NavigationViewItem.Icon>
@@ -87,32 +80,6 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
-				<!--  Bots  -->
-				<NavigationViewItem x:Uid="Shell_Bots" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgBotsViewModel">
-					<NavigationViewItem.Icon>
-						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE99A;" />
-					</NavigationViewItem.Icon>
-				</NavigationViewItem>
-				<!--<NavigationViewItem x:Uid="Shell_WebView" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.WebViewViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe774;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_ListDetails" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ListDetailsViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xea37;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_ContentGrid" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.ContentGridViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xf0e2;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem x:Uid="Shell_DataGrid" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.DataGridViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe80a;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>-->
 			</NavigationView.MenuItems>
 			<NavigationView.HeaderTemplate>
 				<DataTemplate>

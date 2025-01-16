@@ -14,10 +14,7 @@
 	</Page.Resources>
 
 	<ScrollView VerticalScrollMode="Auto">
-		<ContentControl
-			HorizontalAlignment="Stretch"
-			HorizontalContentAlignment="Stretch"
-			Visibility="{x:Bind ViewModel.IsPageLoad, Mode=OneWay, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+		<ContentControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />

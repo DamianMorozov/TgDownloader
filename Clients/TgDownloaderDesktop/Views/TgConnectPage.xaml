@@ -203,6 +203,7 @@
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
@@ -295,7 +296,7 @@
 							Text="{x:Bind ViewModel.FirstName, Mode=TwoWay}" />
 						<!--  Last name  -->
 						<TextBlock
-							x:Uid="ClientLastName"
+							x:Uid="FieldBotToken"
 							Grid.Row="2"
 							Grid.Column="2"
 							Margin="12,7,2,2"
@@ -308,6 +309,37 @@
 							HorizontalAlignment="Stretch"
 							HorizontalContentAlignment="Left"
 							Text="{x:Bind ViewModel.LastName, Mode=TwoWay}" />
+						<!--  IsBot  -->
+						<TextBlock
+							x:Uid="FieldIsBot"
+							Grid.Row="3"
+							Margin="2,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<ToggleSwitch
+							Grid.Row="3"
+							Grid.Column="1"
+							Margin="2"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
+							HorizontalContentAlignment="Left"
+							IsOn="{x:Bind ViewModel.IsBot, Mode=TwoWay}" />
+						<!--  BotToken  -->
+						<TextBlock
+							x:Uid="FieldBotToken"
+							Grid.Row="3"
+							Grid.Column="2"
+							Margin="12,7,2,2"
+							FontWeight="Bold"
+							TextAlignment="Left" />
+						<TextBox
+							Grid.Row="3"
+							Grid.Column="3"
+							Margin="2"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Left"
+							Text="{x:Bind ViewModel.BotToken, Mode=TwoWay}"
+							TextChanged="{x:Bind OnApiHashTextChanged, Mode=OneWay}" />
 					</Grid>
 				</ScrollView>
 			</Expander>
