@@ -327,38 +327,6 @@ public static class TgDesktopUtils
 		return false;
 	}
 
-	public static bool CheckFileStorageExists(string fullPath)
-	{
-		var result = CheckFileStorageCoreExists(fullPath);
-		if (result) return true;
-		return CheckFileStorageCoreExists(fullPath);
-	}
-
-	private static bool CheckFileStorageCoreExists(string fullPath)
-	{
-		var folder = string.Empty;
-		var fileName = string.Empty;
-		try
-        {
-			folder = Path.GetDirectoryName(fullPath) ?? string.Empty;
-			if (string.IsNullOrEmpty(folder))
-				return false;
-			fileName  = Path.GetFileName(fullPath);
-			var storageFolder = StorageFolder.GetFolderFromPathAsync(folder).GetAwaiter().GetResult();
-            if (storageFolder is null)
-                return false;
-            var storageFile = storageFolder.GetFileAsync(fileName).GetAwaiter().GetResult();
-            return storageFile.IsAvailable;
-        }
-        catch (Exception ex)
-        {
-#if DEBUG
-	        FileLog(ex, $"{Path.Combine(folder, fileName)}");
-#endif
-		}
-		return false;
-	}
-
 	public static async Task<long> CalculateDirSizeAsync(string folderPath)
 	{
 		long totalSize = 0;

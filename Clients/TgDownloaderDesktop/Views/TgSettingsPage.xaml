@@ -149,37 +149,14 @@
 						HorizontalAlignment="Stretch"
 						IsReadOnly="True"
 						Text="{x:Bind ViewModel.SettingsService.AppFolder, Mode=OneWay}" />
-					<!--  Session  -->
-					<TextBlock
-						x:Uid="SettingSession"
-						Grid.Row="1"
-						Margin="10,5,10,5"
-						TextAlignment="Left" />
-					<StackPanel
-						Grid.Row="1"
-						Grid.Column="1"
-						Width="40"
-						Margin="2"
-						HorizontalAlignment="Center">
-						<CheckBox
-							Margin="5,0,0,0"
-							IsChecked="{x:Bind ViewModel.SettingsService.IsExistsAppSession, Mode=OneWay}"
-							IsEnabled="False" />
-					</StackPanel>
-					<TextBox
-						Grid.Row="1"
-						Grid.Column="2"
-						Margin="2"
-						HorizontalAlignment="Stretch"
-						Text="{x:Bind ViewModel.SettingsService.AppSession, Mode=TwoWay}" />
 					<!--  Storage  -->
 					<TextBlock
 						x:Uid="SettingStorage"
-						Grid.Row="2"
+						Grid.Row="1"
 						Margin="10,5,10,5"
 						TextAlignment="Left" />
 					<StackPanel
-						Grid.Row="2"
+						Grid.Row="1"
 						Grid.Column="1"
 						Width="40"
 						Margin="2"
@@ -190,11 +167,34 @@
 							IsEnabled="False" />
 					</StackPanel>
 					<TextBox
-						Grid.Row="2"
+						Grid.Row="1"
 						Grid.Column="2"
 						Margin="2"
 						HorizontalAlignment="Stretch"
 						Text="{x:Bind ViewModel.SettingsService.AppStorage, Mode=TwoWay}" />
+					<!--  Session  -->
+					<TextBlock
+						x:Uid="SettingSession"
+						Grid.Row="2"
+						Margin="10,5,10,5"
+						TextAlignment="Left" />
+					<StackPanel
+						Grid.Row="2"
+						Grid.Column="1"
+						Width="40"
+						Margin="2"
+						HorizontalAlignment="Center">
+						<CheckBox
+							Margin="5,0,0,0"
+							IsChecked="{x:Bind ViewModel.SettingsService.IsExistsAppSession, Mode=OneWay}"
+							IsEnabled="False" />
+					</StackPanel>
+					<TextBox
+						Grid.Row="2"
+						Grid.Column="2"
+						Margin="2"
+						HorizontalAlignment="Stretch"
+						Text="{x:Bind ViewModel.SettingsService.AppSession, Mode=TwoWay}" />
 				</Grid>
 			</Expander>
 		</Grid>

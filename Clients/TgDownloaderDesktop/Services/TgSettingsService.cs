@@ -31,7 +31,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		{
 			SetProperty(ref _appStorage, value);
 			OnPropertyChanged();
-			IsExistsAppStorage = TgDesktopUtils.CheckFileStorageExists(AppStorage);
+			IsExistsAppStorage = File.Exists(AppStorage);
 		}
 	}
 	private string _appSession = default!;
@@ -41,7 +41,7 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		set
 		{
 			SetProperty(ref _appSession, value);
-			IsExistsAppSession = TgDesktopUtils.CheckFileStorageExists(AppSession);
+			IsExistsAppSession = File.Exists(AppSession);
 			OnPropertyChanged();
 		}
 	}
@@ -133,9 +133,9 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	{
 		AppTheme = AppThemes.First(x => x == TgEnumTheme.Default);
 		AppLanguage = AppLanguages.First(x => x == TgEnumLanguage.Default);
+		AppFolder = TgDesktopUtils.LocalFolder;
 		AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
 		AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
-		AppFolder = TgDesktopUtils.LocalFolder;
 	}
 
 	public async Task LoadAsync()
