@@ -1,25 +1,21 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
-// App
-using Velopack.Sources;
-
-TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
-tgAppSettings.SetVersion(Assembly.GetExecutingAssembly());
-// Console
-TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
-TgLogHelper tgLog = TgLogHelper.Instance;
+TgAppSettingsHelper.Instance.SetVersion(Assembly.GetExecutingAssembly());
+var menu = new TgMenuHelper();
 
 // Velopack installer update
-await VelopackUpdateAsync(tgLog, tgLocale);
+await menu.VelopackUpdateAsync();
+
+var tgLocale = TgLocaleHelper.Instance;
+var tgLog = TgLogHelper.Instance;
+var tgDownloadSettings = new TgDownloadSettingsViewModel();
 
 // Register TgEfContext as the DbContext for EF Core
 tgLog.WriteLine("EF Core init ...");
 await TgEfUtils.CreateAndUpdateDbAsync();
 tgLog.WriteLine("EF Core init success");
 
-TgDownloadSettingsViewModel tgDownloadSettings = new();
-TgMenuHelper menu = new();
 if (!await SetupAsync()) return;
 
 do
@@ -34,7 +30,7 @@ do
 			.MoreChoicesText(tgLocale.MoveUpDown)
 			.AddChoices(
 				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainStorage, tgLocale.MenuMainClient,
-				tgLocale.MenuMainFilters, tgLocale.MenuMainDownload, tgLocale.MenuMainAdvanced));
+				tgLocale.MenuMainFilters, tgLocale.MenuMainDownload, tgLocale.MenuMainAdvanced, tgLocale.MenuMainUpdate));
 		if (prompt.Equals(tgLocale.MenuMainExit))
 			menu.Value = TgEnumMenuMain.Exit;
 		if (prompt.Equals(tgLocale.MenuMainApp))
@@ -67,6 +63,13 @@ do
 			menu.Value = TgEnumMenuMain.Advanced;
 			await menu.SetupAdvancedAsync(tgDownloadSettings);
 		}
+		if (prompt.Equals(tgLocale.MenuMainUpdate))
+		{
+			menu.Value = TgEnumMenuMain.Update;
+			await menu.VelopackUpdateAsync();
+			tgLog.WriteLine(tgLocale.TypeAnyKeyForReturn);
+			Console.ReadKey();
+		}
 	}
 	catch (Exception ex)
 	{
@@ -90,56 +93,4 @@ async Task<bool> SetupAsync()
 	await menu.ClientConnectConsoleAsync();
 	tgLog.WriteLine("TG client connect success");
 	return true;
-}
-
-// Velopack installer update
-static async Task VelopackUpdateAsync(TgLogHelper tgLog, TgLocaleHelper tgLocale)
-{
-	Console.OutputEncoding = Encoding.UTF8;
-	Console.Title = TgConstants.AppTitleConsoleShort;
-	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
-	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
-	tgLog.WriteLine($"{TgConstants.AppTitleConsole} {TgAppSettingsHelper.Instance.AppVersion} started");
-
-	VelopackApp.Build()
-#if WINDOWS
-		.WithBeforeUninstallFastCallback((v) => {
-			// delete / clean up some files before uninstallation
-			tgLog.WriteLine($"Uninstalling the {TgConstants.AppTitleConsole}!");
-		})
-#endif
-		.WithFirstRun((v) => {
-			tgLog.WriteLine($"Thanks for installing the {TgConstants.AppTitleConsole}!");
-		})
-		.Run();
-	tgLog.WriteLine($"Checking updates on the link {TgConstants.LinkGitHub}...");
-	var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
-	// Check for new version
-	try
-	{
-		var newVersion = await mgr.CheckForUpdatesAsync();
-		if (newVersion is null)
-		{
-			tgLog.WriteLine("No update available");
-			return;
-		}
-		// Download new version
-		tgLog.WriteLine("Download new version...");
-		await mgr.DownloadUpdatesAsync(newVersion);
-		// Install new version and restart app
-		var prompt = AnsiConsole.Prompt(
-			new SelectionPrompt<string>()
-				.Title("Install new version and restart app?")
-				.PageSize(Console.WindowHeight - 5)
-				.MoreChoicesText(tgLocale.MoveUpDown)
-				.AddChoices(tgLocale.MenuNo, tgLocale.MenuYes));
-		var isInstall = prompt.Equals(tgLocale.MenuYes);
-		if (isInstall)
-			mgr.ApplyUpdatesAndRestart(newVersion);
-	}
-	// Cannot perform this operation in an application which is not installed
-	catch (Exception ex)
-	{
-		tgLog.WriteLine(ex.Message);
-	}
 }

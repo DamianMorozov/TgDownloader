@@ -12,4 +12,5 @@ public enum TgEnumMenuMain
 	Filters,
 	Download,
 	Advanced,
+	Update,
 }

@@ -147,6 +147,7 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuMainSettings => "Settings";
 	public string MenuMainStop => "Stop";
 	public string MenuMainStorage => "Storage";
+	public string MenuMainUpdate => "Update";
 
 	#endregion
 
