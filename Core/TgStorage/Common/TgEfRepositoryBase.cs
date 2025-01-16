@@ -229,7 +229,11 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 				else
 					throw;
 			}
+#if DEBUG
 			catch (Exception ex)
+#else
+			catch (Exception)
+#endif
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
@@ -267,7 +271,11 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 				await transaction.CommitAsync();
 				storageResult.State = TgEnumEntityState.IsSaved;
 			}
+#if DEBUG
 			catch (Exception ex)
+#else
+			catch (Exception)
+#endif
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
@@ -309,7 +317,11 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 			}
 			storageResult.State = TgEnumEntityState.IsSaved;
 		}
+#if DEBUG
 		catch (Exception ex)
+#else
+		catch (Exception)
+#endif
 		{
 #if DEBUG
 			Debug.WriteLine(ex, TgConstants.LogTypeStorage);
@@ -332,7 +344,11 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 		{
 			return await SaveAsync(item);
 		}
+#if DEBUG
 		catch (Exception ex)
+#else
+		catch (Exception)
+#endif
 		{
 			TEntity itemBackup = item;
 			await DeleteAsync(item);
@@ -381,7 +397,11 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 				await transaction.CommitAsync();
 				return new(TgEnumEntityState.IsDeleted);
 			}
+#if DEBUG
 			catch (Exception ex)
+#else
+			catch (Exception)
+#endif
 			{
 				await transaction.RollbackAsync();
 #if DEBUG
