@@ -2,20 +2,21 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 // App
+using Velopack.Sources;
+
 TgAppSettingsHelper tgAppSettings = TgAppSettingsHelper.Instance;
 tgAppSettings.SetVersion(Assembly.GetExecutingAssembly());
 // Console
 TgLocaleHelper tgLocale = TgLocaleHelper.Instance;
 TgLogHelper tgLog = TgLogHelper.Instance;
-ConsoleInit();
+
+// Velopack installer update
+await VelopackUpdateAsync(tgLog, tgLocale);
 
 // Register TgEfContext as the DbContext for EF Core
 tgLog.WriteLine("EF Core init ...");
 await TgEfUtils.CreateAndUpdateDbAsync();
 tgLog.WriteLine("EF Core init success");
-
-// Transfer data from previous TgDownloader.db into TgStorage.db
-//await DataTransferBetweenStoragesAsync();
 
 TgDownloadSettingsViewModel tgDownloadSettings = new();
 TgMenuHelper menu = new();
@@ -77,26 +78,6 @@ do
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
 
-//async Task DataTransferBetweenStoragesAsync()
-//{
-//	await using TgEfContext efContextTo = TgEfUtils.CreateEfContext();
-//	if (await TgEfUtils.IsDataExistsInTablesAsync(efContextTo, tgLog.WriteLine)) return;
-	
-//	await using TgEfContext efContextFrom = TgEfUtils.CreateEfContext(TgAppSettingsHelper.Instance.AppXml.XmlFileStorage);
-//	//if (! await TgEfUtils.IsDataExistsInTablesAsync(efContextFrom, tgLog.WriteLine)) return;
-
-//	string prompt = AnsiConsole.Prompt(new SelectionPrompt<string>()
-//		.Title($"{TgLocaleHelper.Instance.AskDataMigration}")
-//		.PageSize(Console.WindowHeight - 17)
-//		.AddChoices(new List<string> { TgLocaleHelper.Instance.MenuIsFalse, TgLocaleHelper.Instance.MenuIsTrue }));
-//	if (prompt.Equals(TgLocaleHelper.Instance.MenuIsFalse)) return;
-
-//	tgLog.WriteLine("Storage transfer ...");
-//	await TgEfUtils.DataTransferBetweenStoragesAsync(efContextFrom, efContextTo, tgLog.WriteLine);
-//	tgLog.WriteLine("Storage transfer success");
-//}
-
-
 async Task<bool> SetupAsync()
 {
 	// Menu
@@ -104,20 +85,6 @@ async Task<bool> SetupAsync()
 	TgAsyncUtils.SetAppType(TgEnumAppType.Console);
 	tgLog.WriteLine("Menu init success");
 
-	// Create new storage?
-	//if (!tgAppSettings.AppXml.IsExistsEfStorage)
-	//{
-	//	AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsNotFound(tgAppSettings.AppXml.XmlEfStorage));
-	//	if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
-	//		return false;
-	//}
-	//// Storage is existing
-	//else if (Equals(TgFileUtils.CalculateFileSize(tgAppSettings.AppXml.XmlEfStorage), (long)0))
-	//{
-	//	AnsiConsole.WriteLine(tgLocale.MenuStorageDbIsZeroSize(tgAppSettings.AppXml.XmlEfStorage));
-	//	if (menu.AskQuestionReturnNegative(tgLocale.MenuStorageDbCreateNew))
-	//		return false;
-	//}
 	// Client
 	tgLog.WriteLine("TG client connect ...");
 	await menu.ClientConnectConsoleAsync();
@@ -125,11 +92,54 @@ async Task<bool> SetupAsync()
 	return true;
 }
 
-void ConsoleInit()
+// Velopack installer update
+static async Task VelopackUpdateAsync(TgLogHelper tgLog, TgLocaleHelper tgLocale)
 {
 	Console.OutputEncoding = Encoding.UTF8;
 	Console.Title = TgConstants.AppTitleConsoleShort;
 	tgLog.SetMarkupLine(AnsiConsole.WriteLine);
 	tgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
-	tgLog.WriteLine($"{TgConstants.AppTitleConsole} start");
+	tgLog.WriteLine($"{TgConstants.AppTitleConsole} {TgAppSettingsHelper.Instance.AppVersion} started");
+
+	VelopackApp.Build()
+#if WINDOWS
+		.WithBeforeUninstallFastCallback((v) => {
+			// delete / clean up some files before uninstallation
+			tgLog.WriteLine($"Uninstalling the {TgConstants.AppTitleConsole}!");
+		})
+#endif
+		.WithFirstRun((v) => {
+			tgLog.WriteLine($"Thanks for installing the {TgConstants.AppTitleConsole}!");
+		})
+		.Run();
+	tgLog.WriteLine($"Checking updates on the link {TgConstants.LinkGitHub}...");
+	var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
+	// Check for new version
+	try
+	{
+		var newVersion = await mgr.CheckForUpdatesAsync();
+		if (newVersion is null)
+		{
+			tgLog.WriteLine("No update available");
+			return;
+		}
+		// Download new version
+		tgLog.WriteLine("Download new version...");
+		await mgr.DownloadUpdatesAsync(newVersion);
+		// Install new version and restart app
+		var prompt = AnsiConsole.Prompt(
+			new SelectionPrompt<string>()
+				.Title("Install new version and restart app?")
+				.PageSize(Console.WindowHeight - 5)
+				.MoreChoicesText(tgLocale.MoveUpDown)
+				.AddChoices(tgLocale.MenuNo, tgLocale.MenuYes));
+		var isInstall = prompt.Equals(tgLocale.MenuYes);
+		if (isInstall)
+			mgr.ApplyUpdatesAndRestart(newVersion);
+	}
+	// Cannot perform this operation in an application which is not installed
+	catch (Exception ex)
+	{
+		tgLog.WriteLine(ex.Message);
+	}
 }

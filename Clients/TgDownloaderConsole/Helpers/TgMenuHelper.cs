@@ -104,6 +104,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	{
 		// App version
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.AppVersion)), new Markup(TgAppSettings.AppVersion));
+		// Storage version
 		TgEfVersionEntity version = (await VersionRepository.GetListAsync(TgEnumTableTopRecords.All, 0)).
 	            Items.Single(x => x.Version == VersionRepository.LastVersion);
 		table.AddRow(new Markup(TgLocale.InfoMessage(TgLocale.StorageVersion)), new Markup($"v{version.Version}"));
