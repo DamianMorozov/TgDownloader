@@ -194,7 +194,11 @@ public static class TgEfUtils
 								{
 									await repoTo.SaveAsync(itemFrom);
 								}
+#if DEBUG
 								catch (Exception ex)
+#else
+								catch (Exception)
+#endif
 								{
 									Interlocked.Increment(ref countErrors);
 #if DEBUG
@@ -215,7 +219,11 @@ public static class TgEfUtils
 						logWrite($"Transferring table {tableName}: errors in {countErrors} records");
 				}
 			}
+#if DEBUG
 			catch (Exception ex)
+#else
+			catch (Exception)
+#endif
 			{
 #if DEBUG
 				logWrite(ex.Message);
