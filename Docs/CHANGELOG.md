@@ -4,75 +4,86 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.370] - 2025-01-10
-### Fixed
-- Fixed chat connection check for TgDownloaderConsole
+## [Unreleased]
+### Changed
+- Updated connection page in TgDownloaderDesktop
+### Cganged
+- Updated apps table for TgStorage
 ### Added
-- Added chat filter for TgDownloaderDesktop
-- Added chat details page for TgDownloaderDesktop
-- Added launching download chat on the details page for TgDownloaderDesktop
-- Added chat download stop on the details page for TgDownloaderDesktop
+- Added Velopack installer for TgDownloaderDesktop
+- Added chat filter to TgDownloaderDesktop
+- Added page of chat details to TgDownloaderDesktop
+- Added launching download chat on the details page to TgDownloaderDesktop
+- Added chat download stop on the details page to TgDownloaderDesktop
+- Fixed file checks for TgDownloaderDesktop
+
+## [0.5.410] - 2025-01-18
+### Fixed
+- Fixed chat connection check to TgDownloaderConsole
+### Added
+- Added Velopack installer for TgDownloaderConsole
+- Added update menu for TgDownloaderConsole
 
 ## [0.5.330] - 2025-01-05
 ### Fixed
-- Fixed connection page for TgDownloaderDesktop
+- Fixed connection page to TgDownloaderDesktop
 ### Added
-- Added contact edit page for TgDownloaderDesktop
+- Added contact edit page to TgDownloaderDesktop
 
 ## [0.5.320] - 2025-01-04
 ### Fixed
-- Fixed `Sequence contains more than one element` error for TgDownloaderConsole
-- Fixed `Access to the path ...\TgDownloader.xml is denied` error when connecting to the server for TgDownloaderDesktop
+- Fixed `Sequence contains more than one element` error to TgDownloaderConsole
+- Fixed `Access to the path ...\TgDownloader.xml is denied` error when connecting to the server to TgDownloaderDesktop
 ### Cganged
-- Updated contacts page for TgDownloaderDesktop
-- Updated filters page for TgDownloaderDesktop
-- Updated sources page for TgDownloaderDesktop
-- Updated stories page for TgDownloaderDesktop
+- Updated contacts page to TgDownloaderDesktop
+- Updated filters page to TgDownloaderDesktop
+- Updated sources page to TgDownloaderDesktop
+- Updated stories page to TgDownloaderDesktop
 ### Added
-- Source search by UserName field for TgDownloaderConsole
-- Added proxies page for TgDownloaderDesktop
+- Source search by UserName field to TgDownloaderConsole
+- Added proxies page to TgDownloaderDesktop
 
 ## [0.5.300] - 2025-01-03
 ### Fixed
-- Connecting to Telegram server for TgDownloaderDesktop
+- Connecting to Telegram server to TgDownloaderDesktop
 ### Cganged
-- Updated contacts page for TgDownloaderConsole
-- Updated home page for TgDownloaderDesktop
-- Updated sources page for TgDownloaderConsole
-- Updated sources table to storage
+- Updated contacts page to TgDownloaderConsole
+- Updated home page to TgDownloaderDesktop
+- Updated sources page to TgDownloaderConsole
+- Updated table of sources to the storage
 - Updated storage tables for asynchronous write cases
-- Updated stories page for TgDownloaderConsole
+- Updated stories page to TgDownloaderConsole
 ### Added
-- Added contacts page for TgDownloaderDesktop
-- Added filters page for TgDownloaderDesktop
-- Added stories page for TgDownloaderDesktop
-- Added reading of contacts on the contact page for TgDownloaderDesktop
+- Added contacts page to TgDownloaderDesktop
+- Added filters page to TgDownloaderDesktop
+- Added stories page to TgDownloaderDesktop
+- Added reading of contacts on the contact page to TgDownloaderDesktop
 
 ## [0.5.250] - 2024-12-08
 ### Changed
-- Updated settings page for TgDownloaderDesktop
+- Updated settings page to TgDownloaderDesktop
 ### Added
-- Added contact table to storage
-- Added stories table to storage
-- Added searching and viewing of contacts for TgDownloaderConsole
-- Added searching and viewing of stories for TgDownloaderConsole
-- Added sources page for TgDownloaderDesktop
+- Added table of contacts to the storage
+- Added table of stories to the storage
+- Added searching and viewing of contacts to TgDownloaderConsole
+- Added searching and viewing of stories to TgDownloaderConsole
+- Added sources page to TgDownloaderDesktop
 - Added PowerShell script for installing TgDownloaderDesktop
 
 ## [0.5.230] - 2024-12-01
 ### Fixed
-- Fixed display of special characters in download directory name for TgDownloaderConsole
-- Fixed default display of ID = 1 for TgDownloaderConsole
-- Fixed scan sources for TgDownloaderConsole
+- Fixed display of special characters in download directory name to TgDownloaderConsole
+- Fixed default display of ID = 1 to TgDownloaderConsole
+- Fixed scan sources to TgDownloaderConsole
 ### Changed
-- Default number of download threads (from 1 to 5) for TgDownloaderConsole
+- Default number of download threads (from 1 to 5) to TgDownloaderConsole
 - Updated NuGet packages
-- Improved stability of work for TgDownloaderConsole
-- Improved stability of work for TgDownloaderDesktop
+- Improved stability of work to TgDownloaderConsole
+- Improved stability of work to TgDownloaderDesktop
 ### Added
-- Added language localization for TgDownloaderDesktop
-- Connection page for TgDownloaderDesktop
-- Free license for TgDownloaderDesktop
+- Added language localization to TgDownloaderDesktop
+- Connection page to TgDownloaderDesktop
+- Free license to TgDownloaderDesktop
 
 ## [0.5.180] - 2024-11-10
 ### Fixed
@@ -85,11 +96,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Using EF Core instead of DevExpress XPO
 ## Added
-- Added multithreading for TgDownloaderConsole
+- Added multithreading to TgDownloaderConsole
 - Added TgDownloaderDesktop app (WinUI)
 - Added TgDownloaderDesktop.Core app (WinUI)
 - Added TgDownloaderDesktop.Tests.MSTest app (WinUI)
-- Added settings page for TgDownloaderDesktop
+- Added settings page to TgDownloaderDesktop
 
 ## [0.4.150] - 2024-03-27
 ## Added projects

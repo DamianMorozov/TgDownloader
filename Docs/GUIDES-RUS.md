@@ -3,9 +3,10 @@
 - [Руководство по настройке докер версии](GUIDE-SETUP-DOCKER-RUS.md)
 
 ## Запуск TgDownloaderDesktop под ОС Windows
-- Скачать файл `TgDownloaderDesktop-Installing.ps1` в `c:\TgDownloader-Releases`
+- Включите режим разработчика в Windows
 - Запустить `PowerShell` с правами администратора
 - Выдать временные права доступа на установку `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Скачать файл `TgDownloaderDesktop-Installing.ps1`[TgDownloaderDesktop-Installing.ps1]
 - Запустить файл `TgDownloaderDesktop-Installing.ps1` в `PowerShell`
 
 ## Запуск TgDownloaderConsole под ОС Windows

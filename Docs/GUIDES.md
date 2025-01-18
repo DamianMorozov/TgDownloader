@@ -3,9 +3,10 @@
 - [Guide to setup the docker version](GUIDE-SETUP-DOCKER.md)
 
 ## Run TgDownloaderDesktop under Windows OS
-- Download the `TgDownloaderDesktop-Installing.ps1` file to `c:\TgDownloader-Releases`
+- Enable Developer Mode in Windows
 - Run `PowerShell` with administrator rights
 - Grant temporary access rights to install `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
+- Download the `TgDownloaderDesktop-Installing.ps1`[TgDownloaderDesktop-Installing.ps1]
 - Run the `TgDownloaderDesktop-Installing.ps1` file in `PowerShell`
 
 ## Run TgDownloaderConsole under Windows OS

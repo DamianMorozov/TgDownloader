@@ -4,14 +4,25 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.370] - 2025-01-10
-### Исправлено
-- Исправлена проверка подключения к чату для TgDownloaderConsole
+## [Нереализовано]
+### Изменено
+- Обновлена страница подключения в TgDownloaderDesktop
+### Изменено
+- Обновлена таблица приложений в TgStorage
 ### Добавлено
+- Добавлен Velopack инсталлятор для TgDownloaderDesktop
 - Добавлен фильтр чатов для TgDownloaderDesktop
 - Добавлена страница подробностей чата для TgDownloaderDesktop
 - Добавлен запуск скачивания чата на странице подробностей для TgDownloaderDesktop
 - Добавлен останов скачивания чата на странице подробностей для TgDownloaderDesktop
+- Исправлены проверки файлов для TgDownloaderDesktop
+
+## [0.5.410] - 2025-01-18
+### Исправлено
+- Исправлена проверка подключения к чату для TgDownloaderConsole
+### Добавлено
+- Добавлен Velopack инсталлятор для TgDownloaderConsole
+- Добавлено меню обновления для TgDownloaderConsole
 
 ## [0.5.330] - 2025-01-05
 ### Исправлено
