@@ -27,8 +27,8 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string From => "from";
 	public string HomeResetToDefault => "Reset to default";
 	public string HomeSaveToXml => "Save to XML";
-	public string MenuAppEfStorage => "Setting the path to the EF Core storage file";
-	public string MenuAppFileSession => "Setting the path to the session file";
+	public string MenuLocateStorage => "Locate the storage file";
+	public string MenuLocateSession => "Locate the session file";
 	public string MenuAppUseProxy => "Usage proxy";
 	public string MenuAppUseProxyDisable => "Disable proxy";
 	public string MenuAppUseProxyEnable => "Enable proxy";
@@ -137,7 +137,7 @@ public sealed class TgLocaleHelper : ObservableObject
 	public string MenuMain => "Main menu";
 	public string MenuMainAdvanced => "Advanced";
 	public string MenuMainApp => "Application";
-	public string MenuMainClient => "Client";
+	public string MenuMainConnection => "Connection";
 	public string MenuMainDownload => "Download";
 	public string MenuMainDownloads => "Downloads";
 	public string MenuMainExit => "Exit";

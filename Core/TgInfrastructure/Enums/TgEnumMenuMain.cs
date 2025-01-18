@@ -7,8 +7,8 @@ public enum TgEnumMenuMain
 {
 	Exit,
 	AppSettings,
+	Connection,
 	Storage,
-	Client,
 	Filters,
 	Download,
 	Advanced,
