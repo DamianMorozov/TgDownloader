@@ -48,7 +48,7 @@ public sealed partial class TgMainWindowViewModel : TgPageViewModelBase
             },
             new NavigationItem
             {
-                Content = TgLocaleHelper.Instance.MenuMainClient,
+                Content = TgLocaleHelper.Instance.MenuMainConnection,
                 PageTag =  "page_client",
                 Icon = SymbolRegular.DataBarHorizontal24,
                 PageType = typeof(TgClientPage),

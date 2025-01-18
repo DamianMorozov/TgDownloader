@@ -9,7 +9,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
 	xmlns:utils="clr-namespace:TgDownloaderWinDesktopWPF.Utils"
-	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainClient, Mode=OneWay, IsAsync=True}"
+	Title="{Binding Source={x:Static utils:TgDesktopUtils.TgLocale}, Path=MenuMainConnection, Mode=OneWay, IsAsync=True}"
 	d:Background="{DynamicResource ApplicationBackgroundBrush}"
 	d:DataContext="{d:DesignInstance local:TgClientPage,
 	                                 IsDesignTimeCreatable=True}"
