@@ -43,7 +43,9 @@ internal partial class TgMenuHelper
 					await AskClientConnectAsync(tgDownloadSettings);
 					break;
 				case TgEnumMenuClient.Connect:
+					TgLog.WriteLine("TG client connect ...");
 					await ClientConnectAsync(tgDownloadSettings, false);
+					TgLog.WriteLine("TG client connect success");
 					break;
 				case TgEnumMenuClient.Disconnect:
 					await ClientDisconnectAsync(tgDownloadSettings);
@@ -184,10 +186,6 @@ internal partial class TgMenuHelper
 		}
 	}
 
-	public async Task ClientConnectConsoleAsync() => 
-		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync(
-			await AppRepository.GetCurrentAppAsync())).Item);
-
 	private async Task AskClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings)
 	{
 		var prompt = AnsiConsole.Prompt(
@@ -204,8 +202,7 @@ internal partial class TgMenuHelper
 	public async Task ClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
 	{
 		await ShowTableClientAsync(tgDownloadSettings);
-		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (
-			await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item);
+		await TgClient.ConnectSessionConsoleAsync(ConfigConsole, (await ProxyRepository.GetCurrentProxyAsync(await AppRepository.GetCurrentAppAsync())).Item);
 		if (TgClient.ClientException.IsExist || TgClient.ProxyException.IsExist)
 			TgLog.MarkupInfo(TgLocale.TgClientSetupCompleteError);
 		else

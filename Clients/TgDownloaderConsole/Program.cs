@@ -11,12 +11,15 @@ var tgLocale = TgLocaleHelper.Instance;
 var tgLog = TgLogHelper.Instance;
 var tgDownloadSettings = new TgDownloadSettingsViewModel();
 
-// Register TgEfContext as the DbContext for EF Core
+// EF Core
 tgLog.WriteLine("EF Core init ...");
 await TgEfUtils.CreateAndUpdateDbAsync();
 tgLog.WriteLine("EF Core init success");
 
-if (!await SetupAsync()) return;
+// Menu
+tgLog.WriteLine("Menu init ...");
+TgAsyncUtils.SetAppType(TgEnumAppType.Console);
+tgLog.WriteLine("Menu init success");
 
 do
 {
@@ -29,7 +32,7 @@ do
 			.PageSize(Console.WindowHeight - 17)
 			.MoreChoicesText(tgLocale.MoveUpDown)
 			.AddChoices(
-				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainStorage, tgLocale.MenuMainClient,
+				tgLocale.MenuMainExit, tgLocale.MenuMainApp, tgLocale.MenuMainConnection, tgLocale.MenuMainStorage, 
 				tgLocale.MenuMainFilters, tgLocale.MenuMainDownload, tgLocale.MenuMainAdvanced, tgLocale.MenuMainUpdate));
 		if (prompt.Equals(tgLocale.MenuMainExit))
 			menu.Value = TgEnumMenuMain.Exit;
@@ -38,15 +41,15 @@ do
 			menu.Value = TgEnumMenuMain.AppSettings;
 			await menu.SetupAppSettingsAsync(tgDownloadSettings);
 		}
+		if (prompt.Equals(tgLocale.MenuMainConnection))
+		{
+			menu.Value = TgEnumMenuMain.Connection;
+			await menu.SetupClientAsync(tgDownloadSettings);
+		}
 		if (prompt.Equals(tgLocale.MenuMainStorage))
 		{
 			menu.Value = TgEnumMenuMain.Storage;
 			await menu.SetupStorageAsync(tgDownloadSettings);
-		}
-		if (prompt.Equals(tgLocale.MenuMainClient))
-		{
-			menu.Value = TgEnumMenuMain.Client;
-			await menu.SetupClientAsync(tgDownloadSettings);
 		}
 		if (prompt.Equals(tgLocale.MenuMainFilters))
 		{
@@ -80,17 +83,3 @@ do
 		Console.ReadKey();
 	}
 } while (menu.Value is not TgEnumMenuMain.Exit);
-
-async Task<bool> SetupAsync()
-{
-	// Menu
-	tgLog.WriteLine("Menu init ...");
-	TgAsyncUtils.SetAppType(TgEnumAppType.Console);
-	tgLog.WriteLine("Menu init success");
-
-	// Client
-	tgLog.WriteLine("TG client connect ...");
-	await menu.ClientConnectConsoleAsync();
-	tgLog.WriteLine("TG client connect success");
-	return true;
-}

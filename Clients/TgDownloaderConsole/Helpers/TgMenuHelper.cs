@@ -67,7 +67,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainApp, FillTableColumns, FillTableRowsAppAsync);
 
 	internal async Task ShowTableClientAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
-		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainClient, FillTableColumns, FillTableRowsClientAsync);
+		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainConnection, FillTableColumns, FillTableRowsClientAsync);
 
 	internal async Task ShowTableDownloadAsync(TgDownloadSettingsViewModel tgDownloadSettings) =>
 		await ShowTableCoreAsync(tgDownloadSettings, TgLocale.MenuMainDownload, FillTableColumns, FillTableRowsDownloadAsync);
@@ -121,7 +121,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 
 		// TG client settings
 		table.AddRow(new Markup(TgClient.IsReady ?
-			TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
+			TgLocale.InfoMessage(TgLocale.MenuMainConnection) : TgLocale.WarningMessage(TgLocale.MenuMainConnection)),
 			new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		// Download settings
@@ -195,7 +195,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 	{
 		// TG client settings
 		table.AddRow(new Markup(TgClient.IsReady ?
-			TgLocale.InfoMessage(TgLocale.MenuMainClient) : TgLocale.WarningMessage(TgLocale.MenuMainClient)),
+			TgLocale.InfoMessage(TgLocale.MenuMainConnection) : TgLocale.WarningMessage(TgLocale.MenuMainConnection)),
 			new Markup(TgClient.IsReady ? TgLocale.SettingsIsOk : TgLocale.SettingsIsNeedSetup));
 
 		if (TgClient.Me is null)

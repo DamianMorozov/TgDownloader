@@ -56,9 +56,6 @@ internal partial class TgMenuHelper
 				case TgEnumMenuStorage.TablesVersionsView:
 					TgStorageTablesVersionsView();
 					break;
-				//case TgEnumMenuStorage.TablesClear:
-				//	TgStorageTablesClear();
-				//	break;
 				case TgEnumMenuStorage.TablesCompact:
 					await TgStorageTablesCompactAsync();
 					break;

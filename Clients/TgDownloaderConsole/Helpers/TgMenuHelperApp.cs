@@ -18,16 +18,16 @@ internal partial class TgMenuHelper
 				.AddChoices(
 					TgLocale.MenuMainReturn,
 					TgLocale.MenuMainReset,
-					TgLocale.MenuAppFileSession,
-					TgLocale.MenuAppEfStorage,
+					TgLocale.MenuLocateStorage,
+					TgLocale.MenuLocateSession,
 					TgLocale.MenuAppUseProxy
 			));
 		if (prompt.Equals(TgLocale.MenuMainReset))
 			return TgEnumMenuAppSettings.Reset;
-		if (prompt.Equals(TgLocale.MenuAppFileSession))
-			return TgEnumMenuAppSettings.SetFileSession;
-		if (prompt.Equals(TgLocale.MenuAppEfStorage))
+		if (prompt.Equals(TgLocale.MenuLocateStorage))
 			return TgEnumMenuAppSettings.SetEfStorage;
+		if (prompt.Equals(TgLocale.MenuLocateSession))
+			return TgEnumMenuAppSettings.SetFileSession;
 		if (prompt.Equals(TgLocale.MenuAppUseProxy))
 			return TgEnumMenuAppSettings.SetUseProxy;
 		return TgEnumMenuAppSettings.Return;
@@ -73,14 +73,14 @@ internal partial class TgMenuHelper
 	private void SetFileSession()
 	{
 		TgAppSettings.AppXml.SetFileSessionPath(AnsiConsole.Ask<string>(
-			TgLog.GetLineStampInfo($"{TgLocale.MenuAppFileSession}:")));
+			TgLog.GetLineStampInfo($"{TgLocale.MenuLocateSession}:")));
 		SetFileAppSettings();
 	}
 
 	private void SetEfStorage()
 	{
 		TgAppSettings.AppXml.SetEfStoragePath(AnsiConsole.Ask<string>(
-			TgLog.GetLineStampInfo($"{TgLocale.MenuAppEfStorage}:")));
+			TgLog.GetLineStampInfo($"{TgLocale.MenuLocateStorage}:")));
 		SetFileAppSettings();
 	}
 
