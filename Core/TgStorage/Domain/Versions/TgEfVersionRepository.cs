@@ -104,7 +104,7 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 
 	#region Public and private methods - ITgEfVersionRepository
 
-	public short LastVersion => 30;
+	public short LastVersion => 31;
 
 	public async Task<TgEfVersionEntity> GetLastVersionAsync()
 	{
@@ -217,6 +217,9 @@ public sealed class TgEfVersionRepository(TgEfContext efContext) : TgEfRepositor
 					break;
 				case 29:
 					await SaveAsync(new() { Version = 30, Description = "Added RowVersion field" });
+					break;
+				case 30:
+					await SaveAsync(new() { Version = 31, Description = "Updated apps table" });
 					break;
 			}
 			if (versionLast.Version >= LastVersion)
