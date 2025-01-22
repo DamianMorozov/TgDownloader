@@ -36,12 +36,6 @@ public class TgEfRepositoryBase<TEntity>(TgEfContext efContext) : TgCommonBase, 
 		throw new NotImplementedException(TgLocaleHelper.Instance.UseOverrideMethod);
 	}
 
-	public async Task<IDbContextTransaction> BeginTransactionAsync() => await EfContext.Database.BeginTransactionAsync();
-
-	public async Task CommitTransactionAsync() => await EfContext.Database.CommitTransactionAsync();
-
-	public async Task RollbackTransactionAsync() => await EfContext.Database.RollbackTransactionAsync();
-
 	#endregion
 
 	#region Public and private methods - Read

@@ -13,9 +13,6 @@ public interface ITgEfRepository<TEntity> where TEntity : ITgDbFillEntity<TEntit
 
 	#region Public and private methods
 
-	public Task<IDbContextTransaction> BeginTransactionAsync();
-	public Task CommitTransactionAsync();
-	public Task RollbackTransactionAsync();
 	public IQueryable<TEntity> GetQuery(bool isReadOnly = true);
 
 	#endregion

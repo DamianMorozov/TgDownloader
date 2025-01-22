@@ -60,26 +60,30 @@ public class TgEfContext : DbContext
 #endif
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        LoggerFactory factory = new();
-        var storagePath = string.Empty;
+	private string GetStoragePath()
+	{
+		var storagePath = string.Empty;
 		// Console app
 		if (TgAsyncUtils.AppType == TgEnumAppType.Default || TgAsyncUtils.AppType == TgEnumAppType.Console)
-        {
-	        if (string.IsNullOrEmpty(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage))
-		        TgAppSettingsHelper.Instance.AppXml.XmlEfStorage = TgEfUtils.FileEfStorage;
-	        storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}";
-        }
+		{
+			storagePath = File.Exists(TgAppSettingsHelper.Instance.AppXml.XmlEfStorage)
+				? $"{TgLocaleHelper.Instance.SqliteDataSource}={TgAppSettingsHelper.Instance.AppXml.XmlEfStorage}"
+				: $"{TgLocaleHelper.Instance.SqliteDataSource}={TgEfUtils.FileEfStorage}";
+		}
 		// Desktop app
 		if (TgAsyncUtils.AppType == TgEnumAppType.Desktop)
 		{
-            if (!string.IsNullOrEmpty(TgEfUtils.AppStorage))
-				storagePath = $"{TgLocaleHelper.Instance.SqliteDataSource}={TgEfUtils.AppStorage}";
-        }
-		if (string.IsNullOrEmpty(storagePath))
-	        throw new ArgumentException(nameof(storagePath));
-        optionsBuilder
+			storagePath = File.Exists(TgEfUtils.AppStorage)
+				? $"{TgLocaleHelper.Instance.SqliteDataSource}={TgEfUtils.AppStorage}"
+				: $"{TgLocaleHelper.Instance.SqliteDataSource}={TgEfUtils.FileEfStorage}";
+		}
+		return storagePath;
+	}
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        LoggerFactory factory = new();
+		optionsBuilder
 #if DEBUG
             .LogTo(message => Debug.WriteLine($"{nameof(ContextId)} {ContextId}: {message}", TgConstants.LogTypeStorage), LogLevel.Debug)
             .EnableDetailedErrors()
@@ -87,17 +91,13 @@ public class TgEfContext : DbContext
 #endif
             .EnableThreadSafetyChecks()
             .UseLoggerFactory(factory)
-            .UseSqlite(storagePath)
         ;
-#if DEBUG
-        Debug.WriteLine(storagePath, TgConstants.LogTypeStorage);
-#endif
+		optionsBuilder.UseSqlite(GetStoragePath());
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-		// Magic string - Define the model
-		// Concurrency tokens
+		// Magic string - Define the model - Concurrency tokens
 		// https://learn.microsoft.com/en-us/ef/core/modeling/table-splitting
 		// https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/concurrency?view=aspnetcore-9.0&source=docs
 		// This property isn't on the C# class, so we set it up as a "shadow" property and use it for concurrency.
@@ -193,23 +193,39 @@ public class TgEfContext : DbContext
 
     public (bool IsSuccess, string FileName) BackupDb()
     {
-        if (File.Exists(TgAppSettings.AppXml.XmlEfStorage))
-        {
-            var dt = DateTime.Now;
-            var fileBackup =
-                $"{Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}\\" +
-                $"{Path.GetFileNameWithoutExtension(TgAppSettings.AppXml.XmlEfStorage)}_{dt:yyyyMMdd}_{dt:HHmmss}.bak";
-            File.Copy(TgAppSettings.AppXml.XmlEfStorage, fileBackup);
-            return (File.Exists(fileBackup), fileBackup);
-        }
+		if (string.IsNullOrEmpty(GetStoragePath()))
+			return (false, string.Empty);
+		// Console app
+		if (TgAsyncUtils.AppType == TgEnumAppType.Default || TgAsyncUtils.AppType == TgEnumAppType.Console)
+		{
+			if (File.Exists(TgAppSettings.AppXml.XmlEfStorage))
+			{
+				var dt = DateTime.Now;
+				var fileBackup =
+					$"{Path.GetDirectoryName(TgAppSettings.AppXml.XmlEfStorage)}\\" +
+					$"{Path.GetFileNameWithoutExtension(TgAppSettings.AppXml.XmlEfStorage)}_{dt:yyyyMMdd}_{dt:HHmmss}.bak";
+				File.Copy(TgAppSettings.AppXml.XmlEfStorage, fileBackup);
+				return (File.Exists(fileBackup), fileBackup);
+			}
+		}
         return (false, string.Empty);
     }
 
 	/// <summary> Shrink storage </summary>
-	public async Task CompactDbAsync() => await Database.ExecuteSqlRawAsync("VACUUM;");
+	public async Task CompactDbAsync()
+	{
+		if (string.IsNullOrEmpty(GetStoragePath()))
+			return;
+		await Database.ExecuteSqlRawAsync("VACUUM;");
+	}
 
-    /// <summary> Create and update storage </summary>
-    public async Task CreateAndUpdateDbAsync() => await Database.MigrateAsync();
+	/// <summary> Create and update storage </summary>
+	public async Task CreateAndUpdateDbAsync()
+	{
+		if (string.IsNullOrEmpty(GetStoragePath()))
+			return;
+		await Database.MigrateAsync();
+	}
 
-    #endregion
+	#endregion
 }

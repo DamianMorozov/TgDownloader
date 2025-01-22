@@ -10,8 +10,22 @@ public static class TgFileUtils
 
 	private static TgLocaleHelper TgLocale => TgLocaleHelper.Instance;
 	private static TgLogHelper TgLog => TgLogHelper.Instance;
-	public static string FileAppXmlSettings => $"{AppDomain.CurrentDomain.BaseDirectory}TgDownloader.xml";
+	public static string FileAppXmlSettings => !string.IsNullOrEmpty(TgFileUtils.BaseDirectory) ? Path.Combine(TgFileUtils.BaseDirectory, "TgDownloader.xml") : string.Empty;
 	public static string FileTgSession => "TgDownloader.session";
+	public static string FileLog => "TgDownloader.log";
+	public static string BaseDirectory = string.Empty;
+
+	static TgFileUtils()
+	{
+		try
+		{
+			TgFileUtils.BaseDirectory = AppContext.BaseDirectory;
+		}
+		catch (Exception)
+		{
+			//
+		}
+	}
 
 	#endregion
 

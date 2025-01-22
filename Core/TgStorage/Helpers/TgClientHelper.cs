@@ -310,7 +310,8 @@ public sealed partial class TgClientHelper : ObservableRecipient, ITgHelper
 		//Client.OnUpdates += OnUpdatesClientAsync;
 		//Client.OnOther += OnClientOtherAsync;
 		//await LoginUserDesktopAsync(true);
-
+		if (!Directory.Exists(localFolder))
+			return;
 		var WTelegramLogs = new StreamWriter($"{localFolder}\\WTelegramBot.log", true, Encoding.UTF8) { AutoFlush = true };
 		WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
 
