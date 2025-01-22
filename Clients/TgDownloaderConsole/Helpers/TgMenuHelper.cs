@@ -562,7 +562,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				TgLog.WriteLine($"Thanks for installing the {TgConstants.AppTitleConsole}!");
 			})
 			.Run();
-		TgLog.WriteLine($"Checking updates on the link {TgConstants.LinkGitHub}...");
+		TgLog.WriteLine($"Checking updates on the link github.com...");
 		var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
 		// Check for new version
 		try
@@ -570,7 +570,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 			var newVersion = await mgr.CheckForUpdatesAsync();
 			if (newVersion is null)
 			{
-				TgLog.WriteLine("No update available");
+				TgLog.WriteLine("You are using the latest version of the software");
 				return;
 			}
 			// Download new version
