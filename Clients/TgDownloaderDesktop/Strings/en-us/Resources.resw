@@ -97,6 +97,9 @@
   <data name="Shell_Chats.Content" xml:space="preserve">
     <value>Chats</value>
   </data>
+  <data name="Shell_Update.Content" xml:space="preserve">
+    <value>Update</value>
+  </data>
   <data name="Shell_Bots.Content" xml:space="preserve">
     <value>Bots</value>
   </data>
@@ -339,6 +342,9 @@
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="ActionUpdateApp.Text" xml:space="preserve">
+    <value>Update the application</value>
+  </data>
   <data name="ExpanderGitHub.Header" xml:space="preserve">
     <value>GitHub community</value>
   </data>
@@ -473,6 +479,9 @@
   </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Restart the application?</value>
+  </data>
+  <data name="AskUpdateApp" xml:space="preserve">
+    <value>Update the application?</value>
   </data>
   <data name="AssertionRestartApp" xml:space="preserve">
     <value>Restart the application.</value>

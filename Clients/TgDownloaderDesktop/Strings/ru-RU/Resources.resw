@@ -156,6 +156,9 @@
   <data name="Shell_Chats.Content" xml:space="preserve">
     <value>Чаты</value>
   </data>
+  <data name="Shell_Update.Content" xml:space="preserve">
+    <value>Обновление</value>
+  </data>
   <data name="Shell_Bots.Content" xml:space="preserve">
     <value>Боты</value>
   </data>
@@ -398,6 +401,9 @@
   <data name="ActionDelete.Text" xml:space="preserve">
     <value>Удалить</value>
   </data>
+  <data name="ActionUpdateApp.Text" xml:space="preserve">
+    <value>Обновить приложение</value>
+  </data>
   <data name="ExpanderGitHub.Header" xml:space="preserve">
     <value>ГитХаб сообщество</value>
   </data>
@@ -532,6 +538,9 @@
   </data>
   <data name="AskRestartApp" xml:space="preserve">
     <value>Перезапустить приложение?</value>
+  </data>
+  <data name="AskUpdateApp" xml:space="preserve">
+    <value>Обновить приложение?</value>
   </data>
   <data name="AssertionRestartApp" xml:space="preserve">
     <value>Перезапустите приложение.</value>

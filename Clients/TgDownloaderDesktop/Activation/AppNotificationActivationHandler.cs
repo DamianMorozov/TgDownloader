@@ -8,13 +8,13 @@ namespace TgDownloaderDesktop.Activation;
 
 public class AppNotificationActivationHandler : ActivationHandler<LaunchActivatedEventArgs>
 {
-	private readonly INavigationService _navigationService;
-	private readonly IAppNotificationService _notificationService;
+	//private readonly INavigationService _navigationService;
+	//private readonly IAppNotificationService _notificationService;
 
 	public AppNotificationActivationHandler(INavigationService navigationService, IAppNotificationService notificationService)
 	{
-		_navigationService = navigationService;
-		_notificationService = notificationService;
+		//_navigationService = navigationService;
+		//_notificationService = notificationService;
 	}
 
 	protected override bool CanHandleInternal(LaunchActivatedEventArgs args)
@@ -30,12 +30,12 @@ public class AppNotificationActivationHandler : ActivationHandler<LaunchActivate
 		//// var activatedEventArgs = (AppNotificationActivatedEventArgs)AppInstance.GetCurrent().GetActivatedEventArgs().Data;
 
 		//// // Navigate to a specific page based on the notification arguments.
-		//// if (_notificationService.ParseArguments(activatedEventArgs.Argument)["action"] == "Settings")
+		//// if (notificationService.ParseArguments(activatedEventArgs.Argument)["action"] == "Settings")
 		//// {
 		////     // Queue navigation with low priority to allow the UI to initialize.
 		////     App.MainWindow.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
 		////     {
-		////         _navigationService.NavigateTo(typeof(TgSettingsViewModel).FullName!);
+		////         navigationService.NavigateTo(typeof(TgSettingsViewModel).FullName!);
 		////     });
 		//// }
 

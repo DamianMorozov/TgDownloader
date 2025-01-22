@@ -47,8 +47,8 @@ public partial class TgPageViewModelBase : ObservableRecipient
 	public partial bool IsEnabledContent { get; set; }
 	[ObservableProperty]
 	public partial bool IsDownloading { get; set; }
-	[ObservableProperty]
-	public partial FileSystemWatcher? DirectorySystemWatcher { get; set; }
+	//[ObservableProperty]
+	//public partial FileSystemWatcher? DirectorySystemWatcher { get; set; }
 	[ObservableProperty]
 	public partial TgDownloadSettingsViewModel DownloadSettings { get; set; } = new();
 
@@ -236,8 +236,7 @@ public partial class TgPageViewModelBase : ObservableRecipient
 		}
 		finally
 		{
-			if (SettingsService.IsExistsAppStorage)
-				IsPageLoad = false;
+			IsPageLoad = false;
 			IsEnabledContent = true;
 		}
 	}
