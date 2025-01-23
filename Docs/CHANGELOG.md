@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.5.420] - 2025-01-23
+## [0.5.430] - 2025-01-23
 ### Fixed
 - Fixed bugs for TgStorage
 - Fixed bugs for TgDownloaderConsole
@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated apps table for TgStorage
 - Updated connection page in TgDownloaderDesktop
 - Updated NuGet packages
+- Updated .NET version from 8.0 to 9.0
 ### Added
 - Added Velopack installer for TgDownloaderDesktop
 - Added chat filter to TgDownloaderDesktop

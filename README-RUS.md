@@ -38,7 +38,7 @@
 - [TgDownloader-Console Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
 
 ## Требования к установке
-- [Скачать .NET 8.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/8.0)
+- [Скачать .NET 9.0](https://dotnet.microsoft.com/ru-ru/download/dotnet/9.0)
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps)
 - Сохраните значения полей "App api_id" и "App api_hash"
 

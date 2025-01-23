@@ -38,7 +38,7 @@ The desktop version is in active development stage (preview).
 - [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
 
 ## Install Requirements
-- [Download .NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [Download .NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 - [Register Telegram app](https://my.telegram.org/apps)
 - Save the values of the "App api_id" and "App api_hash" fields
 
