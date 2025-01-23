@@ -23,18 +23,32 @@ public sealed class TgLicenseManagerHelper
 	{
 		if (licenseKey.StartsWith("PAID"))
 		{
-			CurrentLicense = new TgLicensePaid { LicenseKey = licenseKey, ExpirationDate = DateTime.Now.AddYears(1) };
-			CurrentLicense.Description = licensePaidDescription;
+			CurrentLicense = new TgLicensePaid
+			{
+				LicenseKey = licenseKey,
+				LicenseType = TgEnumLicenseType.Paid,
+				ExpirationDate = DateTime.Now.AddYears(1),
+				Description = licensePaidDescription
+			};
 			return;
 		}
 		if (licenseKey.StartsWith("PREMIUM"))
 		{
-			CurrentLicense = new TgLicensePremium { LicenseKey = licenseKey, ExpirationDate = DateTime.Now.AddYears(1), PrioritySupport = true };
-			CurrentLicense.Description = licensePremiumDescription;
+			CurrentLicense = new TgLicensePremium
+			{
+				LicenseKey = licenseKey,
+				LicenseType = TgEnumLicenseType.Premium,
+				ExpirationDate = DateTime.Now.AddYears(1),
+				PrioritySupport = true,
+				Description = licensePremiumDescription
+			};
 			return;
 		}
-		CurrentLicense = new TgLicenseFree { LicenseKey = licenseKey };
-		CurrentLicense.Description = licenseFreeDescription;
+		CurrentLicense = new TgLicenseFree
+		{
+			LicenseKey = licenseKey,
+			Description = licenseFreeDescription
+		};
 	}
 
 	public bool IsLicenseValid() => CurrentLicense.IsValid();

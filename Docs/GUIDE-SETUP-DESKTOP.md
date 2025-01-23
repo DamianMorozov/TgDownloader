@@ -1,16 +1,10 @@
-# Guide to setup the desktop version
+# Guide to setup the Desktop version
 
-## Run TgDownloaderDesktop under Windows OS
-- Download the `TgDownloaderDesktop-Installing.ps1` file to `c:\TgDownloader-Releases`
-- Run `PowerShell` with administrator rights
-- Grant temporary access rights to install `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
-- Run the `TgDownloaderDesktop-Installing.ps1` file in `PowerShell`
+## Setup and run TgDownloaderDesktop under Windows OS
+- Download and run the installer [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/TgDownloader/releases)
+- Click the `Start` button, then type and execute `TgDownloaderDesktop`
 
-1. Start the software.
-Both checkboxes should be in the on position.
-<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-
-2. Click on the "Client" tab.
+## Connection setup
 Click on the link on the right: https://my.telegram.org/auth?to=apps
 There you will be able to register your software for use with telegram.
 Enter the data you received into the fields:

@@ -10,7 +10,9 @@ public abstract partial class TgLicense : ObservableRecipient
 
 	[ObservableProperty]
 	public partial string Description { get; set; } = "Empty license";
-	public string LicenseKey { get; set; } = "";
+	[ObservableProperty]
+	public partial string LicenseKey { get; set; } = "";
+	public TgEnumLicenseType LicenseType { get; set; } = TgEnumLicenseType.Free;
 
 	#endregion
 

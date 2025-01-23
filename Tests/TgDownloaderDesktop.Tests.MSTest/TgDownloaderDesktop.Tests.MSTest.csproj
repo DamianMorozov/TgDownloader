@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
     <RootNamespace>TgDownloaderDesktop.Tests.MSTest</RootNamespace>
     <Platforms>x86;x64;arm64;AnyCPU</Platforms>
     <IsPackable>false</IsPackable>
@@ -9,20 +9,20 @@
     <UseWinUI>true</UseWinUI>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <ProjectPriFileName>resources.pri</ProjectPriFileName>
-    <Version>0.5.410.0</Version>
+    <Version>0.5.440.0</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.3">
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="7.0.0" />
+	<PackageReference Include="FluentAssertions" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.7.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
-    <PackageReference Include="WTelegramClient" Version="4.2.7" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
+    <PackageReference Include="WTelegramClient" Version="4.2.8" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Clients\TgDownloaderDesktop\TgDownloaderDesktop.csproj" />
+    <ProjectReference Include="..\..\Presentation\TgDownloaderDesktop\TgDownloaderDesktop.csproj" />
   </ItemGroup>
 </Project>

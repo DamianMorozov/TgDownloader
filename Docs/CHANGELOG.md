@@ -5,21 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.5.440] - 2025-01-25
+### Fixed
+- Fixed file checks for TgDownloaderDesktop
 ### Changed
 - Updated connection page in TgDownloaderDesktop
-### Cganged
-- Updated apps table for TgStorage
+- Updated TgDownloaderConsole Docker image
 ### Added
 - Added Velopack installer for TgDownloaderDesktop
 - Added chat filter to TgDownloaderDesktop
 - Added page of chat details to TgDownloaderDesktop
 - Added launching download chat on the details page to TgDownloaderDesktop
 - Added chat download stop on the details page to TgDownloaderDesktop
-- Fixed file checks for TgDownloaderDesktop
+
+## [0.5.430] - 2025-01-23
+### Fixed
+- Fixed bugs for TgStorage
+- Fixed bugs for TgDownloaderConsole
+### Changed
+- Updated apps table for TgStorage
+- Updated NuGet packages
+- Updated .NET version from 8.0 to 9.0
 
 ## [0.5.410] - 2025-01-18
 ### Fixed
 - Fixed chat connection check to TgDownloaderConsole
+### Changed
+- Updated apps table for TgStorage
 ### Added
 - Added Velopack installer for TgDownloaderConsole
 - Added update menu for TgDownloaderConsole
@@ -34,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed `Sequence contains more than one element` error to TgDownloaderConsole
 - Fixed `Access to the path ...\TgDownloader.xml is denied` error when connecting to the server to TgDownloaderDesktop
-### Cganged
+### Changed
 - Updated contacts page to TgDownloaderDesktop
 - Updated filters page to TgDownloaderDesktop
 - Updated sources page to TgDownloaderDesktop
@@ -46,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.300] - 2025-01-03
 ### Fixed
 - Connecting to Telegram server to TgDownloaderDesktop
-### Cganged
+### Changed
 - Updated contacts page to TgDownloaderConsole
 - Updated home page to TgDownloaderDesktop
 - Updated sources page to TgDownloaderConsole

@@ -1,16 +1,10 @@
-# Руководство по настройке десктоп версии
+# Руководство по настройке Десктоп версии
 
-## Запуск TgDownloaderDesktop под ОС Windows
-- Скачать файл `TgDownloaderDesktop-Installing.ps1` в `c:\TgDownloader-Releases`
-- Запустить `PowerShell` с правами администратора
-- Выдать временные права доступа на установку `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
-- Запустить файл `TgDownloaderDesktop-Installing.ps1` в `PowerShell`
+## Установка и запуск TgDownloaderDesktop под ОС Windows
+- Скачайте и запустите инсталлятор [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/TgDownloader/releases)
+- Нажмите кнопку `Старт`, затем наберите и выполните `TgDownloaderDesktop`
 
-1. Запустите ПО.
-Оба чекбокса должны быть в положении включено.
-<p align="center"><img src="Assets/TgDownloaderWinDesktop.png"></p>
-
-2. Перейдите на вкладку "Клиент".
+## Настройка подключения
 Кликните по ссылке справа: https://my.telegram.org/auth?to=apps
 Там вы сможете зарегистрировать своё ПО для использования с телеграм.
 Введите полученные данные в поля:
