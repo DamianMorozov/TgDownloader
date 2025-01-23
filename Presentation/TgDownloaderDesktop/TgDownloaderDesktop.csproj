@@ -127,6 +127,10 @@
     <None Include="..\..\Docs\GUIDE-SETUP-DOCKER.md" Link="Docs\GUIDE-SETUP-DOCKER.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\Docs\GUIDE-SETUP-FILTERS-RUS.md" Link="Docs\GUIDE-SETUP-FILTERS-RUS.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-FILTERS.md" Link="Docs\GUIDE-SETUP-FILTERS.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-GROUPS-RUS.md" Link="Docs\GUIDE-SETUP-GROUPS-RUS.md" />
+    <None Include="..\..\Docs\GUIDE-SETUP-GROUPS.md" Link="Docs\GUIDE-SETUP-GROUPS.md" />
     <None Include="..\..\Docs\GUIDES-RUS.md" Link="Docs\GUIDES-RUS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

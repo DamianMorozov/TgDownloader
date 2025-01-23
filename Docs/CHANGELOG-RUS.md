@@ -5,10 +5,14 @@
 и этот проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Нереализовано]
-### Изменено
-- Обновлена страница подключения в TgDownloaderDesktop
+
+## [0.5.420] - 2025-01-23
+### Исправлено
+- Исправления для TgStorage
+- Исправления для TgDownloaderConsole
 ### Изменено
 - Обновлена таблица приложений в TgStorage
+- Обновлена страница подключения в TgDownloaderDesktop
 ### Добавлено
 - Добавлен Velopack инсталлятор для TgDownloaderDesktop
 - Добавлен фильтр чатов для TgDownloaderDesktop

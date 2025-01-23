@@ -1,4 +1,4 @@
-# Guide to setup the docker version
+# Guide to setup the Docker version
 
 ## Docker compose usage
 ```

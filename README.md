@@ -1,34 +1,34 @@
 ﻿# TgDownloader - Telegram Files Downloader
 
-## <div align="center"><b><a href="README.md">Readme</a> | <a href="Docs/CHANGELOG.md">Changelog</a> | <a href="Docs/RELEASE.md">Releases</a> | <a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
-## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="Docs/CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASE.md">Релизы</a> | <a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
+## Global version
+### <div align="center"><b><a href="http://tgdownloader.online">tgdownloader.online</a> | <a href="http://tg-downloader.online">tg-downloader.online</a></b></div>
+### <div align="center"><b><a href="README.md">Readme</a> | <a href="Docs/CHANGELOG.md">Changelog</a> | <a href="Docs/RELEASE.md">Releases</a></b></div>
+### <div align="center"><b><a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
 
+## Russian version
+### <div align="center"><b><a href="http://tgdownloader.ru">tgdownloader.ru</a> | <a href="http://tg-downloader.ru">tg-downloader.ru</a></b></div>
+## <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="Docs/CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASE.md">Релизы</a></b></div>
+## <div align="center"><b><a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
+
+## Statistics about the project
 ![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## Product assignment
-Organized downloading of files from TG channels/groups/chats (accessed under your account). Files from each source can be downloaded to a separate directory. You can specify which sources to include in auto-downloading. There is a multithreaded download mode. Console version is almost completed (production). The desktop version is in active development stage (preview).
-
-## Official website
-
-### Global version
-- [tgdownloader.online](http://tgdownloader.online)
-- [tg-downloader.online](http://tg-downloader.online)
-
-### Russian version
-- [tgdownloader.ru](http://tgdownloader.ru)
-- [tg-downloader.ru](http://tg-downloader.ru)
+Upgrade your Telegram. Download and distribute files from chats to your catalogs. 
+Console version is almost complete (production). 
+The desktop version is in active development stage (preview). 
 
 ## Download
 - [Releases](https://github.com/DamianMorozov/TgDownloader/releases)
 
 ## GitHub community
 - [TgDownloader repository](https://github.com/DamianMorozov/TgDownloader)
-- [Issue template](https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/ISSUE.md)
 - [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+- [Issue template](Docs/ISSUE.md)
 
 ## User support
 - [News](https://t.me/TgDownloader)

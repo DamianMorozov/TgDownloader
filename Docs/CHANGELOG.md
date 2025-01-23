@@ -5,10 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Changed
-- Updated connection page in TgDownloaderDesktop
+
+## [0.5.420] - 2025-01-23
+### Fixed
+- Fixed bugs for TgStorage
+- Fixed bugs for TgDownloaderConsole
 ### Cganged
 - Updated apps table for TgStorage
+- Updated connection page in TgDownloaderDesktop
 ### Added
 - Added Velopack installer for TgDownloaderDesktop
 - Added chat filter to TgDownloaderDesktop
@@ -20,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.410] - 2025-01-18
 ### Fixed
 - Fixed chat connection check to TgDownloaderConsole
+### Cganged
+- Updated apps table for TgStorage
 ### Added
 - Added Velopack installer for TgDownloaderConsole
 - Added update menu for TgDownloaderConsole
