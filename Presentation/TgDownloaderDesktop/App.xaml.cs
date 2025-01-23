@@ -61,6 +61,7 @@ public partial class App : Application
 				services.AddSingleton<ISampleDataService, SampleDataService>();
 				services.AddSingleton<IFileService, FileService>();
 				// Views and ViewModels
+				services.AddTransient<ShellViewModel>();
 				services.AddTransient<TgSettingsViewModel>();
 				services.AddTransient<TgSettingsPage>();
 				services.AddTransient<DataGridViewModel>();
@@ -75,7 +76,6 @@ public partial class App : Application
 				services.AddTransient<WebViewPage>();
 				services.AddTransient<TgMainViewModel>();
 				services.AddTransient<TgMainPage>();
-				services.AddTransient<ShellViewModel>();
 				services.AddTransient<ShellPage>();
 				services.AddTransient<TgConnectViewModel>();
 				services.AddTransient<TgConnectPage>();
@@ -95,6 +95,8 @@ public partial class App : Application
 				services.AddTransient<TgStoriesPage>();
 				services.AddTransient<TgProxiesViewModel>();
 				services.AddTransient<TgProxiesPage>();
+				services.AddTransient<TgUpdateViewModel>();
+				services.AddTransient<TgUpdatePage>();
 				// Configuration
 				services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
 			})
@@ -126,6 +128,21 @@ public partial class App : Application
 		base.OnLaunched(args);
 		App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
 		await App.GetService<IActivationService>().ActivateAsync(args);
+#if DEBUG
+		TgDesktopUtils.FileLog("OnLaunched");
+#endif
+		try
+		{
+			TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
+			// Register TgEfContext as the DbContext for EF Core
+			TgEfUtils.AppStorage = App.GetService<ITgSettingsService>().AppStorage;
+			await TgEfUtils.CreateAndUpdateDbAsync();
+			TgEfUtils.RecreateEfContext();
+		}
+		catch (Exception ex)
+		{
+			TgDesktopUtils.FileLog(ex);
+		}
 	}
 
 	#endregion

@@ -4,23 +4,23 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgContactDetailsViewModel : TgPageViewModelBase
+public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
+    private TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial Guid Uid { get; set; } = default!;
-	[ObservableProperty]
-	public partial TgEfContactDto Dto { get; set; } = default!;
+	public partial ObservableCollection<TgEfStoryDto> Dtos { get; set; } = [];
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
+	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgContactDetailsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	public TgStoriesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
+		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
 		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
 	}
@@ -31,18 +31,22 @@ public sealed partial class TgContactDetailsViewModel : TgPageViewModelBase
 
 	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
 		{
-			TgEfUtils.AppStorage = SettingsService.AppStorage;
-			TgEfUtils.RecreateEfContext();
-			Uid = e.Parameter is Guid uid ? uid : Guid.Empty;
 			await LoadDataStorageCoreAsync();
 			await ReloadUiAsync();
 		});
+
+	/// <summary> Sort data </summary>
+	private void SetOrderData(ObservableCollection<TgEfStoryDto> dtos)
+	{
+		if (!dtos.Any()) return;
+		Dtos = [.. dtos.OrderBy(x => x.DtChanged).ThenBy(x => x.FromName)];
+	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
 
 	private async Task ClearDataStorageCoreAsync()
 	{
-		Dto = new();
+		Dtos.Clear();
 		await Task.CompletedTask;
 	}
 
@@ -51,7 +55,13 @@ public sealed partial class TgContactDetailsViewModel : TgPageViewModelBase
 	private async Task LoadDataStorageCoreAsync()
 	{
 		if (!SettingsService.IsExistsAppStorage) return;
-		Dto = await Repository.GetDtoAsync(x => x.Uid == Uid);
+		SetOrderData([.. await Repository.GetListDtosAsync(take: 0, skip: 0)]);
+	}
+
+	private async Task DefaultSortAsync()
+	{
+		SetOrderData(Dtos);
+		await Task.CompletedTask;
 	}
 
 	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
@@ -60,7 +70,7 @@ public sealed partial class TgContactDetailsViewModel : TgPageViewModelBase
 	{
 		await LoadDataAsync(async () => {
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Contact);
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Story);
 			await LoadDataStorageCoreAsync();
 		});
 	}

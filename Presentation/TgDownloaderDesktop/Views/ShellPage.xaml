@@ -80,6 +80,12 @@
 						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE90A;" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
+				<!--  Update  -->
+				<NavigationViewItem x:Uid="Shell_Update" helpers:TgNavigationHelper.NavigateTo="TgDownloaderDesktop.ViewModels.TgUpdateViewModel">
+					<NavigationViewItem.Icon>
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE777;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
 			</NavigationView.MenuItems>
 			<NavigationView.HeaderTemplate>
 				<DataTemplate>

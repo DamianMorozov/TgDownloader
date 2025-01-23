@@ -9,10 +9,6 @@ public static class TgDesktopUtils
     #region Public and private fields, properties, constructor
 
     public static TgClientHelper TgClient => TgClientHelper.Instance;
-	public static string BaseDirectory = AppContext.BaseDirectory;
-	public static string LocalFolder = ApplicationData.Current.LocalFolder.Path;
-	public static string InstalledLocation = Package.Current.InstalledLocation.Path;
-	public static string TgDownloaderLogName => "TgDownloader.log";
 
 	#endregion
 
@@ -159,48 +155,37 @@ public static class TgDesktopUtils
 	//}
 
 	//public static async Task RunFuncAsync(TgPageViewModelBase viewModel, Func<Task> action, bool isUpdateLoad)
- //   {
- //       async Task Job()
- //       {
- //           if (isUpdateLoad)
- //               viewModel.IsLoad = true;
- //           //TgConnectViewModel.Exception.Clear();
- //           await action();
- //       }
+	//   {
+	//       async Task Job()
+	//       {
+	//           if (isUpdateLoad)
+	//               viewModel.IsLoad = true;
+	//           //TgConnectViewModel.Exception.Clear();
+	//           await action();
+	//       }
 
- //       void JobFinally()
- //       {
- //           viewModel.IsLoad = false;
- //       }
+	//       void JobFinally()
+	//       {
+	//           viewModel.IsLoad = false;
+	//       }
 
- //       try
- //       {
+	//       try
+	//       {
 	//        App.MainWindow.DispatcherQueue.TryEnqueue(async () => await Job());
- //       }
- //       catch (Exception ex)
- //       {
+	//       }
+	//       catch (Exception ex)
+	//       {
 	//        //App.MainWindow.DispatcherQueue.TryEnqueue(() => TgConnectViewModel.Exception.Set(ex));
- //       }
- //       finally
- //       {
- //           if (isUpdateLoad)
- //           {
+	//       }
+	//       finally
+	//       {
+	//           if (isUpdateLoad)
+	//           {
 	//            App.MainWindow.DispatcherQueue.TryEnqueue(JobFinally);
- //           }
- //           await Task.CompletedTask;
- //       }
- //   }
-
-	private static void FileLogCore(string message)
-    {
-	    var storageFolder = StorageFolder.GetFolderFromPathAsync(LocalFolder).GetAwaiter().GetResult();
-	    var storageFile = storageFolder.CreateFileAsync(TgDownloaderLogName, CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
-	    var logMessage = $"[{DateTime.Now}] {message}";
-	    using var stream = storageFile.OpenStreamForWriteAsync().GetAwaiter().GetResult();
-	    stream.Seek(0, SeekOrigin.End);
-	    using var writer = new StreamWriter(stream);
-	    writer.WriteLine(logMessage);
-    }
+	//           }
+	//           await Task.CompletedTask;
+	//       }
+	//   }
 
 	private static void AppendCallerInfo(this StringBuilder sb, string filePath, int lineNumber, string memberName)
 	{
@@ -231,15 +216,31 @@ public static class TgDesktopUtils
 		FileLogCore(sb.ToString());
 	}
 
+	private static async void FileLogCore(string message) => await FileLogCoreAsync(message);
+
 	private static async Task FileLogCoreAsync(string message)
     {
-	    var storageFolder = await StorageFolder.GetFolderFromPathAsync(LocalFolder);
-	    var storageFile = await storageFolder.CreateFileAsync(TgDownloaderLogName, CreationCollisionOption.OpenIfExists);
-	    var logMessage = $"[{DateTime.Now}] {message}";
-	    await using var stream = await storageFile.OpenStreamForWriteAsync();
-	    stream.Seek(0, SeekOrigin.End);
-	    await using var writer = new StreamWriter(stream);
-	    await writer.WriteLineAsync(logMessage);
+		var appFolder = string.Empty;
+		try
+		{
+			appFolder = App.GetService<ITgSettingsService>().AppFolder;
+		}
+		catch (Exception)
+		{
+			//
+		}
+		if (!Directory.Exists(appFolder))
+		{
+			appFolder = Path.GetDirectoryName(Environment.ProcessPath);
+		}
+		if (!Directory.Exists(appFolder)) return;
+		var storageFolder = await StorageFolder.GetFolderFromPathAsync(appFolder);
+		var storageFile = await storageFolder.CreateFileAsync(TgFileUtils.FileLog, CreationCollisionOption.OpenIfExists);
+		var logMessage = $"[{DateTime.Now}] {message}";
+		await using var stream = await storageFile.OpenStreamForWriteAsync();
+		stream.Seek(0, SeekOrigin.End);
+		await using var writer = new StreamWriter(stream);
+		await writer.WriteLineAsync(logMessage);
     }
 
 	public static async Task FileLogAsync(Exception ex, string message = "", 
@@ -318,7 +319,11 @@ public static class TgDesktopUtils
 			if (storageFile.IsAvailable)
 				await storageFile.DeleteAsync();
 		}
+#if DEBUG
 		catch (Exception ex)
+#else
+		catch (Exception)
+#endif
 		{
 #if DEBUG
 			await FileLogAsync(ex, $"{Path.Combine(folder, fileName)}");
@@ -351,7 +356,11 @@ public static class TgDesktopUtils
 				totalSize += await CalculateDirSizeAsync(subFolder.Path);
 			}
 		}
+#if DEBUG
 		catch (Exception ex)
+#else
+		catch (Exception)
+#endif
 		{
 #if DEBUG
 			Debug.WriteLine(ex);

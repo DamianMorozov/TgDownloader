@@ -12,7 +12,8 @@ public sealed partial class MainWindow : WindowEx
     {
         InitializeComponent();
 
-        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets/applicationIcon.ico"));
+        if (!string.IsNullOrEmpty(TgFileUtils.BaseDirectory))
+            AppWindow.SetIcon(Path.Combine(TgFileUtils.BaseDirectory, "Assets/applicationIcon.ico"));
         Content = null;
         Title = "AppDisplayName".GetLocalized();
 

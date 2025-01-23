@@ -5,11 +5,11 @@ namespace TgDownloaderDesktop.Services;
 
 public sealed class AppNotificationService : IAppNotificationService
 {
-	private readonly INavigationService _navigationService;
+	//private readonly INavigationService _navigationService;
 
 	public AppNotificationService(INavigationService navigationService)
 	{
-		_navigationService = navigationService;
+		//_navigationService = navigationService;
 	}
 
 	~AppNotificationService()

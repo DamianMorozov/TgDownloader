@@ -22,8 +22,6 @@ public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs
 		await HandleActivationAsync(activationArgs);
 		// Activate the MainWindow
 		App.MainWindow.Activate();
-		// Execute tasks after activation
-		await StartupAsync();
 	}
 
 	private async Task HandleActivationAsync(object activationArgs)
@@ -37,13 +35,5 @@ public sealed class ActivationService(ActivationHandler<LaunchActivatedEventArgs
 		{
 			await defaultHandler.HandleAsync(activationArgs);
 		}
-	}
-
-	public async Task StartupAsync()
-	{
-		TgAsyncUtils.SetAppType(TgEnumAppType.Desktop);
-		// Register TgEfContext as the DbContext for EF Core
-		TgEfUtils.AppStorage = App.GetService<ITgSettingsService>().AppStorage;
-		await TgEfUtils.CreateAndUpdateDbAsync();
 	}
 }

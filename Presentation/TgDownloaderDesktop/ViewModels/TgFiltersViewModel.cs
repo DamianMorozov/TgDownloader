@@ -4,25 +4,23 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgProxiesViewModel : TgPageViewModelBase
+public sealed partial class TgFiltersViewModel : TgPageViewModelBase
 {
     #region Public and private fields, properties, constructor
 
-    private TgEfProxyRepository Repository { get; } = new(TgEfUtils.EfContext);
+    private TgEfFilterRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfProxyDto> Dtos { get; set; } = [];
+	public partial ObservableCollection<TgEfFilterDto> Dtos { get; set; } = [];
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
-	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgProxiesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+	public TgFiltersViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
 		LoadDataStorageCommand = new AsyncRelayCommand(LoadDataStorageAsync);
-		UpdateOnlineCommand = new AsyncRelayCommand(UpdateOnlineAsync);
 	}
 
 	#endregion
@@ -31,17 +29,15 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 
 	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
 		{
-			TgEfUtils.AppStorage = SettingsService.AppStorage;
-			TgEfUtils.RecreateEfContext();
 			await LoadDataStorageCoreAsync();
 			await ReloadUiAsync();
 		});
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(ObservableCollection<TgEfProxyDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfFilterDto> dtos)
 	{
 		if (!dtos.Any()) return;
-		Dtos = [.. dtos.OrderBy(x => x.HostName).ThenBy(x => x.Type)];
+		Dtos = [.. dtos.OrderBy(x => x.Name)];
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -64,17 +60,6 @@ public sealed partial class TgProxiesViewModel : TgPageViewModelBase
 	{
 		SetOrderData(Dtos);
 		await Task.CompletedTask;
-	}
-
-	private async Task UpdateOnlineAsync() => await ContentDialogAsync(UpdateOnlineCoreAsync, TgResourceExtensions.AskUpdateOnline());
-
-	private async Task UpdateOnlineCoreAsync()
-	{
-		await LoadDataAsync(async () => {
-			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Story);
-			await LoadDataStorageCoreAsync();
-		});
 	}
 
 	#endregion

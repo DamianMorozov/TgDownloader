@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{BC2545B1-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{53975472-4A48-4B67-8AF5-029EF31DEA39}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{3F563803-8BCB-4477-89CF-91167A8F887C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{3F563803-8BCB-4477-89CF-91167A8F887C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgStorage", "Core\TgStorage\TgStorage.csproj", "{3F5FE133-3178-468E-9017-EC97874A3DA6}"
 EndProject
@@ -28,13 +28,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderTest", "Tests\T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgStorageTest", "Tests\TgStorageTest\TgStorageTest.csproj", "{17CE2A7E-AE56-43E8-AB4B-6504B3484167}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderConsole", "Clients\TgDownloaderConsole\TgDownloaderConsole.csproj", "{5A12C18B-8DA6-4D47-93D3-9D1AA49BEF62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderConsole", "Presentation\TgDownloaderConsole\TgDownloaderConsole.csproj", "{5A12C18B-8DA6-4D47-93D3-9D1AA49BEF62}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderWinDesktopWPF", "Clients\TgDownloaderWinDesktopWPF\TgDownloaderWinDesktopWPF.csproj", "{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderWinDesktopWPF", "Presentation\TgDownloaderWinDesktopWPF\TgDownloaderWinDesktopWPF.csproj", "{CD1F315D-B7C2-45A4-A933-8ED742FCBB4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgInfrastructure", "Core\TgInfrastructure\TgInfrastructure.csproj", "{FC689594-30C9-45D2-B8DB-7079E752984B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderBlazor", "Clients\TgDownloaderBlazor\TgDownloaderBlazor.csproj", "{2CEEB42C-BE70-4D2C-811F-17648FB742F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderBlazor", "Presentation\TgDownloaderBlazor\TgDownloaderBlazor.csproj", "{2CEEB42C-BE70-4D2C-811F-17648FB742F5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{49FCA776-C63B-4C0C-B2B2-E9CA0E5949ED}"
 	ProjectSection(SolutionItems) = preProject
@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\branch_preview_tests.yml = .github\workflows\branch_preview_tests.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderDesktop", "Clients\TgDownloaderDesktop\TgDownloaderDesktop.csproj", "{FB756D71-7AA6-4BAB-93BD-28B30B0EF1FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderDesktop", "Presentation\TgDownloaderDesktop\TgDownloaderDesktop.csproj", "{FB756D71-7AA6-4BAB-93BD-28B30B0EF1FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TgDownloaderDesktop.Core", "Core\TgDownloaderDesktop.Core\TgDownloaderDesktop.Core.csproj", "{F6A1AA94-9746-4F2A-9B1D-7A70F3F12E1F}"
 EndProject

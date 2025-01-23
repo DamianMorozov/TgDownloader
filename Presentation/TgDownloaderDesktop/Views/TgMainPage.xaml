@@ -453,21 +453,6 @@
 							Text="{x:Bind ViewModel.AppVersionFull, Mode=OneWay}" />
 					</StackPanel>
 				</Expander>
-				<!--  Update  -->
-				<Expander
-					x:Uid="ExpanderUpdate"
-					Grid.Row="10"
-					Margin="{StaticResource ExpanderMargin}"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					IsExpanded="True">
-					<StackPanel Margin="0,-15,0,-10">
-						<TextBlock
-							Margin="10,0,0,0"
-							Style="{ThemeResource BodyStrongTextBlockStyle}"
-							Text="{x:Bind ViewModel.UpdateLog, Mode=OneWay}" />
-					</StackPanel>
-				</Expander>
 			</Grid>
 		</ContentControl>
 	</ScrollView>

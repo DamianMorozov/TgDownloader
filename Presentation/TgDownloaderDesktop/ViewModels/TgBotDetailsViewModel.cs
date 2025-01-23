@@ -34,8 +34,6 @@
 
 //	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
 //		{
-//			TgEfUtils.AppStorage = SettingsService.AppStorage;
-//			TgEfUtils.RecreateEfContext();
 //			Uid = e.Parameter is Guid uid ? uid : Guid.Empty;
 //			await LoadDataStorageCoreAsync();
 //			await ReloadUiAsync();

@@ -4,20 +4,20 @@
 namespace TgDownloaderDesktop.ViewModels;
 
 [DebuggerDisplay("{ToDebugString()}")]
-public sealed partial class TgStoriesViewModel : TgPageViewModelBase
+public sealed partial class TgContactsViewModel : TgPageViewModelBase
 {
-    #region Public and private fields, properties, constructor
+	#region Public and private fields, properties, constructor
 
-    private TgEfStoryRepository Repository { get; } = new(TgEfUtils.EfContext);
+	private TgEfContactRepository Repository { get; } = new(TgEfUtils.EfContext);
 	[ObservableProperty]
-	public partial ObservableCollection<TgEfStoryDto> Dtos { get; set; } = [];
+	public partial ObservableCollection<TgEfContactDto> Dtos { get; set; } = [];
 	public IRelayCommand LoadDataStorageCommand { get; }
 	public IRelayCommand ClearDataStorageCommand { get; }
 	public IRelayCommand DefaultSortCommand { get; }
 	public IRelayCommand UpdateOnlineCommand { get; }
 
-	public TgStoriesViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
-	{
+	public TgContactsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
+    {
 		// Commands
 		ClearDataStorageCommand = new AsyncRelayCommand(ClearDataStorageAsync);
 		DefaultSortCommand = new AsyncRelayCommand(DefaultSortAsync);
@@ -31,17 +31,15 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 
 	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await LoadDataAsync(async () =>
 		{
-			TgEfUtils.AppStorage = SettingsService.AppStorage;
-			TgEfUtils.RecreateEfContext();
 			await LoadDataStorageCoreAsync();
 			await ReloadUiAsync();
 		});
 
 	/// <summary> Sort data </summary>
-	private void SetOrderData(ObservableCollection<TgEfStoryDto> dtos)
+	private void SetOrderData(ObservableCollection<TgEfContactDto> dtos)
 	{
 		if (!dtos.Any()) return;
-		Dtos = [.. dtos.OrderBy(x => x.DtChanged).ThenBy(x => x.FromName)];
+		Dtos = [.. dtos.OrderBy(x => x.UserName).ThenBy(x => x.FirstName).ThenBy(x => x.LastName)];
 	}
 
 	private async Task ClearDataStorageAsync() => await ContentDialogAsync(ClearDataStorageCoreAsync, TgResourceExtensions.AskDataClear());
@@ -72,9 +70,17 @@ public sealed partial class TgStoriesViewModel : TgPageViewModelBase
 	{
 		await LoadDataAsync(async () => {
 			if (!await TgDesktopUtils.TgClient.CheckClientIsReadyAsync()) return;
-			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Story);
+			await TgDesktopUtils.TgClient.SearchSourcesTgAsync(DownloadSettings, TgEnumSourceType.Contact);
 			await LoadDataStorageCoreAsync();
 		});
+	}
+
+	public void DataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+	{
+		if (sender is not DataGrid dataGrid) return;
+		if (dataGrid.SelectedItem is not TgEfContactDto dto) return;
+
+		NavigationService.NavigateTo(typeof(TgContactDetailsViewModel).FullName!, dto.Uid);
 	}
 
 	#endregion

@@ -22,29 +22,11 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	[ObservableProperty]
 	public partial TgEnumLanguage AppLanguage { get; set; } = TgEnumLanguage.Default;
 	[ObservableProperty]
-	public partial string AppFolder { get; set; } = default!;
-	private string _appStorage = default!;
-	public string AppStorage
-	{
-		get => _appStorage;
-		set
-		{
-			SetProperty(ref _appStorage, value);
-			OnPropertyChanged();
-			IsExistsAppStorage = File.Exists(AppStorage);
-		}
-	}
-	private string _appSession = default!;
-	public string AppSession
-	{
-		get => _appSession;
-		set
-		{
-			SetProperty(ref _appSession, value);
-			IsExistsAppSession = File.Exists(AppSession);
-			OnPropertyChanged();
-		}
-	}
+	public partial string AppFolder { get; set; } = string.Empty;
+	[ObservableProperty]
+	public partial string AppStorage { get; set; } = string.Empty;
+	[ObservableProperty]
+	public partial string AppSession { get; set; } = string.Empty;
 	[ObservableProperty]
 	public partial bool IsExistsAppStorage { get; set; }
 	[ObservableProperty]
@@ -53,9 +35,9 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	private const string DefaultApplicationDataFolder = "TgDownloaderDesktop/ApplicationData";
 	private const string DefaultLocalSettingsFile = "TgLocalSettings.json";
 	private readonly IFileService _fileService;
-	private readonly string _localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-	private readonly string _applicationDataFolder;
-	private readonly string _localSettingsFile;
+	private readonly string _localApplicationData = string.Empty;
+	private readonly string _applicationDataFolder = string.Empty;
+	private readonly string _localSettingsFile = string.Empty;
 	private IDictionary<string, object> _settings;
 	private bool _isInitialized;
 	private readonly LocalSettingsOptions _options;
@@ -63,13 +45,30 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 	public TgSettingsService(IFileService fileService, IOptions<LocalSettingsOptions> options)
 	{
 		_fileService = fileService;
-		_options = options.Value;
-		_applicationDataFolder = Path.Combine(_localApplicationData, _options.ApplicationDataFolder ?? DefaultApplicationDataFolder);
-		_localSettingsFile = _options.LocalSettingsFile ?? DefaultLocalSettingsFile;
 		_settings = new Dictionary<string, object>();
-		AppThemes = [TgEnumTheme.Default, TgEnumTheme.Light, TgEnumTheme.Dark];
-		AppLanguages = [TgEnumLanguage.Default, TgEnumLanguage.English, TgEnumLanguage.Russian];
-		Default();
+		_options = options.Value;
+
+		try
+		{
+			AppThemes = [TgEnumTheme.Default, TgEnumTheme.Light, TgEnumTheme.Dark];
+			AppLanguages = [TgEnumLanguage.Default, TgEnumLanguage.English, TgEnumLanguage.Russian];
+			Default();
+		}
+		catch (Exception ex)
+		{
+			TgDesktopUtils.FileLog(ex);
+		}
+
+		try
+		{
+			_localApplicationData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+			_applicationDataFolder = Path.Combine(_localApplicationData, _options.ApplicationDataFolder ?? DefaultApplicationDataFolder);
+			_localSettingsFile = _options.LocalSettingsFile ?? DefaultLocalSettingsFile;
+		}
+		catch (Exception ex)
+		{
+			TgDesktopUtils.FileLog(ex);
+		}
 	}
 
 	#endregion
@@ -129,13 +128,59 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 
 	private async Task SaveAppSessionInSettingsAsync(string appSession) => await SaveSettingAsync(SettingsKeyAppSession, appSession);
 
+	private void SetAppFolder()
+	{
+		try
+		{
+			AppFolder = ApplicationData.Current.LocalFolder.Path;
+			if (!Directory.Exists(AppFolder))
+				AppFolder = AppDomain.CurrentDomain.BaseDirectory;
+			if (!Directory.Exists(AppFolder))
+				AppFolder = Path.GetDirectoryName(Environment.ProcessPath) ?? string.Empty;
+		}
+		catch (Exception)
+		{
+			//
+		}
+		try
+		{
+			if (!Directory.Exists(AppFolder))
+				AppFolder = AppDomain.CurrentDomain.BaseDirectory;
+		}
+		catch (Exception)
+		{
+			//
+		}
+		try
+		{
+			if (!Directory.Exists(AppFolder))
+				AppFolder = Path.GetDirectoryName(Environment.ProcessPath) ?? string.Empty;
+		}
+		catch (Exception)
+		{
+			//
+		}
+	}
+
 	public void Default()
 	{
 		AppTheme = AppThemes.First(x => x == TgEnumTheme.Default);
 		AppLanguage = AppLanguages.First(x => x == TgEnumLanguage.Default);
-		AppFolder = TgDesktopUtils.LocalFolder;
-		AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
-		AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
+		SetAppFolder();
+		if (Directory.Exists(AppFolder))
+		{
+			AppStorage = Directory.Exists(AppFolder) ? Path.Combine(AppFolder, TgEfUtils.FileEfStorage) : string.Empty;
+			IsExistsAppStorage = File.Exists(AppStorage);
+			AppSession = Directory.Exists(AppFolder) ? Path.Combine(AppFolder, TgFileUtils.FileTgSession) : string.Empty;
+			IsExistsAppSession = File.Exists(AppSession);
+		}
+		else
+		{ 
+			AppStorage = string.Empty;
+			IsExistsAppStorage = false;
+			AppSession = string.Empty;
+			IsExistsAppSession = false;
+		}
 	}
 
 	public async Task LoadAsync()
@@ -145,11 +190,13 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 		var appLanguage = await LoadAppLanguageFromSettingsAsync();
 		AppLanguage = AppLanguages.First(x => x == appLanguage);
 		AppStorage = await LoadAppStorageFromSettingsAsync();
-		if (!File.Exists(AppStorage))
-			AppStorage = Path.Combine(TgDesktopUtils.LocalFolder, TgEfUtils.FileEfStorage);
+		//if (!File.Exists(AppStorage))
+		//	AppStorage = Directory.Exists(AppFolder) ? Path.Combine(AppFolder, TgEfUtils.FileEfStorage) : string.Empty;
+		IsExistsAppStorage = File.Exists(AppStorage);
 		AppSession = await LoadAppSessionFromSettingsAsync();
-		if (!File.Exists(AppSession))
-			AppSession = Path.Combine(TgDesktopUtils.LocalFolder, TgFileUtils.FileTgSession);
+		//if (!File.Exists(AppSession))
+		//	AppSession = Directory.Exists(AppFolder) ? Path.Combine(AppFolder, TgFileUtils.FileTgSession) : string.Empty;
+		IsExistsAppSession = File.Exists(AppSession);
 	}
 
 	public async Task SaveAsync()
@@ -171,35 +218,49 @@ public sealed partial class TgSettingsService : ObservableRecipient, ITgSettings
 
 	public async Task<T?> ReadSettingAsync<T>(string key)
 	{
-		if (TgRuntimeHelper.IsMSIX)
+		try
 		{
-			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(key, out var obj))
+			if (TgRuntimeHelper.IsMSIX)
 			{
-				return await Json.ToObjectAsync<T>((string)obj);
+				if (ApplicationData.Current.LocalSettings.Values.TryGetValue(key, out var obj))
+				{
+					return await Json.ToObjectAsync<T>((string)obj);
+				}
+			}
+			else
+			{
+				await InitializeAsync();
+				if (_settings != null && _settings.TryGetValue(key, out var obj))
+				{
+					return await Json.ToObjectAsync<T>((string)obj);
+				}
 			}
 		}
-		else
+		catch (Exception)
 		{
-			await InitializeAsync();
-			if (_settings != null && _settings.TryGetValue(key, out var obj))
-			{
-				return await Json.ToObjectAsync<T>((string)obj);
-			}
+			//
 		}
 		return default;
 	}
 
 	public async Task SaveSettingAsync<T>(string key, T value)
 	{
-		if (TgRuntimeHelper.IsMSIX)
+		try
 		{
-			ApplicationData.Current.LocalSettings.Values[key] = await Json.StringifyAsync(value);
+			if (TgRuntimeHelper.IsMSIX)
+			{
+				ApplicationData.Current.LocalSettings.Values[key] = await Json.StringifyAsync(value);
+			}
+			else
+			{
+				await InitializeAsync();
+				_settings[key] = await Json.StringifyAsync(value);
+				await Task.Run(() => _fileService.Save(_applicationDataFolder, _localSettingsFile, _settings));
+			}
 		}
-		else
+		catch (Exception)
 		{
-			await InitializeAsync();
-			_settings[key] = await Json.StringifyAsync(value);
-			await Task.Run(() => _fileService.Save(_applicationDataFolder, _localSettingsFile, _settings));
+			//
 		}
 	}
 

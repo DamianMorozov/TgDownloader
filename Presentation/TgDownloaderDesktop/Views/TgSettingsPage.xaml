@@ -27,15 +27,31 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
+					<!--  Load button  -->
+					<Button
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Command="{x:Bind Path=ViewModel.SettingsLoadCommand, Mode=OneWay}">
+						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+							<FontIcon Margin="10,0,20,0" Glyph="&#xE896;" />
+							<TextBlock
+								x:Uid="ActionLoad"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</StackPanel>
+					</Button>
 					<!--  Default button  -->
 					<Button
+						Grid.Column="1"
 						Margin="0,0,5,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsDefaultCommand, Mode=OneWay}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-							<FontIcon Margin="10,0,20,0" Glyph="&#xE72C;" />
+							<FontIcon Margin="10,0,20,0" Glyph="&#xE777;" />
 							<TextBlock
 								x:Uid="ActionResetToDefault"
 								HorizontalAlignment="Center"
@@ -44,13 +60,13 @@
 					</Button>
 					<!--  Save button  -->
 					<Button
-						Grid.Column="1"
+						Grid.Column="2"
 						Margin="5,0,0,0"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						Command="{x:Bind Path=ViewModel.SettingsSaveCommand, Mode=OneWay}">
 						<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-							<FontIcon Margin="10,0,20,0" Glyph="&#xE72C;" />
+							<FontIcon Margin="10,0,20,0" Glyph="&#xE74E;" />
 							<TextBlock
 								x:Uid="ActionSave"
 								HorizontalAlignment="Center"
@@ -129,14 +145,15 @@
 				IsExpanded="True">
 				<Grid Margin="0,-10,0,-10">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="auto" />
-						<RowDefinition Height="auto" />
-						<RowDefinition Height="auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="auto" />
-						<ColumnDefinition Width="auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<!--  Folder  -->
 					<TextBlock
@@ -149,6 +166,15 @@
 						HorizontalAlignment="Stretch"
 						IsReadOnly="True"
 						Text="{x:Bind ViewModel.SettingsService.AppFolder, Mode=OneWay}" />
+					<Button
+						Grid.Column="3"
+						Margin="10,0,0,0"
+						HorizontalContentAlignment="Left"
+						Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+						CornerRadius="10"
+						Tag="{x:Bind ViewModel.SettingsService.AppFolder, Mode=OneWay}">
+						<SymbolIcon Symbol="Copy" />
+					</Button>
 					<!--  Storage  -->
 					<TextBlock
 						x:Uid="SettingStorage"
@@ -172,6 +198,16 @@
 						Margin="2"
 						HorizontalAlignment="Stretch"
 						Text="{x:Bind ViewModel.SettingsService.AppStorage, Mode=TwoWay}" />
+					<Button
+						Grid.Row="1"
+						Grid.Column="3"
+						Margin="10,0,0,0"
+						HorizontalContentAlignment="Left"
+						Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+						CornerRadius="10"
+						Tag="{x:Bind ViewModel.SettingsService.AppStorage, Mode=OneWay}">
+						<SymbolIcon Symbol="Copy" />
+					</Button>
 					<!--  Session  -->
 					<TextBlock
 						x:Uid="SettingSession"
@@ -195,6 +231,16 @@
 						Margin="2"
 						HorizontalAlignment="Stretch"
 						Text="{x:Bind ViewModel.SettingsService.AppSession, Mode=TwoWay}" />
+					<Button
+						Grid.Row="2"
+						Grid.Column="3"
+						Margin="10,0,0,0"
+						HorizontalContentAlignment="Left"
+						Click="{x:Bind ViewModel.OnClipboardWriteClick, Mode=OneWay}"
+						CornerRadius="10"
+						Tag="{x:Bind ViewModel.SettingsService.AppSession, Mode=OneWay}">
+						<SymbolIcon Symbol="Copy" />
+					</Button>
 				</Grid>
 			</Expander>
 		</Grid>

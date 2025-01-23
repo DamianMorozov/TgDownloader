@@ -165,7 +165,11 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 				: DataRequest + Environment.NewLine +
 					$"{what}: {(string.IsNullOrEmpty(response) ? DataRequestEmptyResponse : response)}";
 		}
+#if DEBUG
 		catch (Exception ex)
+#else
+		catch (Exception)
+#endif
 		{
 #if DEBUG
 			Debug.WriteLine(ex);
@@ -185,7 +189,7 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 			if (!IsBot)
 				await TgDesktopUtils.TgClient.ConnectSessionDesktopAsync(ProxyVm?.Dto.GetEntity(), ConfigClientDesktop);
 			else
-				await TgDesktopUtils.TgClient.ConnectBotDesktopAsync(BotToken, ApiId, ApiHash, TgDesktopUtils.LocalFolder);
+				await TgDesktopUtils.TgClient.ConnectBotDesktopAsync(BotToken, ApiId, ApiHash, ApplicationData.Current.LocalFolder.Path);
         }
         catch (Exception ex)
         {
@@ -206,9 +210,6 @@ public sealed partial class TgConnectViewModel : TgPageViewModelBase
 
     private async Task AppLoadCoreAsync()
     {
-		TgEfUtils.AppStorage = SettingsService.AppStorage;
-		TgEfUtils.RecreateEfContext();
-
 		var storageResult = await AppRepository.GetFirstAsync(isReadOnly: false);
 		App = storageResult.IsExists ? storageResult.Item : new();
 

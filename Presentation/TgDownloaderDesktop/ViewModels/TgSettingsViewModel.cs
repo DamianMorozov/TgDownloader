@@ -8,11 +8,13 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 {
 	#region Public and private fields, properties, constructor
 
+	public IRelayCommand SettingsLoadCommand { get; }
 	public IRelayCommand SettingsDefaultCommand { get; }
 	public IRelayCommand SettingsSaveCommand { get; }
 
 	public TgSettingsViewModel(ITgSettingsService settingsService, INavigationService navigationService) : base(settingsService, navigationService)
 	{
+		SettingsLoadCommand = new AsyncRelayCommand(SettingsLoadAsync);
 		SettingsDefaultCommand = new AsyncRelayCommand(SettingsDefaultAsync);
 		SettingsSaveCommand = new AsyncRelayCommand(SettingsSaveAsync);
 	}
@@ -23,12 +25,19 @@ public partial class TgSettingsViewModel : TgPageViewModelBase
 
 	public override async Task OnNavigatedToAsync(NavigationEventArgs e) => await SettingsService.LoadAsync();
 
+	private async Task SettingsLoadAsync() => await ContentDialogAsync(SettingsLoadCoreAsync, TgResourceExtensions.AskSettingsLoad());
+
+	private async Task SettingsLoadCoreAsync()
+	{
+		await SettingsService.LoadAsync();
+	}
+
 	private async Task SettingsDefaultAsync() => await ContentDialogAsync(SettingsDefaultCoreAsync, TgResourceExtensions.AskSettingsDefault());
 
 	private async Task SettingsDefaultCoreAsync()
 	{
 		SettingsService.Default();
-		await SettingsSaveCoreAsync();
+		await Task.CompletedTask;
 	}
 
 	private async Task SettingsSaveAsync()
