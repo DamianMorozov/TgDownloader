@@ -13,6 +13,7 @@
 ### Изменено
 - Обновлена таблица приложений в TgStorage
 - Обновлена страница подключения в TgDownloaderDesktop
+- Обновлены NuGet пакеты
 ### Добавлено
 - Добавлен Velopack инсталлятор для TgDownloaderDesktop
 - Добавлен фильтр чатов для TgDownloaderDesktop

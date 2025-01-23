@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Cganged
 - Updated apps table for TgStorage
 - Updated connection page in TgDownloaderDesktop
+- Updated NuGet packages
 ### Added
 - Added Velopack installer for TgDownloaderDesktop
 - Added chat filter to TgDownloaderDesktop
