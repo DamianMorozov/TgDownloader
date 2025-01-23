@@ -21,6 +21,10 @@ tgLog.WriteLine("Menu init ...");
 TgAsyncUtils.SetAppType(TgEnumAppType.Console);
 tgLog.WriteLine("Menu init success");
 
+// TG Connection
+if (File.Exists(TgFileUtils.FileTgSession))
+	await menu.ClientConnectAsync(tgDownloadSettings, isSilent: true);
+
 do
 {
 	try

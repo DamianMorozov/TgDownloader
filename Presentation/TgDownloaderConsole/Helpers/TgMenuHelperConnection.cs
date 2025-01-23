@@ -44,7 +44,7 @@ internal partial class TgMenuHelper
 					break;
 				case TgEnumMenuClient.Connect:
 					TgLog.WriteLine("TG client connect ...");
-					await ClientConnectAsync(tgDownloadSettings, false);
+					await ClientConnectAsync(tgDownloadSettings, isSilent: false);
 					TgLog.WriteLine("TG client connect success");
 					break;
 				case TgEnumMenuClient.Disconnect:
@@ -196,7 +196,7 @@ internal partial class TgMenuHelper
 				.AddChoices(TgLocale.MenuNo, TgLocale.MenuYes));
 		var isConnect = prompt.Equals(TgLocale.MenuYes);
 		if (isConnect)
-			await ClientConnectAsync(tgDownloadSettings, false);
+			await ClientConnectAsync(tgDownloadSettings, isSilent: false);
 	}
 
 	public async Task ClientConnectAsync(TgDownloadSettingsViewModel tgDownloadSettings, bool isSilent)
