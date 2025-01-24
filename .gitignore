@@ -405,3 +405,4 @@ FodyWeavers.xsd
 /Clients/TgDownloaderConsole/TgDownloader.session
 /Clients/TgDownloaderConsole/TgDownloader.xml
 /Core/TgStorage/Domain/TgDevContext.cs
+/Presentation/TgDownloaderConsole/TgDownloader.session
