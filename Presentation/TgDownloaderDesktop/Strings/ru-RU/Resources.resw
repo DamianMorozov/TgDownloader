@@ -328,7 +328,7 @@
     <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASE.md"</value>
   </data>
   <data name="SettingsPage_GitHub_DockerConsole.Content" xml:space="preserve">
-    <value>TgDownloader-Console Докер образ</value>
+    <value>TgDownloaderConsole Докер образ</value>
   </data>
   <data name="SettingsPage_GitHub_DockerConsole.Tag" xml:space="preserve">
     <value>"https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console"</value>
@@ -407,8 +407,8 @@
   <data name="ExpanderGitHub.Header" xml:space="preserve">
     <value>ГитХаб сообщество</value>
   </data>
-  <data name="ExpanderOfficialWebsite.Header" xml:space="preserve">
-    <value>Официальный вебсайт</value>
+  <data name="ExpanderOfficialWebsites.Header" xml:space="preserve">
+    <value>Официальные вебсайты</value>
   </data>
   <data name="TextOfficialWebsiteGlobal.Text" xml:space="preserve">
     <value>Официальный вебсайт (глобальная версия)</value>
@@ -672,7 +672,9 @@
     <value>Назначение продукта</value>
   </data>
   <data name="ProductAssignmentDescription.Text" xml:space="preserve">
-    <value>Упорядоченное скачивание файлов из ТГ каналов/групп/чатов (к которым есть доступ под своим аккаунтом). Файлы из каждого источника можно скачивать в отдельный каталог. Можно указать какие источники включить в авто-скачивание. Есть многопоточный режим скачивания. Консольная версия практически завершена (продакшн). Десктоп версии находится в активной стадии разработки (превью).</value>
+    <value>Прокачай свой Телеграм. Скачивай и раскладывай файлы из чатов по своим каталогам. 
+Консольная версия практически завершена (продакшн). 
+Десктоп версии находится в активной стадии разработки (превью).</value>
   </data>
   <data name="TemplateColumnEdit.Header" xml:space="preserve">
     <value>Править</value>
