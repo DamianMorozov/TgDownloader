@@ -16,7 +16,7 @@ public partial class App
             IsCurrentDirSet = true;
             string debugAnyCpu =
 #if NET8_0
-                "bin\\Debug_AnyCPU\\net8.0";
+                "bin\\Debug_AnyCPU\\net9.0";
 #else
                 "bin\\Debug_AnyCPU";
 #endif

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed bugs for TgStorage
 - Fixed bugs for TgDownloaderConsole
-### Cganged
+### Changed
 - Updated apps table for TgStorage
 - Updated connection page in TgDownloaderDesktop
 - Updated NuGet packages
@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.410] - 2025-01-18
 ### Fixed
 - Fixed chat connection check to TgDownloaderConsole
-### Cganged
+### Changed
 - Updated apps table for TgStorage
 ### Added
 - Added Velopack installer for TgDownloaderConsole
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed `Sequence contains more than one element` error to TgDownloaderConsole
 - Fixed `Access to the path ...\TgDownloader.xml is denied` error when connecting to the server to TgDownloaderDesktop
-### Cganged
+### Changed
 - Updated contacts page to TgDownloaderDesktop
 - Updated filters page to TgDownloaderDesktop
 - Updated sources page to TgDownloaderDesktop
@@ -54,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.300] - 2025-01-03
 ### Fixed
 - Connecting to Telegram server to TgDownloaderDesktop
-### Cganged
+### Changed
 - Updated contacts page to TgDownloaderConsole
 - Updated home page to TgDownloaderDesktop
 - Updated sources page to TgDownloaderConsole
