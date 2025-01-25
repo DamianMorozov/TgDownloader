@@ -35,7 +35,7 @@ The desktop version is in active development stage (preview).
 - [Global Chat](https://t.me/TgDownloaderChat)
 
 ## Docker images
-- [TgDownloader-Console Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
+- [TgDownloaderConsole Docker image](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
 
 ## Install Requirements
 - [Download .NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)

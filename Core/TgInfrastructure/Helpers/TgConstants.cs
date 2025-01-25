@@ -6,10 +6,10 @@ namespace TgInfrastructure.Helpers;
 public sealed class TgConstants
 {
 	public static string AppTitle => "TgDownloader";
-	public static string AppTitleBlazor => "TgDownloader-Blazor";
-	public static string AppTitleConsole => "TgDownloader-Console";
+	public static string AppTitleBlazor => "TgDownloaderBlazor";
+	public static string AppTitleConsole => "TgDownloaderConsole";
 	public static string AppTitleConsoleShort => "TGDC";
-	public static string AppTitleDesktop => "TgDownloader-Desktop";
+	public static string AppTitleDesktop => "TgDownloaderDesktop";
 	public static string LinkDockerHub => "https://hub.docker.com/r/damianmorozov/tgdownloader-blazor";
 	public static string LinkDockerHubTitle => "DockerHub";
 	public static string LinkGitHub => "https://github.com/DamianMorozov/TgDownloader";
