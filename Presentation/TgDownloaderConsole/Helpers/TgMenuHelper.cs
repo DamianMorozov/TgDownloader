@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 // ReSharper disable InconsistentNaming
 
+using CodingSeb.Localization;
+
 namespace TgDownloaderConsole.Helpers;
 
 [DebuggerDisplay("{ToDebugString()}")]
@@ -549,7 +551,9 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 		Console.Title = TgConstants.AppTitleConsoleShort;
 		TgLog.SetMarkupLine(AnsiConsole.WriteLine);
 		TgLog.SetMarkupLineStamp(AnsiConsole.MarkupLine);
-		TgLog.WriteLine($"{TgConstants.AppTitleConsole} {TgAppSettingsHelper.Instance.AppVersion} started");
+		TgLog.WriteLine($"Update started");
+		TgAppSettingsHelper.Instance.SetVersion(Assembly.GetExecutingAssembly());
+		TgLog.WriteLine($"{TgConstants.AppTitleConsole} {TgAppSettingsHelper.Instance.AppVersion}");
 
 		VelopackApp.Build()
 #if WINDOWS
@@ -562,7 +566,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				TgLog.WriteLine($"Thanks for installing the {TgConstants.AppTitleConsole}!");
 			})
 			.Run();
-		TgLog.WriteLine($"Checking updates on the link github.com...");
+		TgLog.WriteLine($"Checking updates on the link github.com");
 		var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
 		// Check for new version
 		try
@@ -574,7 +578,7 @@ internal sealed partial class TgMenuHelper() : ITgHelper
 				return;
 			}
 			// Download new version
-			TgLog.WriteLine("Download new version...");
+			TgLog.WriteLine("Download new version");
 			await mgr.DownloadUpdatesAsync(newVersion);
 			// Install new version and restart app
 			var prompt = AnsiConsole.Prompt(

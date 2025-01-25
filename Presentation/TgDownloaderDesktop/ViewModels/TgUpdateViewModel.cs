@@ -36,8 +36,10 @@ public partial class TgUpdateViewModel : TgPageViewModelBase
 		var log = new StringBuilder();
 		try
 		{
-			log.AppendLine($"{TgConstants.AppTitleDesktop} {TgAppSettingsHelper.Instance.AppVersion} started");
-			log.AppendLine($"Checking updates on the link github.com...");
+			log.AppendLine($"Update started");
+			TgAppSettingsHelper.Instance.SetVersion(Assembly.GetExecutingAssembly());
+			log.AppendLine($"{TgConstants.AppTitleDesktop} {TgAppSettingsHelper.Instance.AppVersion}");
+			log.AppendLine($"Checking updates on the link github.com");
 			var mgr = new UpdateManager(new GithubSource(TgConstants.LinkGitHub, string.Empty, prerelease: false));
 			// Check for new version
 			var newVersion = await mgr.CheckForUpdatesAsync();
@@ -47,7 +49,7 @@ public partial class TgUpdateViewModel : TgPageViewModelBase
 				return;
 			}
 			// Download new version
-			log.AppendLine("Download new version...");
+			log.AppendLine("Download new version");
 			await mgr.DownloadUpdatesAsync(newVersion);
 			//// Install new version and restart app
 			//var prompt = AnsiConsole.Prompt(
@@ -65,7 +67,10 @@ public partial class TgUpdateViewModel : TgPageViewModelBase
 		{
 			log.AppendLine(ex.Message);
 		}
-		UpdateLog = log.ToString();
+		finally
+		{
+			UpdateLog = log.ToString();
+		}
 	}
 
 	#endregion
