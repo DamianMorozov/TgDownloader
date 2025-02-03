@@ -1,4 +1,4 @@
-﻿# TgDownloader - Telegram Files Downloader
+﻿# OpenTgResearcher - Open Telegram Researcher
 
 ## Global version
 ### <div align="center"><b><a href="http://tgdownloader.online">tgdownloader.online</a> | <a href="http://tg-downloader.online">tg-downloader.online</a></b></div>
@@ -16,9 +16,8 @@
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## Product assignment
-Upgrade your Telegram. Download and distribute files from chats to your catalogs. 
-Console version is almost complete (production). 
-The desktop version is in active development stage (preview). 
+Telegram's open researcher and search engine. 
+Download chat rooms by catalogs. 
 
 ## Download
 - [Releases](https://github.com/DamianMorozov/TgDownloader/releases)

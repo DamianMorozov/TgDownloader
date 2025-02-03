@@ -1,4 +1,4 @@
-﻿# TgDownloader - Загрузчик файлов Telegram
+﻿# OpenTgResearcher - Открытый исследователь Telegram
 
 ## Глобальная версия
 ### <div align="center"><b><a href="http://tgdownloader.online">tgdownloader.online</a> | <a href="http://tg-downloader.online">tg-downloader.online</a></b></div>
@@ -16,9 +16,8 @@
 ![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## Назначение продукта
-Прокачай свой Телеграм. Скачивай и раскладывай файлы из чатов по своим каталогам. 
-Консольная версия практически завершена (продакшн). 
-Десктоп версии находится в активной стадии разработки (превью). 
+Открытый исследователь и поисковик Телеграм. 
+Скачивай чаты по каталогам. 
 
 ## Скачать
 - [Релизы](https://github.com/DamianMorozov/TgDownloader/releases)
