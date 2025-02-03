@@ -35,7 +35,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-		<PackageReference Include="Radzen.Blazor" Version="5.8.0" />
+		<PackageReference Include="Radzen.Blazor" Version="5.9.6" />
 		<PackageReference Include="WTelegramClient" Version="4.2.8" />
 	</ItemGroup>
 
@@ -64,7 +64,8 @@
 	  <None Include="..\..\Docs\GUIDES.md" Link="Docs\GUIDES.md" />
 	  <None Include="..\..\Docs\ISSUE-RUS.md" Link="Docs\ISSUE-RUS.md" />
 	  <None Include="..\..\Docs\ISSUE.md" Link="Docs\ISSUE.md" />
-	  <None Include="..\..\Docs\RELEASE.md" Link="Docs\RELEASE.md" />
+	  <None Include="..\..\Docs\RELEASES.md" Link="Docs\RELEASES.md" />
+	  <None Include="..\..\Docs\RELEASES-RUS.md" Link="Docs\RELEASES-RUS.md" />
 	  <None Include="..\..\Docs\RESOURCES-RUS.md" Link="Docs\RESOURCES-RUS.md" />
 	  <None Include="..\..\Docs\RESOURCES.md" Link="Docs\RESOURCES.md" />
 	  <None Include="..\..\Docs\SCREENSHOTS.md" Link="Docs\SCREENSHOTS.md" />

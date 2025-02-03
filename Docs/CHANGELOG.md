@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.450] - 2025-01-31
+### Changed
+- Updated NuGet packages
+- Fixed some exceptions in TgDownloaderConsole
+
 ## [0.5.440] - 2025-01-25
 ### Fixed
 - Fixed file checks for TgDownloaderDesktop

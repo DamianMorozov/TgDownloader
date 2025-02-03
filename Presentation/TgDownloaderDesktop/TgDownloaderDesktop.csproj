@@ -40,7 +40,7 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.250108002" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.0" />
     <PackageReference Include="Velopack" Version="0.0.1053" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
     <PackageReference Include="WTelegramClient" Version="4.2.8" />
@@ -143,9 +143,8 @@
     <None Include="..\..\Docs\ISSUE.md" Link="Docs\ISSUE.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\Docs\RELEASE.md" Link="Docs\RELEASE.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="..\..\Docs\RELEASES-RUS.md" Link="Docs\RELEASES-RUS.md" />
+    <None Include="..\..\Docs\RELEASES.md" Link="Docs\RELEASES.md" />
     <None Include="..\..\Docs\RESOURCES-RUS.md" Link="Docs\RESOURCES-RUS.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
