@@ -1,9 +1,6 @@
-﻿# TgDownloader Release history
+﻿# Статистика скачиваний
 
-## <div align="center"><b><a href="../README.md">Readme</a> | <a href="../CHANGELOG.md">Changelog</a> | <a href="RELEASE.md">Releases</a> | <a href="SCREENSHOTS.md">Screenshots</a> | <a href="GUIDES.md">Guides</a></b></div>
-## <div align="center"><b><a href="../README-RUS.md">Прочти меня</a> | <a href="../CHANGELOG-RUS.md">История версий</a> | <a href="RELEASE.md">Релизы</a> | <a href="SCREENSHOTS.md">Скриншоты</a> | <a href="GUIDES-RUS.md">Руководства</a></b></div>
-
-- GitHub all releases       	![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
+- GitHub все релизы       		![GitHub all releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
 - GitHub preview v0.5.440		![GitHub preview v0.5.440](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.440/total?style=social)
 - GitHub preview v0.5.430		![GitHub preview v0.5.430](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.430/total?style=social)
 - GitHub preview v0.5.410		![GitHub preview v0.5.410](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/v0.5.410/total?style=social)

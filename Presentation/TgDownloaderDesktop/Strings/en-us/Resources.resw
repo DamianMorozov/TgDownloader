@@ -266,7 +266,7 @@
     <value>Release history</value>
   </data>
   <data name="SettingsPage_Release_History.Tag" xml:space="preserve">
-    <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASE.md"</value>
+    <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASES.md"</value>
   </data>
   <data name="SettingsPage_GitHub_DockerConsole.Content" xml:space="preserve">
     <value>TgDownloaderConsole Docker image</value>
