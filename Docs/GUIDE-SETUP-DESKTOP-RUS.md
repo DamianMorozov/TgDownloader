@@ -1,7 +1,7 @@
 # Руководство по настройке Десктоп версии
 
 ## Установка и запуск TgDownloaderDesktop под ОС Windows
-- Скачайте и запустите инсталлятор [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/TgDownloader/releases)
+- Скачайте и запустите инсталлятор [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/OpenTgResearcher/releases)
 - Нажмите кнопку `Старт`, затем наберите и выполните `TgDownloaderDesktop`
 
 ## Настройка подключения

@@ -15,13 +15,13 @@ Telegram's open researcher and search engine.
 Download chat rooms by catalogs. 
 
 ## Download
-- [Releases](https://github.com/DamianMorozov/TgDownloader/releases)
+- [Releases](https://github.com/DamianMorozov/OpenTgResearcher/releases)
 
 ## GitHub community
-- [GitHub repository](https://github.com/DamianMorozov/TgDownloader)
-- [Report a bug](https://github.com/DamianMorozov/TgDownloader/issues)
-- [Discussions](https://github.com/DamianMorozov/TgDownloader/discussions)
-- [Ideas](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+- [GitHub repository](https://github.com/DamianMorozov/OpenTgResearcher)
+- [Report a bug](https://github.com/DamianMorozov/OpenTgResearcher/issues)
+- [Discussions](https://github.com/DamianMorozov/OpenTgResearcher/discussions)
+- [Ideas](https://github.com/DamianMorozov/OpenTgResearcher/discussions/categories/ideas)
 
 ## User support
 - [OpenTgResearcher group](https://t.me/OpenTgResearcher)
@@ -33,12 +33,9 @@ Download chat rooms by catalogs.
 - [Register Telegram app](https://my.telegram.org/apps)
 - Save the values of the fields by `App configuration` section: `App api_id` / `App api_hash`
 
-<details>
-<summary><b>Project support</b></summary>
-- [GitHub star](https://github.com/DamianMorozov/TgDownloader)
+## Donate
+- [GitHub star](https://github.com/DamianMorozov/OpenTgResearcher)
 - [Donate through Boosty](https://boosty.to/tgdownloader)
-- Donations directly
-```
 - Donate through USDT TRC20: TBTDRWnMBw7acfpkhAXjSQNSNHQGFR662Y
 - Donate through USDT TON: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Donate through Toncoin: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
@@ -49,5 +46,3 @@ Download chat rooms by catalogs.
 - Donate through X Empire: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Donate through Catizen: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Donate through Major: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
-```
-</details>

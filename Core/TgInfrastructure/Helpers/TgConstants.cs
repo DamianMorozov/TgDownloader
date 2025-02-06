@@ -12,7 +12,7 @@ public sealed class TgConstants
 	public static string AppTitleDesktop => "TgDownloaderDesktop";
 	public static string LinkDockerHub => "https://hub.docker.com/r/damianmorozov/tgdownloader-blazor";
 	public static string LinkDockerHubTitle => "DockerHub";
-	public static string LinkGitHub => "https://github.com/DamianMorozov/TgDownloader";
+	public static string LinkGitHub => "https://github.com/DamianMorozov/OpenTgResearcher";
 	public static string LinkGitHubTitle => "GitHub";
 	public static string LinkTelegramApps => "https://my.telegram.org/apps/";
 	public static string LinkTelegramAppsTitle => "Telegram";

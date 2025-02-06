@@ -15,13 +15,13 @@
 Скачивай чаты по каталогам. 
 
 ## Скачать
-- [Релизы](https://github.com/DamianMorozov/TgDownloader/releases)
+- [Релизы](https://github.com/DamianMorozov/OpenTgResearcher/releases)
 
 ## ГитХаб сообщество
-- [ГитХаб репозиторий](https://github.com/DamianMorozov/TgDownloader)
-- [Сообщить об ошибке](https://github.com/DamianMorozov/TgDownloader/issues)
-- [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
-- [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
+- [ГитХаб репозиторий](https://github.com/DamianMorozov/OpenTgResearcher)
+- [Сообщить об ошибке](https://github.com/DamianMorozov/OpenTgResearcher/issues)
+- [Обсуждения](https://github.com/DamianMorozov/OpenTgResearcher/discussions)
+- [Идеи](https://github.com/DamianMorozov/OpenTgResearcher/discussions/categories/ideas)
 
 ## Поддержка пользователей
 - [OpenTgResearcher группа](https://t.me/OpenTgResearcher)
@@ -33,12 +33,9 @@
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps)
 - Сохраните значения полей секции `App configuration`: `App api_id` / `App api_hash`
 
-<details>
-<summary><b>Поддержка проекта</b></summary>
-- [Звёздочка ГитХаб](https://github.com/DamianMorozov/TgDownloader)
+## Донат
+- [Звёздочка ГитХаб](https://github.com/DamianMorozov/OpenTgResearcher)
 - [Донат через Бусти](https://boosty.to/tgdownloader)
-- Донаты напрямую
-```
 - Донат через USDT TRC20: TBTDRWnMBw7acfpkhAXjSQNSNHQGFR662Y
 - Донат через USDT TON: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Toncoin: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
@@ -49,5 +46,3 @@
 - Донат через X Empire: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Catizen: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Major: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
-```
-</details>

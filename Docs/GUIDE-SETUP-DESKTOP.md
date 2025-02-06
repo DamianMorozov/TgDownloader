@@ -1,7 +1,7 @@
 # Guide to setup the Desktop version
 
 ## Setup and run TgDownloaderDesktop under Windows OS
-- Download and run the installer [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/TgDownloader/releases)
+- Download and run the installer [TgDownloaderDesktop-win-x64-Setup.exe](https://github.com/DamianMorozov/OpenTgResearcher/releases)
 - Click the `Start` button, then type and execute `TgDownloaderDesktop`
 
 ## Connection setup

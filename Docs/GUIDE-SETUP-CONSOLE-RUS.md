@@ -1,7 +1,7 @@
 # Руководство по настройке Консольной версии
 
 ## Установка и запуск TgDownloaderConsole под ОС Windows
-- Скачайте и запустите инсталлятор [TgDownloaderConsole-win-x64-Setup.exe](https://github.com/DamianMorozov/TgDownloader/releases)
+- Скачайте и запустите инсталлятор [TgDownloaderConsole-win-x64-Setup.exe](https://github.com/DamianMorozov/OpenTgResearcher/releases)
 - Нажмите кнопку `Старт`, затем наберите и выполните `TgDownloaderConsole`
 
 ## Быстрый старт

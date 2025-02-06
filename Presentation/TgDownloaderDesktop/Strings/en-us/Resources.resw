@@ -188,31 +188,31 @@
     <value>TgDownloader repository</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloader.Tag" xml:space="preserve">
-    <value>https://github.com/DamianMorozov/TgDownloader/</value>
+    <value>https://github.com/DamianMorozov/OpenTgResearcher/</value>
   </data>
   <data name="SettingsPage_GitHub_IssueTemplate.Content" xml:space="preserve">
     <value>Issue template</value>
   </data>
   <data name="SettingsPage_GitHub_IssueTemplate.Tag" xml:space="preserve">
-    <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
+    <value>https://github.com/DamianMorozov/OpenTgResearcher/issues</value>
   </data>
   <data name="SettingsPage_GitHub_ReportBug.Content" xml:space="preserve">
     <value>Report a bug</value>
   </data>
   <data name="SettingsPage_GitHub_ReportBug.Tag" xml:space="preserve">
-    <value>https://github.com/DamianMorozov/TgDownloader/issues</value>
+    <value>https://github.com/DamianMorozov/OpenTgResearcher/issues</value>
   </data>
   <data name="SettingsPage_GitHub_Discussions.Content" xml:space="preserve">
     <value>Discussions</value>
   </data>
   <data name="SettingsPage_GitHub_Discussions.Tag" xml:space="preserve">
-    <value>https://github.com/DamianMorozov/TgDownloader/discussions</value>
+    <value>https://github.com/DamianMorozov/OpenTgResearcher/discussions</value>
   </data>
   <data name="SettingsPage_GitHub_Ideas.Content" xml:space="preserve">
     <value>Ideas</value>
   </data>
   <data name="SettingsPage_GitHub_Ideas.Tag" xml:space="preserve">
-    <value>https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas</value>
+    <value>https://github.com/DamianMorozov/OpenTgResearcher/discussions/categories/ideas</value>
   </data>
   <data name="SettingsPage_GitHub_TgDownloaderNews.Content" xml:space="preserve">
     <value>TgDownloader News</value>
@@ -260,13 +260,13 @@
     <value>Releases</value>
   </data>
   <data name="SettingsPage_Releases_Latest.Tag" xml:space="preserve">
-    <value>"https://github.com/DamianMorozov/TgDownloader/releases"</value>
+    <value>"https://github.com/DamianMorozov/OpenTgResearcher/releases"</value>
   </data>
   <data name="SettingsPage_Release_History.Content" xml:space="preserve">
     <value>Release history</value>
   </data>
   <data name="SettingsPage_Release_History.Tag" xml:space="preserve">
-    <value>"https://github.com/DamianMorozov/TgDownloader/blob/main/Docs/RELEASES.md"</value>
+    <value>"https://github.com/DamianMorozov/OpenTgResearcher/blob/main/Docs/RELEASES.md"</value>
   </data>
   <data name="SettingsPage_GitHub_DockerConsole.Content" xml:space="preserve">
     <value>TgDownloaderConsole Docker image</value>
@@ -296,7 +296,7 @@
     <value>GitHub star</value>
   </data>
   <data name="SettingsPage_GitHub_ProjectSupportGitHubStar.Tag" xml:space="preserve">
-    <value>"https://github.com/DamianMorozov/TgDownloader"</value>
+    <value>"https://github.com/DamianMorozov/OpenTgResearcher"</value>
   </data>
   <data name="SettingsPage_GitHub_ProjectSupportDonateBoosty.Content" xml:space="preserve">
     <value>Donate through Boosty</value>
