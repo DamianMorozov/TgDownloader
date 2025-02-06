@@ -1,19 +1,14 @@
 ﻿# OpenTgResearcher - Открытый исследователь Telegram
 
-## Глобальная версия
-### <div align="center"><b><a href="http://tgdownloader.online">tgdownloader.online</a> | <a href="http://tg-downloader.online">tg-downloader.online</a></b></div>
-### <div align="center"><b><a href="README.md">Readme</a> | <a href="CHANGELOG.md">Changelog</a> | <a href="Docs/RELEASES.md">Download statistics</a></b></div>
+## Official site
+### <div align="center"><b><a href="http://opentgresearcher.online">opentgresearcher.online</a></b></div>
+### <div align="center"><b><a href="README.md">Readme</a> | <a href="Docs/CHANGELOG.md">Changelog</a> | <a href="Docs/RELEASES.md">Statistics</a></b></div>
 ### <div align="center"><b><a href="Docs/SCREENSHOTS.md">Screenshots</a> | <a href="Docs/GUIDES.md">Guides</a> | <a href="LICENSE.md">License</a></b></div>
 
-## Русская версия
-### <div align="center"><b><a href="http://tgdownloader.ru">tgdownloader.ru</a> | <a href="http://tg-downloader.ru">tg-downloader.ru</a></b></div>
-### <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASES-RUS.md">Статистика скачиваний</a></b></div>
+## Официальный сайт
+### <div align="center"><b><a href="http://opentgresearcher.ru">opentgresearcher.ru</a></b></div>
+### <div align="center"><b><a href="README-RUS.md">Прочти меня</a> | <a href="CHANGELOG-RUS.md">История версий</a> | <a href="Docs/RELEASES-RUS.md">Статистика</a></b></div>
 ### <div align="center"><b><a href="Docs/SCREENSHOTS.md">Скриншоты</a> | <a href="Docs/GUIDES-RUS.md">Руководства</a> | <a href="LICENSE.md">Лицензия</a></b></div>
-
-## Статистика о проекте
-![GitHub releases](https://img.shields.io/github/downloads/DamianMorozov/TgDownloader/total?style=social)
-![GitHub issues](https://img.shields.io/github/issues/DamianMorozov/TgDownloader?style=social)
-![GitHub license](https://img.shields.io/github/license/DamianMorozov/TgDownloader?style=social)
 
 ## Назначение продукта
 Открытый исследователь и поисковик Телеграм. 
@@ -23,18 +18,16 @@
 - [Релизы](https://github.com/DamianMorozov/TgDownloader/releases)
 
 ## ГитХаб сообщество
-- [TgDownloader репозиторий](https://github.com/DamianMorozov/TgDownloader)
+- [ГитХаб репозиторий](https://github.com/DamianMorozov/TgDownloader)
 - [Сообщить об ошибке](https://github.com/DamianMorozov/TgDownloader/issues)
 - [Обсуждения](https://github.com/DamianMorozov/TgDownloader/discussions)
 - [Идеи](https://github.com/DamianMorozov/TgDownloader/discussions/categories/ideas)
-- [Шаблон проблемы](Docs/ISSUE-RUS.md)
 
 ## Поддержка пользователей
-- [Новости](https://t.me/TgDownloader)
-- [Русскоязычный чат](https://t.me/TgDownloaderChatRus)
+- [OpenTgResearcher группа](https://t.me/OpenTgResearcher)
 
 ## Docker
-- [TgDownloaderConsole Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
+- [Докер образ](https://hub.docker.com/repository/docker/damianmorozov/tgdownloader-console)
 
 ## Требования к установке
 - [Зарегистрируйте Telegram приложение](https://my.telegram.org/apps)
@@ -44,6 +37,8 @@
 <summary><b>Поддержка проекта</b></summary>
 - [Звёздочка ГитХаб](https://github.com/DamianMorozov/TgDownloader)
 - [Донат через Бусти](https://boosty.to/tgdownloader)
+- Донаты напрямую
+```
 - Донат через USDT TRC20: TBTDRWnMBw7acfpkhAXjSQNSNHQGFR662Y
 - Донат через USDT TON: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Toncoin: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
@@ -54,4 +49,5 @@
 - Донат через X Empire: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Catizen: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
 - Донат через Major: UQBkjSs3XPmraI_sS4Mf05SMd1y44DahNhwPg9ySp3V-M3N6
+```
 </details>
